@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.12 2004/07/23 04:55:04 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.13 2004/07/23 22:11:52 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -240,8 +240,7 @@ int cgiMain(void){
     }
 
     /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b", &b, a/line->units_abct->sf, 
-			    (1.0e6*a)/line->units_abct->sf,
+    if(cgiFormDoubleBounded("b", &b, a, 1.0e6*a,
 			    defB/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
@@ -250,7 +249,7 @@ int cgiMain(void){
     
 
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c", &c, 0.0, (b-a)/line->units_abct->sf,
+    if(cgiFormDoubleBounded("c", &c, 0.0, (b-a),
 			    defC/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
