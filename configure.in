@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.26 2001/10/18 12:18:57 dan Exp $
+dnl $Id: configure.in,v 1.27 2001/10/18 23:03:47 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -244,7 +244,7 @@ AC_SUBST(HTMLPATH)
 AC_PATH_PROG(MEX, mex)
 
 AC_MSG_CHECKING([for matlab mex suffix])
-case $host in
+case $target in
 	rs6000-*-aix* )
 		MEXSFX="mexrs6"
 		;;
@@ -411,6 +411,15 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 # print a summary of paths and such since there are a bunch
+AC_MSG_NOTICE([
+--------------------------------------------
+html directory = $HTMLDIR
+html path      = $HTMLPATH
+cgi directory  = $CGIBINDIR
+cgi path       = $CGIPATH
+prefix         = $prefix
+--------------------------------------------
+])
 
 AC_OUTPUT(
 	Makefile 
