@@ -1,0 +1,20 @@
+<!-- $Id: man_end.incl,v 1.2 2001/10/30 04:08:23 dan Exp $ -->
+
+    <P>Return to the <a href="../octave-wcalc.html">Octave-Wcalc</a> page.</P>
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

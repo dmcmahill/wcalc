@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.9 2002/05/10 22:49:36 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.10 2002/05/14 00:45:59 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -74,6 +74,7 @@
 	&nbsp;<a href="cgi-wcalc.html">CGI-Wcalc (Web Interface)</a><br>
 	&nbsp;<a href="gtk-wcalc.html">GTK-Wcalc (GUI Interface)</a><br>
 	&nbsp;<a href="mex-wcalc.html">MEX-Wcalc (Matlab Interface)</a><br>
+	&nbsp;<a href="octave-wcalc.html">Octave-Wcalc (Octave Interface)</a><br>
 	&nbsp;<a href="sci-wcalc.html">SCI-Wcalc (Scilab Interface)</a><br>
       </font>
     </td></tr></table>

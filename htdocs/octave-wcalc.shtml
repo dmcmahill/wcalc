@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: octave-wcalc.shtml,v 1.8 2002/05/10 22:49:38 dan Exp $ -->
+<!-- Copyright (c) 2002
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Wcalc and Octave</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Octave-Wcalc
+    </font>
+    <br>
+    <br>
+    </center>
+    
+    <font face="helvetica, arial">
+    <H2>What is it?</H2>
+    <p>
+    Octave-Wcalc refers to
+    the <a href="http://www.octave.org">Octave</a> interface
+    to the
+    wcalc routines.  This interface allows the user to apply the full
+    power of a high level programming language like Octave to the
+    design and analysis of the various Wcalc supported structures.
+    For example, it is extremely simple to plot the Q and self
+    resonant frequency of a 220 nH inductor as a function of winding
+    diameter or to optimize the impedance of a microstrip line to
+    produce minimum loss.  For quick calculations with only a few sets
+    of parameters, the
+    standalone <a href="gtk-wcalc.html">GTK-Wcalc</a> is a
+    simpler tool, but when
+    complex optimizations or plotting is desired, the Octave interface
+    provides tremendous flexibility.
+    </p>
+
+    <H2>Compiling Octave-Wcalc</H2>
+    To compile and use Octave-Wcalc you must install the Octave mex
+    package which is part of the <a
+    href="http://octave.sourceforge.net">Octave-Forge</a> package for
+    Octave.  <EM>NOTE:</EM>  I currently do not have an installed
+    octave that I test with.  This means Octave-Wcalc may not even
+    build.  I plan on fixing this situation, but if anyone wants to
+    help, I could use it.
+
+    <H2>Using Octave-Wcalc</H2>
+
+    <H3>Loading Octave-Wcalc (After Installation)</H3>
+    <p>
+    To use 
+    the <a href="http://www.octave.org">Octave</a> interface,
+    the interface must be loaded into your running Octave session.
+
+    <H3>Loading Octave-Wcalc (Before Installation)</H3>
+    <p>
+    If you want to try out Octave-Wcalc before it is installed in its
+    final location, use the <code>runoctave</code> script
+    instead.
+
+    <H3>Running the Octave-Wcalc Functions</H3>
+    <p>
+    Once the Octave-Wcalc interface has been loaded, the Octave-Wcalc
+    functions appear as Octave builtin functions.  Complete
+    documentation on the various functions is available via Octave's
+    online help.
+
+    <H2>Examples</H2>
+
+    <H2>Currently available functions</H2>
+    <p>
+    You can view the Octave man pages for the Octave-Wcalc functions
+    online:
+    <table>
+    <!--#include virtual="octave-man/whatis.incl"-->
+    </table>
+    </p>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

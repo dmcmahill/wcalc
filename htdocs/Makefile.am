@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.18 2002/05/15 11:20:44 dan Exp $
+## $Id: Makefile.am,v 1.19 2002/05/16 19:29:19 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -36,7 +36,7 @@
 # search for the .asciitab files (for the resistivity table, etc)
 vpath %.asciitab ../gtk-wcalc:$(top_srcdir)/gtk-wcalc
 
-SUBDIRS=	sci-man  mex-man
+SUBDIRS=	sci-man  mex-man octave-man
 
 # Note, we let the user pick some arbitrary directory for the PNG files
 # because we simply don't know how the user will organize their web server.
@@ -63,6 +63,7 @@ SHTML_IN=	\
 	mex-wcalc.shtml \
 	microstrip.shtml \
 	obtaining.shtml \
+	octave-wcalc.shtml \
 	permeability.shtml \
 	permitivity.shtml \
 	projects.shtml \
