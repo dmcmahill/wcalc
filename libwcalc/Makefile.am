@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.16 2003/01/14 10:42:10 dan Exp $
+## $Id: Makefile.am,v 1.17 2003/01/15 01:07:17 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -36,13 +36,14 @@
 lib_LTLIBRARIES = libwcalc.la
 
 noinst_PROGRAMS = coax_test coupled_microstrip_test ic_microstrip_test mathutil_test \
-	microstrip_test
+	microstrip_test units_test
 
 coax_test_SOURCES = alert.c coax_test.c 
 coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c 
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 microstrip_test_SOURCES = alert.c microstrip_test.c 
+units_test_SOURCES = alert.c units_test.c
 
 EXTRA_DIST=	coupled_microstrip.data
 
@@ -77,6 +78,8 @@ libwcalc_la_SOURCES = \
 	stripline.h \
 	stripline_loadsave.c \
 	stripline_loadsave.h \
+	units.c \
+	units.h \
 	wcalc_loadsave.c \
 	wcalc_loadsave.h
 
