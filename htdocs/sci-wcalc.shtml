@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: sci-wcalc.shtml,v 1.1 2001/10/16 04:15:34 dan Exp $ -->
+<!-- $Id: sci-wcalc.shtml,v 1.2 2001/10/27 16:05:42 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -46,8 +46,9 @@ stripline synthesis,
     resonant frequency of a 220 nH inductor as a function of winding
     diameter or to optimize the impedance of a microstrip line to
     produce minimum loss.  For quick calculations with only a few sets
-    of parameters, the standalone <a
-    href="gtk-wcalc.html"GTK-Wcalc</a> is a simpler tool, but when
+    of parameters, the
+    standalone <a href="gtk-wcalc.html">GTK-Wcalc</a> is a
+    simpler tool, but when
     complex optimizations or plotting is desired, the Scilab interface
     provides tremendous flexibility.
     </p>
