@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.14 2003/01/02 06:43:54 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.15 2004/07/27 02:10:09 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -290,6 +290,8 @@ int cgiMain(void){
 
   switch (action){
   case ANALYZE:
+  case LOAD:
+  case RESET:
     /* 
      * in case air_coil_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
@@ -310,10 +312,6 @@ int cgiMain(void){
     fprintf(cgiOut,"<pre>");
     air_coil_syn(coil, coil->freq, AIRCOILSYN_NFIX);
     fprintf(cgiOut,"</pre>\n");
-    break;
-
-  case LOAD:
-  case RESET:
     break;
 
   default:
