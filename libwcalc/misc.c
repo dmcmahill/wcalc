@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.7 2002/06/12 11:30:30 dan Exp $ */
+/* $Id: misc.c,v 1.8 2002/06/25 20:45:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -492,7 +492,8 @@ void units_update(composite_units_data *units, double *sf, char **name)
       *sf   = s;
     
     /* XXX do I need to free() the old *name? */
-    *name = str;
+    if (name != NULL)
+      *name = str;
 }
 
 /*
