@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.14 2004/08/06 11:15:50 dan Exp $ */
+/*      $Id: stripline.c,v 1.15 2004/08/31 21:38:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -393,10 +393,11 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        loss = ld + lc;
    
      } /* if (flag == WITHLOSS ) */
-   else
-     {
-       loss = 0.0;
-     }
+   else {
+     lc = 0.0;
+     ld = 0.0;
+     loss = 0.0;
+   }
 
    
    /*  store results */
@@ -405,6 +406,9 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
    /* XXX fixme .  Ro + j Xo = sqrt((jwL + R) / (jwC + G))*/
    line->Ro = z0;
    line->Xo = 0.0;
+
+   line->lc = lc;
+   line->ld = ld;
 
    line->loss = loss;
    line->losslen = loss/line->l;

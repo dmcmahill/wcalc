@@ -1,4 +1,4 @@
-/*      $Id: stripline.h,v 1.7 2004/07/25 04:05:33 dan Exp $ */
+/*      $Id: stripline.h,v 1.8 2004/07/27 20:54:48 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -65,6 +65,7 @@ typedef struct STRIPLINE_LINE
   double deltal;
 
   double loss, losslen, skindepth;
+  double lc, ld;
 
   /* incremental circuit model */
   double Ls, Rs, Cs, Gs;
