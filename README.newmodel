@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.5 2001/11/28 07:18:13 dan Exp $
+$Id: README.newmodel,v 1.6 2002/05/10 22:52:23 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -16,6 +16,13 @@ microstrip.c	 =  GUI independent file which contains all of the
 
 microstrip_gui.c =  file which contains the methods to interface the
 		    main program to the microstrip calculations.
+                    NOTE:  Use coupled_microstrip_gui.c as the example.
+                    They widget layout is done in an easier way where
+                    the code is organized in the same order as the form
+                    is done visually.  Variables are used to keep
+                    track of row/column in the table instead of hard
+                    coding them.  It makes it _much_ easier to rearrange
+                    the forms.
 
 microstrip_loadsave.c =  file which contains the function to load/save
 			 microstrip data from/to files.
