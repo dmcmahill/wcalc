@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# $Id: html2c,v 1.1 2001/09/11 02:01:43 dan Exp $
+# $Id: html2c,v 1.2 2001/09/12 00:09:38 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -38,7 +38,7 @@
 # This script operates on a html file to produce a C program which
 # will print the html file.  In addition one extra markup is introduced.
 #
-#  <@fmt@var>  will cause a line like:
+#  <@fmt@var@>  will cause a line like:
 #    fprintf(outstr,"%fmt",var);
 #
 # In the generated C code.
@@ -89,29 +89,32 @@ BEGIN{
 # escape all percents
   gsub(/%/,"%%");
 
-# replace all <@fmt@var> markup with %fmt
-  line = gensub(/<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/,"%\\1","g");
+# replace all <@fmt@var@> markup with %fmt
+  line = gensub(/<@([^@])@[^@]*@>/,"%\\1","g");
 
-# see if the line had a <@fmt@var> markup and if so, we need to
+# see if the line had a <@fmt@var@> markup and if so, we need to
 # make sure to print out the variables
   numvars = 0;
-  if ($0 ~ /<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/){
+  if ($0 ~ /<@([^@]*)@[^@]*@>/){
     templine = $0;
     done = 0;
     while (!done){
-      where = match(templine, /<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/);
+      where = match(templine, /<@([^@]*)@[^@]*@>/);
       if (where == 0){
 	done = 1;
       }
       else{
-# pick out the <@fmt@var> markup by its self
+# pick out the <@fmt@var@> markup by its self
 	tmpstr = substr(templine,where,RLENGTH);
 
 # keep the rest of the line
-	templine = substr(templine,where+RLENGTH);
-	
+	if (length(templine) >= where+RLENGTH)
+	  templine = substr(templine,where+RLENGTH);
+	else
+	  templine = "";
+
 # extract the variable name	
-	varname[numvars] = gensub(/<@[a-zA-Z0-9.]*@([a-zA-Z_]+[a-zA-Z0-9_]*)>/,"\\1","g",tmpstr);
+	varname[numvars] = gensub(/<@[^@]*@([^@]*)@>/,"\\1","g",tmpstr);
 	numvars = numvars + 1;
       }
     }
