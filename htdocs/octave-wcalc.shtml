@@ -2,10 +2,11 @@
 
 <html>
 <head>
-<!-- $Id: octave-wcalc.shtml,v 1.8 2002/05/10 22:49:38 dan Exp $ -->
-<!-- Copyright (c) 2002
+<!-- $Id: octave-wcalc.shtml,v 1.1 2002/06/18 01:24:47 dan Exp $ -->
+<!-- Copyright (c) 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <title>Wcalc and Octave</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">

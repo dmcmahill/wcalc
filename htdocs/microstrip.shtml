@@ -2,10 +2,11 @@
 
 <html>
 <head>
-<!-- $Id: microstrip.shtml,v 1.5 2002/05/10 22:49:37 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002
+<!-- $Id: microstrip.shtml,v 1.6 2002/05/14 00:46:00 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <title>Wcalc Microstrip Model</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">

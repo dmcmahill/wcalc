@@ -2,10 +2,11 @@
 
 <html>
 <head>
-<!-- $Id: permeability.shtml,v 1.2 2002/01/19 02:23:40 dan Exp $ -->
-<!-- Copyright (c) 2002
+<!-- $Id: permeability.shtml,v 1.1 2002/05/14 00:43:01 dan Exp $ -->
+<!-- Copyright (c) 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <title>Permeabilities of Common Materials</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  Permeabilities of common materials">
