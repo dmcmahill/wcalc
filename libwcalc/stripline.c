@@ -1,7 +1,7 @@
-/*      $Id: stripline.c,v 1.3 2001/11/11 03:46:54 dan Exp $ */
+/*      $Id: stripline.c,v 1.4 2001/11/11 15:54:21 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,8 +33,26 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG_SYN  /* debug stripline_syn()  */
-//#define DEBUG_CALC /* debug stripline_calc() */
+/*
+ *  References:
+ *    Stanislaw Rosloniec
+ *    "Algorithms For Computer-Aided Design of Linear Microwave Circuits"
+ *    Archtech House, 1990
+ *    ISBN 0-89006-354-0
+ *    TK7876.R67 1990
+ *
+ *    H. A. Wheeler, "Formulas for the skin effect", Proc. IRE,
+ *    Vol. 30, No. 9, September 1942, pp. 412-4124
+ *
+ */
+
+/* debug stripline_syn()  */
+/* #define DEBUG_SYN  */ 
+
+/* debug stripline_calc() */
+/* #define DEBUG_CALC */
+
+#include "config.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -42,6 +60,7 @@
 
 #include "alert.h"
 #include "mathutil.h"
+#include "misc.h"
 #include "physconst.h"
 #include "stripline.h"
 
@@ -53,20 +72,7 @@
 static int stripline_calc_int(stripline_line *line, double f, int flag);
 
 
-/*function [z0,len,loss]=slicalc(w,l,f,subs,flag)*/
-/* SLICALC    Analyze stripline transmission line from physical parameters
- *
- *  [z0,len,loss]=slicalc(w,l,f,subs)
- *  calculates:
- *    z0    = characteristic impedance (ohms)
- *    len   = electrical length (degrees)
- *    loss  = insertion loss (dB)
- *
- *  from:
- *    w     = stripline width (mils)
- *    l     = stripline length (mils)
- *    f     = frequency (Hz)
- *    subs  = substrate parameters.  See TRSUBS for details.
+/*
  *
  *  The dielectric thickness above the stripline is assumed
  *  to be the same as below the stripline
@@ -81,49 +87,37 @@ static int stripline_calc_int(stripline_line *line, double f, int flag);
  *   ----------------------------------------------
  *   /////////////////ground///////////////////////
  *
- *  Part of the Filter Design Toolbox
- *  See Also:  MLICALC, TRSUBS
- *
- *  Dan McMahill, 8/11/97
- *  Copyright (c) 1997 by Dan McMahill.
- 
+ * 
  *  In the case where Tmet~0 (or at least Tmet << H), an exact
  *  solution has been derived by Cohn for the characteristic
  *  impedance.  Wheeler has given a correction for Tmet.
  *
- *  Reference:
- *
- *
- *    Stanislaw Rosloniec
- *    "Algorithms For Computer-Aided Design of Linear Microwave Circuits"
- *    Archtech House, 1990
- *    ISBN 0-89006-354-0
- *    TK7876.R67 1990
- *
  */
-
-/*
-if(nargin == 4),
-   flag = 1;
-elseif (nargin ~=5),
-   error('Wrong number of arguments to SLICALC');
-end
-*/
 
 int stripline_calc(stripline_line *line, double f)
 {
   int rslt;
-
+  
 #ifdef DEBUG_CALC
   printf("stripline_calc(): --------------- Stripline Analysis ------------\n");
-  printf("stripline_calc(): Metal width                 = %g mil\n",line->w);
-  printf("stripline_calc(): Metal thickness             = %g mil\n",line->subs->tmet);
+  printf("stripline_calc(): Metal width                 = %g m\n",line->w);
+  printf("stripline_calc():                             = %g %s\n",
+	 line->w/line->w_sf,line->w_units);
+  printf("stripline_calc(): Metal thickness             = %g m\n",line->subs->tmet);
+  printf("stripline_calc():                             = %g %s\n",
+	 line->subs->tmet/line->subs->tmet_sf,line->subs->tmet_units);
   printf("stripline_calc(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("stripline_calc(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("stripline_calc(): Substrate thickness         = %g mil\n",line->subs->h);
+  printf("stripline_calc(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
+  printf("stripline_calc():                             = %g %s\n",
+	 line->subs->rough/line->subs->rough_sf,line->subs->rough_units);
+  printf("stripline_calc(): Substrate thickness         = %g m\n",line->subs->h);
+  printf("stripline_calc():                             = %g %s\n",
+	 line->subs->h/line->subs->h_sf,line->subs->h_units);
   printf("stripline_calc(): Substrate dielectric const. = %g \n",line->subs->er);
   printf("stripline_calc(): Substrate loss tangent      = %g \n",line->subs->tand);
   printf("stripline_calc(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("stripline_calc():                             = %g %s\n",
+	 f/line->freq_sf,line->freq_units);
   printf("stripline_calc(): -------------- ---------------------- ----------\n");
 #endif
   rslt=stripline_calc_int(line, f, WITHLOSS);
@@ -132,54 +126,30 @@ int stripline_calc(stripline_line *line, double f)
 
 static int stripline_calc_int(stripline_line *line, double f, int flag)
 {
-  /* physical width/length of line */
-  double wmil,w,lmil,l;
-
-  /* substrate parameters */
-  double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
 
   /* calculation variables */
-  double k,kp,r,kf,z0,m,deltaW,A,v,len,loss;
+  double k,kp,r,kf,z0,m,deltaW,A,v,loss;
 
   /* loss variables*/
-  double z1,z2,lc,ld,delta,depth,Res;
+  double z1,z2,lc,ld,delta;
   double mu,sigma;
 
-  /* width and length of the stripline */
-  wmil = line->w;
-  w = MIL2M(wmil);
+  int rslt;
+  stripline_line tmp_line;
 
-  lmil = line->l;
-  l = MIL2M(lmil);
-
-  /* Substrate dielectric thickness (mils) */
-  hmil = line->subs->h;
-  h = MIL2M(hmil);
-  /* Substrate relative permittivity */
-  er = line->subs->er;
-  /* Metal resistivity relative to copper */
-  rho = line->subs->rho;
-  /* Loss tangent of the dielectric material */
-  tand = line->subs->tand;
-  /* Metal thickness (mils) */
-  tmil = line->subs->tmet;
-  t = MIL2M(tmil);
-  /* Metalization roughness */
-  roughmil = line->subs->rough;
-  rough = MIL2M(rough);
-
-
-
-  /*
-   * Start of stripline calculations
-   */
-
+#ifdef DEBUG_CALC
+  printf("stripline_calc_int(): --------------- Stripline Analysis ------------\n");
+  printf("stripline_calc_int(): flag                        = %d\n",flag);
+  printf("stripline_calc_int():       WITHLOSS              = %d\n",WITHLOSS);
+  printf("stripline_calc_int():       NOLOSS                = %d\n",NOLOSS);
+  printf("stripline_calc_int(): -------------- ---------------------- ----------\n");
+#endif
 
   /*
    * Characteristic Impedance
    */
 
-  if(t < h/1000)
+  if(line->subs->tmet < line->subs->h/1000)
     {
       /*
        * Thin strip case:
@@ -187,7 +157,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 #ifdef DEBUG_CALC
        printf("stripline_calc_int(): Thin stripline analysis\n");
 #endif
-       k = 1/cosh(M_PI*w/(2*h));
+       k = 1/cosh(M_PI*line->w/(2*line->subs->h));
    
       /*
        *  compute K(k)/K'(k) where
@@ -207,7 +177,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	}
    
    
-      z0 = 29.976*M_PI*r/sqrt(er);
+      z0 = 29.976*M_PI*r/sqrt(line->subs->er);
     }
   else
     {
@@ -219,10 +189,13 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        printf("stripline_calc_int(): Finite stripline analysis\n");
 #endif
 
-      m = 6.0*(h-t)/(3.0*h-t);
-      deltaW = (t/M_PI)*(1.0 - 0.5*log( pow((t/(2*h-t)),2.0) + pow((0.0796*t/(w + 1.1*t)),m) ));
-      A = 4.0*(h-t)/(M_PI*(w + deltaW));
-      z0 = (30/sqrt(er))*log(1.0 + A*(2.0*A + sqrt(4.0*A*A + 6.27)));
+      m = 6.0*(line->subs->h-line->subs->tmet)/(3.0*line->subs->h-line->subs->tmet);
+      deltaW = (line->subs->tmet/M_PI)*
+	(1.0 - 0.5*log(
+		       pow((line->subs->tmet/(2*line->subs->h-line->subs->tmet)),2.0) + 
+		       pow((0.0796*line->subs->tmet/(line->w + 1.1*line->subs->tmet)),m) ));
+      A = 4.0*(line->subs->h-line->subs->tmet)/(M_PI*(line->w + deltaW));
+      z0 = (30/sqrt(line->subs->er))*log(1.0 + A*(2.0*A + sqrt(4.0*A*A + 6.27)));
     }
 
   /* done with Z0 calculation */
@@ -234,66 +207,72 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
    */
 
   /* propagation velocity (meters/sec) */
-  v = LIGHTSPEED / sqrt(er);
-  len = 180*l*f/v;
+  v = LIGHTSPEED / sqrt(line->subs->er);
+  line->len = 360*line->l*f/v;
+
+  /*
+   * delay on line (ns)
+   */
+  line->delay = line->l / v;
+
+
+   line->z0 = z0;
+   line->Ro = z0;
+   line->Xo = 0.0;
+
+   /* find the incremental circuit model */
+   
+   /*
+    * find L and C from the impedance and velocity
+    * 
+    * z0 = sqrt(L/C), v = 1/sqrt(LC)
+    * 
+    * this gives the result below
+    */
+   line->Ls = line->z0/v;
+   line->Cs = 1.0/(line->z0*v);
+
+   /* resistance will be updated below */
+   line->Rs = 0.0;
+   line->Gs = 2*M_PI*f*line->Cs*line->subs->tand;
 
 
   /* Loss */
-   if(flag == WITHLOSS)
-     {
+   if(flag == WITHLOSS) {
 #ifdef DEBUG_CALC
        printf("stripline_calc_int():  starting loss calculations\n");
 #endif
-       /* length in wavelengths */
-       if(f > 0.0)
-	 len= (l)/(v/f);
-       else
-	 len = 0.0;
-       
-       /* convert to degrees */
-       len = 360.0*len;
-       line->len = len;
-
-       /* calculate loss */
-
        /*
 	* Dielectric Losses
 	*/
    
        /* loss in nepers/meter */
-       // XXX fixme
-       //ld=(M_PI*f/v)*(er/EF)*((EF-1.0)/(er-1.0))*tand;
-       ld=0;
+       ld=line->Gs*line->z0/2;
 
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
    
        /* loss in dB */
-       ld = ld * l;
+       ld = ld * line->l;
    
        /*
 	* Conduction Losses
 	*/
-   
-   
+       
        /* calculate skin depth */
    
        /* conductivity (rho is relative to copper) */
-       sigma = 5.8e7 / rho;
+       sigma = 5.8e7 / line->subs->rho;
    
        /* permeability of free space */
        mu = 4.0*M_PI*1e-7;
    
        /* skin depth in meters */
-       delta = sqrt(1.0/(M_PI*f*mu*sigma));
-       depth = delta;
- 
-       /* skin depth in mils */
-       delta = M2MIL(delta);
- 
-       
+       line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
+       delta = line->skindepth;
+
        /* warn the user if the loss calc is suspect. */
-       if(t < 3.0*depth)
+       if(line->subs->tmet < 3.0*line->skindepth)
 	 {
 	   printf("Warning:  The metal thickness is less than\n");
 	   printf("three skin depths.  Use the loss results with\n");
@@ -304,59 +283,58 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	* if the skinDepth is greater than Tmet, assume current
 	* flows uniformly through  the conductor.  Then loss
 	* is just calculated from the dc resistance of the
-	* trace.  This is somewhat
-	* suspect, but I dont have time right now to come up
+	* trace.  This is somewhat incorrect
+	* but I dont have time right now to come up
 	* with a better result.
 	*/
-       if(depth <= t)
+       if(line->skindepth <= line->subs->tmet)
 	 {
    
-	   /* store the substrate parameters */
-	   /* XXX */
-	   /* subsl = subs; */
+	   /* Use Wheelers "" approach */
 
-	   line->subs->er = 1.0;
-	   // XXX fixme
-	   //z2=microstrip_calc_int(line,f,NOLOSS);
-	   z2 = 0;
+	   /* clone the line */
+	   tmp_line = *line;
+	   tmp_line.subs = stripline_subs_new();
+	   *(tmp_line.subs) = *(line->subs);
+	   
+	   tmp_line.subs->er = 1.0;
+	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+	   z1=tmp_line.z0;
 
-	   line->subs->h = hmil + delta;
-	   line->subs->tmet = tmil - delta;
-	   line->w = wmil-delta;
-	   // XXX fixme
-	   //z1=microstrip_calc_int(line,f,NOLOSS);
-	   z1 = 0;
-
-	   line->subs->er = er;
-	   line->subs->h = hmil;
-	   line->subs->tmet = tmil;
-	   line->w = wmil;
+	   tmp_line.w = line->w - line->skindepth;
+	   tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
+	   tmp_line.subs->h = line->subs->h + line->skindepth;
+	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+	   z2 = tmp_line.z0;
+	   free(tmp_line.subs);
 
 	   /* conduction losses, nepers per meter */
-	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
+	   lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
 #ifdef DEBUG_CALC
 	   printf("stripline_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
 		  z1,z2,z0,lc);
 #endif
+	   line->Rs = lc*2*line->z0;
+
 	 }
 
-	   /* "dc" case  */
-       else if(t > 0.0)
+       /* "dc" case  */
+       else if(line->subs->tmet > 0.0)
 	 {
 	   /* resistance per meter = 1/(Area*conductivity) */
-	   Res = 1/(w*t*sigma);  
+	   line->Rs = 1/(line->w*line->subs->tmet*sigma);  
   
 	   /* conduction losses, nepers per meter */
-	   lc = Res/(2.0*z0);
+	   lc = line->Rs/(2.0*z0);
 
 	   /*
 	    * change delta to be equal to the metal thickness for
 	    * use in surface roughness correction
 	    */
-	   delta = t;
+	   delta = line->subs->tmet;
 #ifdef DEBUG_CALC
-	   printf("stripline_calc_int(): LF conduction loss, Res=%g, lc=%g\n",
-		  Res,lc);
+	   printf("stripline_calc_int(): LF conduction loss, R=%g, lc=%g\n",
+		  line->Rs,lc);
 #endif
 	   /* no conduction loss case */
 	 }
@@ -364,7 +342,8 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	 {
 	   lc=0.0;
 #ifdef DEBUG_CALC
-	   printf("stripline_calc_int(): 0 thickness strip.  setting loss=0\n");
+	   printf("stripline_calc_int(): 0 thickness strip.  setting"
+		  "conduction loss=0\n");
 #endif
 	 }
 
@@ -373,7 +352,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        lc = 20.0*log10(exp(1.0)) * lc;
    
        /* loss in dB */
-       lc = lc * l;
+       lc = lc * line->l;
    
        /* factor due to surface roughness
 	* note that the equation in Fooks and Zakarevicius is slightly 
@@ -381,7 +360,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	* the correct equation is penciled in my copy and was 
 	* found in Hammerstad and Bekkadal
 	*/
-       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((roughmil/delta),2.0)));
+       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
    
        /*
 	* Total Loss
@@ -389,58 +368,24 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
    
        loss = ld + lc;
    
-       /*
-	* Skin depth 
-	* in mils
-	*/
-       depth = M2MIL(depth);
-     }
+     } /* if (flag == WITHLOSS ) */
    else
      {
        loss = 0.0;
-       depth = 0.0;
      }
 
    line->loss = loss;
    line->losslen = loss/line->l;
-   line->skindepth = depth;
-
-  /* XXX - need to get loss equations for stripline */
-  loss = 0;
-
-  /* find the incremental circuit model */
-  line->Ls = 0.0;
-  line->Rs = 0.0;
-  line->Cs = 0.0;
-  line->Gs = 0.0;
-
-  line->z0 = z0;
-  line->Ro = z0;
-  line->Xo = 0.0;
-
-  /* XXX - need open circuit end correction for stripline */
-  line->deltal=0;
-
-  return 0;
+   
+   /* XXX - need open circuit end correction for stripline */
+   line->deltal=0;
+   
+   return 0;
 }
 
 
 
-/* function [w,l,loss]=slisyn(z0,len,f,subs) */
-/* SLISYN     Synthesize microstrip transmission line from electrical parameters
- *
- *  [w,l,loss]=slisyn(z0,len,f,subs)
- *  calculates:
- *    w     = microstrip line width (mils)
- *    l     = microstrip line length (mils)
- *    loss  = insertion loss (dB)
- *
- *  from:
- *    z0    = characteristic impedance (ohms)
- *    len   = electrical length (degrees)
- *    f     = frequency (Hz)
- *    subs  = substrate parameters.  See TRSUBS for details.
- *
+/*
  *  The dielectric thickness above the stripline is assumed
  *  to be the same as below the stripline
  *
@@ -453,22 +398,6 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
  *  (             <---W--->  /\           \|/     (
  *   ----------------------------------------------
  *   /////////////////ground///////////////////////
- *
- *  Part of the Filter Design Toolbox
- *  See Also:  SLICALC, MLICALC
- *
- *  Dan McMahill, 8/11/97
- *  Copyright (c) 1997 by Dan McMahill.
- *
- *
- *  Reference:
- *
- *
- *    Stanislaw Rosloniec
- *    "Algorithms For Computer-Aided Design of Linear Microwave Circuits"
- *    Archtech House, 1990
- *    ISBN 0-89006-354-0
- *    TK7876.R67 1990
  *
  */
 
@@ -597,14 +526,24 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
 #ifdef DEBUG_SYN
   printf("stripline_syn(): --------------- Stripline Synthesis -----------\n");
-  printf("stripline_syn(): Metal width                 = %g mil\n",line->w);
-  printf("stripline_syn(): Metal thickness             = %g mil\n",line->subs->tmet);
+  printf("stripline_syn(): Metal width                 = %g m\n",line->w);
+  printf("stripline_syn():                             = %g %s\n",
+	 line->w/line->w_sf,line->w_units);
+  printf("stripline_syn(): Metal thickness             = %g m\n",line->subs->tmet);
+  printf("stripline_syn():                             = %g %s\n",
+	 line->subs->tmet/line->subs->tmet_sf,line->subs->tmet_units);
   printf("stripline_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("stripline_syn(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("stripline_syn(): Substrate thickness         = %g mil\n",line->subs->h);
+  printf("stripline_syn(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
+  printf("stripline_syn():                             = %g %s\n",
+	 line->subs->rough/line->subs->rough_sf,line->subs->rough_units);
+  printf("stripline_syn(): Substrate thickness         = %g m\n",line->subs->h);
+  printf("stripline_syn():                             = %g %s\n",
+	 line->subs->h/line->subs->h_sf,line->subs->h_units);
   printf("stripline_syn(): Substrate dielectric const. = %g \n",line->subs->er);
   printf("stripline_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
   printf("stripline_syn(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("stripline_syn():                             = %g %s\n",
+	 f/line->f_sf,line->f_units);
   printf("stripline_syn(): -------------- ---------------------- ----------\n");
   printf("stripline_syn(): Desired Zo                  = %g ohm\n",Ro);
   printf("stripline_syn(): Desired electrical length   = %g degrees\n",len);
@@ -735,9 +674,8 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
   v = LIGHTSPEED / sqrt(line->subs->er);
 
-  l = (len/360)*(v/f);
+  line->l = (len/360)*(v/f);
 
-  line->l=M2MIL(l);
 
   /* recalculate using real length to find loss  */
   stripline_calc(line,f);
@@ -745,7 +683,10 @@ int stripline_syn(stripline_line *line, double f, int flag)
 #ifdef DEBUG_SYN
   printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
   printf("produced:\n");
-  printf("\twidth = %g [mil] \n\tlength = %g [mil]\n",line->w,line->l);
+  printf("\twidth = %g [m] \n\tlength = %g [m]\n",line->w,line->l);
+  printf("\twidth = %g [%s] \n\tlength = %g [%s]\n",
+	 line->w/line->w_sf,line->w_units,
+	 line->l/line->l_sf,line->l_units);
 #endif
 
   return 0;
@@ -773,6 +714,7 @@ stripline_line *stripline_line_new()
 
   newline->subs = stripline_subs_new();
 
+  /* XXX need better units initialization */
   /* initialize the values to something */
   newline->l    = 1000.0;
   newline->l_sf = 1.0;
@@ -780,9 +722,25 @@ stripline_line *stripline_line_new()
   newline->w    = 110.0;
   newline->w_sf = 1.0;
   newline->w_units = "m";
-  newline->freq = 1.0e9;
-  newline->freq_sf = 1.0;
-  newline->freq_units = "Hz";
+  newline->freq = 900;
+  newline->freq_sf = 1e6;
+  newline->freq_units = "MHz";
+
+  newline->skindepth_units="m";
+  newline->skindepth_sf=1.0;
+
+  newline->delay_units="s";
+  newline->delay_sf=1.0;
+
+  newline->Ls_sf = 1.0;
+  newline->Rs_sf = 1.0;
+  newline->Cs_sf = 1.0;
+  newline->Gs_sf = 1.0;
+
+  newline->Ls_units = "Henries/m";
+  newline->Rs_units = "Ohms/m";
+  newline->Cs_units = "Farads/m";
+  newline->Gs_units = "Siemens/m";
 
   newline->subs->h     = 62.0;
   newline->subs->h_sf = 1.0;
@@ -794,7 +752,7 @@ stripline_line *stripline_line_new()
   newline->subs->tmet_units = "m";
   newline->subs->rho   = 1.0;
   newline->subs->rho_sf = 1.0;
-  newline->subs->rho_units = "ohm-m";
+  newline->subs->rho_units = "Ohm-m";
   newline->subs->rough = 0.055;
   newline->subs->rough_sf = 1.0;
   newline->subs->rough_units = "m";

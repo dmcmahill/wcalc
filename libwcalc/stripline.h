@@ -1,7 +1,7 @@
-/*      $Id: stripline.h,v 1.2 2001/11/02 00:29:24 dan Exp $ */
+/*      $Id: stripline.h,v 1.3 2001/11/11 03:46:55 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -59,6 +59,9 @@ typedef struct STRIPLINE_LINE
 
   /* electrical length (degrees) */
   double len;
+  double delay;
+  double delay_sf;
+  char *delay_units;
 
   /* open end length correction */
   double deltal,deltal_sf;
@@ -69,6 +72,8 @@ typedef struct STRIPLINE_LINE
 
   /* incremental circuit model */
   double Ls, Rs, Cs, Gs;
+  double Ls_sf, Rs_sf, Cs_sf, Gs_sf;
+  char *Ls_units, *Rs_units, *Cs_units, *Gs_units;
 
   /* the actual characteristic impedance is Ro + j Xo */
   double Ro, Xo;
