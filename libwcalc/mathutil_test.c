@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: mathutil_test.c,v 1.1 2002/02/16 15:50:44 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -49,6 +49,8 @@ int main(int argc, char **argv)
 
   double w,x,y,z;
   complex a,b,c;
+  complex *ap=NULL, *bp=NULL, *cp=NULL;
+
   char *sep="---------------------------";
 
   w=1.0;
@@ -60,12 +62,50 @@ int main(int argc, char **argv)
   c=c_div(c_complex(w,x),c_complex(y,z));
   printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,REAL(c),IMAG(c));
 
-  /*
-  for(x = -1; x>-15; x=x-0.05) {
-    y = bessel_Y1p(x);
-    printf("%g %g\n",x,y);
-  }
-  */
+  printf("%s c_bessel_* %s\n",sep,sep);
+  for(x = -10; x<10; x=x+0.05) {
+    a  = c_complex(x,0.0);
+    ap = c_complex_p(x,0.0,ap);
 
+    b  = c_bessel_J0(a);
+    bp = c_bessel_J0_p(ap,bp);
+
+    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
+      fprintf(stderr,"c_bessel_J0(%g + 0.0 i) != c_bessel_J0_p()\n",x);
+      exit(1);
+    }
+
+    b  = c_bessel_Y0(a);
+    bp = c_bessel_Y0_p(ap,bp);
+
+    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
+      fprintf(stderr,"c_bessel_Y0(%g + 0.0 i) != c_bessel_Y0_p()\n",x);
+      exit(1);
+    }
+
+    b  = c_bessel_J1(a);
+    bp = c_bessel_J1_p(ap,bp);
+
+    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
+      fprintf(stderr,"c_bessel_J1(%g + 0.0 i) = %g + %g i !=",x,REAL(b),IMAG(b));
+      fprintf(stderr,"c_bessel_J1_p() = %g + %g i \n",x,bp->re,bp->im);
+      exit(1);
+    }
+
+    b  = c_bessel_Y1(a);
+    bp = c_bessel_Y1_p(ap,bp);
+
+    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
+      fprintf(stderr,"c_bessel_Y1(%g + 0.0 i) = %g + %g i !=",x,REAL(b),IMAG(b));
+      fprintf(stderr,"c_bessel_Y1_p() = %g + %g i \n",x,bp->re,bp->im);
+      exit(1);
+    }
+
+
+  }
+
+  printf("Pass\n");
   return 0;
 }
+
+
