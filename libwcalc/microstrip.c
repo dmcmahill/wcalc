@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.16 2004/08/03 02:15:37 dan Exp $ */
+/* $Id: microstrip.c,v 1.17 2004/08/04 23:47:53 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -415,7 +415,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   
    /* resistance will be updated below */
    R = 0.0;
-   G = 2*M_PI*f*line->Cs*line->subs->tand;
+   G = 2*M_PI*f*C*line->subs->tand;
 
    if(flag == WITHLOSS)
      {
