@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip_test.c,v 1.4 2002/06/12 11:30:28 dan Exp $ */
+/* $Id: ic_microstrip_test.c,v 1.5 2002/06/25 20:46:45 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
   line = ic_microstrip_line_new();
 
-  /* Metal resistivity relative to copper */
+  /* Metal resistivity */
   line->subs->rho = 1.0;
   /* Metal thickness (m) */
   line->subs->tmet = 5.0e-6;
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
   if (argc == 9){
     printf("Using external data\n");
-    /* Metal resistivity relative to copper */
+    /* Metal resistivity */
     line->subs->rho = 1.0;
     /* Metal thickness (m) */
     line->subs->tmet = atof(argv[1]);
@@ -120,8 +120,10 @@ int main(int argc, char **argv)
     printf("Oxide dielectric const.     = %g \n",line->subs->eox);
     printf("Substrate thickness         = %g um\n",line->subs->h*1e6);
     printf("Substrate dielectric const. = %g \n",line->subs->es);
-    printf("Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
-    printf("Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
+    printf("Substrate conductivity      = %g 1/(ohm-cm)\n",
+	   line->subs->sigmas*0.01);
+    printf("Substrate resistivity       = %g ohm-cm\n",
+	   100.0/(line->subs->sigmas));
     printf("Frequency                   = %g GHz\n",freq/1e9); 
     printf("-------------- ---------------------- ----------\n");
     printf("Zo (ohms)                   = %g + j%g\n",line->Ro,line->Xo);

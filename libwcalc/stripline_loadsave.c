@@ -1,4 +1,4 @@
-/* $Id: stripline_loadsave.c,v 1.7 2004/07/25 04:05:34 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.8 2004/07/28 03:28:43 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -135,7 +135,7 @@ static fspec * get_fspec(int which_one)
 		  'd',&subs->er);
     fspec_add_key(subspec, "TMET", "Metalization thickness (meters)",
 		  'd',&subs->tmet);
-    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper",
+    fspec_add_key(subspec, "RHO", "Metalization resistivity (ohm-meters)",
 		  'd',&subs->rho);
     fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)",
 		  'd',&subs->rough);

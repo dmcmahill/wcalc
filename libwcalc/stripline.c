@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.11 2004/07/26 11:08:05 dan Exp $ */
+/*      $Id: stripline.c,v 1.12 2004/07/27 20:54:46 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -272,8 +272,8 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        
        /* calculate skin depth */
    
-       /* conductivity (rho is relative to copper) */
-       sigma = 5.8e7 / line->subs->rho;
+       /* conductivity  */
+       sigma = 1.0 / line->subs->rho;
    
        /* permeability of free space */
        mu = 4.0*M_PI*1e-7;

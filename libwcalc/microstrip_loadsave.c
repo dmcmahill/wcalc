@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.c,v 1.7 2004/07/26 22:22:30 dan Exp $ */
+/* $Id: microstrip_loadsave.c,v 1.8 2004/07/28 03:28:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -126,11 +126,16 @@ static fspec * get_fspec(int which_one)
     subspec=fspec_add_sect(NULL,"substrate");
 
     fspec_add_key(subspec,"H","Height (meters)",'d',&subs->h);
-    fspec_add_key(subspec,"ER","Relative dielectric constant",'d',&subs->er);
-    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",'d',&subs->tmet);
-    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",'d',&subs->rho);
-    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
-    fspec_add_key(subspec,"TAND","Dielectric loss tangent",'d',&subs->tand);
+    fspec_add_key(subspec,"ER","Relative dielectric constant",
+		  'd',&subs->er);
+    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",
+		  'd',&subs->tmet);
+    fspec_add_key(subspec,"RHO","Metalization resistivity (ohm-meters)",
+		  'd',&subs->rho);
+    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",
+		  'd',&subs->rough);
+    fspec_add_key(subspec,"TAND","Dielectric loss tangent",
+		  'd',&subs->tand);
 
   }
 

@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.17 2004/07/30 04:37:57 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.18 2004/07/30 22:33:49 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -202,7 +202,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   /* Substrate relative permittivity */
   er = line->subs->er;
-  /* Metal resistivity relative to copper */
+  /* Metal resistivity */
   rho = line->subs->rho;
   /* Loss tangent of the dielectric material */
   tand = line->subs->tand;
@@ -643,7 +643,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* calculate skin depth */
 
   /* conductivity */
-  sigma = 5.8e7 /rho;
+  sigma = 1.0 / rho;
    
   /* permeability of free space Henries/meter*/
   mu = 4.0*M_PI*1e-7;

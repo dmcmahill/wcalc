@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_loadsave.c,v 1.2 2004/07/28 03:28:42 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.c,v 1.3 2004/07/30 04:15:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -136,7 +136,7 @@ static fspec * get_fspec(int which_one)
 		  'd',&subs->er);
     fspec_add_key(subspec,"TMET","Metalization thickness (meters)",
 		  'd',&subs->tmet);
-    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",
+    fspec_add_key(subspec,"RHO","Metalization resistivity (ohm-meters)",
 		  'd',&subs->rho);
     fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",
 		  'd',&subs->rough);

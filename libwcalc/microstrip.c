@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.12 2004/07/28 03:49:47 dan Exp $ */
+/* $Id: microstrip.c,v 1.13 2004/07/29 22:08:53 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -194,7 +194,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   /* Substrate relative permittivity */
   er = line->subs->er;
 
-  /* Metal resistivity relative to copper */
+  /* Metal resistivity */
   rho = line->subs->rho;
 
   /* Loss tangent of the dielectric material */
@@ -472,7 +472,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
        /* calculate skin depth */
    
        /* conductivity */
-       sigma = 5.8e7 /rho;
+       sigma = 1.0 / rho;
    
        /* permeability of free space */
        mu = 4.0*M_PI*1e-7;
