@@ -1,0 +1,15 @@
+# $Id$
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+pkgincludedir=${includedir}/@PACKAGE@
+
+Name: libwcalc
+Description: Core library for Wcalc
+Requires: 
+Version: @VERSION@
+Libs: -L${libdir} -lwcalc -lm
+Cflags: -I${pkgincludedir}

@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.18 2004/07/18 16:09:37 dan Exp $
+## $Id: Makefile.am,v 1.19 2004/07/26 22:22:26 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
@@ -36,6 +36,11 @@
 
 lib_LTLIBRARIES = libwcalc.la
 
+bin_SCRIPTS = wcalc-config
+
+pkgconfigdir            = $(libdir)/pkgconfig
+pkgconfig_DATA          = wcalc.pc
+
 noinst_PROGRAMS = coax_test coupled_microstrip_test ic_microstrip_test mathutil_test \
 	microstrip_test units_test
 
@@ -46,7 +51,7 @@ mathutil_test_SOURCES = alert.c mathutil_test.c
 microstrip_test_SOURCES = alert.c microstrip_test.c 
 units_test_SOURCES = alert.c units_test.c
 
-EXTRA_DIST=	coupled_microstrip.data
+EXTRA_DIST=	coupled_microstrip.data wcalc-config.in wcalc.pc.in
 
 LDADD = libwcalc.la
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}

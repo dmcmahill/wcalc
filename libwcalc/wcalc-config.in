@@ -1,0 +1,128 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+# directories from the configure script
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+bindir=@bindir@
+
+pkgincludedir=${includedir}/@PACKAGE@
+
+# other stuff from the configure script
+cflags="-I${pkgincludedir}"
+libs="-L${libdir} -Wl,-R${libdir} -lwcalc @LIBS@"
+
+usage() {
+	echo "Usage: wcalc-config [OPTIONS] [LIBRARIES]"
+	echo "Options:"
+        echo "    [--prefix[=DIR]]"
+	echo "    [--exec-prefix[=DIR]]"
+	echo "    [--version]"
+	echo "    [--libs]"
+	echo "    [--cflags]"
+	echo "Libraries:"
+	echo "    wcalc"
+}
+
+if test $# -eq 0; then
+	usage 
+	exit 1
+fi
+
+do_cflags=no
+do_libs=no
+my_prefix=""
+my_exec_prefix=""
+
+while test $# -ne 0; do
+	case $1 in
+	--cflags )
+		do_cflags=yes
+		shift
+		;;
+
+	--exec-prefix=* )
+		my_exec_prefix=`echo $1 | sed 's;--exec-prefix=;;g'`
+		shift
+		;;
+
+	--exec-prefix )
+		echo "$exec_prefix"
+		shift
+		;;
+
+	--help|-h )
+		usage
+		exit 0
+		;;
+
+	--libs )
+		do_libs=yes
+		shift
+		;;
+
+	--prefix=* )
+		my_prefix=`echo $1 | sed 's;--prefix=;;g'`
+		if test "X$my_exec_prefix" = "X" ; then
+			my_exec_prefix=$my_prefix
+		fi
+		shift
+		;;
+
+	--prefix )
+		echo "$prefix"
+		shift
+		;;
+
+	--version )
+		echo @VERSION@
+		exit 0
+		;;
+
+	-* )
+		echo "$0:  Unknown option $1"
+		usage 
+		exit 1
+		;;
+
+	* )
+		echo "$0:  End of arguments"
+		break
+		;;
+	esac
+
+done
+
+# make sure we have the right number of args left
+if test $# -ge 1 ; then
+	usage
+	exit 1
+fi
+
+# if we have an arg left, it had better be "wcalc"
+if test $# -eq 1 ; then
+	if "X$1" != "Xwcalc" ; then
+		usage
+		exit 1
+	fi
+fi
+
+out=""
+
+if test "X$do_cflags" = "Xyes" ; then
+	out="$out $cflags "
+fi
+
+if test "X$do_libs" = "Xyes" ; then
+	out="$out $libs "
+fi
+
+if test "X$out" != "X" ; then
+	echo "$out"
+fi
+
+
