@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.7 2002/01/07 01:24:14 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.8 2002/01/10 17:27:33 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -95,10 +95,14 @@ int cgiMain(void){
 
   char *fill_choices[] = {"no","yes"};
 
-  /* uncomment to be able to run in the debugger. */
+  /* 
+   * uncomment to be able to run in the debugger. 
+   * access the CGI URL that gives the problem, then change foo.cgi to
+   * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
+   */
   /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
-/* Put out the CGI header */
+  /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
 
   /* create the air_coil  */
@@ -127,19 +131,8 @@ int cgiMain(void){
   }
 
   
-  if ( (action == RESET) || (action == LOAD) ) {
-    /*
-    N     = defN;
-    AWG   = defAWG;
-    rho   = defRHO;
-    dia   = defDIA;
-    len   = defLEN;
-    L     = defIND;
-    freq  = defFREQ;
-    coil->fill = defFILL; */
-  }
+  if ( (action != RESET) && (action != LOAD) ) {
 
-  else {
     /*
      * extract the parameters from the CGI form and use them to populate
      * the air_coil structure
@@ -258,7 +251,7 @@ int cgiMain(void){
     coil->L    = L*coil->L_sf;
     coil->freq = freq*coil->freq_sf;
     
-  } 
+  }  /* if ( (action != RESET) && (action != LOAD) ) */
   
 
 
