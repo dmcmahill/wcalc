@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.22 2005/01/06 22:54:15 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.23 2005/02/11 22:46:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -409,7 +409,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
       
     case SPEC_KEY:
       fprintf(fp,"\n# %s\n%s = ",cur->comment,cur->key);
-      if (base != NULL) {
+      if (base != 0) {
 	addr = (void *) (base + cur->ofs);
 	switch (cur->type){
 	  
@@ -746,7 +746,7 @@ char * fspec_write_string(fspec *list, unsigned long base)
 	break;
       
       case SPEC_KEY:
-	if (base != NULL) {
+	if (base != 0) {
 	  addr = (void *) (base + cur->ofs);
 	  switch (cur->type){
 	  
@@ -887,7 +887,7 @@ int fspec_read_string(fspec *list, const char *str, unsigned long base)
       break;
       
     case SPEC_KEY:
-      if (base != NULL) {
+      if (base != 0) {
 	addr = (void *) (base + cur->ofs);
 	switch (cur->type){
 	  
