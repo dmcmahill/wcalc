@@ -1,8 +1,8 @@
 #! /bin/sh
 #
-# $Id: runwcalc.in,v 1.1 2001/10/28 22:56:08 dan Exp $
+# $Id: runwcalc.in,v 1.2 2002/12/18 13:56:43 dan Exp $
 #
-# Copyright (c) 2001 Dan McMahill
+# Copyright (c) 2001, 2004 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
@@ -37,6 +37,8 @@
 # this is a wrapper script used to call wcalc for testing of wcalc 
 # before it is installed.
 
+WCALC_RCDIR=@BUILDDIR@
+export WCALC_RCDIR
 
 WCALC_DATADIR=@BUILDDIR@/../pixmaps
 export WCALC_DATADIR

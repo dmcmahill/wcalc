@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.10 2003/03/03 04:26:36 dan Exp $ */
+/*      $Id: wcalc.h,v 1.11 2004/07/21 04:32:30 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -73,6 +73,8 @@ GList *global_model_new;
 /* Global list of menu paths for the models */
 GList *global_model_menus;
 
+/* Global list of default file names for the models */
+GList *global_model_defaults;
 
 /* Global printer page setup */
 print_config *global_print_config;

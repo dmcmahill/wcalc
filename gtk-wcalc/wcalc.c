@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.14 2002/12/18 13:56:44 dan Exp $ */
+/* $Id: wcalc.c,v 1.15 2004/07/21 04:32:29 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG */
+#define DEBUG
 
 #include "config.h"
 
@@ -91,7 +91,8 @@ static void global_model_init(void);
 
 static GSList *window_list=NULL;
 
-
+static char *rcdir = NULL;
+static char *homedir = NULL;
 
 /*
  * The top level delete/destroy signal and event callbacks
@@ -166,6 +167,9 @@ int main( int   argc,
   }
   textdomain (PACKAGE);
 
+  rcdir = getenv("WCALC_RCDIR");
+  homedir = getenv("HOME");
+
   gtk_init (&argc, &argv);
 
   /* set up the list of available models for the program */
@@ -191,32 +195,44 @@ static void global_model_init()
   global_model_names = NULL;
   global_model_menus = NULL;
   global_model_new = NULL;
+  global_model_defaults = NULL;
 
   global_model_names = g_list_append(global_model_names,"Air Core Inductor");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Air Core Inductor");
   global_model_new = g_list_append(global_model_new,air_coil_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_AIR_COIL);
 
   global_model_names = g_list_append(global_model_names,
 				     "Coaxial Transmission Line");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coax");
   global_model_new = g_list_append(global_model_new,coax_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_COAX);
 
   /*
   global_model_names = g_list_append(global_model_names,"Coupled Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coupled Microstrip");
   global_model_new = g_list_append(global_model_new,NULL);
+  global_model_defaults = g_list_append(global_model_defaults, 
+  FILE_COUPLED_MICROSTRIP);
+
   */
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
   global_model_new = g_list_append(global_model_new,ic_microstrip_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, 
+					FILE_IC_MICROSTRIP);
 
   global_model_names = g_list_append(global_model_names,"Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
   global_model_new = g_list_append(global_model_new,microstrip_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, 
+					FILE_MICROSTRIP);
 
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
   global_model_new = g_list_append(global_model_new,stripline_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, 
+					FILE_STRIPLINE);
 }
 
 void wcalc_setup (gpointer data,
@@ -228,6 +244,8 @@ void wcalc_setup (gpointer data,
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GdkBitmap *icon_bitmap;
+  char tmps[FILENAME_MAX];
+
   void * (* new_cmd)(void);  /* the function which will create a new
 			      * *_gui 
 			      */ 
@@ -240,8 +258,69 @@ void wcalc_setup (gpointer data,
 #ifdef DEBUG
   g_print("wcalc.c:wcalc_setup(): action = %d\n",action);
 #endif
+  
+  if (action != -1) {
+    /* 
+     * This is a "new" command so lets look around for a default
+     * settings file for this type of model.
+     */
 
-  if (action == -1) {
+    /* extract file name */
+    model_name = (char *) g_list_nth_data(global_model_defaults, action);
+
+#ifdef DEBUG
+    g_print("wcalc.c:wcalc_setup(): looking for defaults file \"%s.wc\"\n",
+	    model_name);
+#endif
+    
+    /* check current directory */
+    sprintf(tmps, "%s.wc", model_name);
+#ifdef DEBUG
+    g_print("\ttrying \"%s\"\n", tmps);
+#endif
+    if ( (fp = fopen(tmps, "r")) != NULL ) {
+#ifdef DEBUG
+      g_print("Loading defaults from \"%s\"\n", tmps);
+#endif
+    } 
+
+    if( (fp == NULL) && (homedir != NULL) ) {
+      /* check $HOME/.wcalc/ */
+      /* XXX use the glib macro for pathsep once I figure out the name */
+      sprintf(tmps, "%s/.wcalc/%s.wc", homedir, model_name);
+#ifdef DEBUG
+      g_print("\ttrying \"%s\"\n", tmps);
+#endif
+      if ( (fp = fopen(tmps, "r")) != NULL ) {
+#ifdef DEBUG
+	g_print("Loading defaults from \"%s\"\n", tmps);
+#endif
+      }
+    } 
+
+    if( (fp == NULL) && (rcdir != NULL) ) {
+      /* check $WCALC_RCDIR/ */
+      /* XXX use the glib macro for pathsep once I figure out the name */
+      sprintf(tmps, "%s/%s.wc", rcdir, model_name);
+#ifdef DEBUG
+      g_print("\ttrying \"%s\"\n", tmps);
+#endif
+      if ( (fp = fopen(tmps, "r")) != NULL ) {
+#ifdef DEBUG
+	g_print("Loading defaults from \"%s\"\n", tmps);
+#endif
+      }
+
+      if( fp == NULL ) {
+#ifdef DEBUG
+	g_print("\tNone found\n");
+#endif
+      }
+    }
+
+
+  }
+  if ( (action == -1) || (fp != NULL) ) {
     /* this is a file->open command */
     fname = (char *) data;
 #ifdef DEBUG
@@ -249,11 +328,13 @@ void wcalc_setup (gpointer data,
     g_print("                file = \"%s\"\n",fname);
 #endif
 
-    if ( (fp=fopen(data,"r")) == NULL ) {
-      alert("Could not open the file\n"
-	    "\"%s\"\n"
-	    "for reading.",fname);
-      return;
+    if ( fp == NULL ) {
+      if ( (fp=fopen(data,"r")) == NULL ) {
+	alert("Could not open the file\n"
+	      "\"%s\"\n"
+	      "for reading.",fname);
+	return;
+      }
     }
 
     /* extract the _new function for our selected model */
@@ -283,28 +364,29 @@ void wcalc_setup (gpointer data,
       new_cmd = (void *) stripline_gui_new;
       break;
 
+    case -1:
+      alert( "Unable to load file \"%s\"\n", fname);
+      return;
+
     default:
-      alert("Bad model type in \"%s\"",fname);
+      alert("Bad model type in \"%s\"", fname);
       return;
     }
 
     /* XXX this should just be done with the _new function */
-    model_name=NULL;
+    model_name = NULL;
 
-  }
-  else {
-    /* extract the _new function for our selected model */
-    new_cmd = (void *) g_list_nth_data(global_model_new,action);
-    
+  } else {
+
     /* extract the name of this model */
-    model_name = (char *) g_list_nth_data(global_model_names,action);
+    model_name = (char *) g_list_nth_data(global_model_names, action);
     
+    /* extract the _new function for our selected model */
+    new_cmd = (void *) g_list_nth_data(global_model_new, action);
+
 #ifdef DEBUG
-    g_print("wcalc_setup():  model = \"%s\" (# %d)\n",
-	    (char *) g_list_nth_data(global_model_names,action),
-	    action);
-    g_print("                new_cmd = %p\n",
-	    (void *) g_list_nth_data(global_model_new,action));
+    g_print("wcalc_setup():  model = \"%s\" (# %d)\n", model_name, action);
+    g_print("                new_cmd = %p\n", new_cmd);
 #endif
   }
   
@@ -328,7 +410,7 @@ void wcalc_setup (gpointer data,
   window_list = g_slist_append(window_list, wcalc->window);
 
 #ifdef DEBUG
-  g_print("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
+  g_print("wcalc_setup():  Just set wcalc->window = %p\n", wcalc->window);
 #endif
   if ( fname != NULL ) {
     wcalc->file_name = fname;
@@ -395,7 +477,7 @@ void wcalc_setup (gpointer data,
 
   
   /* call the MD initialization */
-  wcalc->init(wcalc,main_vbox,fp);
+  wcalc->init(wcalc, main_vbox, fp);
 }
 
 
