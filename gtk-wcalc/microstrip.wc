@@ -1,7 +1,8 @@
+# $Id$
 #
-# File:      /sim/mcmahill/tmp/localsrc/cad/wcalc/gtk-wcalc/microstrip.wc
-# Modified:  Wed Jul 28 16:51:37 2004
-# Wcalc Version 0.5
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/microstrip.wc
+# Modified:  Tue Jul 28 22:15:09 2004
+# Wcalc Version 0.6
 
 [wcalc]
 wcalc_file_version = 0.1
