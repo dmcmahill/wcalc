@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.22 2004/07/21 04:32:27 dan Exp $ */
+/* $Id: coax_gui.c,v 1.23 2004/07/21 23:01:13 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -336,27 +336,6 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 0, 1, 
 		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
 
-  wc_units_attach_units(ug,
-			&(gui->line->a),
-			&(gui->line->a_sf),
-			&(gui->line->a_units));
-  
-  wc_units_attach_units(ug,
-			&(gui->line->b),
-			&(gui->line->b_sf),
-			&(gui->line->b_units));
-  
-  wc_units_attach_units(ug,
-			&(gui->line->c),
-			&(gui->line->c_sf),
-			&(gui->line->c_units));
-  
-  wc_units_attach_units(ug,
-			&(gui->line->tshield),
-			&(gui->line->tshield_sf),
-			&(gui->line->tshield_units));
-  
-
 
   text = gtk_label_new( "b" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0, 0, XPAD, YPAD);
@@ -413,11 +392,6 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 3, 4, 
 		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
-
-  wc_units_attach_units(ug,
-			&(gui->line->len),
-			&(gui->line->len_sf),
-			&(gui->line->len_units));
 
   text = gtk_label_new( _("Er") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, XPAD, YPAD);
@@ -477,11 +451,6 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 
 		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
-
-  wc_units_attach_units(ug,
-			&(gui->line->freq),
-			&(gui->line->freq_sf),
-			&(gui->line->freq_units));
   
   /* ---------------- RHO_a label/entry/units menu -------------- */
 
@@ -501,15 +470,6 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 5, 6, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gtk_misc_set_alignment(GTK_MISC(text),0,0);
-
-  wc_units_attach_units(ug,
-			&(gui->line->rho_a),
-			&(gui->line->rho_a_sf),
-			&(gui->line->rho_a_units));
-  wc_units_attach_units(ug,
-			&(gui->line->rho_b),
-			&(gui->line->rho_b_sf),
-			&(gui->line->rho_b_units));
   
   wc_units_attach_units_label(ug,text);
 
@@ -725,8 +685,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->label_L);
 
   /* attach inductance label to the units gui */
-  wc_units_attach_label(ug, gui->label_L, &(gui->line->L), &(gui->line->L_sf),
-			&(gui->line->L_units), "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_L, &(gui->line->L), NULL, NULL, "%8.4g", 1);
 
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0, 0, XPAD, YPAD);
@@ -740,8 +699,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_R, 5, 6, 1, 2, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_R);
 
-  wc_units_attach_label(ug, gui->label_R, &(gui->line->R), &(gui->line->R_sf),
-			&(gui->line->R_units), "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_R, &(gui->line->R), NULL, NULL, "%8.4g", 1);
 
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0, 0, XPAD, YPAD);
@@ -755,8 +713,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_C, 5, 6, 2, 3, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_C);
 
-  wc_units_attach_label(ug, gui->label_C, &(gui->line->C), &(gui->line->C_sf),
-			&(gui->line->C_units), "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_C, &(gui->line->C), NULL, NULL, "%8.4g", 1);
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0, 0, XPAD, YPAD);
 
@@ -770,8 +727,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_G, 5, 6, 3, 4, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_G);
 
-  wc_units_attach_label(ug, gui->label_G, &(gui->line->G), &(gui->line->G_sf),
-			&(gui->line->G_units), "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_G, &(gui->line->G), NULL, NULL, "%8.4g", 1);
 
   /* spacer */
   text = gtk_label_new( "                " );
@@ -900,41 +856,50 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
 {
   char *vstr;
   int rslt=0;
+  char *tmps;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) ); 
-  gui->line->a=atof(vstr)*gui->line->a_sf;
+  gui->line->a=atof(vstr)*wc_units_to_sf(gui->line->units_abct);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_abct);
   g_print(_("coax_gui.c:calculate():  a = %g m (%g %s)\n"),
 	  gui->line->a,
-	  gui->line->a/gui->line->a_sf,
-	  gui->line->a_units);
+	  gui->line->a/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) ); 
-  gui->line->b=atof(vstr)*gui->line->b_sf;
+  gui->line->b=atof(vstr)*wc_units_to_sf(gui->line->units_abct);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_abct);
   g_print(_("coax_gui.c:calculate():  b = %g m (%g %s)\n"),
 	  gui->line->b,
-	  gui->line->b/gui->line->b_sf,
-	  gui->line->b_units);
+	  gui->line->b/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_c) ); 
-  gui->line->c=atof(vstr)*gui->line->c_sf;
+  gui->line->c=atof(vstr)*wc_units_to_sf(gui->line->units_abct);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_abct);
   g_print(_("coax_gui.c:calculate():  c = %g m (%g %s)\n"),
 	  gui->line->c,
-	  gui->line->c/gui->line->c_sf,
-	  gui->line->c_units);
+	  gui->line->c/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_len) ); 
-  gui->line->len=atof(vstr)*gui->line->len_sf;
+  gui->line->len=atof(vstr)*wc_units_to_sf(gui->line->units_len);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_len);
   g_print(_("coax_gui.c:calculate():  len = %g m (%g %s)\n"),
 	  gui->line->len,
-	  gui->line->len/gui->line->len_sf,
-	  gui->line->len_units);
+	  gui->line->len/wc_units_to_sf(gui->line->units_len),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
@@ -959,12 +924,14 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tshield) ); 
-  gui->line->tshield=atof(vstr)*gui->line->tshield_sf;
+  gui->line->tshield=atof(vstr)*wc_units_to_sf(gui->line->units_abct);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_abct);
   g_print(_("coax_gui.c:calculate():  tshield = %g m (%g %s)\n"),
 	  gui->line->tshield,
-	  gui->line->tshield/gui->line->tshield_sf,
-	  gui->line->tshield_units);
+	  gui->line->tshield/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
@@ -980,12 +947,14 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
-  gui->line->freq=atof(vstr)*gui->line->freq_sf;
+  gui->line->freq=atof(vstr)*wc_units_to_sf(gui->line->units_freq);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_freq);
   g_print(_("coax_gui.c:calculate():  freq = %g Hz (%g %s)\n"),
 	  gui->line->freq,
-	  gui->line->freq/gui->line->freq_sf,
-	  gui->line->freq_units);
+	  gui->line->freq/wc_units_to_sf(gui->line->units_freq),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fc) ); 
@@ -995,39 +964,43 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_a) ); 
-  gui->line->rho_a=atof(vstr)*gui->line->rho_a_sf;
+  gui->line->rho_a=atof(vstr)*wc_units_to_sf(gui->line->units_rho);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_rho);
   g_print("coax_gui.c:calculate():  rho_a = %g Ohm-m (%g %s)\n",
 	  gui->line->rho_a,
-	  gui->line->rho_a/gui->line->rho_a_sf,
-	  gui->line->rho_a_units);
+	  gui->line->rho_a/wc_units_to_sf(gui->line->units_rho),
+	  tmps);
+  free(tmps);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_b) ); 
-  gui->line->rho_b=atof(vstr)*gui->line->rho_b_sf;
+  gui->line->rho_b=atof(vstr)*wc_units_to_sf(gui->line->units_rho);
 #ifdef DEBUG
+  tmps = wc_units_to_str(gui->line->units_rho);
   g_print(_("coax_gui.c:calculate():  rho_b = %g Ohm-m (%g %s)\n"),
 	  gui->line->rho_b,
-	  gui->line->rho_b/gui->line->rho_b_sf,
-	  gui->line->rho_b_units);
+	  gui->line->rho_b/wc_units_to_sf(gui->line->units_rho),
+	  tmps);
+  free(tmps);
 #endif
 
 
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
-    rslt=coax_calc(gui->line,gui->line->freq);
+    rslt = coax_calc(gui->line, gui->line->freq);
   }
   else if( strcmp(data,"synthesize_a")==0) {
-    rslt=coax_syn(gui->line,gui->line->freq,COAXSYN_A);
+    rslt = coax_syn(gui->line,gui->line->freq, COAXSYN_A);
   }
   else if( strcmp(data,"synthesize_b")==0) {
-    rslt=coax_syn(gui->line,gui->line->freq,COAXSYN_B);
+    rslt = coax_syn(gui->line,gui->line->freq, COAXSYN_B);
   }
   else if( strcmp(data,"synthesize_c")==0) {
-    rslt=coax_syn(gui->line,gui->line->freq,COAXSYN_C);
+    rslt = coax_syn(gui->line,gui->line->freq, COAXSYN_C);
   }
   else if( strcmp(data,"synthesize_er")==0) {
-    rslt=coax_syn(gui->line,gui->line->freq,COAXSYN_ER);
+    rslt = coax_syn(gui->line,gui->line->freq, COAXSYN_ER);
   }
   else{
     g_print(_("error in coax callback.  data=\"%s\""),(char *)data);
@@ -1056,16 +1029,16 @@ static void update_display(coax_gui *gui)
   char str[80];
   int i;
 
-  sprintf(str,"%.4g",gui->line->a/gui->line->a_sf);
+  sprintf(str,"%.4g",gui->line->a/wc_units_to_sf(gui->line->units_abct));
   gtk_entry_set_text( GTK_ENTRY(gui->text_a), str );
 
-  sprintf(str,"%.4g",gui->line->b/gui->line->b_sf);
+  sprintf(str,"%.4g",gui->line->b/wc_units_to_sf(gui->line->units_abct));
   gtk_entry_set_text( GTK_ENTRY(gui->text_b), str );
 
-  sprintf(str,"%.4g",gui->line->c/gui->line->c_sf);
+  sprintf(str,"%.4g",gui->line->c/wc_units_to_sf(gui->line->units_abct));
   gtk_entry_set_text( GTK_ENTRY(gui->text_c), str );
   
-  sprintf(str,"%.4g",gui->line->len/gui->line->len_sf);
+  sprintf(str,"%.4g",gui->line->len/wc_units_to_sf(gui->line->units_len));
   gtk_entry_set_text( GTK_ENTRY(gui->text_len), str );
 
   sprintf(str,"%.4g",gui->line->er);
@@ -1077,7 +1050,7 @@ static void update_display(coax_gui *gui)
   sprintf(str,"%.4g",gui->line->emax/gui->line->emax_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_emax), str );
 
-  sprintf(str,"%.4g",gui->line->tshield/gui->line->tshield_sf);
+  sprintf(str,"%.4g",gui->line->tshield/wc_units_to_sf(gui->line->units_abct));
   gtk_entry_set_text( GTK_ENTRY(gui->text_tshield), str );
 
   sprintf(str,"%.4g",gui->line->z0);
@@ -1103,14 +1076,14 @@ static void update_display(coax_gui *gui)
   gtk_label_set_text( GTK_LABEL(gui->units_fc), 
 		      frequency_units[i].name );
 
-  sprintf(str,"%.4g",gui->line->freq/gui->line->freq_sf);
+  sprintf(str,"%.4g",gui->line->freq/wc_units_to_sf(gui->line->units_freq));
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
 
 
-  sprintf(str,"%.4g",gui->line->rho_a/gui->line->rho_a_sf);
+  sprintf(str,"%.4g",gui->line->rho_a/wc_units_to_sf(gui->line->units_rho));
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho_a), str );
 
-  sprintf(str,"%.4g",gui->line->rho_b/gui->line->rho_b_sf);
+  sprintf(str,"%.4g",gui->line->rho_b/wc_units_to_sf(gui->line->units_rho));
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho_b), str );
 
 
@@ -1141,19 +1114,7 @@ static void update_display(coax_gui *gui)
   
   sprintf(str,"%8.4g",gui->line->alpha_d/gui->line->loss_sf);
   gtk_label_set_text( GTK_LABEL(gui->label_dloss), str );
-    
-  sprintf(str,"%8.4g",gui->line->L/gui->line->L_sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_L), str );
-  
-  sprintf(str,"%8.4g",gui->line->R/gui->line->R_sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_R), str );
-  
-  sprintf(str,"%8.4g",gui->line->C/gui->line->C_sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_C), str );
-  
-  sprintf(str,"%8.4g",gui->line->G/gui->line->G_sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_G), str );
-  
+
 }
 
 
@@ -1209,6 +1170,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 {
   coax_gui *gui;
   char *file;
+  char *tmps;
 
   gui = WC_COAX_GUI(wcalc);
 
@@ -1234,40 +1196,49 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"col1x coly moveto\n");
   fprintf(fp,"/leftcol col1x  def\n");
 
+  tmps = wc_units_to_str(gui->line->units_abct);
   fprintf(fp,"(a) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->a/gui->line->a_sf,
-	  gui->line->a_units);
+	  gui->line->a/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
   fprintf(fp,"(2a) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  2*gui->line->a/gui->line->a_sf,
-	  gui->line->a_units);
+	  2*gui->line->a/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
   fprintf(fp,"(b) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->b/gui->line->b_sf,
-	  gui->line->b_units);
+	  gui->line->b/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
   fprintf(fp,"(2b) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  2*gui->line->b/gui->line->b_sf,
-	  gui->line->b_units);
+	  2*gui->line->b/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
   fprintf(fp,"(c) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->c/gui->line->c_sf,
-	  gui->line->c_units);
+	  gui->line->c/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
   fprintf(fp,"(t) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->tshield/gui->line->tshield_sf,
-	  gui->line->tshield_units);
+	  gui->line->tshield/wc_units_to_sf(gui->line->units_abct),
+	  tmps);
+  free(tmps);
+
+  tmps = wc_units_to_str(gui->line->units_len);
   fprintf(fp,"(length) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->len/gui->line->len_sf,
-	  gui->line->len_units);
+	  gui->line->len/wc_units_to_sf(gui->line->units_len),
+	  tmps);
+  free(tmps);
   fprintf(fp,"(e) symbolshow (r) subshow tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->tand);
+  tmps = wc_units_to_str(gui->line->units_rho);
   fprintf(fp,"(r) symbolshow (a) subshow tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->rho_a/gui->line->rho_a_sf,
-	  gui->line->rho_a_units);
+	  gui->line->rho_a/wc_units_to_sf(gui->line->units_rho),
+	  tmps);
   fprintf(fp,"(r) symbolshow (b) subshow tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->rho_b/gui->line->rho_b_sf,
-	  gui->line->rho_b_units);
+	  gui->line->rho_b/wc_units_to_sf(gui->line->units_rho),
+	  tmps);
+  free(tmps);
+  tmps = wc_units_to_str(gui->line->units_freq);
   fprintf(fp,"(frequency) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->freq/gui->line->freq_sf,
-	  gui->line->freq_units);
+	  gui->line->freq/wc_units_to_sf(gui->line->units_freq),
+	  tmps);
+  free(tmps);
   fprintf(fp,"newline\n");
 
   /* Second column of the output */
@@ -1299,18 +1270,26 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/meter) show newline\n",
 	  gui->line->losslen);
   fprintf(fp,"newline\n");
+  tmps = wc_units_to_str(gui->line->units_L);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->L/gui->line->L_sf,
-	  gui->line->L_units);
+	  gui->line->L/wc_units_to_sf(gui->line->units_L),
+	  tmps);
+  free(tmps);
+  tmps = wc_units_to_str(gui->line->units_R);
   fprintf(fp,"(R) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->R/gui->line->R_sf,
-	  gui->line->R_units);
+	  gui->line->R/wc_units_to_sf(gui->line->units_R),
+	  tmps);
+  free(tmps);
+  tmps = wc_units_to_str(gui->line->units_C);
   fprintf(fp,"(C) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->C/gui->line->C_sf,
-	  gui->line->C_units);
+	  gui->line->C/wc_units_to_sf(gui->line->units_C),
+	  tmps);
+  free(tmps);
+  tmps = wc_units_to_str(gui->line->units_G);
   fprintf(fp,"(G) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->G/gui->line->G_sf,
-	  gui->line->G_units);
+	  gui->line->G/wc_units_to_sf(gui->line->units_G),
+	  tmps);
+  free(tmps);
 
   fprintf(fp,"newline\n");
 

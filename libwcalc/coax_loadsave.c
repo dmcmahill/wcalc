@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.11 2004/07/21 17:35:17 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.12 2004/07/21 22:20:47 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -87,36 +87,12 @@ static fspec * get_fspec(void)
     /*
      * The desired user units
      */
-    fspec_add_comment(myspec,"Desired user units and associated scale factors");
+    fspec_add_comment(myspec,"User units");
 
-    fspec_add_key(myspec,"a_sf","'a' scale factor (meters/unit)",'d',&line->a_sf);
-    fspec_add_key(myspec,"a_units","'a' units",'s',&line->a_units);
-    fspec_add_key(myspec,"b_sf","'b' scale factor (meters/unit)",'d',&line->b_sf);
-    fspec_add_key(myspec,"b_units","'b' units",'s',&line->b_units);
-    fspec_add_key(myspec,"c_sf","'c' scale factor (meters/unit)",'d',&line->c_sf);
-    fspec_add_key(myspec,"c_units","'c' units",'s',&line->c_units);
-    fspec_add_key(myspec,"tshield_sf","'tshield' scale factor (meters/unit)",'d',&line->tshield_sf);
-    fspec_add_key(myspec,"tshield_units","'tshield' units",'s',&line->tshield_units);
-    fspec_add_key(myspec,"len_sf","'len' scale factor (meters/unit)",'d',&line->len_sf);
-    fspec_add_key(myspec,"len_units","'len' units",'s',&line->len_units);
-    fspec_add_key(myspec,"rho_a_sf","'rho_a' scale factor (ohm-meters/unit)",'d',&line->rho_a_sf);
-    fspec_add_key(myspec,"rho_a_units","'rho_a' units",'s',&line->rho_a_units);
-    fspec_add_key(myspec,"rho_b_sf","'rho_b' scale factor (ohm-meters/unit)",'d',&line->rho_b_sf);
-    fspec_add_key(myspec,"rho_b_units","'rho_b' units",'s',&line->rho_b_units);
     fspec_add_key(myspec,"emax_sf","'emax' scale factor (Volts/meter/unit)",'d',&line->emax_sf);
     fspec_add_key(myspec,"emax_units","'emax' units",'s',&line->emax_units);
-    fspec_add_key(myspec,"L_sf","'L' scale factor (Henries/meter/unit)",'d',&line->L_sf);
-    fspec_add_key(myspec,"L_units","'L' units",'s',&line->L_units);
-    fspec_add_key(myspec,"R_sf","'R' scale factor (Ohms/meters/unit)",'d',&line->R_sf);
-    fspec_add_key(myspec,"R_units","'R' units",'s',&line->R_units);
-    fspec_add_key(myspec,"C_sf","'C' scale factor (Farads/meter/unit)",'d',&line->C_sf);
-    fspec_add_key(myspec,"C_units","'C' units",'s',&line->C_units);
-    fspec_add_key(myspec,"G_sf","'G' scale factor (Siemens/meter/unit)",'d',&line->G_sf);
-    fspec_add_key(myspec,"G_units","'G' units",'s',&line->G_units);
     fspec_add_key(myspec,"fc_sf","'fc' scale factor (Hertz/unit)",'d',&line->fc_sf);
     fspec_add_key(myspec,"fc_units","'fc' units",'s',&line->fc_units);
-    fspec_add_key(myspec,"freq_sf","Frequency scale factor (Hertz/unit)",'d',&line->freq_sf);
-    fspec_add_key(myspec,"freq_units","Frequency units",'s',&line->freq_units);
     fspec_add_key(myspec,"delay_sf","Delay scale factor (seconds/unit)",'d',&line->delay_sf);
     fspec_add_key(myspec,"delay_units","Delay units",'s',&line->delay_units);
     fspec_add_key(myspec,"loss_sf","Loss scale factor (dB/unit)",'d',&line->loss_sf);

@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.16 2004/07/21 17:35:16 dan Exp $ */
+/* $Id: coax.c,v 1.17 2004/07/21 22:20:46 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -640,47 +640,15 @@ coax_line *coax_new()
   newline->freq  = 10e6;
   newline->emax  = 1e8;
 
-  newline->a_sf = 1.0;
-  newline->b_sf = 1.0;
-  newline->c_sf = 1.0;
-  newline->tshield_sf = 1.0;
-  newline->len_sf = 1.0;
-  newline->rho_a_sf = 1.0;
-  newline->rho_b_sf = 1.0;
+  /* XXX units to fixup */
   newline->emax_sf = 1.0;
-  newline->L_sf = 1.0;
-  newline->R_sf = 1.0;
-  newline->C_sf = 1.0;
-  newline->G_sf = 1.0;
-
   newline->fc_sf = 1.0;
-  newline->freq_sf = 1.0e6;
-
   newline->delay_sf = 1.0;
   newline->loss_sf = 1.0;
   newline->losslen_sf = 1.0;
-
-  /* 
-   * XXX need to initialize the units and scale factors from 
-   * within the new units code.
-   */
-  newline->a_units = length_units[units_get_index(length_units,newline->a_sf)].name;
-  newline->b_units = length_units[units_get_index(length_units,newline->b_sf)].name;
-  newline->c_units = length_units[units_get_index(length_units,newline->c_sf)].name;
-  newline->tshield_units = length_units[units_get_index(length_units,newline->tshield_sf)].name;
-  newline->len_units = length_units[units_get_index(length_units,newline->len_sf)].name;
-
-  newline->rho_a_units = "Ohm-m";
-  newline->rho_b_units = "Ohm-m";
   newline->emax_units = "V/m";
-  newline->L_units = "Henries/m";
-  newline->R_units = "Ohms/m";
-  newline->C_units = "Farads/m";
-  newline->G_units = "Siemens/m";
   newline->fc_units = frequency_units[units_get_index(frequency_units,newline->fc_sf)].name;
-  newline->freq_units = frequency_units[units_get_index(frequency_units,newline->freq_sf)].name;
   newline->delay_units = time_units[units_get_index(time_units,newline->delay_sf)].name;
-
   newline->loss_units = "dB";
   newline->losslen_units = "dB/m";
 
