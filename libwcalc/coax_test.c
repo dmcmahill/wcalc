@@ -1,4 +1,4 @@
-/* $Id: coax_test.c,v 1.5 2004/07/23 22:11:57 dan Exp $ */
+/* $Id: coax_test.c,v 1.6 2004/08/03 02:54:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
   line->rho_a = 3.5e-8;
   line->rho_b = 3.5e-8;
-  line->freq = 100e6;
+  line->freq = 2.4e9;
   freq=line->freq;
 
   line->b=exp(1);
