@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.44 2002/06/12 11:29:58 dan Exp $
+dnl $Id: configure.in,v 1.45 2002/06/17 23:37:47 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -125,16 +125,12 @@ if test "X$with_octave" = "Xno" ; then
 	OCT_WCALC=""
 else
 	OCT=$with_octave
+	OCT_WCALC="octave-wcalc"
 fi
 ],
 [
-AC_PATH_PROG(OCTAVE,octave)
-if test "X$OCTAVE" != "X" ; then
-	AC_MSG_CHECKING([for the octave base directory])
-	[OCT=`$AWK  '/^[ \t]*OCT[ \t]*=/ {print;}' $OCTAVE | sed -e 's;.*OCT.*=;;g' -e 's;\";;g'`]
-	AC_MSG_RESULT([$OCT])
-else
-	OCT_WCALC=""
+OCT_WCALC=""
+with_octave=no
 fi
 ])
 
