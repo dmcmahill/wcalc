@@ -1,4 +1,4 @@
-.\" $Id$
+.\" $Id: stripline_calc.man,v 1.1 2001/11/02 00:33:30 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -85,15 +85,15 @@ characteristic impedance, effective dielectric constant, loss and
 open circuit end correction are calculated.
 
 .nf
-    /////////////////ground///////////////////////
+    XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
-   (  dielectric,er         \/           /|\     (
+   (  dielectric,er         \\/           /|\\     (
     )             -------   --            |       )
    (             | metal | Tmet           | H    (
     )             -------   --            |       )
-   (             <---W--->  /\           \|/     (
+   (             <---W--->  /\\           \\|/     (
     ----------------------------------------------
-    /////////////////ground///////////////////////
+    XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 .fi
 .SH EXAMPLE
 .nf

@@ -1,4 +1,4 @@
-.\" $Id$
+.\" $Id: ic_microstrip_calc.man,v 1.1 2001/11/03 02:11:16 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -101,11 +101,11 @@ open circuit end correction are calculated.
     ----------------------------------------------
    {**************  Oxide (tox,eox) **************
     ----------------------------------------------
-   (  substrate                          /|\     (
+   (  substrate                          /|\\     (
     )   es,sigmas                     H   |       )
-   (                                     \|/     (
+   (                                     \\|/     (
     ----------------------------------------------
-    /////////////////ground///////////////////////
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
  .fi
 
 .SH EXAMPLE

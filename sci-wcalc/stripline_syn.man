@@ -1,4 +1,4 @@
-.\" $Id$
+.\" $Id: stripline_syn.man,v 1.1 2001/11/02 00:33:31 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -104,15 +104,15 @@ dimensions of the stripline line are given as inputs and the
 remaining dimensions are calculated.
 
 .nf
-    /////////////////ground///////////////////////
+    XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
-   (  dielectric,er         \/           /|\     (
+   (  dielectric,er         \\/           /|\\     (
     )             -------   --            |       )
    (             | metal | Tmet           | H    (
     )             -------   --            |       )
-   (             <---W--->  /\           \|/     (
+   (             <---W--->  /\\           \\|/     (
     ----------------------------------------------
-    /////////////////ground///////////////////////
+    XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 .fi
 .SH EXAMPLE
 .nf
