@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.31 2004/09/21 01:57:23 dan Exp $
+## $Id: Makefile.am,v 1.32 2004/11/04 22:19:36 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -87,6 +87,7 @@ TEST_FILES=	\
 	air_coil_syn.tst \
 	coax_calc.tst \
 	coax_syn.tst \
+	ic_microstrip_calc.tst \
 	microstrip_calc.tst \
 	microstrip_syn.tst \
 	stripline_calc.tst \
