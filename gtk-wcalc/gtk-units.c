@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.15 2004/07/21 22:32:03 dan Exp $ */
+/* $Id: gtk-units.c,v 1.16 2004/07/21 23:48:23 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -277,6 +277,12 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   if(units_str != NULL)
     free(units_str);
   units_str = wc_units_to_str(ug->units);
+
+  /* update scale factor and name in the units */
+  ug->units->sf = sf;
+  if(ug->units->name != NULL)
+    free(ug->units->name);
+  ug->units->name = wc_units_to_str(ug->units);
 
 #ifdef DEBUG
   g_print("wc_units_menu_changed():  Units string = \"%s\", scale factor = %g\n",
