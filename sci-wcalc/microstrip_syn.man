@@ -1,4 +1,4 @@
-.\" $Id: microstrip_syn.man,v 1.4 2001/11/03 17:24:58 dan Exp $
+.\" $Id: microstrip_syn.man,v 1.5 2001/11/03 19:21:49 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -77,7 +77,7 @@ flag
 : indicates which parameters should be optimized
 .RS
 .TP 5
-flag=1
+flag=0
 : synthesize the metal width
 .TP
 flag=1
