@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.50 2002/12/11 03:07:43 dan Exp $
+dnl $Id: configure.in,v 1.51 2002/12/17 15:29:33 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -35,7 +35,7 @@ dnl SUCH DAMAGE.
 dnl
 
 AC_INIT(gtk-wcalc/wcalc.c)
-AM_INIT_AUTOMAKE(wcalc, 0.3)
+AM_INIT_AUTOMAKE(wcalc, 0.4)
 AM_CONFIG_HEADER(config.h)
 
 dnl determine host type
