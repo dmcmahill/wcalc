@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.48 2002/06/18 01:25:10 dan Exp $
+dnl $Id: configure.in,v 1.49 2002/06/27 23:42:59 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -37,6 +37,7 @@ dnl
 AC_INIT(gtk-wcalc/wcalc.c)
 AM_INIT_AUTOMAKE(wcalc, 0.3)
 AM_CONFIG_HEADER(config.h)
+AM_GNU_GETTEXT
 
 dnl determine host type
 AC_CANONICAL_HOST
@@ -601,6 +602,8 @@ AC_OUTPUT(
 	Makefile 
 	doc/Makefile
 	include/Makefile
+	intl/Makefile
+	po/Makefile
 	libwcalc/Makefile
 	cgi-wcalc/Makefile
 	gtk-wcalc/Makefile
