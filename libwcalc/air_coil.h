@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil.h,v 1.5 2001/09/27 02:01:47 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,24 +33,78 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __AIR_COIL_LOADSAVE_H__
-#define __AIR_COIL_LOADSAVE_H__
+#ifndef __AIR_COIL_H__
+#define __AIR_COIL_H__
 
-/* writes the data from 'coil' to fp */
-void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname);
+typedef struct AIR_COIL_COIL
+{
 
-void air_coil_load(air_coil_coil *coil, char *fname);
+  /* Number of turns */
+  double Nf;
+
+  /* length of coil */
+  double len;
+
+  /* wire gauge */
+  double AWGf;
+
+  /* resistivity relative to copper */
+  double rho;
+
+  /* inside diameter of coil */
+  double dia;
+
+  /* inductance (H) */
+  double L;
+
+  /* inductance when the length is at a minimum (nH) */
+  double Lmax;
+
+  /* ratio of length to minimum length */
+  double fill;
+
+  /* Q at freq (Hz) */
+  double Q;
+  double freq;
+
+
+  /* Self resonant frequency */
+  double SRF;
+
+  /* 
+   * use the fill to calculate length instead of length to calculate
+   * fill 
+   */
+  int use_fill;
+
+  /* 
+   * various units and scale factors which may be useful for several
+   * backends.  The scale factors multiply the internal values to get
+   * the external units.
+   *
+   * For example, we might have:
+   *   L_units="nH" and L_sf = 1e-9;
+   */
+  
+  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf;
+  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units;
+
+} air_coil_coil;
+
+
+int air_coil_calc(air_coil_coil *coil, double f);
+int air_coil_syn(air_coil_coil *coil, double f, int flag);
+
+void air_coil_free(air_coil_coil * coil);
+air_coil_coil *air_coil_new(void);
+
+
 /*
- * opens the file "fname", loads the air_coil data contained in it.
- * stores this data in the air_coil_coil pointed to by "coil".
- * Note:  the first line of the input file is skipped as it is assumed
- * to contain a version stamp for use by the top level program.
- * the second line is:
- *  #  air_coil:vstr
- * where 'air_coil' indicates that the file contains air_coil data
- * and 'vstr' is a version string in case the air_coil file format
- * needs to change.
+ * Flags for synthesis
  */
 
+#define AIRCOILSYN_NMIN    0    /* Synthesize for minimum N         */
+#define AIRCOILSYN_NFIX    1    /* Synthesize length with fixed N   */
 
-#endif /*__AIR_COIL_LOADSAVE_H__*/
+
+#endif /*__AIR_COIL_H__*/

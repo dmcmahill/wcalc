@@ -1,7 +1,7 @@
-/* $Id: physconst.h,v 1.2 2001/09/12 23:55:39 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.2 2001/09/12 23:49:58 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c)  2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,41 +33,71 @@
  * SUCH DAMAGE.
  */
 
+#ifndef __IC_MICROSTRIP_H_
+#define __IC_MICROSTRIP_H_
+
+
+typedef struct IC_MICROSTRIP_SUBS
+{
+  /* top metal parameters */
+  double tmet,rho,rough;
+
+  /* dielectric (oxide) paramters */
+  double eox, tox;
+
+  /* substrate (silicon typically) parameters */
+  double h, es, sigmas;
+
+} ic_microstrip_subs;
+
+typedef struct IC_MICROSTRIP_LINE
+{
+
+  /* length and width */
+  double l;
+  double w;
+
+  /* characteristic impedance Ro + j Xo (ohms) */
+  double Ro, Xo;
+
+  /* electrical length (degrees) */
+  double len;
+
+
+  /* effective dielectric constant */
+  double keff;
+
+  /* loss per given length, loss per unit length, and loss per wavelegth */
+  double loss, losslen, losslambda;
+
+  /* skin depth in the metal and in the lossy dielectric */
+  double met_skindepth, subs_skindepth;
+
+  /* incremental circuit model */
+  double Lmis, Rmis, Cmis, Gmis;
+
+  ic_microstrip_subs *subs;
+
+} ic_microstrip_line;
+
+
 /*
- * physical constants and also conversion constants
+ * Function Prototypes
  */
 
-#ifndef __PHYSCONST_H__
-#define __PHYSCONST_H__
+double ic_microstrip_calc(ic_microstrip_line *line, double f);
+int ic_microstrip_syn(ic_microstrip_line *line, double f, int flag);
 
-#define LIGHTSPEED 2.997925e8
+ic_microstrip_line *ic_microstrip_line_new(void);
+ic_microstrip_subs *ic_microstrip_subs_new(void);
 
-#define MIL2MICRON(x)  (x*25.4)
-#define MICRON2MIL(x)  (x/25.4)
+/*
+ * Flags for synthesis
+ */
 
-#define MIL2UM(x)  (x*25.4)
-#define UM2MIL(x)  (x/25.4)
-
-#define MIL2MM(x)  (x*25.4e-3)
-#define MM2MIL(x)  (x/25.4e-3)
-
-#define MIL2CM(x)  (x*25.4e-4)
-#define CM2MIL(x)  (x/25.4e-4)
-
-#define MIL2M(x)  (x*25.4e-6)
-#define M2MIL(x)  (x/25.4e-6)
-
-#define INCH2M(x)  (x*25.4e-3)
-#define M2INCH(x)  (x/25.4e-3)
-
-#define MILSTR   "mil"
-#define UMSTR    "um "
-#define MMSTR    "mm "
-#define CMSTR    "cm "
-#define MSTR     "m  "
-
-#endif /*__PHYSCONST_H__*/
+#define IC_MLISYN_W    0    /* Synthesize the metal width         */
+#define IC_MLISYN_H    1    /* Synthesize the substrate thickness */
+#define IC_MLISYN_TOX  2    /* Synthesize the oxide thickness     */
 
 
-
-
+#endif /*__IC_MICROSTRIP_H_*/

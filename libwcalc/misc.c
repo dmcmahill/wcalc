@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.4 2001/09/27 02:01:51 dan Exp $ */
+/* $Id: misc.c,v 1.5 2001/09/27 23:10:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill

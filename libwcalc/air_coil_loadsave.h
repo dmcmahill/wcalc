@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.1 2001/09/23 17:38:11 dan Exp $ */
+/* $Id: air_coil_loadsave.h,v 1.1 2001/09/23 17:38:07 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,19 +33,24 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __WCALC_LOADSAVE_H__
-#define __WCALC_LOADSAVE_H__
+#ifndef __AIR_COIL_LOADSAVE_H__
+#define __AIR_COIL_LOADSAVE_H__
 
-#define WCALC_FILE_VERSION "0.1"
+/* writes the data from 'coil' to fp */
+void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname);
 
-void wcalc_save_header(FILE *fp, char *fname, char *model_name);
+void air_coil_load(air_coil_coil *coil, char *fname);
+/*
+ * opens the file "fname", loads the air_coil data contained in it.
+ * stores this data in the air_coil_coil pointed to by "coil".
+ * Note:  the first line of the input file is skipped as it is assumed
+ * to contain a version stamp for use by the top level program.
+ * the second line is:
+ *  #  air_coil:vstr
+ * where 'air_coil' indicates that the file contains air_coil data
+ * and 'vstr' is a version string in case the air_coil file format
+ * needs to change.
+ */
 
 
-/* Model types.  Used to identify models in the file */
-#define FILE_AIR_COIL            "air_coil"
-#define FILE_COUPLED_MICROSTRIP  "coupled_microstrip"
-#define FILE_IC_MICROSTRIP       "ic_microstrip"
-#define FILE_MICROSTRIP          "microstrip"
-#define FILE_STRIPLINE           "stripline"
-
-#endif /*__WCALC_LOADSAVE_H__*/
+#endif /*__AIR_COIL_LOADSAVE_H__*/

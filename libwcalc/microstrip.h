@@ -1,7 +1,7 @@
-/* $Id$ */
+/* $Id: microstrip.h,v 1.5 2001/09/28 00:26:22 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,12 +33,62 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MICROSTRIP_LOADSAVE_H__
-#define __MICROSTRIP_LOADSAVE_H__
+#ifndef __MICROSTRIP_H_
+#define __MICROSTRIP_H_
 
-/* writes the data from 'line' to fp */
-void microstrip_save(microstrip_line *line, FILE *fp, char *fname);
 
-void microstrip_load(microstrip_coil *line, char *fname);
+typedef struct MICROSTRIP_SUBS
+{
+  double h,er,tmet,rho,rough,tand;
+} microstrip_subs;
 
-#endif /*__MICROSTRIP_LOADSAVE_H__*/
+typedef struct MICROSTRIP_LINE
+{
+
+  /* length and width */
+  double l;
+  double w;
+
+  /* characteristic impedance (ohms) */
+  double z0;
+
+  /* electrical length (degrees) */
+  double len;
+
+  /* open end length correction */
+  double deltal;
+
+  double keff,loss,losslen,skindepth;
+
+  /* incremental circuit model */
+  double Ls, Rs, Cs, Gs;
+
+  /* the actual characteristic impedance is Ro + j Xo */
+  double Ro, Xo;
+
+  /* the frequency of analysis (Hz) */
+  double freq;
+
+  microstrip_subs *subs;
+
+} microstrip_line;
+
+
+int microstrip_calc(microstrip_line *line, double f);
+int microstrip_syn(microstrip_line *line, double f, int flag);
+
+void microstrip_line_free(microstrip_line * line);
+microstrip_line *microstrip_line_new(void);
+microstrip_subs *microstrip_subs_new(void);
+
+/*
+ * Flags for synthesis
+ */
+
+#define MLISYN_W    0    /* Synthesize the metal width         */
+#define MLISYN_H    1    /* Synthesize the substrate thickness */
+#define MLISYN_ES   2    /* Synthesize the dielectric constant */
+#define MLISYN_L    3    /* Synthesize the length */
+
+
+#endif /*__MICROSTRIP_H_*/

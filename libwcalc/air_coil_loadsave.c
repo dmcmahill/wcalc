@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.1 2001/09/23 17:38:07 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.2 2001/09/27 02:01:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill

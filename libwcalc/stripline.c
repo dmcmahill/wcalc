@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.2 2001/09/13 19:13:25 dan Exp $ */
+/*      $Id: stripline.c,v 1.3 2001/09/17 15:27:28 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

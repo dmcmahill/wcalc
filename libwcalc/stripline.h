@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.3 2001/09/14 01:59:05 dan Exp $ */
+/*      $Id: stripline.h,v 1.2 2001/09/13 19:13:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -32,60 +32,61 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
-#ifndef __COUPLED_MICROSTRIP_H_
-#define __COUPLED_MICROSTRIP_H_
-
-#include "microstrip.h"
+ 
+#ifndef __STRIPLINE_H_
+#define __STRIPLINE_H_
 
 
-typedef struct COUPLED_MICROSTRIP_LINE
+typedef struct STRIPLINE_SUBS
+{
+  double h,er,tmet,rho,rough,tand;
+} stripline_subs;
+
+typedef struct STRIPLINE_LINE
 {
 
-  /* length, width, and spacing */
+  /* length and width */
   double l;
   double w;
-  double s;
 
-  /* characteristic impedance (ohms) and coupling factor */
-  double z0,k;
-
-  /* even and odd mode impedance */
-  double z0e;
-  double z0o;
+  /* characteristic impedance (ohms) */
+  double z0;
 
   /* electrical length (degrees) */
   double len;
 
-
-  /* open circuit end line correction */
-  double deltale, deltalo;
-
-  /* even and odd mode effective relative permitivitty */
-  double kev,kodd;
+  /* open end length correction */
+  double deltal;
 
   double loss,losslen,skindepth;
 
-  microstrip_subs *subs;
+  /* incremental circuit model */
+  double Ls, Rs, Cs, Gs;
 
-} coupled_microstrip_line;
+  /* the actual characteristic impedance is Ro + j Xo */
+  double Ro, Xo;
+
+  stripline_subs *subs;
+
+} stripline_line;
 
 
-double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
-int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
+double stripline_calc(stripline_line *line, double f);
+int stripline_syn(stripline_line *line, double f, int flag);
 
-void coupled_microstrip_line_free(coupled_microstrip_line * line);
-coupled_microstrip_line *coupled_microstrip_line_new(void);
+void stripline_line_free(stripline_line * line);
+stripline_line *stripline_line_new(void);
+stripline_subs *stripline_subs_new(void);
 
 /*
  * Flags for synthesis
  */
 
-/* these aren't used yet */
-#define CMLISYN_W    0    /* Synthesize the metal width         */
-#define CMLISYN_H    1    /* Synthesize the substrate thickness */
-#define CMLISYN_ES   2    /* Synthesize the dielectric constant */
-#define CMLISYN_L    3    /* Synthesize the length */
+#define SLISYN_W    0    /* Synthesize the metal width         */
+#define SLISYN_H    1    /* Synthesize the substrate thickness */
+#define SLISYN_ES   2    /* Synthesize the dielectric constant */
+#define SLISYN_L    3    /* Synthesize the length */
 
 
-#endif /*__COUPLED_MICROSTRIP_H_*/
+
+#endif /*__STRIPLINE_H_*/

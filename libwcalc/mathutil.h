@@ -1,4 +1,4 @@
-/*      $Id: stripline.h,v 1.1 2001/02/11 19:26:28 dan Exp $ */
+/*      $Id: mathutil.h,v 1.4 2001/09/18 20:42:53 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -32,61 +32,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
-#ifndef __STRIPLINE_H_
-#define __STRIPLINE_H_
 
+#ifndef __MATHUTIL_H__
+#define __MATHUTIL_H__
 
-typedef struct STRIPLINE_SUBS
+#include <math.h>
+#include "config.h"
+
+#ifndef M_E
+#define M_E             2.7182818284590452354   /* e */
+#endif
+#ifndef M_PI
+#define M_PI            3.14159265358979323846  /* pi */
+#endif
+
+double coth(double x);
+
+#ifndef HAVE_RINT
+#define rint(x)  (ceil((x) - 0.5))
+#endif
+
+typedef struct COMPLEX
 {
-  double h,er,tmet,rho,rough,tand;
-} stripline_subs;
+  double re,im;
+} complex;
 
-typedef struct STRIPLINE_LINE
-{
+#define REAL(x)     ((x).re)
+#define IMAG(x)     ((x).im)
 
-  /* length and width */
-  double l;
-  double w;
+/* addition (a+b) */
+complex c_add(complex a, complex b);
 
-  /* characteristic impedance (ohms) */
-  double z0;
+/* subtraction (a-b) */
+complex c_sub(complex a, complex b);
 
-  /* electrical length (degrees) */
-  double len;
+/* multiplication (a*b) */
+complex c_mul(complex a, complex b);
 
-  /* open end length correction */
-  double deltal;
+/* multiplication by a real number (x*a)*/
+complex c_rmul(double x, complex a);
 
-  double loss,losslen,skindepth;
+/* division (x/y) */
+complex c_div(complex x, complex y);
 
-  /* incremental circuit model */
-  double Ls, Rs, Cs, Gs;
+/* complex conjugate (a*) */
+complex c_conj(complex a);
 
-  /* the actual characteristic impedance is Ro + j Xo */
-  double Ro, Xo;
+/* magnitude (|z|) */
+double  c_abs(complex a);
 
-  stripline_subs *subs;
+/* angle */
+double c_arg(complex x);
 
-} stripline_line;
+/* create complex number from its real and imaginary parts */
+complex c_complex(double real, double imag);
+
+/* square-root */
+complex c_sqrt(complex x);
+
+/* complex trig functions */
+complex c_cos(complex x);
+complex c_cosh(complex x);
+complex c_sin(complex x);
+complex c_sinh(complex x);
+complex c_tan(complex x);
+complex c_cot(complex x);
+complex c_tanh(complex x);
+complex c_coth(complex x);
+
+/* logarithm */
+complex c_log(complex x);
+
+/* Bessel functions */
+complex c_bessel_J0(complex x);
+complex c_bessel_J1(complex x);
+complex c_bessel_Y0(complex x);
+complex c_bessel_Y1(complex x);
+
+/* Hankel functions */
+complex c_hankel0_1(complex x);
+complex c_hankel0_2(complex x);
+complex c_hankel1_1(complex x);
+complex c_hankel1_2(complex x);
 
 
-double stripline_calc(stripline_line *line, double f);
-int stripline_syn(stripline_line *line, double f, int flag);
-
-void stripline_line_free(stripline_line * line);
-stripline_line *stripline_line_new(void);
-stripline_subs *stripline_subs_new(void);
-
-/*
- * Flags for synthesis
- */
-
-#define SLISYN_W    0    /* Synthesize the metal width         */
-#define SLISYN_H    1    /* Synthesize the substrate thickness */
-#define SLISYN_ES   2    /* Synthesize the dielectric constant */
-#define SLISYN_L    3    /* Synthesize the length */
-
-
-
-#endif /*__STRIPLINE_H_*/
+#endif /*__MATHUTIL_H__*/

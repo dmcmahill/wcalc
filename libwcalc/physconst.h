@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.3 2001/09/18 19:44:04 dan Exp $ */
+/* $Id: physconst.h,v 1.3 2001/09/22 03:50:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,87 +33,41 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MATHUTIL_H__
-#define __MATHUTIL_H__
+/*
+ * physical constants and also conversion constants
+ */
 
-#include <math.h>
-#include "config.h"
+#ifndef __PHYSCONST_H__
+#define __PHYSCONST_H__
 
-#ifndef M_E
-#define M_E             2.7182818284590452354   /* e */
-#endif
-#ifndef M_PI
-#define M_PI            3.14159265358979323846  /* pi */
-#endif
+#define LIGHTSPEED 2.997925e8
 
-double coth(double x);
+#define MIL2MICRON(x)  (x*25.4)
+#define MICRON2MIL(x)  (x/25.4)
 
-#ifndef HAVE_RINT
-#define rint(x)  (ceil((x) - 0.5))
-#endif
+#define MIL2UM(x)  (x*25.4)
+#define UM2MIL(x)  (x/25.4)
 
-typedef struct COMPLEX
-{
-  double re,im;
-} complex;
+#define MIL2MM(x)  (x*25.4e-3)
+#define MM2MIL(x)  (x/25.4e-3)
 
-#define REAL(x)     ((x).re)
-#define IMAG(x)     ((x).im)
+#define MIL2CM(x)  (x*25.4e-4)
+#define CM2MIL(x)  (x/25.4e-4)
 
-/* addition (a+b) */
-complex c_add(complex a, complex b);
+#define MIL2M(x)  (x*25.4e-6)
+#define M2MIL(x)  (x/25.4e-6)
 
-/* subtraction (a-b) */
-complex c_sub(complex a, complex b);
+#define INCH2M(x)  (x*25.4e-3)
+#define M2INCH(x)  (x/25.4e-3)
 
-/* multiplication (a*b) */
-complex c_mul(complex a, complex b);
+#define MILSTR   "mil"
+#define UMSTR    "um "
+#define MMSTR    "mm "
+#define CMSTR    "cm "
+#define MSTR     "m  "
 
-/* multiplication by a real number (x*a)*/
-complex c_rmul(double x, complex a);
-
-/* division (x/y) */
-complex c_div(complex x, complex y);
-
-/* complex conjugate (a*) */
-complex c_conj(complex a);
-
-/* magnitude (|z|) */
-double  c_abs(complex a);
-
-/* angle */
-double c_arg(complex x);
-
-/* create complex number from its real and imaginary parts */
-complex c_complex(double real, double imag);
-
-/* square-root */
-complex c_sqrt(complex x);
-
-/* complex trig functions */
-complex c_cos(complex x);
-complex c_cosh(complex x);
-complex c_sin(complex x);
-complex c_sinh(complex x);
-complex c_tan(complex x);
-complex c_cot(complex x);
-complex c_tanh(complex x);
-complex c_coth(complex x);
-
-/* logarithm */
-complex c_log(complex x);
-
-/* Bessel functions */
-complex c_bessel_J0(complex x);
-complex c_bessel_J1(complex x);
-complex c_bessel_Y0(complex x);
-complex c_bessel_Y1(complex x);
-
-/* Hankel functions */
-complex c_hankel0_1(complex x);
-complex c_hankel0_2(complex x);
-complex c_hankel1_1(complex x);
-complex c_hankel1_2(complex x);
+#endif /*__PHYSCONST_H__*/
 
 
-#endif /*__MATHUTIL_H__*/
+
+

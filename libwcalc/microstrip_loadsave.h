@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.h,v 1.1 2001/09/10 01:40:29 dan Exp $ */
+/* $Id: microstrip_loadsave.h,v 1.1 2001/09/27 12:07:58 dan Exp $ */
 
 /*
- * Copyright (c)  2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,71 +33,12 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __IC_MICROSTRIP_H_
-#define __IC_MICROSTRIP_H_
+#ifndef __MICROSTRIP_LOADSAVE_H__
+#define __MICROSTRIP_LOADSAVE_H__
 
+/* writes the data from 'line' to fp */
+void microstrip_save(microstrip_line *line, FILE *fp, char *fname);
 
-typedef struct IC_MICROSTRIP_SUBS
-{
-  /* top metal parameters */
-  double tmet,rho,rough;
+void microstrip_load(microstrip_coil *line, char *fname);
 
-  /* dielectric (oxide) paramters */
-  double eox, tox;
-
-  /* substrate (silicon typically) parameters */
-  double h, es, sigmas;
-
-} ic_microstrip_subs;
-
-typedef struct IC_MICROSTRIP_LINE
-{
-
-  /* length and width */
-  double l;
-  double w;
-
-  /* characteristic impedance Ro + j Xo (ohms) */
-  double Ro, Xo;
-
-  /* electrical length (degrees) */
-  double len;
-
-
-  /* effective dielectric constant */
-  double keff;
-
-  /* loss per given length, loss per unit length, and loss per wavelegth */
-  double loss, losslen, losslambda;
-
-  /* skin depth in the metal and in the lossy dielectric */
-  double met_skindepth, subs_skindepth;
-
-  /* incremental circuit model */
-  double Lmis, Rmis, Cmis, Gmis;
-
-  ic_microstrip_subs *subs;
-
-} ic_microstrip_line;
-
-
-/*
- * Function Prototypes
- */
-
-double ic_microstrip_calc(ic_microstrip_line *line, double f);
-int ic_microstrip_syn(ic_microstrip_line *line, double f, int flag);
-
-ic_microstrip_line *ic_microstrip_line_new(void);
-ic_microstrip_subs *ic_microstrip_subs_new(void);
-
-/*
- * Flags for synthesis
- */
-
-#define IC_MLISYN_W    0    /* Synthesize the metal width         */
-#define IC_MLISYN_H    1    /* Synthesize the substrate thickness */
-#define IC_MLISYN_TOX  2    /* Synthesize the oxide thickness     */
-
-
-#endif /*__IC_MICROSTRIP_H_*/
+#endif /*__MICROSTRIP_LOADSAVE_H__*/

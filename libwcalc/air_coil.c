@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.11 2001/09/28 00:15:20 dan Exp $ */
+/* $Id: air_coil.c,v 1.12 2001/09/28 00:48:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill

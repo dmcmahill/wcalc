@@ -1,7 +1,7 @@
-/* $Id: misc.h,v 1.3 2001/09/27 02:01:51 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.4 2001/09/15 02:43:05 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,24 +33,59 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MISC_H__
-#define __MISC_H__
+#ifndef __COUPLED_MICROSTRIP_H_
+#define __COUPLED_MICROSTRIP_H_
 
-typedef struct UNITS_DATA
+#include "microstrip.h"
+
+
+typedef struct COUPLED_MICROSTRIP_LINE
 {
-  /* the name of the units, "inch" */
-  char *name;
 
-  /* the scale factor, mks_units/unit, for example meter/inch */
-  double sf;
-} units_data;
+  /* length, width, and spacing */
+  double l;
+  double w;
+  double s;
 
-  
-double dia2awg(double dia);
-double awg2dia(double AWG);
-double phys_units_get_sf(char *str);
-double freq_units_get_sf(char *str);
-double induct_units_get_sf(char *str);
-char * eng_units(double value, const char *base_units, double *sf);
+  /* characteristic impedance (ohms) and coupling factor */
+  double z0,k;
 
-#endif /*__MISC_H__*/
+  /* even and odd mode impedance */
+  double z0e;
+  double z0o;
+
+  /* electrical length (degrees) */
+  double len;
+
+
+  /* open circuit end line correction */
+  double deltale, deltalo;
+
+  /* even and odd mode effective relative permitivitty */
+  double kev,kodd;
+
+  double loss,losslen,skindepth;
+
+  microstrip_subs *subs;
+
+} coupled_microstrip_line;
+
+
+double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
+int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
+
+void coupled_microstrip_line_free(coupled_microstrip_line * line);
+coupled_microstrip_line *coupled_microstrip_line_new(void);
+
+/*
+ * Flags for synthesis
+ */
+
+/* these aren't used yet */
+#define CMLISYN_W    0    /* Synthesize the metal width         */
+#define CMLISYN_H    1    /* Synthesize the substrate thickness */
+#define CMLISYN_ES   2    /* Synthesize the dielectric constant */
+#define CMLISYN_L    3    /* Synthesize the length */
+
+
+#endif /*__COUPLED_MICROSTRIP_H_*/

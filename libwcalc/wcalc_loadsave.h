@@ -1,4 +1,4 @@
-/* $Id: air_coil.h,v 1.4 2001/09/23 01:44:44 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.2 2001/10/04 02:12:07 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,78 +33,19 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __AIR_COIL_H__
-#define __AIR_COIL_H__
+#ifndef __WCALC_LOADSAVE_H__
+#define __WCALC_LOADSAVE_H__
 
-typedef struct AIR_COIL_COIL
-{
+#define WCALC_FILE_VERSION "0.1"
 
-  /* Number of turns */
-  double Nf;
-
-  /* length of coil */
-  double len;
-
-  /* wire gauge */
-  double AWGf;
-
-  /* resistivity relative to copper */
-  double rho;
-
-  /* inside diameter of coil */
-  double dia;
-
-  /* inductance (H) */
-  double L;
-
-  /* inductance when the length is at a minimum (nH) */
-  double Lmax;
-
-  /* ratio of length to minimum length */
-  double fill;
-
-  /* Q at freq (Hz) */
-  double Q;
-  double freq;
+void wcalc_save_header(FILE *fp, char *fname, char *model_name);
 
 
-  /* Self resonant frequency */
-  double SRF;
+/* Model types.  Used to identify models in the file */
+#define FILE_AIR_COIL            "air_coil"
+#define FILE_COUPLED_MICROSTRIP  "coupled_microstrip"
+#define FILE_IC_MICROSTRIP       "ic_microstrip"
+#define FILE_MICROSTRIP          "microstrip"
+#define FILE_STRIPLINE           "stripline"
 
-  /* 
-   * use the fill to calculate length instead of length to calculate
-   * fill 
-   */
-  int use_fill;
-
-  /* 
-   * various units and scale factors which may be useful for several
-   * backends.  The scale factors multiply the internal values to get
-   * the external units.
-   *
-   * For example, we might have:
-   *   L_units="nH" and L_sf = 1e-9;
-   */
-  
-  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf;
-  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units;
-
-} air_coil_coil;
-
-
-int air_coil_calc(air_coil_coil *coil, double f);
-int air_coil_syn(air_coil_coil *coil, double f, int flag);
-
-void air_coil_free(air_coil_coil * coil);
-air_coil_coil *air_coil_new(void);
-
-
-/*
- * Flags for synthesis
- */
-
-#define AIRCOILSYN_NMIN    0    /* Synthesize for minimum N         */
-#define AIRCOILSYN_NFIX    1    /* Synthesize length with fixed N   */
-
-
-#endif /*__AIR_COIL_H__*/
+#endif /*__WCALC_LOADSAVE_H__*/

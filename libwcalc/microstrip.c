@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.9 2001/09/27 23:43:22 dan Exp $ */
+/* $Id: microstrip.c,v 1.10 2001/09/28 00:26:21 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
