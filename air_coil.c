@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.10 2001/09/27 23:39:32 dan Exp $ */
+/* $Id: air_coil.c,v 1.11 2001/09/28 00:15:20 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -138,12 +138,26 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   /* temp storage */
   air_coil_coil tmp_coil;
 
+  if(coil->Nf < 1.0){
+    alert("You have specified < 1 turn.  This\n"
+	  "is not accurately modeled by this\n"
+	  "model.\n");
+    return -1;
+  }
   /* 
    * are we using the given length directly or calculating it based on
    * fill?
    */
   lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
   if (coil->use_fill){
+    if(coil->fill < 1.0){
+      alert("You have specified a fill < 1.  This\n"
+	    "is not allowed as fill is the ratio of\n"
+	    "coil length to minimum possible length\n"
+	    "consistent with the number of turns\n"
+	    "specified.\n");
+      return -1;
+    }
     coil->len = INCH2M(lmin)*coil->fill;
   }
   else{
@@ -158,6 +172,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 	    "fit in the given length is %g\n",
 	    coil->Nf,
 	    floor(coil->Nf*coil->fill));
+      return -1;
   }
   pitch = M2INCH(coil->len) / coil->Nf;
 
