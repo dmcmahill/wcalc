@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.69 2004/11/04 03:21:01 dan Exp $
+dnl $Id: configure.in,v 1.70 2004/11/04 04:39:49 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -513,7 +513,7 @@ AC_MSG_CHECKING([if gtk-wcalc should be built])
 wc_gtk1_wcalc_yesno=no
 
 AC_ARG_ENABLE([gtk1],
-[  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1[default=yes]],
+[  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1 [default=yes]],
 [
 if test "X$enable_gtk1" = "Xno" ; then
 	GTK1=no
@@ -531,7 +531,7 @@ wc_gtk1_wcalc_yesno=yes
 wc_gtk2_wcalc_yesno=no
 
 AC_ARG_ENABLE([gtk2],
-[  --enable-gtk2           Causes the GTK+ frontend to be built with gtk2[default=no]],
+[  --enable-gtk2           Causes the GTK+ frontend to be built with gtk2 [default=no]],
 [
 if test "X$enable_gtk2" = "Xno" ; then
 	GTK2=no
