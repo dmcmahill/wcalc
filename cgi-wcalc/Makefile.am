@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.3 2001/10/05 02:58:18 dan Exp $
+## $Id: Makefile.am,v 1.4 2001/10/06 01:42:56 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -76,8 +76,24 @@ HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/
 SUFFIXES = .html 
 
 %_html.c : %.html
-	$(HTML2C) $(srcdir)/$< > $(srcdir)/$@
+	@AWK_GENSUB_YES@ $(HTML2C) $(srcdir)/$< > $(srcdir)/$@
+	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
+	@AWK_GENSUB_NO@ echo "          .html.c files from the .html files.  If you need"
+	@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
+	@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
+	@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
+	@AWK_GENSUB_NO@ echo "          particular awk program."
+
 
 %_id.h : %.html
 	$(HTML2ID) $(srcdir)/$< > $(srcdir)/$@
+	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
+	@AWK_GENSUB_NO@ echo "          _id.h files from the .html files.  If you need"
+	@AWK_GENSUB_NO@ echo "          this functionality, (which you should not),"
+	@AWK_GENSUB_NO@ echo "          you will need to install gawk."
+	@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
+	@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
+	@AWK_GENSUB_NO@ echo "          particular awk program."
 

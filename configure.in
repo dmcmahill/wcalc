@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.15 2001/09/27 21:35:45 dan Exp $
+dnl $Id: configure.in,v 1.16 2001/10/05 01:29:37 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -75,8 +75,16 @@ dnl see if make sets MAKE
 AC_PROG_MAKE_SET
 
 dnl check for AWK capabilities
-AC_AWK_GENSUB
-AC_AWK_STRFTIME
+AC_AWK_GENSUB(
+[
+AWK_GENSUB_YES=""
+AWK_GENSUB_NO="@#"
+] ,[
+AWK_GENSUB_YES="@#"
+AWK_GENSUB_NO=""
+])
+AC_SUBST(AWK_GENSUB_YES)
+AC_SUBST(AWK_GENSUB_NO)
 
 dnl check for headers
 AC_HEADER_STDC

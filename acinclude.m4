@@ -1,4 +1,4 @@
-dnl $Id$
+dnl $Id: acinclude.m4,v 1.1 2001/10/05 00:40:06 dan Exp $
 dnl Copyright 2001, Dan McMahill.  ALL RIGHTS RESERVED
 dnl please refer to the file COPYING
 dnl
@@ -43,17 +43,19 @@ fi
 rm -fr conftest*])
 
 
-dnl see if AWK has the 'gensub' function
-dnl
+# see if AWK has the 'gensub' function
+# AC_AWK_GENSUB(ACTION-IF-TRUE [, ACTION-IF-FALSE])
+#
 AC_DEFUN(AC_AWK_GENSUB,
 [AC_MSG_CHECKING([whether awk ($AWK) has gensub])
-AC_TRY_AWK({gensub(/foo/,"bar","g");} ,[$2],[$3])
+AC_TRY_AWK([{gensub(/foo/,"bar","g");}] ,[$1] ,[$2])
 ])dnl
 
-dnl see if AWK has the 'strftime' function
-dnl
+# see if AWK has the 'strftime' function
+# AC_AWK_STRFTIME(ACTION-IF-TRUE [, ACTION-IF-FALSE])
+#
 AC_DEFUN(AC_AWK_STRFTIME,
 [AC_MSG_CHECKING([whether awk ($AWK) has strftime])
-AC_TRY_AWK({print strftime()} ,[$2],[$3])
+AC_TRY_AWK([{print strftime()}] ,[$1] ,[$2])
 ])dnl
 
