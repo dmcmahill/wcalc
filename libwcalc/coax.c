@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.2 2001/11/28 07:18:57 dan Exp $ */
+/* $Id: coax.c,v 1.3 2001/11/28 15:39:46 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -57,7 +57,7 @@
  */
 
 /* debug the coax_calc() function */
-/* #define DEBUG_CALC */
+#define DEBUG_CALC
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
 
@@ -97,16 +97,24 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   double mu0,e0;
   double v;
   double Gc,Gs;
-  double delta_c,delta_s;
+  double delta_c=1.0;
+  double delta_s=1.0;
   double omega;
 
 #ifdef DEBUG_CALC
+  printf("\n");
   printf("coax_calc():  ----------------------\n");
   printf("coax_calc():  Input values:\n");
   printf("coax_calc():  ----------------------\n");
-  printf("coax_calc():  a    = %g meters\n",line->a);
-  printf("coax_calc():  b    = %g meters\n",line->b);
-  printf("coax_calc():  c    = %g meters\n",line->c);
+  printf("coax_calc():  a     = %g meters\n",line->a);
+  printf("coax_calc():  b     = %g meters\n",line->b);
+  printf("coax_calc():  c     = %g meters\n",line->c);
+  printf("coax_calc():  t     = %g meters\n",line->tshield);
+  printf("coax_calc():  rho_a = %g ohms/meter\n",line->rho_a);
+  printf("coax_calc():  rho_b = %g ohms/meter\n",line->rho_b);
+  printf("coax_calc():  er    = %g \n",line->er);
+  printf("coax_calc():  tand  = %g \n",line->tand);
+  printf("coax_calc():  len   = %g meters\n",line->len);
   printf("coax_calc():  freq = %g MHz\n",line->freq*1e-6);
   printf("coax_calc():  ----------------------\n");
 #endif
@@ -129,6 +137,10 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   e0 = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
 
   line->z0 = (1/(2*M_PI))*sqrt(mu0/(e0*line->er))*log(x + sqrt(x*x - 1));
+
+#ifdef DEBUG_CALC
+  printf("coax_calc():  z0 = %g ohms\n",line->z0);
+#endif
 
   /*
    * find velocity (meters/second)
@@ -170,6 +182,12 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
       /* center and shield skindepths */
       delta_c = sqrt(2*line->rho_a/(omega*mu0));
       delta_s = sqrt(2*line->rho_b/(omega*mu0));
+#ifdef DEBUG_CALC
+      printf("coax_calc():  Found skin depths:\n");
+      printf("coax_calc():  delta_c = %g meters\n",delta_c);
+      printf("coax_calc():  delta_s = %g meters\n",delta_s);
+#endif
+
     }
     
     /*
@@ -191,15 +209,20 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      */
     if ( (omega == 0) || (delta_c/line->a > 1e6) ) {
       /* DC case */
-      Gc = M_PI * line->a * line->a;
+      Gc = M_PI * line->a * line->a / line->rho_a;
     }
     else {
       /* frequency dependent case */
-      Gc = ( (2.0 * M_PI * delta_c) / line->rho_a ) *
+      Gc = ( (2.0 * M_PI) / line->rho_a ) *
 	( line->a*delta_c - delta_c*delta_c*(1-exp(-line->a/delta_c)) );
     }
 
     line->R = 1.0/Gs + 1.0/Gc;
+#ifdef DEBUG_CALC
+    printf("coax_calc():  Found resistances:\n");
+    printf("coax_calc():  Rshield = %g Ohms/meter\n",1.0/Gs);
+    printf("coax_calc():  Rcenter = %g Ohms/meter\n",1.0/Gc);
+#endif
 
     /* 
      * compute conductor losses and dielectric losses 
