@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.4 2004/09/08 22:48:53 dan Exp $
+## $Id: Makefile.am,v 1.5 2004/09/09 12:41:36 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -57,6 +57,7 @@ noinst_SCRIPTS=		runoctave
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
+MEX_TMP_OBJ_FILES=	${MEX_TMP_CXX_FILES:.cc=.o}
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
@@ -68,7 +69,7 @@ MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
 all-local:	${MEX_FILES} runoctave ${MEX_MANS}
 
 clean-local:
-	-rm ${MEX_FILES} runoctave ${MEX_MANS} ${MEX_TMP_CXX_FILES}
+	-rm alert.o ${MEX_FILES} runoctave ${MEX_MANS} ${MEX_TMP_CXX_FILES} ${MEX_TMP_OBJ_FILES}
 
 runoctave:	$(srcdir)/runoctave.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runoctave.in > $@
