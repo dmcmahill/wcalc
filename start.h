@@ -1,7 +1,7 @@
-/*      $Id: wcalc.h,v 1.1 2001/02/11 19:26:31 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,80 +33,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __WCALC_H_
-#define __WCALC_H_
+#ifndef __START_H__
+#define __START_H__
 
-#include <gtk/gtk.h>
+void start_popup(void);
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <strings.h>
-
-
-
-typedef struct WCALC
-{
-  /* 
-   * Flag that says all initialization is done.  This is used to mask the effects
-   * of certain callbacks which get triggered during initialization.
-   */
-  int init_done;
-
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
-
-  /* frequency entry */
-  GtkWidget *entry_freq;
-
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
-
-  /*
-   * Frequency vbox and its contents
-   */
-  GtkWidget *text_freq;
-
-  /*
-   * Values vbox and its contents
-   */
-  GtkWidget *values_vbox;
-  GtkWidget *text_W,*text_L,*text_Z0,*text_elen;
-
-  /*
-   * Outputs vbox and its contents
-   */
-  GtkWidget *outputs_vbox;
-  GtkWidget *label_keff,*label_loss,*label_losslen,*label_skindepth;
-
-
-  /*
-   * Substrate vbox and its contents
-   */
-  GtkWidget *substrate_vbox;
-  GtkWidget *text_H,*text_er,*text_rho,*text_rough,*text_tmet,*text_tand;
-
-  /*
-   * Picture vbox and its contents
-   */
-  GtkWidget *picture_vbox;
-  GtkWidget *text_status;
-
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
-
-} Wcalc;
-
-
-
-#endif __WCALC_H_
+#endif /*__START_H__*/

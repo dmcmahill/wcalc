@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 2001/09/14 23:30:03 dan Exp $
+# $Id: Makefile.in,v 1.15 2001/09/15 03:28:00 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -72,6 +72,7 @@ CFILES = \
         menus.c \
         microstrip.c \
         misc.c \
+        start.c \
         stripline.c \
         version.c \
         wcalc.c
@@ -106,7 +107,7 @@ dir-pixmaps:
 
 clean::
 	@echo "Cleaning in $(srcdir)/pixmaps"
-	cd $(srcdir)/pixmaps && ${MAKE} clean
+	#cd $(srcdir)/pixmaps && ${MAKE} clean
 
 wcalc.c:: dir-pixmaps
 #

@@ -1,7 +1,7 @@
-/*      $Id: wcalc.h,v 1.1 2001/02/11 19:26:31 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,80 +33,84 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __WCALC_H_
-#define __WCALC_H_
-
-#include <gtk/gtk.h>
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <gtk/gtk.h>
+
+#include "start.h"
+
+#define ABOUT_TEXT \
+"WaveCalc\n" \
+"\n" \
+"Version " \
+VER \
+"\n"\
+"A transmission line calculator.\n" \
+"\n" \
+"Written by,\n" \
+"Dan McMahill, <mcmahill@alum.mit.edu>\n" \
+"\n" \
+"WaveCalc is copyright (C) 1999, 2000, 2001\n" \
+"Dan McMahill."
 
 
+extern int init_done;
+extern void wcalc_setup(void);
 
-typedef struct WCALC
+static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
-  /* 
-   * Flag that says all initialization is done.  This is used to mask the effects
-   * of certain callbacks which get triggered during initialization.
-   */
-  int init_done;
+  /* unmake it modal */
+  gtk_grab_remove(window);
 
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
+  /* blow away the window */
+  gtk_widget_destroy(window);
 
-  /* frequency entry */
-  GtkWidget *entry_freq;
+  wcalc_setup ();
 
-  /* frequency units */
-  GtkWidget *combo_funits;
+  //init_done = 1;
 
-  /* model selection */
-  GtkWidget *combo_model;
+}
 
-  /* physical units */
-  GtkWidget *combo_punits;
+ 
+void start_popup(void)
+{
+  GtkWidget *button;
+  GtkWidget *label;
+  GtkWidget *window;
+ 
+  /* create the "About" window */
+  window = gtk_dialog_new();
+  
+  /* made it modal */
+  gtk_grab_add(window);
 
+  /* set other properties */
+  gtk_window_set_title (GTK_WINDOW (window), "About WaveCalc");
+  gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
-  /*
-   * Frequency vbox and its contents
-   */
-  GtkWidget *text_freq;
+  /* Add the "OK" button and set its action */
+  button = gtk_button_new_with_label ("Ok");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(ok_pressed),
+		     GTK_OBJECT(window));
+  
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+		      button, TRUE, FALSE, 0);
+  gtk_widget_show (button);
+  
 
-  /*
-   * Values vbox and its contents
-   */
-  GtkWidget *values_vbox;
-  GtkWidget *text_W,*text_L,*text_Z0,*text_elen;
+  /* add the text to the window */
+  label = gtk_label_new (ABOUT_TEXT);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+		      label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
 
-  /*
-   * Outputs vbox and its contents
-   */
-  GtkWidget *outputs_vbox;
-  GtkWidget *label_keff,*label_loss,*label_losslen,*label_skindepth;
-
-
-  /*
-   * Substrate vbox and its contents
-   */
-  GtkWidget *substrate_vbox;
-  GtkWidget *text_H,*text_er,*text_rho,*text_rough,*text_tmet,*text_tand;
-
-  /*
-   * Picture vbox and its contents
-   */
-  GtkWidget *picture_vbox;
-  GtkWidget *text_status;
-
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
-
-} Wcalc;
+  /* show it */
+  gtk_widget_show (window);
+}
 
 
 
-#endif __WCALC_H_
+
+
+
