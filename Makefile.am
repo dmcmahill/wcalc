@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.19 2002/12/17 15:29:32 dan Exp $
+## $Id: Makefile.am,v 1.20 2002/12/17 15:59:48 dan Exp $
 
 ##
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
 ##  SUCH DAMAGE.
 ##
 
-SUBDIRS= m4 include intl po libwcalc pixmaps  \
+SUBDIRS= m4 include intl po libwcalc pixmaps @STDIO_WCALC@ \
 		@GTK_WCALC@ @CGI_WCALC@ \
 		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils doc
 
