@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.68 2004/09/13 21:46:22 dan Exp $
+dnl $Id: configure.in,v 1.69 2004/11/04 03:21:01 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -152,7 +152,7 @@ if test "X$with_scilab" = "Xno" ; then
 	SCI_WCALC=""
 elif test "X$with_scilab" = "Xyes" ; then
 	AC_PATH_PROG(SCILAB, scilab, no)
-	if test "X$scilab" = "Xno" ; then
+	if test "X$SCILAB" = "Xno" ; then
 		AC_ERROR([No scilab installation could be found])
 	fi
 
@@ -169,7 +169,7 @@ elif test "X$with_scilab" = "Xyes" ; then
 else
 	SCI=$with_scilab
 	AC_PATH_PROG(SCILAB, scilab, no, [$SCI/bin:$PATH])
-	if test "X$scilab" = "Xno" ; then
+	if test "X$SCILAB" = "Xno" ; then
 		AC_ERROR([No scilab installation could be found])
 	fi
 
