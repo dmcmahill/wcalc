@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.6 2002/06/12 11:30:22 dan Exp $ */
+/* $Id: air_coil.c,v 1.7 2004/07/26 01:09:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -105,9 +105,9 @@ int air_coil_calc(air_coil_coil *coil, double freq)
 {
   int rslt;
 
-  rslt=air_coil_calc_int(coil,freq,CALC_ALL);
+  rslt = air_coil_calc_int(coil, freq, CALC_ALL);
 #ifdef DEBUG_CALC
-  printf("air_coil_calc():  returning %d\n",rslt);
+  printf("air_coil_calc():  returning %d\n", rslt);
 #endif
   return rslt;
 }
@@ -124,17 +124,17 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   double Kn;
 
   /* current sheet correction due to spacing of turns */
-  double a,b,s;
+  double a, b, s;
 
   /* nominal inductance */
   double L0;
 
   /* variables for SRF calculation */
   double y;
-  double cap,SRF;
+  double cap, SRF;
 
   /* variables for loss */
-  double A,Q0,w;
+  double A, Q0, w, Qsf;
 
   /* regular and minimum possible length */
   double len, lmin;
@@ -152,7 +152,12 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
    * are we using the given length directly or calculating it based on
    * fill?
    */
-  lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
+
+  /* 
+   * minimum length is # of turns * (wire diameter + insulation
+   * thickness) 
+   */
+  lmin = coil->Nf*(M2INCH(awg2dia(coil->AWGf)) + TINSUL);
   if (coil->use_fill){
     if(coil->fill < 1.0){
       alert("You have specified a fill < 1.  This\n"
@@ -180,7 +185,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   }
   pitch = M2INCH(coil->len) / coil->Nf;
 
-  wirediam = awg2dia(coil->AWGf);
+  wirediam = M2INCH(awg2dia(coil->AWGf));
   turndiam = M2INCH(coil->dia) + wirediam;
 
   /*
@@ -286,13 +291,29 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   Q0 = A * turndiam * sqrt(freq*1e-6);
 
+  /*
+   * XXX need to account for the wire resistivity! 
+   *
+   * The Geffe article assumes copper.  For a simple series R-L
+   * circuit, Q = 2*pi*freq*L/R.  So, we should be able to apply a
+   * correction factor to get
+   *
+   * Q = Qcopper * copper_resistivity / metal_resistivity
+   *
+   */
+  
+  Qsf = 1.72e-8 / coil->rho;
+#ifdef DEBUG_CALC
+  printf("air_coil_calc():  Q scale factor to account for resistivity = %g\n", Qsf);
+#endif
+
   w = (freq*1e-6) / SRF;
 
-  coil->Q     = Q0 * (1 - (w*w));
+  coil->Q     = Qsf * Q0 * (1 - (w*w));
   coil->freq = freq;
 
 #ifdef DEBUG_CALC
-  printf("air_coil_calc():  Q = %g \n",coil->Q);
+  printf("air_coil_calc():  Q = %g \n", coil->Q);
   printf("air_coil_calc():  ----------------------\n");
 #endif
 
@@ -305,7 +326,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
      */
 
     /* minimum length with this wire and # of turns */
-    lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
+    lmin = coil->Nf*(M2INCH(awg2dia(coil->AWGf)) + TINSUL);
 
     len = M2INCH(coil->len);
     coil->fill = len/lmin;
@@ -381,7 +402,7 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
 
   /* initial guess for N */
   if (flag == AIRCOILSYN_NMIN){
-    N = L*awg2dia(coil->AWGf)/(M_PI*M_PI*M2INCH(coil->dia)*M2INCH(coil->dia)*2.54e-9);
+    N = L*M2INCH(awg2dia(coil->AWGf))/(M_PI*M_PI*M2INCH(coil->dia)*M2INCH(coil->dia)*2.54e-9);
     N2 = N + 1;
 #ifdef DEBUG_SYN
     printf("air_coil_syn():  Initial guess for N = %g\n",N);
@@ -393,7 +414,7 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
    * The extra factor is more or less whats
    * due to the enamel insulation.
    */
-  lenPerTurn= awg2dia(coil->AWGf) + TINSUL;
+  lenPerTurn= M2INCH(awg2dia(coil->AWGf)) + TINSUL;
 
 
   if (flag == AIRCOILSYN_NMIN){
@@ -528,11 +549,12 @@ air_coil_coil *air_coil_new()
   newcoil->Nf = 7.0;
   newcoil->len = INCH2M(0.2);
   newcoil->AWGf = 22.0;
-  newcoil->rho = 1.0;
+  /* initialize to resistivity of copper */
+  newcoil->rho = 1.72e-8;
   newcoil->dia = INCH2M(0.14);
   newcoil->freq = 10e6;
 
-  newcoil->use_fill=0;
+  newcoil->use_fill = 0;
 
   newcoil->units_len = wc_units_new(WC_UNITS_LENGTH);
   newcoil->units_dia = wc_units_new(WC_UNITS_LENGTH);
