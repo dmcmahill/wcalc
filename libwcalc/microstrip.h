@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.3 2002/05/10 22:52:56 dan Exp $ */
+/* $Id: microstrip.h,v 1.4 2002/06/12 11:30:30 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MICROSTRIP_H_
-#define __MICROSTRIP_H_
+#ifndef __MICROSTRIP_H__
+#define __MICROSTRIP_H__
 
 
 typedef struct MICROSTRIP_SUBS
@@ -96,4 +96,4 @@ microstrip_subs *microstrip_subs_new(void);
 #define MLISYN_L    3    /* Synthesize the length */
 
 
-#endif /*__MICROSTRIP_H_*/
+#endif /*__MICROSTRIP_H__*/
