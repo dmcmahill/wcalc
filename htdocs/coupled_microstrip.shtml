@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: coupled_microstrip.shtml,v 1.2 2001/10/18 23:15:54 dan Exp $ -->
-<!-- Copyright (c) 2001
+<!-- $Id: coupled_microstrip.shtml,v 1.3 2002/01/19 02:23:38 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <title>Wcalc Coupled Microstrip Model</title>
@@ -37,6 +37,18 @@ stripline synthesis,
     </center>
     
     <font face="helvetica, arial">
+    <H2><A NAME="References">Selected References</A></H2>
+    <OL>
+      <LI>
+	Manfred Kirschning and Rolf Jansen, "Accurate Wide-Range
+	Design Equations for the Frequency-Dependent Characteristic of
+	Parallel Coupled Microstrip Lines",
+	<em>IEEE Transactions on Microwave Theory and Techniques</em>,
+	Vol MTT-32, No 1, January 1984, p83-90.  Corrections in
+	MTT-33, No 3, March 1985, p. 288 
+      </LI>
+            
+    </OL>
     </font>
 
   </td>

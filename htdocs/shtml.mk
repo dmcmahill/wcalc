@@ -1,7 +1,7 @@
-## $Id: shtml.mk,v 1.2 2001/10/30 23:56:59 dan Exp $
+## $Id: shtml.mk,v 1.3 2002/02/07 02:34:51 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill

@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.14 2002/01/10 18:15:14 dan Exp $
+## $Id: Makefile.am,v 1.15 2002/01/11 15:32:47 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
