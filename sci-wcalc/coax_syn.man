@@ -1,4 +1,4 @@
-.\" $Id: coax_syn.man,v 1.4 2001/12/10 12:20:37 dan Exp $
+.\" $Id: coax_syn.man,v 1.1 2001/12/11 03:38:23 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -38,7 +38,7 @@
 coax_syn - Coaxial transmission line analysis
 .SH CALLING SEQUENCE
 .nf
-[a,b,c,er,len,loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f);
+[a,b,c,er,len,loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 .fi
 .SH PARAMETERS
 .TP 10
