@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.3 2002/01/14 02:55:02 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.1 2002/01/14 20:24:39 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -73,7 +73,7 @@
 #define defA      1.0
 #define defB      2.0
 #define defC      0.0
-#define defL      10.0
+#define defLEN    10.0
 #define defTSHIELD    1.4
 #define defRHOA   1.72e-8
 #define defRHOB   1.72e-8
@@ -100,7 +100,7 @@ int cgiMain(void){
   coax_line *line;
   double freq;
 
-  double a,b,c,tshield,l;
+  double a,b,c,tshield,len;
   double rhoa,rhob,er,tand;
   double Ro=0.0;
   double elen;
@@ -227,7 +227,7 @@ int cgiMain(void){
     line->c_sf = length_units[i].sf;
 
     /* Coax length */
-    if(cgiFormDoubleBounded("l",&l,1.0,100000.0,defL) !=
+    if(cgiFormDoubleBounded("len",&len,1.0,100000.0,defLEN) !=
        cgiFormSuccess){
       input_err=1;
     }
@@ -282,7 +282,7 @@ int cgiMain(void){
   line->b           = b*line->b_sf;
   line->c           = c*line->c_sf;
   line->tshield     = tshield*line->tshield_sf;
-  line->len         = l*line->len_sf;
+  line->len         = len*line->len_sf;
 
   line->freq = freq * line->freq_sf;
   
@@ -373,8 +373,9 @@ int cgiMain(void){
   }
 
 
-  /* autoscale the delay output */
+  /* autoscale some outputs */
   units_autoscale(time_units,&line->delay_sf,&line->delay_units,line->delay);
+  units_autoscale(frequency_units,&line->fc_sf,&line->fc_units,line->fc);
 
   /* include the HTML output */
 #include "coax_html.c"
