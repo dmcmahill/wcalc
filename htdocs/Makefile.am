@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/16 03:25:19 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -46,9 +46,19 @@ pkgimgdata_DATA= ${PNGS}
 SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html
 
 SHTML_IN=	\
+	about.shtml \
+	air_coil.shtml \
 	cgi-wcalc.shtml \
+	coupled_microstrip.shtml \
+	gtk-wcalc.shtml \
+	ic_microstrip.shtml \
 	index.shtml \
-	screenshots.shtml
+	microstrip.shtml \
+	obtaining.shtml \
+	projects.shtml \
+	sci-wcalc.shtml \
+	screenshots.shtml \
+	stripline.shtml
 
 INCL_FILES=\
 	left_column.incl \
