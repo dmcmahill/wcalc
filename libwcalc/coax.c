@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.20 2004/07/28 03:29:50 dan Exp $ */
+/* $Id: coax.c,v 1.21 2004/08/02 21:01:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -661,19 +661,6 @@ coax_line *coax_new()
   newline->freq  = 10e6;
   newline->emax  = 1e8;
 
-  /* XXX units to fixup */
-  /* KILLME
-  newline->emax_sf = 1.0;
-  newline->fc_sf = 1.0;
-  newline->delay_sf = 1.0;
-  newline->loss_sf = 1.0;
-  newline->losslen_sf = 1.0;
-  newline->emax_units = "V/m";
-  newline->fc_units = frequency_units[units_get_index(frequency_units,newline->fc_sf)].name;
-  newline->delay_units = time_units[units_get_index(time_units,newline->delay_sf)].name;
-  newline->loss_units = "dB";
-  newline->losslen_units = "dB/m";
-  */
 
   /* get the rest of the entries in sync */
   coax_calc(newline,newline->freq);
