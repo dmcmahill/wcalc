@@ -2,11 +2,11 @@
 
 <html>
 <head>
-<!-- $Id: sci-wcalc.shtml,v 1.1 2001/10/16 04:15:34 dan Exp $ -->
+<!-- $Id$ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
-<title>Wcalc and Scilab</title>
+<title>Wcalc and Matlab</title>
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
 <meta name="KEYWORDS" content="
 coupled microstrip,
@@ -27,7 +27,7 @@ stripline synthesis,
 <!-- The main action area -->
     <center>
     <font face="helvetica, arial" size="+2">
-      Sci-Wcalc
+      Mex-Wcalc
     </font>
     <br>
     <br>
@@ -36,11 +36,11 @@ stripline synthesis,
     <font face="helvetica, arial">
     <H2>What is it?</H2>
     <p>
-    Sci-Wcalc refers to
-    the <a href="http://www-rocq.inroa.fr/scilab">Scilab</a> interface
+    Mex-Wcalc refers to
+    the <a href="http://www.matlab.com">Matlab</a> MEX interface
     to the
-    wcalc routines.  This interface allows the user to apply the full
-    power of a high level programming language like Scilab to the
+    Wcalc routines.  This interface allows the user to apply the full
+    power of a high level programming language like Matlab to the
     design and analysis of the various Wcalc supported structures.
     For example, it is extremely simple to plot the Q and self
     resonant frequency of a 220 nH inductor as a function of winding
@@ -48,50 +48,55 @@ stripline synthesis,
     produce minimum loss.  For quick calculations with only a few sets
     of parameters, the standalone <a
     href="gtk-wcalc.html"GTK-Wcalc</a> is a simpler tool, but when
-    complex optimizations or plotting is desired, the Scilab interface
+    complex optimizations or plotting is desired, the Matlab interface
     provides tremendous flexibility.
     </p>
 
-    <H2>Using Sci-Wcalc</H2>
+    <H2>Using Mex-Wcalc</H2>
 
-    <H3>Loading Sci-Wcalc (After Installation)</H3>
+    <H3>Accessing Mex-Wcalc (After Installation)</H3>
     <p>
     To use 
-    the <a href="http://www-rocq.inroa.fr/scilab">Scilab</a> interface,
-    the interface must be loaded into your running Scilab session.
-    This is done by executing the <code>load_wcalc.sce</code> script.
-    To execute this script enter the following at the Scilab
+    the <a href="http://www.matlab.com">Matlab</a> MEX interface,
+    the mex-wcalc directory must be in your Matlab search path.  
+    This is done by executing the following command at the Matlab
     prompt:<br>
-    <code>&gt;&gt;  exec('/usr/local/libexec/wcalc/load_wcalc.sce');</code><br>
+    <code>addpath /usr/local/libexec/wcalc/mex-wcalc</code><br>
     You will need to replace <code>/usr/local</code> with the
     installation prefix chosen when Wcalc was compiled.  If you want
-    to always have access to Sci-Wcalc when you run Scilab, you can
-    add the <code>exec</code> command to your <code>.scilab</code>
-    file in your home directory.
+    to always have access to Mex-Wcalc when you run Matlab, you can
+    add the <code>addpath</code> command to your Matlab startup
+    script.
     </p>
 
-    <H3>Loading Sci-Wcalc (Before Installation)</H3>
+    <H3>Accessing Mex-Wcalc (Before Installation)</H3>
     <p>
-    If you want to try out Sci-Wcalc before it is installed in its
-    final location, use the <code>test_wcalc.sce</code> script
-    instead.  From the Scilab prompt, enter:
-    <code>&gt;&gt;  exec('/tmp/wcalc-0.2/sci-wcalc/test_wcalc.sce');</code><br>
+    If you want to try out Mex-Wcalc before it is installed in its
+    final location, execute the following command at the Matlab
+    prompt:<br>
+    <code>addpath /tmp/wcalc-0.2/mex-wcalc</code><br>
     You will need to replace <code>/tmp/wcalc-0.2</code> with the
     path to the directory where Wcalc has been compiled.
     </p>
 
-    <H3>Running the Sci-Wcalc Functions</H3>
+    <H3>Running the Mex-Wcalc Functions</H3>
     <p>
-    Once the Sci-Wcalc interface has been loaded, the Sci-Wcalc
-    functions appear as Scilab builtin functions.  Complete
-    documentation on the various functions is available via Scilab's
-    online help.
+    Once the Mex-Wcalc path has been added, the Mex-Wcalc
+    functions appear in the same way as other Matlab toolbox
+    functions.  Complete
+    documentation on the various functions is available via Matlab's
+    online help.  For a list of functions enter the following at the
+    Matlab prompt:<br>
+    <code>help wcalc</code><br>
+    For help on the individual functions use:<br>
+    <code>help function_name</code><br>
+    </p>
 
     <H2>Examples</H2>
 
     <H2>Currently available functions</H2>
     <p>
-    You can view the Scilab man pages for the Sci-Wcalc functions
+    You can view the Matlab help pages for the Mex-Wcalc functions
     online:
     <UL>
     </UL>

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2001/10/20 12:29:49 dan Exp $
+## $Id: Makefile.am,v 1.6 2001/10/23 12:28:05 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -53,6 +53,7 @@ SHTML_IN=	\
 	gtk-wcalc.shtml \
 	ic_microstrip.shtml \
 	index.shtml \
+	mex-wcalc.shtml \
 	microstrip.shtml \
 	obtaining.shtml \
 	projects.shtml \
