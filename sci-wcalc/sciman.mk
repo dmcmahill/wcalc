@@ -1,4 +1,5 @@
-## $Id: sciman.mk,v 1.2 2001/10/29 02:44:16 dan Exp $
+## -*- Makefile -*-
+## $Id: sciman.mk,v 1.3 2001/10/29 11:57:38 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,13 +34,27 @@
 ##  SUCH DAMAGE.
 ##
 
-SUFFIXES+= .cat .man
+SUFFIXES+= .cat .man .htm
 
 .man.cat : 
 	@echo "****************************************************"
 	@echo "Processing $*.man to produce $*.cat"
 	@echo "****************************************************"
 	cat $< | tbl | neqn | nroff -man | \
+		${AWK} 'BEGIN{s=0;t=0;} \
+		     /^ *$$/ {s=1;next;} \
+		     s==1 { \
+			s=0; \
+			if(t){printf("\n");} \
+			t=1; \
+		     } \
+		     {print;}' > $@
+
+.man.htm : 
+	@echo "****************************************************"
+	@echo "Processing $*.man to produce $*.htm"
+	@echo "****************************************************"
+	cat $< | tbl | neqn -Thtml| groff -man -Thtml| \
 		${AWK} 'BEGIN{s=0;t=0;} \
 		     /^ *$$/ {s=1;next;} \
 		     s==1 { \

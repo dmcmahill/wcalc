@@ -1,5 +1,5 @@
-## $Id: Makefile.am,v 1.23 2003/02/06 02:08:23 dan Exp $
-##
+## -*- Makefile -*-
+## $Id: Makefile.am,v 1.24 2003/03/01 02:32:11 dan Exp $
 
 ## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
@@ -37,7 +37,7 @@
 include $(srcdir)/mex.mk
 
 scimandir=	${datadir}/${PACKAGE}-${VERSION}/man
-sciman_DATA=	${SCIMANS} ${SCICATS} whatis
+sciman_DATA=	${SCIMANS} ${SCICATS} whatis whatis.htm
 demodir=		${datadir}/${PACKAGE}-${VERSION}/demos
 demo_DATA=	${SCIDEMOS}
 
@@ -67,15 +67,15 @@ INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -Dm
 
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
+SCIHTML=	${SCIMANS:.man=.htm}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce 
 
-clean-local:
-	-rm ${SCICATS} whatis load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
+DISTCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS}
 
-BUILT_SOURCES= libsci_wcalc.c  whatis ${SCICATS}
+BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
 
 #
 # Generate the entry point function that scilab uses to access the
@@ -178,6 +178,28 @@ whatis: ${SCIMANS}  $(srcdir)/Makefile.am
 			printf("\n"); \
 		} \
 		/^\.SH[ \t]*NAME/ {s=1}' ${srcdir}/$$f ; done) | sort > whatis
+
+whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am
+	@echo "****************************************************"
+	@echo "Generating the whatis.htm table"
+	@echo "****************************************************"
+	@echo "<html>" > $@
+	@echo "<head>" >> $@
+	@echo '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">' >> $@
+	@echo "<title>${PACKAGE}</title>" >> $@
+	@echo "</head>" >> $@
+	@echo '<body bgcolor="FFFFFF">' >> $@
+	@echo "<table>" >> $@
+	@(for f in ${SCIMANS}; do ${AWK} 'BEGIN{s=0;} \
+		/^\.SH/ {s=0}; \
+		s==1{ \
+			printf("<TR><TD><A HREF=\"%s.htm\">%s</A></TD>",$$1,$$1); \
+			printf("<TD>"); \
+			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
+			printf("</TD></TR>\n"); \
+		} \
+		/^\.SH[ \t]*NAME/ {s=1}' ${srcdir}/$$f ; done) | sort >> $@
+	@echo "</table></body></html>" >> $@
 
 SUFFIXES=
 
