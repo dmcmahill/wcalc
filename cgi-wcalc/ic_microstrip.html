@@ -1,4 +1,4 @@
-<!-- $Id: ic_microstrip.html,v 1.6 2004/07/27 21:01:42 dan Exp $ -->
+<!-- $Id: ic_microstrip.html,v 1.7 2004/07/28 11:35:29 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -143,7 +143,8 @@ integrated circuit microstrip
 <!-- length units menu -->
 <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
 </TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>
@@ -204,6 +205,28 @@ integrated circuit microstrip
 </TR>
 
 <TR>
+<TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHO)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" 
+  VALUE="<@g@line->subs->rho/line->units_rho->sf@>" 
+  onChange="valsChanged()"></TD>
+<TD>
+<!-- Resistivity units menu -->
+<@s@cgi_units_menu_display(menu_rho)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Metal surface roughness (RGH)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" 
+  VALUE="<@g@line->subs->rough/line->units_rough->sf@>"
+  onChange="valsChanged()"></TD>
+<TD>
+<!-- roughness units menu -->
+<@s@cgi_units_menu_display(menu_rough)@>
+-rms</TD>
+</TR>
+
+<TR>
 <TD>Frequency</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
            onChange="valsChanged()"></TD>
@@ -217,11 +240,21 @@ integrated circuit microstrip
 <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
 <INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
 </TR>
+
 <TR>
 <TD>Characteristic Resistance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->Ro@>"
            onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Electrical Length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->len@>"
+           onChange="valsChanged()"></TD>
+<TD>[degrees]</TD>
+</TR>
+
 </TABLE>
 
 </TR>

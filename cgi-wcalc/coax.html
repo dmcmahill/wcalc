@@ -1,4 +1,4 @@
-<!-- $Id: coax.html,v 1.10 2004/07/23 22:11:53 dan Exp $ -->
+<!-- $Id: coax.html,v 1.11 2004/07/28 11:35:27 dan Exp $ -->
 <!--
  * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -57,31 +57,25 @@ coax
 
 
 <FORM NAME="wcalc" METHOD=GET ACTION="coax.cgi">
-<TABLE>
-<TR>
-<TD>
+<TABLE> <!-- The main table -->
+<TR>    <!-- The first (only) row in the main table -->
+<TD>    <!-- The left hand cell in the main table -->
 
-<TABLE>
-<TR ALIGN="CENTER">
-<TD><IMG SRC="<@s@HTMLPATH@>coax.png" WIDTH=327 HEIGHT=265 
-     ALT="[Coax Cross-section]"></TD>
-</TR>
+<TABLE>  <!-- The left hand table -->
 
-<TR ALIGN="CENTER">
-<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE="JUST LOADED"></TD>
-</TR>
-
-<!--
 <TR ALIGN="CENTER">
 <TD><IMG SRC="<@s@HTMLPATH@>coax_model.png"  WIDTH=300 HEIGHT=141
      ALT="[Coax Circuit Model]"></TD>
 </TR>
--->
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+</TR>
 
 <TR ALIGN="CENTER">
 <TD>
 
-<TABLE>
+<TABLE>  <!-- The left hand entry table -->
 <TR>
 <TD>L =</TD>
 <TD><@g@line->L/line->units_L->sf@></TD>
@@ -161,15 +155,25 @@ coax
 </TD>
 </TR>
 
-
 </TABLE>  <!-- end of model parameter table -->
-</TD>
+</TD>     <!-- end of cell with left hand entry table -->
+</TR>     <!-- end of row with left hand entry table -->
+
+</TABLE>  <!-- end left hand table -->
+</TD>     <!-- end cell in main table holding left hand side -->
+
+<TD>      <!-- right hand cell -->
+<TABLE>   <!-- right hand table -->
+
+<TR ALIGN="CENTER">
+<TD><IMG SRC="<@s@HTMLPATH@>coax.png" WIDTH=327 HEIGHT=265 
+     ALT="[Coax Cross-section]"></TD>
 </TR>
 
-</TABLE>  <!-- end left hand 1/2 of main table -->
-
+<TR>
 <TD>
-<TABLE>
+
+<TABLE>  <!-- right hand entry table -->
 
 <TR>
 <TD>Inner Radius (A)</TD>
@@ -218,13 +222,15 @@ coax
 <!-- length units menu -->
 <@s@cgi_units_menu_display(menu_len)@>
 </TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+<TD></TD>
 </TR>
 
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOA)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhoa" VALUE="<@g@line->rho_a@>" onChange="valsChanged()"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhoa" 
+  VALUE="<@g@line->rho_a/line->units_rho->sf@>"
+  onChange="valsChanged()"></TD>
 <TD>
 <!-- Resistivity units menu -->
 <@s@cgi_units_menu_display(menu_rho)@>
@@ -233,7 +239,9 @@ coax
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOB)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhob" VALUE="<@g@line->rho_b@>" onChange="valsChanged()"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhob"
+  VALUE="<@g@line->rho_b/line->units_rho->sf@>" 
+  onChange="valsChanged()"></TD>
 <TD>
 <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_rhob">
 </TD>
@@ -280,10 +288,15 @@ coax
 <TD>[degrees]</TD>
 </TR>
 
-</TABLE>
+</TABLE>  <!-- The values table in the right side -->
 
-</TR>
-</TABLE>
+</TD>     <!-- The cell in the right hand table with the values table -->
+</TR>     <!-- The row in the right hand table with the values table -->
+</TABLE>  <!-- The right hand table -->
+
+</TD>     <!-- The cell with the right hand table -->
+</TR>     <!-- The row in the main table -->
+</TABLE>  <!-- The main table -->
 
 </FORM>
 

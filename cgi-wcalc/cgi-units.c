@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.11 2004/08/02 22:11:55 dan Exp $ */
+/* $Id: cgi-units.c,v 1.12 2004/08/13 04:43:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -325,6 +325,8 @@ char * cgi_units_menu_init()
    */
 
   fprintf(cgiOut, "function units_init()\n{\n");
+  fprintf(cgiOut, "\tdocument.wcalc.status.value = 'Values In Sync';\n");
+  
   ml = all_menus;
   while( ml != NULL ) {
     fprintf(cgiOut, "\tchanged_%s();\n", ml->menu->name);

@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.15 2004/08/05 21:42:50 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.16 2004/08/30 22:21:15 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -76,7 +76,6 @@
 #define SYNTH_B   4
 #define SYNTH_C   5
 #define SYNTH_ER  6
-#define SYNTH_L   7
 
 
 
@@ -186,10 +185,6 @@ int cgiMain(void){
   else if(cgiFormStringNoNewlines("synth_er", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_ER;
-  }
-  else if(cgiFormStringNoNewlines("synth_l", str_action, ACTION_LEN) ==
-	  cgiFormSuccess){
-    action = SYNTH_L;
   }
   else if(cgiFormStringNoNewlines("reset", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
@@ -458,12 +453,6 @@ int cgiMain(void){
   case SYNTH_ER:
     fprintf(cgiOut, "<pre>");
     coax_syn(line, line->freq, COAXSYN_ER);
-    fprintf(cgiOut, "</pre>\n");
-    break;
-
-  case SYNTH_L:
-    fprintf(cgiOut, "<pre>");
-    coax_syn(line, line->freq, COAXSYN_L);
     fprintf(cgiOut, "</pre>\n");
     break;
 

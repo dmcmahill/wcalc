@@ -1,4 +1,4 @@
-<!-- $Id: coupled_microstrip.html,v 1.10 2004/07/28 11:35:28 dan Exp $ -->
+<!-- $Id: coupled_microstrip.html,v 1.11 2004/08/31 10:54:35 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
@@ -68,7 +68,7 @@ coupled microstrip
 </TR>
 
 <TR ALIGN="CENTER">
-<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE="JUST LOADED"></TD>
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
 </TR>
 
 <TR ALIGN="CENTER">
@@ -121,38 +121,66 @@ coupled microstrip
 
 <TR>
 <TD>Even mode Loss =</TD>
-<TD><@g@line->loss_ev@></TD>
-<TD>[dB]</TD>
+<TD><@g@line->loss_ev/line->units_loss->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_loss)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Odd mode Loss =</TD>
-<TD><@g@line->loss_odd@></TD>
-<TD>[dB]</TD>
+<TD><@g@line->loss_odd/line->units_loss->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE="dB" NAME="entry_loss_odd">
+</TD>
 </TR>
 
 <TR>
 <TD>Even mode Loss/len =</TD>
-<TD><@g@line->losslen_ev@></TD>
-<TD>[dB/meter]</TD>
+<TD><@g@line->losslen_ev/line->units_losslen->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_losslen)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Odd mode Loss/len =</TD>
-<TD><@g@line->losslen_odd@></TD>
-<TD>[dB/meter]</TD>
+<TD><@g@line->losslen_odd/line->units_losslen->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_losslen_odd">
+</TD>
 </TR>
 
 <TR>
 <TD>Skin depth =</TD>
-<TD><@g@line->skindepth@></TD>
-<TD>[mil]</TD>
+<TD><@g@line->skindepth/line->units_depth->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_depth)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Delay =</TD>
-<TD><@g@delay@></TD>
-<TD>[ns]</TD>
+<TD><@g@delay/line->units_delay->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_delay)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Even mode delta L =</TD>
+<TD><@g@line->deltale/line->units_deltal->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_deltal)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Odd mode delta L =</TD>
+<TD><@g@line->deltalo/line->units_deltal->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_deltal">
+</TD>
 </TR>
 
 
@@ -183,7 +211,8 @@ coupled microstrip
 <!-- spacing units menu -->
 <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_s">
 </TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_s" VALUE="calc"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>
@@ -194,11 +223,12 @@ coupled microstrip
 <!-- length units menu -->
 <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
 </TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>
-<TD>Metal thickness (<A HREF="/cad/mcalc/tmetinfo.html">Tmet</A>)</TD>
+<TD><A HREF="/cad/mcalc/tmetinfo.html">Metal thickness (Tmet)</A></TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->units_lwst->sf@>"
            onChange="valsChanged()"></TD>
 <TD>
@@ -218,7 +248,7 @@ coupled microstrip
 </TR>
 
 <TR>
-<TD>Metal surface roughness (<A HREF="/cad/mcalc/rghinfo.html">Rgh</A>)</TD>
+<TD><A HREF="/cad/mcalc/rghinfo.html">Metal surface roughness (Rgh)</A></TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@line->subs->rough/line->units_rough->sf@>"
            onChange="valsChanged()"></TD>
 <TD>
@@ -236,7 +266,8 @@ coupled microstrip
 <!-- substrate thickness units menu -->
 <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_h">
 </TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>
@@ -244,7 +275,8 @@ coupled microstrip
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->er@>"
            onChange="valsChanged()"></TD>
 <TD></TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>

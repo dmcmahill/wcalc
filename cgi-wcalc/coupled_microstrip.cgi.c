@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.10 2004/08/30 22:21:16 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.11 2004/08/31 10:05:22 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -76,11 +76,7 @@
 #define LOAD      0
 #define RESET     1
 #define ANALYZE   2
-#define SYNTH_H   3
-#define SYNTH_W   4
-#define SYNTH_S   5
-#define SYNTH_ES  6
-#define SYNTH_L   7
+#define SYNTH_W   3
 
 
 
@@ -109,7 +105,7 @@
 /* default for z0/k vs even/odd input for synthesis */
 #define defSTYPE  0
 #define NSTYPE    2
-static char *stypeStrings[]={"zk" , "evod"};
+static char *stypeStrings[]={"evod" , "zk"};
 	     
 static const char *name_string="coupled_microstrip.cgi";
 		
@@ -167,6 +163,9 @@ int cgiMain(void){
   cgi_units_attach_entry(menu_lwst, "entry_tmet");
   cgi_units_attach_entry(menu_lwst, "entry_h");
 
+  cgi_units_attach_entry(menu_loss, "entry_loss_odd");
+  cgi_units_attach_entry(menu_losslen, "entry_losslen_odd");
+  cgi_units_attach_entry(menu_deltal, "entry_deltal");
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
@@ -177,22 +176,6 @@ int cgiMain(void){
      cgiFormSuccess){
     action = SYNTH_W;
   }
-  else if(cgiFormStringNoNewlines("synth_s",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_S;
-  }
-  else if(cgiFormStringNoNewlines("synth_h",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_H;
-  }
-  else if(cgiFormStringNoNewlines("synth_es",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_ES;
-  }
-  else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_L;
-  }
   else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
      cgiFormSuccess){
     action = RESET;
@@ -200,9 +183,6 @@ int cgiMain(void){
   else{
     action = LOAD;
   }
-
-  /* check out the checkbox */
-  cgiFormRadio("stype",stypeStrings,NSTYPE,&stype,defSTYPE);
 
   /*
    * extract the parameters from the CGI form and use them to populate
@@ -317,6 +297,15 @@ int cgiMain(void){
 
 
     /* electrical parameters: */
+  cgiFormRadio("stype", stypeStrings, NSTYPE, &stype, defSTYPE);
+
+    if (cgiFormRadio("stype", stypeStrings, NSTYPE, 
+		     &line->use_z0k, defSTYPE) !=
+        cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading z0-k/Zeven-Zodd radio button");
+    }
+
     if(cgiFormDoubleBounded("Ro", &Ro, 0.0001, 1000.0, defRO) !=
        cgiFormSuccess){
       inputErr(&input_err);
@@ -355,7 +344,6 @@ int cgiMain(void){
 #ifdef DEBUG
   fprintf(cgiOut,"<PRE>\n");
   fprintf(cgiOut,"CGI:  action = %d\n",action);
-  fprintf(cgiOut,"CGI:  selected stype %d = %s\n",stype,stypeStrings[stype]);
   fprintf(cgiOut,"</PRE>\n");
 #endif
 
@@ -416,18 +404,22 @@ int cgiMain(void){
     fixInputMsg();
   }
   
-  switch (stype){
-    case 0:
+#ifdef DEBUG
+    fprintf(cgiOut, "<pre>use_z0k = %d\n</pre>\n", line->use_z0k);
+#endif
+
+  switch (line->use_z0k){
+    case 1:
       sprintf(zkchecked,"checked");
       sprintf(evodchecked," ");
       break;
-  case 1:
+  case 0:
     sprintf(zkchecked," ");
       sprintf(evodchecked,"checked");
       break;
     default:
       fprintf(cgiOut,"<PRE>\n");
-      fprintf(cgiOut,"CGI:  illegal stype (%d)\n",stype);
+      fprintf(cgiOut,"CGI:  illegal stype (%d)\n", line->use_z0k);
       fprintf(cgiOut,"</PRE>\n");
       exit(1);
       break;
@@ -471,54 +463,18 @@ int cgiMain(void){
 
     break;
 
-  case SYNTH_H:
-    fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line, line->freq, SLISYN_H); */
-    fprintf(cgiOut,"Not Implemented Yet\n");
-    fprintf(cgiOut,"</pre>\n");
-    h = line->subs->h;
-    break;
-
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line, line->freq, SLISYN_W); */
-    fprintf(cgiOut,"Not Implemented Yet\n");
+    coupled_microstrip_syn(line, line->freq);
     fprintf(cgiOut,"</pre>\n");
-    w = line->w;
-    break;
-
-  case SYNTH_S:
-    fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line, line->freq, SLISYN_W); */
-    fprintf(cgiOut,"Not Implemented Yet\n");
-    fprintf(cgiOut,"</pre>\n");
-    s = line->s;
-    break;
-
-  case SYNTH_ES:
-    fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line, line->freq, SLISYN_ES); */
-    fprintf(cgiOut,"Not Implemented Yet\n");
-    fprintf(cgiOut,"</pre>\n");
-    es = line->subs->er;
-    break;
-
-  case SYNTH_L:
-    fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line, line->freq, SLISYN_L); */
-    fprintf(cgiOut,"Not Implemented Yet\n");
-    fprintf(cgiOut,"</pre>\n");
-    l = line->l;
     break;
 
   }
 
   /* XXX this last section is bogus */
-  /* extract the incremental circuit model */
 
   /* electrical and physical length */
   elen = line->len;
-  l = line->l;
 
   /*
    * delay on line (ns)

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.6 2004/08/13 05:36:26 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.7 2004/08/30 22:21:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -93,6 +93,7 @@
 #define defFREQ   1000.0e6
 
 #define defR0     50.0
+#define defELEN   90.0
 
 static const char *name_string="ic_microstrip.cgi";
 
@@ -110,6 +111,7 @@ int cgiMain(void){
 
   double rho, rough, tmet, w, l, tox, eox, h, es, sigmas;
   double Ro=0.0;
+  double len;
 
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
@@ -301,11 +303,21 @@ int cgiMain(void){
       printFormError("Z0 out of range");
     }
 
+    if(cgiFormDouble("elen", &len, defELEN) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Electrical length");
+    }
+    if( len <= 0.0 ) {
+      len = defELEN;
+      printFormError("Electrical length must be %gt 0");
+    }
+
     /* copy data over to the line structure */
     line->w           = w*line->units_lwht->sf;
     line->l           = l*line->units_lwht->sf;
     line->subs->h     = h*line->units_lwht->sf;
-    line->subs->tox   = h*line->units_lwht->sf;
+    line->subs->tox   = tox*line->units_lwht->sf;
     line->subs->tmet  = tmet*line->units_lwht->sf;
     line->subs->rough = rough*line->units_rough->sf;
 
@@ -314,13 +326,14 @@ int cgiMain(void){
   
     /* copy over the other parameters */
     /* XXX */
-    line->subs->sigmas  = sigmas*line->units_sigmas->sf;
+    line->subs->sigmas = sigmas*line->units_sigmas->sf;
     line->subs->eox    = eox;
-    line->subs->es    = es;
-    line->subs->rho   = rho*line->units_rho->sf;
+    line->subs->es     = es;
+    line->subs->rho    = rho*line->units_rho->sf;
 
     line->Ro = Ro;
     line->Xo = 0.0;
+    line->len = len;
 
   } /* if ( (action != RESET) && (action != LOAD) ) */
   else {
@@ -409,7 +422,6 @@ int cgiMain(void){
     break;
 
   }
-
 
   /* include the HTML output */
 #include "header_html.c"
