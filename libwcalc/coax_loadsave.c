@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.10 2002/06/25 20:46:45 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.11 2004/07/21 17:35:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -123,6 +123,15 @@ static fspec * get_fspec(void)
     fspec_add_key(myspec,"loss_units","Loss units",'s',&line->loss_units);
     fspec_add_key(myspec,"losslen_sf","Loss/length scale factor (dB/meter/unit)",'d',&line->losslen_sf);
     fspec_add_key(myspec,"losslen_units","Loss/length units",'s',&line->losslen_units);
+
+    fspec_add_key(myspec, "wc_units_abct", "A,B,C, Tshield units",  'u', &line->units_abct);
+    fspec_add_key(myspec, "wc_units_len", "Line physical length units",  'u', &line->units_len);
+    fspec_add_key(myspec, "wc_units_freq", "Frequency units",  'u', &line->units_freq);
+    fspec_add_key(myspec, "wc_units_rho", "Resistivity units",  'u', &line->units_rho);
+    fspec_add_key(myspec, "wc_units_L", "Incremental inductance units",  'u', &line->units_L);
+    fspec_add_key(myspec, "wc_units_R", "Incremental resistance units",  'u', &line->units_R);
+    fspec_add_key(myspec, "wc_units_C", "Incremental capacitance units", 'u', &line->units_C);
+    fspec_add_key(myspec, "wc_units_G", "Incremental conductance units", 'u', &line->units_G);
   }
 
   return myspec;

@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.15 2003/10/02 02:38:18 dan Exp $ */
+/* $Id: coax.c,v 1.16 2004/07/21 17:35:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -595,8 +595,10 @@ int coax_syn(coax_line *line, double f, int flag)
 
 void coax_free(coax_line *line)
 {
-  wc_units_free(line->units_rhoa);
-  wc_units_free(line->units_rhob);
+  wc_units_free(line->units_abct);
+  wc_units_free(line->units_len);
+  wc_units_free(line->units_freq);
+  wc_units_free(line->units_rho);
   wc_units_free(line->units_L);
   wc_units_free(line->units_R);
   wc_units_free(line->units_C);
@@ -616,8 +618,10 @@ coax_line *coax_new()
       exit(1);
     }
 
-  newline->units_rhoa = wc_units_new(WC_UNITS_RESISTIVITY);
-  newline->units_rhob =  wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_abct = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_len = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
+  newline->units_rho = wc_units_new(WC_UNITS_RESISTIVITY);
   newline->units_L = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
   newline->units_R = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
   newline->units_C = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
