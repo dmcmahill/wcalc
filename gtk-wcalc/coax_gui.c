@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.3 2001/12/15 23:16:43 dan Exp $ */
+/* $Id: coax_gui.c,v 1.4 2001/12/16 17:59:40 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -419,7 +419,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "TE11 Cutoff" );
+  text = gtk_label_new( "TE10 Cutoff" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -1049,7 +1049,7 @@ static void tooltip_init(coax_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length of line", NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
   gtk_tooltips_set_tip(tips, gui->text_fc, "Cutoff frequency for"
-		       " TE11 mode", NULL);
+		       " TE10 mode", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rho_a, "Resistivity of inner conductor", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rho_b, "Resistivity of outer conductor", NULL);
 
