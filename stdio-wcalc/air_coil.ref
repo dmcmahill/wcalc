@@ -13,16 +13,16 @@
 --> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
 2.16686e-07 241.287 6.42239e+08 0.0049097 1.2 2.41605e-07
 *
-*  [N, LEN, FILL, Q, SRF, Lmax] = 
+*  [N, LEN, FILL] = 
 *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
 *
 *
 * Air coil synthesis, flag == 0 (minimize # of turns)
 *
 --> air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
-4 0.00462394 1.69523 238.836 9.41856e+08 1.33205e-07
+4 0.00462394 1.69523
 *
 * Air coil synthesis, flag == 1 (fixed # of turns)
 *
 --> air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
-6 0.0143109 3.49777 330.909 8.67899e+08 2.41605e-07
+6 0.0143109 3.49777

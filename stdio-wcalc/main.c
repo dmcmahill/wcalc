@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.14 2004/09/02 21:27:46 dan Exp $ */
+/* $Id: main.c,v 1.15 2004/11/16 01:14:19 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -91,14 +91,10 @@ static void exec_stripline_calc(double *args);
 
 static void exec_air_coil_syn(double *args);
 static void exec_coax_syn(double *args);
-
-/*
- * not implemented yet here
 static void exec_coupled_microstrip_syn(double *args);
 static void exec_ic_microstrip_syn(double *args);
 static void exec_microstrip_syn(double *args);
 static void exec_stripline_syn(double *args);
-*/
 
 static void exec_version(double *args);
 static void usage(char *);
@@ -228,15 +224,27 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "coupled_microstrip_calc") == 0) {
       narg = 10;
       fn = &exec_coupled_microstrip_calc;
+    } else if(strcmp(tok, "coupled_microstrip_syn") == 0) {
+      narg = 14;
+      fn = &exec_coupled_microstrip_syn;
     } else if(strcmp(tok, "ic_microstrip_calc") == 0) {
       narg = 11;
       fn = &exec_ic_microstrip_calc;
+    } else if(strcmp(tok, "ic_microstrip_syn") == 0) {
+      narg = 14;
+      fn = &exec_ic_microstrip_syn;
     } else if(strcmp(tok, "microstrip_calc") == 0) {
       narg = 9;
       fn = &exec_microstrip_calc;
+    } else if(strcmp(tok, "microstrip_syn") == 0) {
+      narg = 12;
+      fn = &exec_microstrip_syn;
     } else if(strcmp(tok, "stripline_calc") == 0) {
       narg = 9;
       fn = &exec_stripline_calc;
+    } else if(strcmp(tok, "stripline_syn") == 0) {
+      narg = 12;
+      fn = &exec_stripline_syn;
     } else {
       fprintf(stderr, "stdio-wcalc: %s:%d: unknown command \"%s\"\n", 
 	      fname, lineno, tok);
@@ -318,7 +326,7 @@ static void exec_air_coil_calc(double *args)
 }
 
 /*
- *  [N,LEN,FILL,Q,SRF,Lmax] = 
+ *  [N,LEN,FILL] = 
  *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
  */
 static void exec_air_coil_syn(double *args)
@@ -345,8 +353,8 @@ static void exec_air_coil_syn(double *args)
     printf("%s", ERRMSG);
   } else {
     /* print the outputs */
-    printf("%g %g %g %g %g %g\n", 
-	   line->Nf, line->len, line->fill, line->Q, line->SRF, line->Lmax);
+    printf("%g %g %g\n", 
+	   line->Nf, line->len, line->fill);
   }
 
   /* clean up */
@@ -396,7 +404,7 @@ static void exec_coax_calc(double *args)
 }
 
 /*
- * [a,b,c,er,len,loss] = ...
+ * [a,b,c,er,len] = ...
  *   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
  */
 static void exec_coax_syn(double *args)
@@ -424,9 +432,9 @@ static void exec_coax_syn(double *args)
     printf("%s", ERRMSG);
   } else {
     /* print the outputs */
-    printf("%g %g %g %g %g %g\n", 
+    printf("%g %g %g %g %g\n", 
 	   line->a, line->b, line->c,
-	   line->er, line->len, line->loss);
+	   line->er, line->len);
   }
 
   /* clean up */
@@ -474,6 +482,49 @@ static void exec_coupled_microstrip_calc(double *args)
 
   /* clean up */
   coupled_microstrip_line_free(line);
+}
+  
+/* 
+ * [w_out,s_out,l_out] = 
+ *   coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,0);
+ * [w_out,s_out,l_out] = 
+ *   coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
+ */
+static void exec_coupled_microstrip_syn(double *args)
+{
+  /* our coupled_microstrip for calculations */
+  coupled_microstrip_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coupled_microstrip_line_new();
+  line->z0 = line->z0e = args[i++];
+  line->k  = line->z0o = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+  line->use_z0k     = !args[i++];
+
+  /* run the calculation */
+  if( coupled_microstrip_syn(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+  
+    /* print the outputs */
+    printf("%g %g %g\n", 
+	   line->w, line->s, line->l);
+  }
+
+  /* clean up */
+  coupled_microstrip_line_free(line);
   
   return;
 }
@@ -509,6 +560,50 @@ static void exec_ic_microstrip_calc(double *args)
     /* print the outputs */
     printf("%g %g %g %g %g %g\n", line->Ro, line->Xo,
 	   line->Lmis, line->Rmis, line->Cmis, line->Gmis);
+  }
+
+  /* clean up */
+  ic_microstrip_line_free(line);
+  
+  return;
+}
+
+/*
+ * [w_out,h_out,tox_out,l_out] = ...
+ *    ic_microstrip_syn(z0,elen,w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f,flag);
+ */
+static void exec_ic_microstrip_syn(double *args)
+{
+  /* our ic_microstrip for calculations */
+  ic_microstrip_line *line;
+  int flag;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = ic_microstrip_line_new();
+  line->Xo          = 0.0;
+  line->Ro          = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->l           = args[i++];
+  line->subs->tox   = args[i++];
+  line->subs->eox   = args[i++];
+  line->subs->h     = args[i++];
+  line->subs->es    = args[i++];
+  line->subs->sigmas= args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->freq        = args[i++];
+  flag              = args[i++];
+
+  /* run the calculation */
+  if( ic_microstrip_syn(line, line->freq, flag) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g\n",
+	   line->w, line->subs->h, line->subs->tox, line->l);
   }
 
   /* clean up */
@@ -556,6 +651,49 @@ static void exec_microstrip_calc(double *args)
 }
 
 /* 
+ * [w_out,h_out,l_out,er_out] = 
+ *    microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
+ */
+static void exec_microstrip_syn(double *args)
+{
+  /* our microstrip for calculations */
+  microstrip_line *line;
+  int flag;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = microstrip_line_new();
+  line->Xo          = 0.0;
+  line->Ro = line->z0 = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+  flag              = args[i++];
+
+  /* run the calculation */
+  if( microstrip_syn(line, line->freq, flag) ) {
+    printf("%s", ERRMSG);
+  } else { 
+  
+    /* print the outputs */
+    printf("%g %g %g %g\n", line->w, line->subs->h,
+	   line->l, line->subs->er);
+  }
+
+  /* clean up */
+  microstrip_line_free(line);
+  
+  return;
+}
+
+/* 
  * [z0,loss,deltal] = 
  *   stripline_calc(w,h,l,tmet,rho,rough,er,tand,f);
  */
@@ -583,6 +721,48 @@ static void exec_stripline_calc(double *args)
   } else { 
     /* print the outputs */
     printf("%g %g %g\n", line->z0, line->loss, line->deltal);
+  }
+
+  /* clean up */
+  stripline_line_free(line);
+  
+  return;
+}
+
+/* 
+ * [w_out,h_out,l_out,er_out] = 
+ *    stripline_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
+ */
+static void exec_stripline_syn(double *args)
+{
+  /* our stripline for calculations */
+  stripline_line *line;
+  int flag;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = stripline_line_new();
+  line->Xo          = 0.0;
+  line->Ro = line->z0 = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+  flag              = args[i++];
+
+  /* run the calculation */
+  printf("Calling stripline syn with z0 = %g\n", line->z0);
+  if( stripline_syn(line, line->freq, flag) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g\n", line->w, line->subs->h, line->l, line->subs->er);
   }
 
   /* clean up */

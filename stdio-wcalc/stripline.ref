@@ -1,3 +1,6 @@
+* [z0, loss, deltal] = 
+*   stripline_calc(w, h, l, tmet, rho, rough, er, tand, f);
+*
 * Stripline calculation
 --> stripline_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
 29.0461 0.0259994 0
@@ -83,3 +86,39 @@
 * A_DB=0.543680385634 Skin depth=0.002089723191
 --> stripline_calc 0.6e-3 1.5748e-3 100e-3 0.03556e-3 1.72e-8 0.0 4.8 0.022 1.0e9
 49.6883 0.285586 0
+*****************************************
+*
+* Synthesis
+*
+*****************************************
+*
+* [w_out,h_out,l_out,er_out] = ...
+*    stripline_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
+*
+*************** Table 6.4 in Rosloniec ************
+*
+*
+* 30.00 Ohms
+--> stripline_syn 30.0 90.0 2.933e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 2.55  0.001 1e9 0
+Calling stripline syn with z0 = 30
+0.0029331 0.002 0.0469343 2.55
+* 30.00 Ohms
+--> stripline_syn 30.0 90.0 1.060e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 10.20 0.001 1e9 0
+Calling stripline syn with z0 = 30
+0.00106049 0.002 0.0234672 10.2
+* 50.00 Ohms
+--> stripline_syn 50.0 90.0 1.397e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 2.55  0.001 1e9 0
+Calling stripline syn with z0 = 50
+0.00139739 0.002 0.0469343 2.55
+* 50.00 Ohms
+--> stripline_syn 50.0 90.0 0.335e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 10.20 0.001 1e9 0
+Calling stripline syn with z0 = 50
+0.000334931 0.002 0.0234672 10.2
+* 75.00 Ohms
+--> stripline_syn 75.0 90.0 0.643e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 2.55  0.001 1e9 0
+Calling stripline syn with z0 = 75
+0.000683179 0.002 0.0469343 2.55
+* 75.00 Ohms
+--> stripline_syn 75.0 90.0 0.075e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 10.20 0.001 1e9 0
+Calling stripline syn with z0 = 75
+4.98621e-05 0.002 0.0234672 10.2

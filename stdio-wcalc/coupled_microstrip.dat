@@ -1,4 +1,4 @@
-# $Id: coupled_microstrip.dat,v 1.2 2004/08/03 21:10:29 dan Exp $
+# $Id: coupled_microstrip.dat,v 1.3 2004/08/10 01:19:26 dan Exp $
 #
 # coax test data
 #
@@ -74,5 +74,33 @@ coupled_microstrip_calc 2.032e-3 0.254e-3 1.5748e-3 12.7e-3 35.56e-6 2.44e-8 0.0
 * Skin depth=97.85709409767
 *
 coupled_microstrip_calc 2.032e-3 0.254e-3 1.5748e-3 12.7e-3 0.0 2.44e-8 0.0 4.8 0.022 1e3
+
+*****************************************
+*
+* Synthesis
+*
+*****************************************
+*
+* [w_out,s_out,l_out] = 
+*   coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,0);
+* [w_out,s_out,l_out] = 
+*   coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
+*
+
+*************** Table 6.11 From Rosloniec ************
+*
+*
+* ze = 55.27, zo = 45.23, ke = 2.261, ko = 2.009
+coupled_microstrip_syn 50.000 0.1000 90 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 0
+coupled_microstrip_syn 55.277 45.227 90 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 1
+
+* ze = 69.37, zo = 36.04, ke = 2.239, ko = 1.882
+coupled_microstrip_syn 50.000 0.3000 90 2.314e-3 0.123e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 0
+coupled_microstrip_syn 68.139 36.690 90 2.314e-3 0.123e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 1
+
+* ze = 86.74, zo = 28.82, ke = 2.180, ko = 1.833
+coupled_microstrip_syn 50.000 0.5000 90 1.744e-3 0.988e-5 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 0
+coupled_microstrip_syn 86.603 28.868 90 1.744e-3 0.988e-5 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 1
+coupled_microstrip_calc 1.744e-3 0.988e-5 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9
 
 
