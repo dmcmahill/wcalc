@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.10 2001/09/17 20:45:19 dan Exp $ */
+/* $Id: wcalc.c,v 1.11 2001/09/18 20:42:56 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -141,7 +141,6 @@ void callback( GtkWidget *widget,
 
 /* This callback quits the program */
 void delete_event( GtkWidget *widget,
-                   GdkEvent  *event,
 		   gpointer   data )
 {
   GtkWidget *window;
