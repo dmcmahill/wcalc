@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.15 2004/08/31 21:38:24 dan Exp $ */
+/*      $Id: stripline.c,v 1.16 2004/09/08 22:40:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -47,7 +47,7 @@
  */
 
 /* debug stripline_syn()  */
-/* #define DEBUG_SYN  */ 
+/* #define DEBUG_SYN */
 
 /* debug stripline_calc() */
 /* #define DEBUG_CALC */
@@ -108,11 +108,11 @@ int stripline_calc(stripline_line *line, double f)
   printf("stripline_calc(): --------------- Stripline Analysis ------------\n");
   printf("stripline_calc(): Metal width                 = %g m\n",line->w);
   printf("stripline_calc():                             = %g %s\n",
-	 line->w/line->units_wlht->sf, line->units_wlht->name);
+	 line->w/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_calc(): Metal thickness             = %g m\n",
 	 line->subs->tmet);
   printf("stripline_calc():                             = %g %s\n",
-	 line->subs->tmet/line->units_wlht->sf, line->units_whlt->name);
+	 line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_calc(): Metal relative resistivity  = %g \n",
 	 line->subs->rho);
   printf("stripline_calc(): Metal surface roughness     = %g m-rms\n",
@@ -122,7 +122,7 @@ int stripline_calc(stripline_line *line, double f)
   printf("stripline_calc(): Substrate thickness         = %g m\n",
 	 line->subs->h);
   printf("stripline_calc():                             = %g %s\n",
-	 line->subs->h/line->units_wlht->sf, line->units_wlht->name);
+	 line->subs->h/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_calc(): Substrate dielectric const. = %g \n",
 	 line->subs->er);
   printf("stripline_calc(): Substrate loss tangent      = %g \n",
@@ -570,22 +570,22 @@ int stripline_syn(stripline_line *line, double f, int flag)
   printf("stripline_syn(): --------------- Stripline Synthesis -----------\n");
   printf("stripline_syn(): Metal width                 = %g m\n",line->w);
   printf("stripline_syn():                             = %g %s\n",
-	 line->w/line->w_sf,line->w_units);
+	 line->w/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_syn(): Metal thickness             = %g m\n",line->subs->tmet);
   printf("stripline_syn():                             = %g %s\n",
-	 line->subs->tmet/line->subs->tmet_sf,line->subs->tmet_units);
+	 line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
   printf("stripline_syn(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
   printf("stripline_syn():                             = %g %s\n",
-	 line->subs->rough/line->subs->rough_sf,line->subs->rough_units);
+	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
   printf("stripline_syn(): Substrate thickness         = %g m\n",line->subs->h);
   printf("stripline_syn():                             = %g %s\n",
-	 line->subs->h/line->subs->h_sf,line->subs->h_units);
+	 line->subs->h/line->units_lwht->sf, line->units_lwht->name);
   printf("stripline_syn(): Substrate dielectric const. = %g \n",line->subs->er);
   printf("stripline_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
   printf("stripline_syn(): Frequency                   = %g MHz\n",f/1e6); 
   printf("stripline_syn():                             = %g %s\n",
-	 f/line->f_sf,line->f_units);
+	 line->freq/line->units_freq->sf, line->units_freq->name);
   printf("stripline_syn(): -------------- ---------------------- ----------\n");
   printf("stripline_syn(): Desired Zo                  = %g ohm\n",Ro);
   printf("stripline_syn(): Desired electrical length   = %g degrees\n",len);
@@ -727,8 +727,8 @@ int stripline_syn(stripline_line *line, double f, int flag)
   printf("produced:\n");
   printf("\twidth = %g [m] \n\tlength = %g [m]\n",line->w,line->l);
   printf("\twidth = %g [%s] \n\tlength = %g [%s]\n",
-	 line->w/line->w_sf,line->w_units,
-	 line->l/line->l_sf,line->l_units);
+	 line->w/line->units_lwht->sf, line->units_lwht->name,
+	 line->l/line->units_lwht->sf, line->units_lwht->name);
 #endif
 
   return 0;
