@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Wcalc Screenshots</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      GTK-Wcalc Screenshots
+    </font>
+    <br>
+    <br>
+
+    <a href="screen1.png"><img src="screen1.png" width="250" height="262"
+    alt="screenshot #1" hspace="10" vspace="5"></a>
+    <br>
+    <br>
+    <a href="screen2.png"><img src="screen2.png" width="266" height="211"
+    alt="screenshot #2" hspace="10" vspace="5"></a>
+
+    </center>
+    <p>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

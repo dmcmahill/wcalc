@@ -1,0 +1,83 @@
+<!-- $Id$ -->
+<!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
+<tr>
+  <td valign="top">
+
+  <table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+  <td>
+  <img src="../pixmaps/logo.png" width="197" height="161"
+   alt="Wcalc Logo">
+  <td></tr>
+  </table>
+
+  <br>
+  <table width="100%" cellspacing=0 cellpadding=2 border=0>
+  <tr>
+  <td bgcolor="#000000">
+    <table width="100%" cellspacing=0 cellpadding=4 border=0>
+  <tr><td bgcolor="#e0e0f0" nowrap>
+    <font face="helvetica, arial" color="#000066">
+      <b>Information</b>
+    </font>
+    </td></tr>
+   <tr><td bgcolor="#FFFFFF" nowrap>
+      <font face="helvetica, arial" size="-1">
+	&nbsp;<a href="index.html">Wcalc Home</a><br>
+	&nbsp;<a href="about.html">About Wcalc</a><br>
+	&nbsp;<a href="projects.html">Current projects</a><br>
+	&nbsp;<a href="screenshots.html">Screenshots</a><br>
+      </font>
+    </td></tr></table>
+    </tr>
+  </table>
+
+  <br>
+
+  <table width="100%" cellspacing=0 cellpadding=2 border=0>
+  <tr>
+  <td bgcolor="#000000">
+    <table width="100%" cellspacing=0 cellpadding=4 border=0>
+  <tr><td bgcolor="#e0e0f0" nowrap>
+    <font face="helvetica, arial" color="#000066">
+      <b>Models</b>
+    </font>
+    </td></tr>
+    <tr><td bgcolor="#FFFFFF" nowrap>
+      <font face="helvetica, arial" size="-1">
+	&nbsp;<a href="air_coil.html">Air Core Solenoid Inductor</a><br>
+	&nbsp;<a href="coupled_microstrip.html">Coupled Microstrip</a><br>
+	&nbsp;<a href="ic_microstrip.html">Integrated Circuit Microstrip</a><br>
+	&nbsp;<a href="microstrip.html">Microstrip</a><br>
+	&nbsp;<a href="stripline.html">Stripline</a><br>
+      </font>
+    </td></tr></table>
+    </tr>
+  </table>
+
+  <br>
+
+  <table width="100%" cellspacing=0 cellpadding=2 border=0>
+  <tr>
+  <td bgcolor="#000000">
+    <table width="100%" cellspacing=0 cellpadding=4 border=0>
+  <tr><td bgcolor="#e0e0f0" nowrap>
+    <font face="helvetica, arial" color="#000066">
+      <b>Frontends</b>
+    </font>
+    </td></tr>
+    <tr><td bgcolor="#FFFFFF" nowrap>
+      <font face="helvetica, arial" size="-1">
+	&nbsp;<a href="cgi-wcalc.html">CGI-Wcalc (Web Interface)</a><br>
+	&nbsp;<a href="gtk-wcalc.html">GTK-Wcalc (GUI Interface)</a><br>
+	&nbsp;<a href="sci-wcalc.html">SCI-Wcalc (Scilab Interface)</a><br>
+      </font>
+    </td></tr></table>
+    </tr>
+  </table>
+
+  <br>
+
+  </td>
+</tr>
+

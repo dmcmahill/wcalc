@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>CGI-Wcalc</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      CGI-Wcalc
+    </font>
+    <br>
+    <br>
+
+    <a href="../pixmaps/splash.png"><img src="../pixmaps/splash.png"
+     alt="Splash Image" border="0" width="363" height="179" hspace="10" vspace="5"></a>
+    </center>
+    <p>
+
+
+<!-- Links to the individual CGI pages  -->
+<font face="helvetica, arial" size="+0">
+    <ul>
+  <LI><A HREF="/cgi-bin/air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
+  <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
+  <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
+  <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
+  <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
+</ul>
+</font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

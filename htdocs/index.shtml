@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Wcalc</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Welcome to Wcalc
+    </font>
+    <br>
+    <br>
+
+    <a href="../pixmaps/splash.png"><img src="../pixmaps/splash.png"
+     alt="Splash Image" border="0" width="363" height="179" hspace="10" vspace="5"></a>
+    </center>
+    <p>
+
+    <font face="helvetica, arial">
+    Wcalc is a tool for the analysis and synthesis of transmission line structures and 
+    related components.  Wcalc provides the ability to analyze the electrical parameters
+    of a particular structure based on the physical dimensions and material parameters.
+    The synthesis portion calculates the required physical parameters to meet desired
+    electrical specifications.  Wcalc includes several models and places an emphasis on
+    accuracy.  Several frontends provide the user with several options for its use.
+    </font>
+
+    <dl>
+      <dt><dd><font face="helvetica, arial" color="#000066">
+	<b>Recent News</b>
+      </font>
+      <font face="helvetica, arial" size="-1">
+	&nbsp;[<a href="Changes/">More</a>]
+      </font>
+    </dl>
+
+    <ul>
+
+<!-- Recent news  -->
+
+<li><font face="helvetica, arial" size="-1">
+  <a href="">A news item</a>
+</font></li>
+
+
+<!-- End of news -->
+
+    </ul>
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>
