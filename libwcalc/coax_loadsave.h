@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.h,v 1.3 2001/11/03 16:47:26 dan Exp $ */
+/* $Id: coax_loadsave.h,v 1.1 2001/11/27 04:46:32 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -43,5 +43,8 @@ void coax_save(coax_line *line, FILE *fp, char *fname);
  * returns 0 on success
  */
 int coax_load(coax_line *line, FILE *fp);
+
+int coax_load_string(coax_line *line, char *str);
+char * coax_save_string(coax_line *line, char *fname);
 
 #endif /*__COAX_LOADSAVE_H__*/

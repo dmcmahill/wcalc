@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.1 2001/11/27 04:46:32 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.2 2002/01/03 03:54:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -168,5 +168,54 @@ void coax_save(coax_line *line, FILE *fp, char *fname)
   wcalc_save_header(fp, fname, FILE_COAX);
   myspec=get_fspec();
   fspec_write_file(myspec,fp,(unsigned long) line);
+}
+
+int coax_load_string(coax_line *line, char *str)
+{
+  fspec *myspec;
+  char *val;
+  int rslt;
+
+  assert(str!=NULL);
+
+  val = strtok(str," ");
+
+  /* read the model version  */
+  if ( val == NULL ){
+    alert("Could not determine the coax file_version\n");
+    return -1;
+  }
+
+#ifdef DEBUG
+  printf("coax_loadsave.c:coax_load_string():  Got file_version=\"%s\"\n",
+	 val);
+#endif
+
+  /*
+   * If the file format changes, this is where we would call legacy
+   * routines to read old style formats.
+   */
+
+  myspec=get_fspec();
+  rslt=fspec_read_string(myspec,str,(unsigned long) line);
+
+  /*
+   * parse the composite units data 
+   */
+  resistivity_units_set(line->units_rhoa,line->rho_a_units);
+  resistivity_units_set(line->units_rhob,line->rho_b_units);
+
+  return rslt;
+}
+
+
+char * coax_save_string(coax_line *line, char *fname)
+{
+  fspec *myspec;
+  char *str;
+
+  myspec=get_fspec();
+  str=fspec_write_string(myspec,(unsigned long) line);
+  return str;
 }
 
