@@ -2,7 +2,6 @@
  
 exec test_wcalc.sce;
 shared archive loaded
-
  
  
 disp('**** air_coil_calc ****');
