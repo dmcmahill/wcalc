@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/28 22:50:26 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -77,11 +77,11 @@ whatis.incl: ${SCIMANS} Makefile
 SUFFIXES=	.shtml .html .cat
 
 .cat.shtml :
-	sed 's;@fname@;$*;g' man_start.incl > $@
+	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	echo "<pre>" >> $@
 	ul -t dumb $(top_srcdir)/sci-wcalc/$*.cat >> $@
 	echo "</pre>" >> $@
-	cat man_end.incl >> $@
+	cat $(srcdir)/man_end.incl >> $@
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
 include $(top_srcdir)/htdocs/shtml.mk
