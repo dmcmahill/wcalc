@@ -1,0 +1,55 @@
+# $Id$
+#
+# Input data for coupled_microstrip_test program
+#
+# Format is:
+# calc freq
+# line w s l
+# scale sf
+# sub  h er tmet rho rough tand
+# syn freq z0 k z0e z0o len flag
+scale 25.4e-6
+sub 10.0 4.8 0.0 1.0 0.055 0.01
+line 15.0 10.0 500.0
+#
+calc 1.0e9
+comment Linecalc gives
+comment ZE=62.23917496126 ZO=47.87507185472
+comment Z0=54.58667395481 C_DB=-17.69129997383
+comment KE=3.782718677758 KO=3.194588630653 
+comment AE_DB=0.020891617157 AO_DB=0.017928767350 Skin depth=0.082106708917
+#
+calc 0.001
+comment Linecalc gives
+comment ZE=62.24701563139 ZO=47.93428368769
+comment Z0=54.62386022598 C_DB=-17.72770703696
+comment KE=3.780736061614 KO=3.194287535105
+comment AE_DB=2.0882206e-014 AO_DB=1.7927152e-014 Skin depth=82106.708916
+line 15.0 10000.0 500.0
+#
+calc 0.001
+comment Linecalc gives
+comment ZE=55.36404049887 ZO=55.36402450307
+comment Z0=55.36403250097 C_DB=-136.8050366218
+comment KE=3.528957114459 KO=3.528954191309
+comment AE_DB=1.9657263e-014 AO_DB=1.9657249e-014 Skin depth=82106.708916
+line 15.0 15.0 500.0
+#
+calc 80.0e6
+comment Linecalc gives
+comment ZE=60.06782371153 ZO=50.50934545925
+comment Z0=55.08163449673 C_DB=-21.26553422447
+comment KE=3.758220104710 KO=3.251152773225
+comment AE_DB=0.001662005967 AO_DB=0.001458414740 Skin depth=0.2902910532
+#
+# Figure 2e of Kirschning and Jansen (MTT)
+# to convert from mm to mil, multiply by 39.37008
+scale 39.37008
+sub 0.79 2.35 0.0 1.0 0.01 0.01
+line 2.37 0.395 1000.0
+calc 1.0
+calc 30.0e9
+line 2.37 0.079 1000.0
+calc 1.0
+line 2.37 0.79 1000.0
+calc 1.0

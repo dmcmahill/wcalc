@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.13 2002/08/07 00:45:34 dan Exp $
+## $Id: Makefile.am,v 1.14 2002/12/10 10:42:15 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -35,10 +35,11 @@
 
 lib_LTLIBRARIES = libwcalc.la
 
-noinst_PROGRAMS = coax_test ic_microstrip_test mathutil_test \
+noinst_PROGRAMS = coax_test coupled_microstrip_test ic_microstrip_test mathutil_test \
 	microstrip_test
 
 coax_test_SOURCES = alert.c coax_test.c 
+coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c 
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 microstrip_test_SOURCES = alert.c microstrip_test.c 
