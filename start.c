@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.2 2001/09/17 19:34:58 dan Exp $ */
+/* $Id: start.c,v 1.3 2001/09/18 20:42:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -39,6 +39,7 @@
 
 #include "pixmaps/splash.xpm"
 #include "start.h"
+#include "wcalc.h"
 
 #define ABOUT_TEXT \
 "WaveCalc\n" \
@@ -55,8 +56,6 @@ VER \
 "Dan McMahill."
 
 
-extern void wcalc_setup(void);
-
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
   /* unmake it modal */
@@ -65,7 +64,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   /* blow away the window */
   gtk_widget_destroy(window);
 
-  wcalc_setup ();
+  wcalc_setup (NULL, WC_MODEL_MICROSTRIP, NULL);
 
 }
 
@@ -88,8 +87,6 @@ void start_popup(void)
   GdkBitmap *mask;
   GtkStyle *style;    
  
-  GList *glist=NULL;
-
   /* create the initial window */
   //  window = gtk_window_new(GTK_WINDOW_DIALOG);
   window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -136,15 +133,11 @@ void start_popup(void)
   gtk_widget_show (button);
 
 
-  glist = g_list_append(glist,"Air Core Inductor");
-  glist = g_list_append(glist,"Microstrip");
-
   combo_model =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(combo_model), glist);
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo_model), global_model_names);
   gtk_combo_set_use_arrows( GTK_COMBO(combo_model), 1);
   gtk_box_pack_start (GTK_BOX (action_area), combo_model, FALSE, FALSE, 0);
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo_model)->entry), FALSE);
-  //  gtk_widget_set_usize(GTK_WIDGET(combo_model),60,0);
   gtk_widget_show( combo_model );
 
   /*

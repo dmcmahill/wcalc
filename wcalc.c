@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.11 2001/09/18 20:42:56 dan Exp $ */
+/* $Id: wcalc.c,v 1.12 2001/09/19 02:05:46 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -53,9 +53,22 @@
 #include "start.h"
 #include "wcalc.h"
 
-void wcalc_setup (void);
+
+static gint wcalc_delete_event( GtkWidget *widget,
+				GdkEvent *event,
+				gpointer data );
+
+static gint wcalc_destroy_event (GtkWidget *widget, 
+				 GdkEvent *event,
+				 gpointer data);
+
+static void wcalc_destroy_sig( GtkWidget *widget,
+			       gpointer   data );
 
 static Wcalc *Wcalc_new(void);
+
+
+static void global_model_init(void);
 
 void mscalc_analyze( GtkWidget *w, gpointer data );
 void mscalc_synthesize( GtkWidget *w, gpointer data );
@@ -70,11 +83,6 @@ static void substrate_init(Wcalc *wcalc, GtkWidget *parent);
 static void picture_init(Wcalc *wcalc, GtkWidget *window, GtkWidget *parent);
 static void tooltip_init(Wcalc *wcalc);
 
-#ifdef notdef
-static GtkWidget *make_menu_item( gchar *name,
-				  GtkSignalFunc callback,
-				  gpointer data );
-#endif
 static void cb_punits_menu_select( GtkWidget *item,
 				   gpointer data);
 
@@ -88,36 +96,6 @@ static GSList *window_list=NULL;
 
 #define ENTRYLENGTH  8
 
-#ifdef notdef
-static gint button_press (GtkWidget *widget, GdkEvent *event)
-{
-
-  if (event->type == GDK_BUTTON_PRESS) {
-    GdkEventButton *bevent = (GdkEventButton *) event; 
-    gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL, NULL,
-		    bevent->button, bevent->time);
-    /* Tell calling code that we have handled this event; the buck
-     * stops here. */
-    return TRUE;
-  }
-
-  /* Tell calling code that we have not handled this event; pass it on. */
-  return FALSE;
-}
-#endif
-
-/* Print a string when a menu item is selected */
-#ifdef notdef
-static void menuitem_response (gchar *string)
-{
-  //gtk_label_set_text( GTK_LABEL(label_funits), string);
-  printf ("%s\n", string);
-}
-#endif
-
-
-
-
 
 static void vals_changedCB(GtkWidget *widget, gpointer data )
 {
@@ -128,22 +106,50 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
     gtk_label_set_text(GTK_LABEL(wcalc->text_status), "Values Out Of Sync");
 }
 
-
-/* Our callback.
- * The data passed to this function is printed to stdout */
-void callback( GtkWidget *widget,
-               gpointer   data )
+/*
+ * The top level delete/destroy signal and event callbacks
+ */
+static gint wcalc_delete_event( GtkWidget *widget,
+				GdkEvent *event,
+				gpointer data )
 {
-  g_print ("Hello again - %s was pressed\n", (char *) data);
+
+#ifdef DEBUG
+  g_print("wcalc_delete_event():  widget = %p\n",widget);
+  g_print("                       event  = %p\n",event);
+  g_print("                       data   = %p\n",(void *) data);
+#endif
+
+  /* we haven't handled this event */
+  return FALSE;
 }
 
+static gint wcalc_destroy_event (GtkWidget *widget, 
+				 GdkEvent *event,
+				 gpointer data)
+{
 
+#ifdef DEBUG
+  g_print("wcalc_destroy_event():  widget = %p\n",widget);
+  g_print("                        event  = %p\n",event);
+  g_print("                        data   = %p\n",(void *) data);
+#endif
 
-/* This callback quits the program */
-void delete_event( GtkWidget *widget,
-		   gpointer   data )
+  gtk_main_quit ();
+  
+  /* we have indeed handled this event */
+  return TRUE;
+}
+
+static void wcalc_destroy_sig( GtkWidget *widget,
+			       gpointer   data )
 {
   GtkWidget *window;
+  
+#ifdef DEBUG
+  g_print("wcalc_destroy_sig():  widget = %p\n",widget);
+  g_print("                      data   = %p\n",(void *) data);
+#endif
 
   window = ( (Wcalc *) data)->window;
   window_list = g_slist_remove(window_list,window);
@@ -153,17 +159,18 @@ void delete_event( GtkWidget *widget,
     gtk_main_quit ();
 }
 
-void destroy (GtkWidget *widget, gpointer data)
-{
-  gtk_main_quit ();
-}
-
+/*
+ * End of the top level delete/destroy callbacks
+ */
 
 
 int main( int   argc,
           char *argv[] )
 {
   gtk_init (&argc, &argv);
+
+  /* set up the list of available models for the program */
+  global_model_init();
 
   //  wcalc_setup ();
   //  init_done = 1;
@@ -173,7 +180,19 @@ int main( int   argc,
   return 0;
 }
 
-void wcalc_setup (void)
+static void global_model_init()
+{
+  global_model_names = NULL;
+  global_model_names = g_list_append(global_model_names,"Air Core Inductor");
+  global_model_names = g_list_append(global_model_names,"Coupled Microstrip");
+  global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
+  global_model_names = g_list_append(global_model_names,"Microstrip");
+  global_model_names = g_list_append(global_model_names,"Stripline");
+}
+
+void wcalc_setup (gpointer data,
+		  guint action,
+		  GtkWidget *widget)
 {
   Wcalc *wcalc;
 
@@ -187,6 +206,11 @@ void wcalc_setup (void)
   GtkWidget *substrate_vbox;
   GtkWidget *picture_vbox;
 
+#ifdef DEBUG
+  g_print("wcalc_setup():  model = %d\n",action);
+  g_print("                WC_MICROSTRIP = %d\n",WC_MODEL_MICROSTRIP);
+#endif
+
   wcalc = Wcalc_new();
 
   /* Create a new window */
@@ -197,14 +221,22 @@ void wcalc_setup (void)
 
   //  wcalc->window = gtk_window_new (GTK_WINDOW_DIALOG);
 #ifdef DEBUG
-  printf("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
+  g_print("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
 #endif
 
   /* Setup main window properties */
   gtk_window_set_title (GTK_WINDOW (wcalc->window), "WaveCalc");
   gtk_container_set_border_width (GTK_CONTAINER (wcalc->window), 0);
-  gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 525);
 
+  /*
+   * XXX need a better way to set this size.  We want to pick the
+   * right size, but then not have it change while running.
+   * Unfortunately, we don't know the correct size at compile time. 
+   */
+  gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550);
+
+  /* don't let the user grow or shrink this window */
+  gtk_window_set_policy(GTK_WINDOW(wcalc->window),FALSE,FALSE,TRUE);
 
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);
@@ -218,18 +250,20 @@ void wcalc_setup (void)
 
 
   /* Setup main window callbacks */
-  /* XXX probably need some sort of better way to catch this.
-     in fact, i probably need to keep a global list of windows
-     and have this event take windows out of the global list
-     then quit when they're all gone....  yep.  otherwise 
-     we never exit the program....
-  */
+
+  /* Window Manager "delete" */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
-		      GTK_SIGNAL_FUNC (delete_event),
+		      GTK_SIGNAL_FUNC (wcalc_delete_event),
 		      wcalc);
   
+  /* Window Manager "destroy" */
+  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy_event",
+		      GTK_SIGNAL_FUNC (wcalc_destroy_event),
+		      wcalc);
+  
+  /* File->Close */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy", 
-		      GTK_SIGNAL_FUNC (delete_event), 
+		      GTK_SIGNAL_FUNC (wcalc_destroy_sig), 
 		      wcalc);
 
 
@@ -292,7 +326,6 @@ static void units_init(Wcalc *wcalc,GtkWidget *parent)
   GtkWidget *my_hbox;
   GtkWidget *my_vbox;
   GList *glist=NULL;
-  GList *glist1=NULL;
   GList *glist2=NULL;
   GtkWidget *frame;
 
@@ -347,7 +380,7 @@ static void units_init(Wcalc *wcalc,GtkWidget *parent)
       gtk_box_pack_start (GTK_BOX (my_vbox), my_hbox, TRUE, FALSE, 1);
       gtk_widget_show (my_hbox);
   */
-
+#ifdef notdef
   glist1 = g_list_append(glist1,"Microstrip");
   /* glist1 = g_list_append(glist1,"Stripline"); */
   wcalc->combo_model =  gtk_combo_new();
@@ -357,38 +390,7 @@ static void units_init(Wcalc *wcalc,GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(wcalc->combo_model)->entry), FALSE);
   gtk_widget_set_usize(GTK_WIDGET( wcalc->combo_model),100,0);
   gtk_widget_show( wcalc->combo_model );
-
-  //#define NEWPUNITS
-#ifdef NEWPUNITS
-
-  menu = gtk_menu_new ();
-  menu_items = gtk_menu_item_new_with_label ("Microstrip");
-  gtk_menu_append (GTK_MENU (menu), menu_items);
-  /*gtk_signal_connect_object (GTK_OBJECT (menu_items), "activate",
-   *		     GTK_SIGNAL_FUNC (menuitem_response), 
-   *		     (gpointer) g_strdup (buf));
-   */
-  gtk_widget_show (menu_items);
-
-  menu_model = gtk_option_menu_new ();
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (menu_model), menu);  
-  gtk_box_pack_start (GTK_BOX (my_hbox), menu_model, 
-		      FALSE, FALSE, 30);
-  gtk_widget_show (menu_model);
-
-  opt = gtk_option_menu_new();
-  menu_punits = gtk_menu_new();
-  item = make_menu_item ("mil",
-			 GTK_SIGNAL_FUNC(cb_punits_menu_select),
-			 GINT_TO_POINTER (GTK_POS_TOP));
-  gtk_menu_append (GTK_MENU (menu_punits), item);
-  
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (opt), menu_punits);
-  gtk_box_pack_end (GTK_BOX (my_hbox), opt, TRUE, TRUE, 0);
-  gtk_widget_show (opt);
-  
-#else
-
+#endif
 
   /* 
    * Note, these strings are the same length so the window layout
@@ -414,9 +416,6 @@ static void units_init(Wcalc *wcalc,GtkWidget *parent)
 		      (gpointer) wcalc);
   gtk_widget_show( wcalc->combo_punits );
   
-
-#endif
-
 
   text = gtk_label_new( "Physical Units:" );
   gtk_box_pack_end (GTK_BOX (my_hbox), text, FALSE, FALSE, 0);
@@ -969,23 +968,6 @@ static void change_units_text(void * text, char * label)
   gtk_label_set_text(GTK_LABEL(text),label);
 }
 
-/* Convenience functions */
-
-#ifdef notdef
-static GtkWidget *make_menu_item( gchar *name,
-				  GtkSignalFunc callback,
-				  gpointer data )
-{
-  GtkWidget *item;
-  
-  item = gtk_menu_item_new_with_label (name);
-  gtk_signal_connect (GTK_OBJECT (item), "activate",
-		      callback, data);
-  gtk_widget_show (item);
-  
-  return(item);
-}
-#endif
 
 static Wcalc *Wcalc_new(void)
 {
@@ -1007,9 +989,9 @@ static Wcalc *Wcalc_new(void)
   new->line = microstrip_line_new();
 
 #ifdef DEBUG
-  printf("Wcalc_new():  New pointer is %p\n",new);
-  printf("Wcalc_new():  wcalc->line = %p\n",new->line);
-  printf("Wcalc_new():  wcalc->line->subs = %p\n",new->line->subs);
+  g_print("Wcalc_new():  New pointer is %p\n",new);
+  g_print("              wcalc->line = %p\n",new->line);
+  g_print("              wcalc->line->subs = %p\n",new->line->subs);
 #endif
 
   return(new);

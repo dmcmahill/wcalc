@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.7 2001/09/17 19:33:54 dan Exp $ */
+/* $Id: menus.c,v 1.8 2001/09/18 20:42:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,6 +33,7 @@
  * SUCH DAMAGE.
  */
 
+//#define DEBUG
 #include <gtk/gtk.h>
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -43,7 +44,6 @@
 #include "print.h"
 #include "wcalc.h"
 
-extern void   wcalc_setup (void);
 /*static void window_close(GtkWidget *widget,
 			 GdkEventAny *event,
 			 gpointer data);
@@ -79,8 +79,12 @@ static void window_close (gpointer data,
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",           NULL,          NULL,             0, "<Branch>" },
   { "/File/_New",       NULL,          NULL,             0, "<Branch>" },
+  { "/File/_New/Air Coil",
+                        NULL,          wcalc_setup,      WC_MODEL_AIRCOIL, NULL },
   { "/File/_New/Microstrip",
-                        NULL,          wcalc_setup,      0, NULL },
+                        NULL,          wcalc_setup,      WC_MODEL_MICROSTRIP, NULL },
+  { "/File/_New/Stripline",
+                        NULL,          wcalc_setup,      WC_MODEL_STRIPLINE, NULL },
   { "/File/sep1",       NULL,          NULL,             0, "<Separator>" },
   { "/File/_Open",      "<control>O",  wcalc_open,       0, NULL },
   { "/File/_Save",      "<control>S",  wcalc_save,       0, NULL },
@@ -147,9 +151,6 @@ static void  window_close (gpointer data,
   printf("window_close():  Called with input pointer %p\n",(void *) data);
   printf("window_close():  I will destroy window %p\n",window);
 #endif
-
-  /* unmake it modal */
-  //  gtk_grab_remove(window);
 
   /* blow away the window */
   gtk_widget_destroy(window);

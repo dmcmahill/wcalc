@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.4 2001/09/17 20:45:20 dan Exp $ */
+/*      $Id: wcalc.h,v 1.5 2001/09/18 20:42:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -45,6 +45,20 @@
 #endif
 
 #include "microstrip.h"
+
+/*
+ * List of available models.  If you add a model, you must include it
+ * here 
+ */
+enum {
+  WC_MODEL_AIRCOIL,
+  WC_MODEL_COUPLEDMICROSTRIP,
+  WC_MODEL_ICMICROSTRIP,
+  WC_MODEL_MICROSTRIP,
+  WC_MODEL_STRIPLINE,
+};
+
+GList *global_model_names;
 
 typedef struct WCALC
 {
@@ -120,6 +134,8 @@ typedef struct WCALC
 
 } Wcalc;
 
-
+void wcalc_setup(gpointer data,
+		 guint action,
+		 GtkWidget *widget);
 
 #endif __WCALC_H_
