@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.1 2001/09/15 02:43:07 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.2 2001/09/15 02:57:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -34,15 +34,15 @@
  */
 
 /*
- * a cgi interface to the coupled_microstrip calculator
+ * a cgi interface to the stripline calculator
  */
 
 //#define DEBUG
 
 #include <stdio.h>
 #include "cgic.h"
-#include "coupled_microstrip.h"
-#include "coupled_microstrip_id.h"
+#include "stripline.h"
+#include "stripline_id.h"
 
 #define ACTION_LEN  20
 
@@ -52,15 +52,13 @@
 #define ANALYZE   2
 #define SYNTH_H   3
 #define SYNTH_W   4
-#define SYNTH_S   5
-#define SYNTH_ES  6
-#define SYNTH_L   7
+#define SYNTH_ES  5
+#define SYNTH_L   6
 
 
 
 /* defaults for the various parameters */
 #define defW      110.0
-#define defS      20.0
 #define defL      1000.0
 
 #define defTMET   1.4
@@ -74,54 +72,42 @@
 #define defFREQ   1000.0
 
 #define defRO     50.0
-#define defK      0.2
-#define defZEVEN  50.0
-#define defZODD   50.0
 #define defELEN   90.0
 
+static const char *name_string="stripline.cgi";
 
-/* default for z0/k vs even/odd input for synthesis */
-#define defSTYPE  0
-#define NSTYPE    2
-static char *stypeStrings[]={"zk" , "evod"};
-	     
-static const char *name_string="coupled_microstrip.cgi";
-		
 int cgiMain(void){
 
   /* CGI variables */
   char str_action[ACTION_LEN];
 
-  int stype;
-
   int action;
   int input_err = 0;
 
-  /* coupled_microstrip variables */
-  coupled_microstrip_line *line;
+  /* stripline variables */
+  stripline_line *line;
   double freq, freq_Hz;
 
-  double rho,rough,tmet,w,s,l,h,es,tand;
-  double zeven,zodd,k;
+  double rho,rough,tmet,w,l,h,es,tand;
   double Ro=0.0;
+  double Xo=0.0;
   double elen;
 
   /* delay on the line (ns) */
   double delay;
-  
-  /* these are either "" or "checked\0" */
-  char zkchecked[8];
-  char evodchecked[8];
+
+  /* The circuit model */
+  double Ls, Rs, Cs, Gs;
 
 /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
 
-  /* create the coupled_microstrip line */
-  line = coupled_microstrip_line_new();
+  /* create the stripline line */
+  line = stripline_line_new();
 
   /*
    * extract the parameters from the CGI form and use them to populate
-   * the coupled_microstrip structure
+   * the stripline structure
    */
 
 
@@ -143,19 +129,13 @@ int cgiMain(void){
     input_err=1;
   }
 
-  /* Coupled_Microstrip width */
+  /* Stripline width */
   if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
      cgiFormSuccess){
     input_err=1;
   }
 
-  /* Coupled_Microstrip spacing */
-  if(cgiFormDoubleBounded("s",&s,0.0001,1000.0,defS) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Coupled_Microstrip length */
+  /* Stripline length */
   if(cgiFormDoubleBounded("l",&l,1.0,100000.0,defL) !=
      cgiFormSuccess){
     input_err=1;
@@ -192,21 +172,6 @@ int cgiMain(void){
     input_err=1;
   }
 
-  if(cgiFormDoubleBounded("k",&k,0.0001,1000.0,defK) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  if(cgiFormDoubleBounded("zeven",&zeven,0.0001,1000.0,defZEVEN) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  if(cgiFormDoubleBounded("zodd",&zodd,0.0001,1000.0,defZODD) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
   if(cgiFormDoubleBounded("elen",&elen,0.0001,1000.0,defELEN) !=
      cgiFormSuccess){
     input_err=1;
@@ -222,10 +187,6 @@ int cgiMain(void){
      cgiFormSuccess){
     action = SYNTH_W;
   }
-  else if(cgiFormStringNoNewlines("synth_s",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_S;
-  }
   else if(cgiFormStringNoNewlines("synth_h",str_action,ACTION_LEN) ==
      cgiFormSuccess){
     action = SYNTH_H;
@@ -240,26 +201,15 @@ int cgiMain(void){
   }
   else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
      cgiFormSuccess){
-    action = RESET;
+    action = LOAD;
   }
   else{
     action = LOAD;
   }
-
-  /* check out the checkbox */
-  cgiFormRadio("stype",stypeStrings,NSTYPE,&stype,defSTYPE);
-
-
-#ifdef DEBUG
-  fprintf(cgiOut,"<PRE>\n");
-  fprintf(cgiOut,"CGI:  action = %d\n",action);
-  fprintf(cgiOut,"CGI:  selected stype %d = %s\n",stype,stypeStrings[stype]);
-  fprintf(cgiOut,"</PRE>\n");
-#endif
+  
 
   if ( (action == RESET) || (action == LOAD) ){
     w     = defW;
-    s     = defS;
     l     = defL;
     
     tmet  = defTMET;
@@ -271,37 +221,12 @@ int cgiMain(void){
     tand  = defTAND;
 
     Ro    = defRO;
-    k     = defK;
-    zeven = defZEVEN;
-    zodd  = defZODD;
     elen  = defELEN;
+  }
 
-    stype = defSTYPE;
-    sprintf(zkchecked,"checked");
-    sprintf(evodchecked," ");
-  }
-  else{
-    switch (stype){
-    case 0:
-      sprintf(zkchecked,"checked");
-      sprintf(evodchecked," ");
-      break;
-    case 1:
-      sprintf(zkchecked," ");
-      sprintf(evodchecked,"checked");
-      break;
-    default:
-      fprintf(cgiOut,"<PRE>\n");
-      fprintf(cgiOut,"CGI:  illegal stype (%d)\n",stype);
-      fprintf(cgiOut,"</PRE>\n");
-      exit(1);
-      break;
-    }
-  }
 
   /* copy data over to the line structure */
   line->w           = w     ;
-  line->s           = s     ;
   line->l           = l     ;
   line->subs->h     = h     ;
   line->subs->tmet  = tmet  ;
@@ -316,9 +241,8 @@ int cgiMain(void){
   line->subs->rho   = rho;
 
   line->z0 = Ro;
-  line->k = k;
-  line->z0e = zeven;
-  line->z0o = zodd;
+  line->Ro = Ro;
+  line->Xo = 0.0;
   line->len = elen;
 
   
@@ -326,9 +250,8 @@ int cgiMain(void){
   case ANALYZE:
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
-    fprintf(cgiOut,"CGI: --------------- Coupled_Microstrip  Analysis -----------\n");
+    fprintf(cgiOut,"CGI: --------------- Stripline  Analysis -----------\n");
     fprintf(cgiOut,"CGI: Metal width                 = %g mil\n",line->w);
-    fprintf(cgiOut,"CGI: Trace spacing               = %g mil\n",line->s);
     fprintf(cgiOut,"CGI: Metal length                = %g mil\n",line->l);
     fprintf(cgiOut,"CGI: Metal thickness             = %g mil\n",line->subs->tmet);
     fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->subs->rho);
@@ -342,51 +265,39 @@ int cgiMain(void){
 #endif
 
     /* 
-     * in case coupled_microstrip_calc has some error output, surround it
+     * in case stripline_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    coupled_microstrip_calc(line,freq_Hz);
+    stripline_calc(line,freq_Hz);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_H);
-    fprintf(cgiOut,"Not Implemented Yet\n");
+    stripline_syn(line,freq_Hz,SLISYN_H);
     fprintf(cgiOut,"</pre>\n");
     h = line->subs->h;
     break;
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_W);
-    fprintf(cgiOut,"Not Implemented Yet\n");
+    stripline_syn(line,freq_Hz,SLISYN_W);
     fprintf(cgiOut,"</pre>\n");
     w = line->w;
     break;
 
-  case SYNTH_S:
-    fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_W);
-    fprintf(cgiOut,"Not Implemented Yet\n");
-    fprintf(cgiOut,"</pre>\n");
-    s = line->s;
-    break;
-
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_ES);
-    fprintf(cgiOut,"Not Implemented Yet\n");
+    stripline_syn(line,freq_Hz,SLISYN_ES);
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
     break;
 
   case SYNTH_L:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_L);
-    fprintf(cgiOut,"Not Implemented Yet\n");
+    stripline_syn(line,freq_Hz,SLISYN_L);
     fprintf(cgiOut,"</pre>\n");
     l = line->l;
     break;
@@ -394,6 +305,12 @@ int cgiMain(void){
   }
 
   /* extract the incremental circuit model */
+  Ls = line->Ls;
+  Rs = line->Rs;
+  Cs = line->Cs;
+  Gs = line->Gs;
+  Ro   = line->Ro;
+  Xo   = line->Xo;
 
   /* electrical and physical length */
   elen = line->len;
@@ -409,7 +326,7 @@ int cgiMain(void){
   delay = elen /(360.0 * freq_Hz * 1e-9);
 
   /* include the HTML output */
-#include "coupled_microstrip_html.c"
+#include "stripline_html.c"
 #include "footer_html.c"
 	
   return 0;

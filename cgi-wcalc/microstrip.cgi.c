@@ -1,4 +1,4 @@
-/* $Id: stripline.cgi.c,v 1.1 2001/09/13 19:13:27 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.3 2001/09/15 02:57:40 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -34,15 +34,15 @@
  */
 
 /*
- * a cgi interface to the stripline calculator
+ * a cgi interface to the microstrip calculator
  */
 
 //#define DEBUG
 
 #include <stdio.h>
 #include "cgic.h"
-#include "stripline.h"
-#include "stripline_id.h"
+#include "microstrip.h"
+#include "microstrip_id.h"
 
 #define ACTION_LEN  20
 
@@ -74,7 +74,7 @@
 #define defRO     50.0
 #define defELEN   90.0
 
-static const char *name_string="stripline.cgi";
+static const char *name_string="microstrip.cgi";
 
 int cgiMain(void){
 
@@ -84,8 +84,8 @@ int cgiMain(void){
   int action;
   int input_err = 0;
 
-  /* stripline variables */
-  stripline_line *line;
+  /* microstrip variables */
+  microstrip_line *line;
   double freq, freq_Hz;
 
   double rho,rough,tmet,w,l,h,es,tand;
@@ -102,12 +102,12 @@ int cgiMain(void){
 /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
 
-  /* create the stripline line */
-  line = stripline_line_new();
+  /* create the IC microstrip line */
+  line = microstrip_line_new();
 
   /*
    * extract the parameters from the CGI form and use them to populate
-   * the stripline structure
+   * the microstrip structure
    */
 
 
@@ -129,13 +129,13 @@ int cgiMain(void){
     input_err=1;
   }
 
-  /* Stripline width */
+  /* Microstrip width */
   if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
      cgiFormSuccess){
     input_err=1;
   }
 
-  /* Stripline length */
+  /* Microstrip length */
   if(cgiFormDoubleBounded("l",&l,1.0,100000.0,defL) !=
      cgiFormSuccess){
     input_err=1;
@@ -250,7 +250,7 @@ int cgiMain(void){
   case ANALYZE:
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
-    fprintf(cgiOut,"CGI: --------------- Stripline  Analysis -----------\n");
+    fprintf(cgiOut,"CGI: --------------- Microstrip  Analysis -----------\n");
     fprintf(cgiOut,"CGI: Metal width                 = %g mil\n",line->w);
     fprintf(cgiOut,"CGI: Metal length                = %g mil\n",line->l);
     fprintf(cgiOut,"CGI: Metal thickness             = %g mil\n",line->subs->tmet);
@@ -265,39 +265,39 @@ int cgiMain(void){
 #endif
 
     /* 
-     * in case stripline_calc has some error output, surround it
+     * in case microstrip_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    stripline_calc(line,freq_Hz);
+    microstrip_calc(line,freq_Hz);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,freq_Hz,SLISYN_H);
+    microstrip_syn(line,freq_Hz,MLISYN_H);
     fprintf(cgiOut,"</pre>\n");
     h = line->subs->h;
     break;
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,freq_Hz,SLISYN_W);
+    microstrip_syn(line,freq_Hz,MLISYN_W);
     fprintf(cgiOut,"</pre>\n");
     w = line->w;
     break;
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,freq_Hz,SLISYN_ES);
+    microstrip_syn(line,freq_Hz,MLISYN_ES);
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
     break;
 
   case SYNTH_L:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,freq_Hz,SLISYN_L);
+    microstrip_syn(line,freq_Hz,MLISYN_L);
     fprintf(cgiOut,"</pre>\n");
     l = line->l;
     break;
@@ -326,7 +326,7 @@ int cgiMain(void){
   delay = elen /(360.0 * freq_Hz * 1e-9);
 
   /* include the HTML output */
-#include "stripline_html.c"
+#include "microstrip_html.c"
 #include "footer_html.c"
 	
   return 0;

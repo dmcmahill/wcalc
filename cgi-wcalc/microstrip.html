@@ -1,5 +1,3 @@
-<!-- $Id: ic_microstrip.html,v 1.4 2001/09/16 20:23:21 dan Exp $ -->
-
 <!--
  * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
@@ -37,68 +35,117 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Integrated Circuit Microstrip Analysis</TITLE>
-<!-- Created by: Dan McMahill, 2001/09/08 -->
+<TITLE>Microstrip Analysis/Synthesis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
 <LINK REV="made" HREF="mailto:mcmahill@mtl.mit.edu">
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="description" content="Integrated Circuit Microstrip Analysis">
+<meta name="description" content="Microstrip Analysis/Synthesis">
 <meta name="keywords" content="
-integrated circuit microstrip
+microstrip
 ">
 
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000">
 
-<H1 ALIGN="CENTER">Integrated Circuit Microstrip Analysis Calculator</H1>
+<H1 ALIGN="CENTER">Microstrip Analysis/Synthesis Calculator</H1>
 
 <P>
 
 
-<FORM METHOD=GET ACTION="/cgi-bin/cad/ic_microstrip.cgi">
+<FORM METHOD=GET ACTION="/cgi-bin/cad/microstrip.cgi">
 <TABLE>
 <TR>
 <TD>
 
 <TABLE>
 <TR ALIGN="CENTER">
-<TD><IMG SRC="/cad/ic_microstrip.png" WIDTH=429 HEIGHT=212 
-     ALT="[IC Microstrip Cross-section]"></TD>
+<TD><IMG SRC="/cad/microstrip.png" WIDTH=368 HEIGHT=194 
+     ALT="[Microstrip Cross-section]"></TD>
 </TR>
 <TR ALIGN="CENTER">
-<TD><IMG SRC="/cad/ic_microstrip_model.png" WIDTH=313 HEIGHT=141
-     ALT="[IC Microstrip Circuit Model]"></TD>
+<TD><IMG SRC="/cad/microstrip_model.png" WIDTH=300 HEIGHT=141
+     ALT="[Microstrip Circuit Model]"></TD>
 
 <TR ALIGN="CENTER">
 <TD>
 
 <TABLE>
+<!--
 <TR>
-<TD>Lmis =</TD>
-<TD><@g@Lmis*1e6@></TD>
-<TD>[pH/um]</TD>
+<TD>Ls =</TD>
+<TD><@g@Ls*1e9@></TD>
+<TD>[nH/mil]</TD>
 </TR>
+
 <TR>
-<TD>Rmis =</TD>
-<TD><@g@Rmis*1e-6@></TD>
-<TD>[ohm/um]</TD>
+<TD>Rs =</TD>
+<TD><@g@Rs@></TD>
+<TD>[ohm/mil]</TD>
 </TR>
+
 <TR>
-<TD>Cmis =</TD>
-<TD><@g@Cmis*1e9@></TD>
-<TD>[fF/um]</TD>
+<TD>Cs =</TD>
+<TD><@g@Cs*1e12@></TD>
+<TD>[pF/mil]</TD>
 </TR>
+
 <TR>
-<TD>Gmis =</TD>
-<TD><@g@Gmis*1e-6@></TD>
-<TD>[(ohm-cm)^-1]</TD>
+<TD>Gs =</TD>
+<TD><@g@Gs@></TD>
+<TD>[(ohm-mil)^-1]</TD>
 </TR>
+-->
+
 <TR>
 <TD>Z0 =</TD>
 <TD><@g@Ro@> + j <@g@Xo@></TD>
 <TD>[ohm]</TD>
 </TR>
+
+<TR>
+<TD>Keff =</TD>
+<TD><@g@line->keff@></TD>
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Loss =</TD>
+<TD><@g@line->loss@></TD>
+<TD>[dB]</TD>
+</TR>
+
+<TR>
+<TD>Loss/len =</TD>
+<TD><@g@line->losslen@></TD>
+<TD>[dB/mil]</TD>
+</TR>
+
+<TR>
+<TD>Skin depth =</TD>
+<TD><@g@line->skindepth@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Delay =</TD>
+<TD><@g@delay@></TD>
+<TD>[ns]</TD>
+</TR>
+
+<TR>
+<TD>End correction =</TD>
+<TD><@g@line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Corrected length =</TD>
+<TD><@g@l-line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
 </TABLE>  <!-- end of model parameter table -->
 </TD>
 </TR>
@@ -107,50 +154,59 @@ integrated circuit microstrip
 
 <TD>
 <TABLE>
+
 <TR>
 <TD>Metal width (W)</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
-<TD>[um]</TD>
+<TD>[mil]</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Trace length (L)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>"></TD>
+<TD>[mil]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal thickness (<A HREF="/cad/mcalc/tmetinfo.html">Tmet</A>)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Metal resistivity (<A HREF="/cad/mcalc/rhoinfo.html">Rho</A>)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@rho@>"></TD>
+<TD>[relative to Cu]</TD>
+</TR>
+
+<TR>
+<TD>Metal surface roughness (<A HREF="/cad/mcalc/rghinfo.html">Rgh</A>)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@rough@>"></TD>
+<TD>[mil-rms]</TD>
 </TR>
 
 <TR>
 <TD>Substrate thickness (H)</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
-<TD>[um]</TD>
+<TD>[mil]</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
 </TR>
 
 <TR>
-<TD>Substrate relative dielectric constant (Es)</TD>
+<TD>Substrate relative dielectric constant (<A HREF="/cad/mcalc/erinfo.html">Er</A>)</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD></TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Substrate loss tangent (<A HREF="/cad/mcalc/erinfo.html">Tand</A>)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@tand@>"></TD>
 <TD></TD>
 </TR>
 
-<TR>
-<TD>Substrate resistivity (rhos)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhos" VALUE="<@g@rhos@>"></TD>
-<TD>[ohm-cm]</TD>
-</TR>
-
-<TR>
-<TD>Oxide thickness (Tox)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@tox@>"></TD>
-<TD>[um]</TD>
-<TD><INPUT TYPE="SUBMIT" NAME="synth_tox" VALUE="calc"></TD>
-</TR>
-
-<TR>
-<TD>Oxide relative dielectric constant (Eox)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@eox@>"></TD>
-<TD> </TD>
-</TR>
-
-<TR>
-<TD>Metal thickness (Tmet)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
-<TD>[um]</TD>
-</TR>
 
 <TR>
 <TD>Frequency</TD>
@@ -162,10 +218,19 @@ integrated circuit microstrip
 <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
 <INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
 </TR>
+
 <TR>
-<TD>Characteristic Resistance</TD>
+<TD>Characteristic Impedance</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"></TD>
 <TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Electrical Length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"></TD>
+<TD>[degrees]</TD>
+</TR>
+
 </TABLE>
 
 </TR>
@@ -173,4 +238,5 @@ integrated circuit microstrip
 
 </FORM>
 
+<!-- $Id: microstrip.html,v 1.6 2001/09/15 01:53:59 dan Exp $ -->
 
