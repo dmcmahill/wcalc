@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.2 2001/10/20 18:06:32 dan Exp $ */
+/* $Id: microstrip.c,v 1.3 2001/11/25 16:32:18 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG_CALC   /* debug the microstrip_calc() function */
-//#define DEBUG_SYN    /* debug the microstrip_syn() function  */
+/* #define DEBUG_CALC */   /* debug the microstrip_calc() function */
+/* #define DEBUG_SYN */    /* debug the microstrip_syn() function  */
 
 #include "config.h"
 
