@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.10 2001/09/27 02:01:50 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.11 2001/09/27 17:43:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,6 +33,7 @@
  * SUCH DAMAGE.
  */
 
+#include "config.h"
 
 #include <gtk/gtk.h>
 
@@ -42,8 +43,8 @@
 #include <string.h>
 #endif
 
+#include "alert.h"
 #include "menus.h"
-
 #include "microstrip.h"
 #include "microstrip_gui.h"
 #include "physconst.h"
@@ -745,9 +746,11 @@ static void mscalc( microstrip_gui *gui, GtkWidget *w, gpointer data )
       vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_L) ); 
       gui->line->l=sf*atof(vstr);
 
+      if (microstrip_calc(gui->line,freq) != 0)
+      	alert("Analysis failed for an unknown reason.\n"
+	      "Please save your inputs and send the file\n"
+	      "to the program author.\n");
 
-      gui->line->z0=microstrip_calc(gui->line,freq);
-      
       sprintf(str,"%8f",gui->line->z0);
       gtk_entry_set_text( GTK_ENTRY(gui->text_Z0), str );
 			  
@@ -766,7 +769,8 @@ static void mscalc( microstrip_gui *gui, GtkWidget *w, gpointer data )
       vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
       gui->line->len = atof(vstr);
 
-      microstrip_syn(gui->line,freq,MLISYN_W);
+      if (microstrip_syn(gui->line,freq,MLISYN_W) != 0)
+	alert("Synthesis failed\n");
 
  
       sprintf(str,"%8f",gui->line->w/sf);

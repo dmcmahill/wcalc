@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.3 2001/09/13 17:52:53 dan Exp $ */
+/* $Id: microstrip.h,v 1.4 2001/09/17 20:45:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -74,7 +74,7 @@ typedef struct MICROSTRIP_LINE
 } microstrip_line;
 
 
-double microstrip_calc(microstrip_line *line, double f);
+int microstrip_calc(microstrip_line *line, double f);
 int microstrip_syn(microstrip_line *line, double f, int flag);
 
 void microstrip_line_free(microstrip_line * line);

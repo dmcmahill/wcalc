@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.8 2001/09/27 17:42:46 dan Exp $ */
+/* $Id: microstrip.c,v 1.9 2001/09/27 23:43:22 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -52,7 +52,7 @@
 #define WITHLOSS 1
 
 
-static double microstrip_calc_int(microstrip_line *line, double f, int flag);
+static int microstrip_calc_int(microstrip_line *line, double f, int flag);
 
 /* 
  *
@@ -117,29 +117,32 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag);
  */
 
 /* function [z0,len,loss,eeff,depth]=mlicalc(w,l,f,subs,flag)*/
-double microstrip_calc(microstrip_line *line, double f)
+int microstrip_calc(microstrip_line *line, double f)
 {
-  double z;
-  z=microstrip_calc_int(line, f, WITHLOSS);
-
+  int rslt;
+  rslt=microstrip_calc_int(line, f, WITHLOSS);
+  if(rslt != 0)
+    return rslt;
+  
   /* find the incremental circuit model */
   line->Ls = 0.0;
   line->Rs = 0.0;
   line->Cs = 0.0;
   line->Gs = 0.0;
 
-  line->Ro = z;
+  line->Ro = line->z0;
   line->Xo = 0.0;
 
-  return(z);
+  return(rslt);
 }
 
 /*
  * flag=1 enables loss calculations
  * flag=0 disables loss calculations
  */
-static double microstrip_calc_int(microstrip_line *line, double f, int flag)
+static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 {
+  int rslt=0;
   double wmil,w,lmil,l;
 
   double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
@@ -418,14 +421,19 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   /* subsl = subs; */
 
 	   line->subs->er = 1.0;
-	   z2=microstrip_calc_int(line,f,NOLOSS);
+	   rslt=microstrip_calc_int(line,f,NOLOSS);
+	   if (rslt)
+	     return rslt;
+	   z2=line->z0;
 
 
 	   line->subs->h = hmil + delta;
 	   line->subs->tmet = tmil - delta;
 	   line->w = wmil-delta;
-	   z1=microstrip_calc_int(line,f,NOLOSS);
-	   
+	   rslt=microstrip_calc_int(line,f,NOLOSS);
+	   if (rslt)
+	     return rslt;
+	   z1=line->z0;
 	   line->subs->er = er;
 	   line->subs->h = hmil;
 	   line->subs->tmet = tmil;
@@ -490,11 +498,14 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag)
        depth = 0.0;
      }
 
+   /*  store results */
+   line->z0 = z0;
+
    line->loss = loss;
    line->losslen = loss/line->l;
    line->skindepth = depth;
 
-   return (z0);
+   return (rslt);
 }
 
 /*
@@ -526,7 +537,7 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag)
 
 int microstrip_syn(microstrip_line *line, double f, int flag)
 {
-
+  int rslt = 0;
   double l;
   double Ro, Xo;
   double v,len;
@@ -669,23 +680,36 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
   if (!done){
     /* Initialize the various error values */
     *optpar = varmin;
-    errmin = microstrip_calc_int(line,f,NOLOSS) - Ro;
+    rslt = microstrip_calc_int(line,f,NOLOSS);
+    if (rslt)
+      return rslt;
+    errmin = line->z0 - Ro;
 
     *optpar = varmax;
-    errmax = microstrip_calc_int(line,f,NOLOSS) - Ro;
+    rslt = microstrip_calc_int(line,f,NOLOSS);
+    if (rslt)
+      return rslt;
+    errmax = line->z0 - Ro;
 
     *optpar = var;
-    err = microstrip_calc_int(line,f,NOLOSS) - Ro;
+    rslt = microstrip_calc_int(line,f,NOLOSS);
+    if (rslt)
+      return rslt;
+    err = line->z0 - Ro;
 
     varold = 0.99*var;
     *optpar = varold;
-    errold = microstrip_calc_int(line,f,NOLOSS) - Ro;
+    rslt = microstrip_calc_int(line,f,NOLOSS);
+    if (rslt)
+      return rslt;
+    errold = line->z0 - Ro;
 
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0){
-      alert("microstrip_syn():  could not bracket the solution\n");
-      exit(1);
+      alert("Could not bracket the solution.\n"
+	    "Synthesis failed.\n");
+      return -1;
     }
   
     /* figure out the slope of the error vs variable */
@@ -729,8 +753,11 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
     /* update the error value */
     *optpar = var;
-    err = microstrip_calc_int(line,f,NOLOSS) - Ro;
-    
+    rslt = microstrip_calc_int(line,f,NOLOSS);
+    err = line->z0 - Ro;
+    if (rslt)
+      return rslt;
+
       
     /* update our bracket of the solution. */
 
@@ -756,9 +783,9 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      alert("MLISYN failed to converge in %d iterations\n",
-	      maxiters);
-      exit(1);
+      alert("Synthesis failed to converge in\n"
+	    "%d iterations\n", maxiters);
+      return -1;
     }
     
 
@@ -769,7 +796,9 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
   }
 
   /* velocity on line */
-  microstrip_calc(line,f);
+  rslt = microstrip_calc(line,f);
+  if (rslt)
+    return rslt;
   eeff = line->keff;
 
   v = LIGHTSPEED / sqrt(eeff);
@@ -779,7 +808,9 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
   line->l=M2MIL(l);
 
   /* recalculate using real length to find loss  */
-  microstrip_calc(line,f);
+  rslt = microstrip_calc(line,f);
+  if (rslt)
+    return rslt;
   
 #ifdef DEBUG_SYN
   printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
