@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.9 2001/09/20 20:32:50 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.10 2001/09/27 02:01:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -387,6 +387,7 @@ static void outputs_init(microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
+  GtkWidget *box;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -399,27 +400,54 @@ static void outputs_init(microstrip_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
 
   /* Text labels */
+  /* Keff */
   text = gtk_label_new( "Keff" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 0, 1);
   gtk_widget_show(text);
+
+  box = gtk_hbox_new(FALSE,0);
+  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,0,1);
+  gtk_widget_show(box);
   text = gtk_label_new( "--" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,0,1);
+  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
+
+  /* Loss */
   text = gtk_label_new( "Loss" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,1,2);
   gtk_widget_show(text);
+
+  box = gtk_hbox_new(FALSE,0);
+  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,1,2);
+  gtk_widget_show(box);
   text = gtk_label_new( "dB" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,1,2);
+  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
+
+  /* Loss/length */
   text = gtk_label_new( "Loss/Len" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,2,3);
   gtk_widget_show(text);
-  text = gtk_label_new( "dB/mil" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,2,3);
+
+  box = gtk_hbox_new(FALSE,0);
+  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,2,3);
+  gtk_widget_show(box);
+  text = gtk_label_new( "dB/" );
+  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
+  text = gtk_label_new( MILSTR );
+  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
+  gtk_widget_show(text);
+  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
+
+  /* Skin Depth */
   text = gtk_label_new( "Skin Depth" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 0, 1);
   gtk_widget_show(text);
+
+  box = gtk_hbox_new(FALSE,0);
+  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,2,3);
+  gtk_widget_show(box);
   text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,0,1);
   gtk_widget_show(text);
@@ -454,6 +482,7 @@ static void substrate_init(microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
+  GtkWidget *box;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -555,9 +584,16 @@ static void substrate_init(microstrip_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_rough);
 
-  text = gtk_label_new( "mil-rms" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,2,3);
+  box = gtk_hbox_new(FALSE,0);
+  gtk_table_attach_defaults (GTK_TABLE(table), box, 5,6,2,3);
+  gtk_widget_show(box);
+  text = gtk_label_new( "-rms" );
+  gtk_box_pack_end (GTK_BOX (box), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
+  text = gtk_label_new( MILSTR );
+  gtk_box_pack_end (GTK_BOX (box), text, FALSE, FALSE, 0);
+  gtk_widget_show(text);
+  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
 
   gtk_entry_set_text( GTK_ENTRY(gui->text_H),"62" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_er),"4.8" );
