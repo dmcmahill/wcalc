@@ -1,0 +1,110 @@
+# $Id$
+#
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/stripline.wc
+# Modified:  Tue Jul 27 22:36:15 2004
+# Wcalc Version 0.5
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = stripline
+
+
+[stripline]
+
+# Stripline file version
+file_version = 0.1
+
+# Length (meters)
+L = 0.0254
+
+# Width (meters)
+W = 0.00127
+
+# Characteristic Impedance (ohms)
+Z0 = 32.85768569839
+
+# Electrical Length (degrees)
+Elen = 60.1420990751205
+
+# Frequency of operation
+freq = 900000000
+
+# User units
+
+# Length, width, substrate and metal thickness units
+units_lwht = 5
+# [mil]
+
+# Incremental inductance units
+units_L = 1-6
+# [nH/inch]
+
+# Incremental resistance units
+units_R = 0-6
+# [mOhm/inch]
+
+# Incremental capacitance units
+units_C = 1-6
+# [pF/inch]
+
+# Incremental conductance units
+units_G = 0-6
+# [uMho/inch]
+
+# Line physical length units
+units_len = 0
+# [nm]
+
+# Frequency units
+units_freq = 3
+# [MHz]
+
+# Loss units
+units_loss = 0
+# [dB]
+
+# Loss/length units
+units_losslen = 0-6
+# [dB/inch]
+
+# Resistivity units
+units_rho = 1-4
+# [Ohm-m]
+
+# Surface roughness units (RMS)
+units_rough = 5
+# [mil]
+
+# Delay units
+units_delay = 3
+# [ns]
+
+# Skin depth units
+units_depth = 5
+# [mil]
+
+# End correction units
+units_deltal = 6
+# [inch]
+
+
+[substrate]
+
+# Height (meters)
+H = 0.0015748
+
+# Relative dielectric constant
+ER = 4.8
+
+# Metalization thickness (meters)
+TMET = 3.556e-05
+
+# Metalization resistivity relative to copper
+RHO = 3e-08
+
+# Metalization surface roughness (meters-RMS)
+ROUGH = 2.54e-08
+
+# Dielectric loss tangent
+TAND = 0.01
+
