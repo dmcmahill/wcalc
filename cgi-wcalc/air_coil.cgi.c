@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.18 2004/08/13 04:43:54 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.19 2004/08/27 22:58:04 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -173,10 +173,14 @@ int cgiMain(void){
     
 
     /* Number of turns */
-    if(cgiFormDoubleBounded("N", &N, 1.0, 1000.0, defN) !=
+    if(cgiFormDouble("N", &N, defN) !=
        cgiFormSuccess){
       inputErr(&input_err);
-      printFormError("N must be in the range 1 <= N <= 1000");
+      printFormError("Error reading number of turns");
+    }
+    if( N < 1.0 ) {
+      N = defN;
+      printFormError("Number of turns must be &gt = 1");
     }
     
     /* wire size */
@@ -187,18 +191,14 @@ int cgiMain(void){
     }
     
     /* Metal resistivity */
-    /*
-     * Copper is 1.72e-8 ohm-m
-     * Lets only allow materials with in about a factor of 1000 in
-     * each way.  This should be a ridicuously wide range 
-     */
-    if(cgiFormDoubleBounded("rho", &rho, 
-			    1.72e-11/coil->units_rho->sf, 
-			    1.72e-5/coil->units_rho->sf,
-			    defRHO/coil->units_rho->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("rho", &rho, defRHO/coil->units_rho->sf) 
+       != cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("Resistivity out of range");
+      printFormError("Error reading resistivity");
+    }
+    if( rho < 0.0 ) {
+      rho = defRHO/coil->units_rho->sf;
+      printFormError("Conductor resistivity may not be negative");
     }
     
     /* inside diameter */
@@ -206,6 +206,10 @@ int cgiMain(void){
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("Error reading diameter");
+    }
+    if( dia < 0.0 ) {
+      dia = defDIA/coil->units_dia->sf;
+      printFormError("Coil diameter may not be negative");
     }
     
     
@@ -215,7 +219,10 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Error reading length");
     }
-    
+    if( len < 0.0 ) {
+      len = defLEN/coil->units_dia->sf;
+      printFormError("Coil length may not be negative");
+    }    
 
     /* Solenoid fill  */
     if(cgiFormDoubleBounded("fill", &coil->fill, 1.0, 10.0, defFILL) !=
@@ -236,6 +243,10 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Error reading frequency");
     }
+    if( freq < 0.0 ) {
+      freq = defFREQ/coil->units_freq->sf;
+      printFormError("Frequency may not be negative");
+    }    
 
     /* Desired Inductance */
     if(cgiFormDouble("L", &L, defIND/coil->units_L->sf) !=
@@ -243,6 +254,10 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Error reading inductance");
     }
+    if( L <= 0.0 ) {
+      L = defIND/coil->units_L->sf;
+      printFormError("Inductance must be &gt 0");
+    }    
 
 
     /* copy data over to the coil structure */

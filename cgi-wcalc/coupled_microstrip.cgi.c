@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.8 2004/08/13 04:43:56 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.9 2004/08/13 05:36:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -85,24 +85,24 @@
 
 
 /* defaults for the various parameters */
-#define defW      110.0
-#define defS      20.0
-#define defL      1000.0
+#define defW      MIL2M(110.0)
+#define defS      MIL2M(20.0)
+#define defL      MIL2M(1000.0)
 
-#define defTMET   1.4
-#define defRGH    0.05
-#define defRHO    1.0
+#define defTMET   MIL2M(1.4)
+#define defRGH    MIL2M(0.05)
+#define defRHO    1.72e-8
 
-#define defH      62.0
+#define defH      MIL2M(62.0)
 #define defES     4.8
 #define defTAND   0.01
 
-#define defFREQ   1000.0
+#define defFREQ   1000.0e6
 
 #define defRO     50.0
 #define defK      0.2
-#define defZEVEN  50.0
-#define defZODD   50.0
+#define defZEVEN  60.0
+#define defZODD   40.0
 #define defELEN   90.0
 
 
@@ -213,95 +213,146 @@ int cgiMain(void){
    */
 
   if ( (action != RESET) && (action != LOAD) ) {
-
+    
     cgi_units_menu_read();
+        
+    /* Metal resistivity */
+    if(cgiFormDouble("rho", &rho, defRHO/line->units_rho->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading resistivity");
+    }
+    if( rho < 0.0 ) {
+      rho = defRHO/line->units_rho->sf;
+      printFormError("Resistivity may not be negative");
+    }
 
-  /* Metal resistivity relative to copper */
-  if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Metal thickness (m) */
+    if(cgiFormDouble("tmet", &tmet, defTMET/line->units_lwst->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading metal thickness");
+    }
+    if( tmet < 0.0 ) {
+      tmet = defTMET/line->units_lwst->sf;
+      printFormError("Metal thickness may not be negative");
+    }
 
-  /* Metal thickness (m) */
-  if(cgiFormDoubleBounded("tmet",&tmet,0.0001,1000.0,defTMET) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Metalization roughness */
+    if(cgiFormDouble("rough", &rough, defRGH/line->units_rough->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading metal surface roughness");
+    }
+    if( rough < 0.0 ) {
+      rough = defRGH/line->units_rough->sf;
+      printFormError("Metal surface roughness may not be negative");
+    }
+    
+    /* Coupled_Microstrip width */
+    if(cgiFormDouble("w", &w, defW/line->units_lwst->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading metal width");
+    }
+    if( w <= 0.0 ) {
+      w = defW/line->units_lwst->sf;
+      printFormError("Metal width must be %gt 0");
+    }
 
-  /* Metalization roughness */
-  if(cgiFormDoubleBounded("rough",&rough,0.0001,1000.0,defRGH) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Coupled_Microstrip spacing */
+    if(cgiFormDouble("s", &s, defS/line->units_lwst->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading metal width");
+    }
+    if( s <= 0.0 ) {
+      s = defS/line->units_lwst->sf;
+      printFormError("Metal spacing must be %gt 0");
+    }
+    
+    /* Coupled_Microstrip length */
+    if(cgiFormDouble("l", &l, defL/line->units_lwst->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading coupled microstrip length");
+    }
+    if( l <= 0.0 ) {
+      l = defL/line->units_lwst->sf;
+      printFormError("Metal length must be %gt 0");
+    }
 
-  /* Coupled_Microstrip width */
-  if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Substrate dielectric thickness */
+    if(cgiFormDouble("h", &h, defH/line->units_lwst->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading substrate height");
+    }
+    if( h <= 0.0 ) {
+      h = defH/line->units_lwst->sf;
+      printFormError("Substrate height must be %gt 0");
+    }
+    
+    /* Substrate relative permittivity */
+    if(cgiFormDoubleBounded("es", &es, 1.0, 1000.0, defES) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Substrate permitivity out of range");
+    }
 
-  /* Coupled_Microstrip spacing */
-  if(cgiFormDoubleBounded("s",&s,0.0001,1000.0,defS) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Substrate loss tangent */
+    if(cgiFormDoubleBounded("tand", &tand, 0.0, 1000.0, defTAND) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Loss tangent out of range");
+    }
 
-  /* Coupled_Microstrip length */
-  if(cgiFormDoubleBounded("l",&l,1.0,100000.0,defL) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate dielectric thickness */
-  if(cgiFormDoubleBounded("h",&h,0.0001,1000.0,defH) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate relative permittivity */
-  if(cgiFormDoubleBounded("es",&es,0.0001,1000.0,defES) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate loss tangent */
-  if(cgiFormDoubleBounded("tand",&tand,0.0001,1000.0,defTAND) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Frequency of operation (MHz) */
-  if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* Frequency of operation */
+    if(cgiFormDouble("freq", &freq, defFREQ/line->units_freq->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading frequency");
+    }
+    if( freq <= 0.0 ) {
+      freq = defFREQ/line->units_freq->sf;
+      printFormError("Frequency must be %gt 0");
+    }
 
 
-  /* electrical parameters: */
-  if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,defRO) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    /* electrical parameters: */
+    if(cgiFormDoubleBounded("Ro", &Ro, 0.0001, 1000.0, defRO) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Z0 out of range");
+    }
 
-  if(cgiFormDoubleBounded("k",&k,0.0001,1000.0,defK) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    if(cgiFormDoubleBounded("k", &k, 0.0, 1.0, defK) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Coupling (k) must be in the range 0 %lt k %lt 1");
+    }
 
-  if(cgiFormDoubleBounded("zeven",&zeven,0.0001,1000.0,defZEVEN) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    if(cgiFormDoubleBounded("zeven", &zeven, 0.0001, 1000.0, defZEVEN) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Z0-even out of range");
+    }
 
-  if(cgiFormDoubleBounded("zodd",&zodd,0.0001,1000.0,defZODD) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    if(cgiFormDoubleBounded("zodd", &zodd, 0.0001, 1000.0, defZODD) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Z0-odd out of range");
+    }
 
-  if(cgiFormDoubleBounded("elen",&elen,0.0001,1000.0,defELEN) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
+    if(cgiFormDouble("elen", &elen, defELEN) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading electrical length");
+    }
+    if( freq <= 0.0 ) {
+      elen = defELEN;
+      printFormError("Electrical length must be %gt 0");
+    }
 
 
 #ifdef DEBUG

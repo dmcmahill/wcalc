@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.5 2004/08/05 21:42:51 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.6 2004/08/13 05:36:26 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -76,21 +76,23 @@
 
 
 /* defaults for the various parameters */
-#define defW      160.0
-#define defL      1000.0
+#define defW      160.0e-6
+#define defL      1000.0e-6
 
-#define defTMET   1.6
-#define defRGH    0.01
-#define defRHO    1.0
+#define defTMET   1.6e-6
+#define defRGH    0.01e-6
+#define defRHO    1.7e-8
 
-#define defTOX    1.0
+#define defTOX    1.0e-6
 #define defEOX    4.0
 
-#define defH      250.0
+#define defH      250.0e-6
 #define defES     11.8
 #define defSIGMAS 1.0
 
-#define defFREQ   1000.0
+#define defFREQ   1000.0e6
+
+#define defR0     50.0
 
 static const char *name_string="ic_microstrip.cgi";
 
@@ -177,78 +179,128 @@ int cgiMain(void){
 
     cgi_units_menu_read();
 
-    /* Metal resistivity relative to copper */
-    if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
+    /* Metal resistivity */
+    if(cgiFormDouble("rho", &rho, defRHO/line->units_rho->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading resistivity");
+    }
+    if( rho < 0.0 ) {
+      rho = defRHO/line->units_rho->sf;
+      printFormError("Resistivity may not be negative");
     }
 
     /* Metal thickness (m) */
-    if(cgiFormDoubleBounded("tmet",&tmet,0.0001,1000.0,defTMET) !=
+    if(cgiFormDouble("tmet", &tmet, defTMET/line->units_lwht->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading metal thickness");
+    }
+    if( tmet < 0.0 ) {
+      tmet = defTMET/line->units_lwht->sf;
+      printFormError("Metal thickness may not be negative");
     }
 
     /* Metalization roughness */
-    if(cgiFormDoubleBounded("rough",&rough,0.0001,1000.0,defRGH) !=
+    if(cgiFormDouble("rough", &rough, defRGH/line->units_rough->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading metal surface roughness");
     }
-
+    if( rough < 0.0 ) {
+      rough = defRGH/line->units_rough->sf;
+      printFormError("Metal surface roughness may not be negative");
+    }
+    
     /* Microstrip width */
-    if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
+    if(cgiFormDouble("w", &w, defW/line->units_lwht->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading metal width");
+    }
+    if( w <= 0.0 ) {
+      w = defW/line->units_lwht->sf;
+      printFormError("Metal width must be %gt 0");
     }
 
-    /* Microstrip length */
-    if(cgiFormDoubleBounded("l",&l,0.0001,1000.0,defL) !=
+
+    /* trace length */
+    if(cgiFormDouble("l", &l, defL/line->units_lwht->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading trace length");
+    }
+    if( l <= 0.0 ) {
+      l = defL/line->units_lwht->sf;
+      printFormError("Metal length must be %gt 0");
     }
 
     /* Oxide thickness */
-    if(cgiFormDoubleBounded("tox",&tox,0.0001,1000.0,defTOX) !=
+    if(cgiFormDouble("tox", &tox, defTOX/line->units_lwht->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading oxide thickness");
+    }
+    if( tox <= 0.0 ) {
+      h = defTOX/line->units_lwht->sf;
+      printFormError("Oxide thickness must be %gt 0");
     }
 
     /* Oxide relative permittivity */
-    if(cgiFormDoubleBounded("eox",&eox,0.0001,1000.0,defEOX) !=
+    if(cgiFormDoubleBounded("eox", &eox, 1.0, 1000.0, defEOX) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Oxide permitivity out of range");
     }
 
     /* Substrate dielectric thickness */
-    if(cgiFormDoubleBounded("h",&h,0.0001,1000.0,defH) !=
+    if(cgiFormDouble("h", &h, defH/line->units_lwht->sf) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading substrate height");
+    }
+    if( h <= 0.0 ) {
+      h = defH/line->units_lwht->sf;
+      printFormError("Substrate height must be %gt 0");
     }
 
     /* Substrate relative permittivity */
-    if(cgiFormDoubleBounded("es",&es,0.0001,1000.0,defES) !=
+    if(cgiFormDoubleBounded("es", &es, 1.0, 1000.0, defES) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Substrate permitivity out of range");
     }
 
     /* Substrate conductivity s/m*/
-    if(cgiFormDoubleBounded("sigmas",&sigmas,0.0001,1000.0,defSIGMAS) !=
+    if(cgiFormDouble("sigmas", &sigmas, defSIGMAS) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Error reading substrate conductivity");
+    }
+    if( sigmas <= 0.0 ) {
+      sigmas = defSIGMAS/line->units_sigmas->sf;
+      printFormError("Substrate conductivity must be %gt 0");
     }
 
-    /* Frequency of operation (MHz) */
-    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-       cgiFormSuccess){
-      input_err=1;
-    }
 
+    /* Frequency of operation */
+    if(cgiFormDouble("freq", &freq, defFREQ/line->units_freq->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading frequency");
+    }
+    if( freq <= 0.0 ) {
+      freq = defFREQ/line->units_freq->sf;
+      printFormError("Frequency must be %gt 0");
+    }
 
     /* electrical parameters: */
-    if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,50.0) !=
+    if(cgiFormDoubleBounded("Ro", &Ro, 0.0001, 1000.0, defR0) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
+      printFormError("Z0 out of range");
     }
+
     /* copy data over to the line structure */
     line->w           = w*line->units_lwht->sf;
     line->l           = l*line->units_lwht->sf;

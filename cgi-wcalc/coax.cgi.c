@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.14 2004/07/28 04:20:28 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.15 2004/08/05 21:42:50 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -212,60 +212,81 @@ int cgiMain(void){
     cgi_units_menu_read();
 
     /* Center conductor metal resistivity */
-    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1.0e6/line->units_rho->sf, 
-			    defRHOA/line->units_rho->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("rhoa", &rhoa, defRHOA/line->units_rho->sf) 
+       != cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("conductor resistivity out of range");
+      printFormError("Center conductor resistivity out of range");
+    }
+    if( rhoa < 0.0 ) {
+      rhoa = defRHOA/line->units_rho->sf;
+      printFormError("Center conductor resistivity may not be negative");
     }
     
     /* Shield metal resistivity  */
-    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1.0e6/line->units_rho->sf, 
-			    defRHOB/line->units_rho->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("rhob", &rhob, defRHOB/line->units_rho->sf) 
+       != cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("shield resistivity out of range");
+      printFormError("Error reading shield resistivity");
+    }
+    if( rhob < 0.0 ) {
+      rhob = defRHOB/line->units_rho->sf;
+      printFormError("Shield conductor resistivity may not be negative");
     }
     
     /* shield thickness */
-    if(cgiFormDoubleBounded("tshield", &tshield, 0.0, 1000.0/line->units_abct->sf,
-			    defTSHIELD/line->units_abct->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("tshield", &tshield, defTSHIELD/line->units_abct->sf) !=
+       cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("shield thickness out of range");
+      printFormError("Error reading shield thickness");
+    }
+    if( tshield < 0.0 ) {
+      tshield = defTSHIELD/line->units_abct->sf;
+      printFormError("Shield thickness may not be negative");
     }
 
     /* Coax inner conductor radius */
-    if(cgiFormDoubleBounded("a", &a, 0.0, 1000.0/line->units_abct->sf,
-			    defA/line->units_abct->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("a", &a, defA/line->units_abct->sf) 
+       != cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("a out of range");
+      printFormError("Error reading a");
+    }
+    if( a <= 0.0 ) {
+      a = defA/line->units_abct->sf;
+      printFormError("Center conductor radius must be %gt 0");
     }
 
     /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b", &b, a, 1.0e6*a,
-			    defB/line->units_abct->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("b", &b, defB/line->units_abct->sf) 
+       != cgiFormSuccess) {
       inputErr(&input_err);
+      printFormError("Error reading b");
+    }
+    if( b <= a ) {
+      b = 2*a;
       printFormError("b must be &gt a");
     }
-    
+     
 
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c", &c, 0.0, (b-a),
-			    defC/line->units_abct->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("c", &c, defC/line->units_abct->sf) !=
+       cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("c must be &lt b-a");
+      printFormError("Error reading c");
     }
-
+   if( (c < 0.0) || ( c >= b - a ) ) {
+      c = 0.0;
+      printFormError("c must be in the range 0 &lt;= c &lt b-a");
+    }
+ 
     /* Coax length */
-    if(cgiFormDoubleBounded("len", &len, 0.0, 1.0e9/line->units_len->sf, 
-			    defLEN/line->units_len->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("len", &len, defLEN/line->units_len->sf) !=
+       cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("length out of range");
+      printFormError("Error reading length");
+    }
+    if( len <= 0.0 ) {
+      len = defLEN/line->units_len->sf;
+      printFormError("Cable length must be &gt 0");
     }
 
     /* Dielectric relative permitivity */
@@ -283,13 +304,15 @@ int cgiMain(void){
     }
     
     /* Frequency of operation  */
-    if(cgiFormDoubleBounded("freq", &freq, 1e-6/line->units_freq->sf, 
-			    1.0e12/line->units_freq->sf, 
-			    defFREQ/line->units_freq->sf) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("freq", &freq, defFREQ/line->units_freq->sf) !=
+       cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("frequency out of range");
+      printFormError("Error reading frequency");
     }
+    if( freq < 0.0 ) {
+      freq = defFREQ/line->units_freq->sf;
+      printFormError("Frequency may not be negative");
+    }    
 
     /* electrical parameters: */
     if(cgiFormDoubleBounded("Ro", &Ro, 0.0001, 1000.0, defRO) !=
@@ -298,11 +321,14 @@ int cgiMain(void){
       printFormError("input Z0 out of range");
     }
 
-    if(cgiFormDoubleBounded("elen", &elen, 0.0, 1.0e12, defELEN) !=
-       cgiFormSuccess){
+    if(cgiFormDouble("elen", &elen, defELEN) != cgiFormSuccess) {
       inputErr(&input_err);
-      printFormError("electrical length out of range");
+      printFormError("Error reading electrical length");
     } 
+    if( elen <= 0.0 ) {
+      elen = defELEN;
+      printFormError("Electrical length must be &gt 0");
+    }
 
     /* copy data over to the line structure */
     line->a           = a*line->units_abct->sf;
