@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.10 2001/10/24 02:39:44 dan Exp $
+## $Id: Makefile.am,v 1.11 2001/10/24 03:02:53 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -145,5 +145,7 @@ whatis: ${SCIMANS}
 			printf("\n"); \
 		} \
 		/^\.SH[ \t]*NAME/ {s=1}' ${SCIMANS} | sort > whatis
+
+SUFFIXES=
 
 include $(srcdir)/sciman.mk
