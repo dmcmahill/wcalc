@@ -1,4 +1,4 @@
-.\" $Id: microstrip_syn.man,v 1.1 2001/10/31 14:51:10 dan Exp $
+.\" $Id: microstrip_syn.man,v 1.2 2001/11/02 01:23:28 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -108,6 +108,17 @@ remaining dimensions are calculated.
 
 The model accounts for dispersion (frequency dependent propagation
 velocity).
+.nf
+                 |<--W-->|
+                  _______    
+                 | metal | <- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\     (
+    )   er,tand                       H   |       )
+   (                                     \|/     (
+    ----------------------------------------------
+    /////////////////ground///////////////////////
+ .fi
 .SH EXAMPLE
 .nf
 sf=25.4e-6;       // mils to meters conversion factor
