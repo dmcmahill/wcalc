@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.21 2001/09/27 23:08:12 dan Exp $ */
+/* $Id: wcalc.c,v 1.1 2001/10/05 00:50:23 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+#define DEBUG
 
 #include "config.h"
 
@@ -206,21 +206,52 @@ void wcalc_setup (gpointer data,
 			      * *_gui 
 			      */ 
   char * model_name; /* the name of the model we will analyze */
-
-  /* extract the _new function for our selected model */
-  new_cmd = (void *) g_list_nth_data(global_model_new,action);
-
-  /* extract the name of this model */
-  model_name = (char *) g_list_nth_data(global_model_names,action);
+  
+  char *fname=NULL;
+  FILE *fp=NULL;
 
 #ifdef DEBUG
-  g_print("wcalc_setup():  model = \"%s\" (# %d)\n",
-	  (char *) g_list_nth_data(global_model_names,action),
-	  action);
-  g_print("                new_cmd = %p\n",
-	  (void *) g_list_nth_data(global_model_new,action));
+  g_print("wcalc.c:wcalc_setup(): action = %d\n",action);
 #endif
 
+  if (action == -1) {
+    /* this is a file->open command */
+    fname = (char *) data;
+#ifdef DEBUG
+    g_print("wcalc_setup():  file open requested (%p)\n",data);
+    g_print("                file = \"%s\"\n",fname);
+#endif
+
+    if ( (fp=fopen(data,"r")) == NULL ) {
+      alert("Could not open the file\n"
+	    "\"%s\"\n"
+	    "for reading.",fname);
+      return;
+    }
+
+    /* extract the _new function for our selected model */
+    /* XXX XXX XXX this should be based on whats in the file!!!*/
+    new_cmd=air_coil_gui_new;
+    /* XXX this should just be done with the _new function */
+    model_name=NULL;
+
+  }
+  else {
+    /* extract the _new function for our selected model */
+    new_cmd = (void *) g_list_nth_data(global_model_new,action);
+    
+    /* extract the name of this model */
+    model_name = (char *) g_list_nth_data(global_model_names,action);
+    
+#ifdef DEBUG
+    g_print("wcalc_setup():  model = \"%s\" (# %d)\n",
+	    (char *) g_list_nth_data(global_model_names,action),
+	    action);
+    g_print("                new_cmd = %p\n",
+	    (void *) g_list_nth_data(global_model_new,action));
+#endif
+  }
+  
   if(new_cmd == NULL){
     g_print("wcalc.c:wcalc_setup():  Sorry, I don't know how to create \"%s\"\n",
 	    model_name);
@@ -245,7 +276,14 @@ void wcalc_setup (gpointer data,
 #endif
 
   /* Setup main window properties */
-  gtk_window_set_title (GTK_WINDOW (wcalc->window), model_name);
+  if (fname == NULL) {
+    gtk_window_set_title (GTK_WINDOW (wcalc->window), model_name);
+  }
+  else {
+    /* XXX need to add model name, strip path, etc.  use files.c code */
+    gtk_window_set_title (GTK_WINDOW (wcalc->window), fname);
+  }
+
   gtk_container_set_border_width (GTK_CONTAINER (wcalc->window), 0);
 
   /*
@@ -304,7 +342,7 @@ void wcalc_setup (gpointer data,
 
   
   /* call the MD initialization */
-  wcalc->init(wcalc,main_vbox);
+  wcalc->init(wcalc,main_vbox,fp);
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.h,v 1.3 2001/09/27 02:01:49 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.1 2001/10/05 00:50:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -99,7 +99,7 @@ typedef struct AIR_COIL_GUI
 } air_coil_gui;
 
 air_coil_gui *air_coil_gui_new(void);
-void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox);
+void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp);
 
 
 #define WC_AIR_COIL_GUI(x)      ((air_coil_gui *) (x))

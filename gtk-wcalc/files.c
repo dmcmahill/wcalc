@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.5 2001/09/27 02:01:49 dan Exp $ */
+/* $Id: files.c,v 1.1 2001/10/05 00:50:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -51,7 +51,6 @@
 #include "files.h"
 #include "wcalc.h"
 
-/* Get the selected filename and print it to the console */
 static void file_ok_sel (GtkWidget *w, gpointer data[])
 {
   char *fname;
@@ -149,6 +148,32 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
   gtk_widget_destroy(GTK_WIDGET(fs));
 }
 
+static void file_open_ok_sel (GtkWidget *w, gpointer data)
+{
+  char *fname,*ret;
+  GtkFileSelection *fs;
+
+  fs = data;
+  
+  ret = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
+  fname=strdup(ret);
+
+#ifdef DEBUG
+  g_print ("files.c:file_open_ok_sel():  \"%s\" selected\n", fname);
+#endif
+
+  /* close the print window */
+  gtk_grab_remove(GTK_WIDGET(fs));
+  gtk_widget_destroy(GTK_WIDGET(fs));
+
+  /* request a new wcalc window */
+#ifdef DEBUG
+  g_print ("files.c:file_open_ok_sel():  calling wcalc_setup(%p,-1,NULL)\n",
+	   fname);
+#endif
+  wcalc_setup(fname,-1,NULL);
+}
+
 static  void destroy (GtkWidget *widget, gpointer data)
 {
   //gtk_main_quit ();
@@ -233,7 +258,7 @@ void wcalc_open(void)
 
   /* Connect the ok_button to file_ok_sel function */
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-		      "clicked", (GtkSignalFunc) file_ok_sel, filew );
+		      "clicked", (GtkSignalFunc) file_open_ok_sel, filew );
     
   /* Connect the cancel_button to destroy the widget */
   gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
@@ -244,7 +269,7 @@ void wcalc_open(void)
   /* Lets set the filename, as if this were a save dialog, and we are giving
      a default filename */
   gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
-				   "penguin.png");
+				   "wcalc.wc");
   
   gtk_widget_show(filew);
 

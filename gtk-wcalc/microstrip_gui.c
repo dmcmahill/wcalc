@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.1 2001/10/05 00:50:20 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.2 2001/10/17 02:41:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -135,7 +135,7 @@ microstrip_gui *microstrip_gui_new(void)
   return new_gui;
 }
 
-void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
+void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 {
   GtkWidget *units_vbox;
   GtkWidget *values_vbox;

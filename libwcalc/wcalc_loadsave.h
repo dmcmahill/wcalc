@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.2 2001/10/04 02:12:07 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.1 2001/10/05 00:37:36 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -40,6 +40,7 @@
 
 void wcalc_save_header(FILE *fp, char *fname, char *model_name);
 
+char * file_read_val(FILE *fp, const char *section, const char *key);
 
 /* Model types.  Used to identify models in the file */
 #define FILE_AIR_COIL            "air_coil"
@@ -47,5 +48,9 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name);
 #define FILE_IC_MICROSTRIP       "ic_microstrip"
 #define FILE_MICROSTRIP          "microstrip"
 #define FILE_STRIPLINE           "stripline"
+
+
+#define MAXLINELEN 80
+#define FIELDSEP " \t=\n"
 
 #endif /*__WCALC_LOADSAVE_H__*/

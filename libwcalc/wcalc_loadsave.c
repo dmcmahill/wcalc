@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.1 2001/10/05 00:37:36 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.2 2001/11/02 01:25:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -85,12 +85,8 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
   
 
 
-#define MAXLINELEN 80
-
 #define SEC_WCALC 0
 #define SEC_OTHER 1
-
-#define FIELDSEP " ="
 
 void wcalc_load(FILE *fp)
 {
@@ -158,6 +154,65 @@ void wcalc_load(FILE *fp)
 }
 
 
+/* 
+ * Reads the value of a particular key from a particular section of
+ * a wcalc file.  For example:
+ *  val=file_read_val(fp,"[air_coil]","rho"); 
+ * will look for the variable "rho" in the [air_coil] section.
+ * If found, 'val' will point to the string value for rho otherwise
+ * NULL is returned.
+ */
 
+char * file_read_val(FILE *fp, const char *section, const char *key)
+{
+  char line[MAXLINELEN];
+  char *tok, *val, *ret;
+  int sec_ok=0;
+  int i;
+  
+  rewind(fp);
+  
+  while( fgets(line,MAXLINELEN,fp) != NULL ){
+    /* read the first token from the line */
+    tok = strtok(line,FIELDSEP);
+    
+    if (tok != NULL){
+      for (i=0 ; i<strlen(tok) ; i++){
+	tok[i] = tolower(tok[i]);
+      }
+      
+      /* process each token on the line, skipping comment lines */
+      if ( (tok[0] != '#') &&
+	   (tok[0] != ';') &&
+	   (tok[0] != '*') ){
+	do {
+	  if (strcmp(tok,section) == 0)
+	    sec_ok=1;
+	  else if ( (tok[0] == '[') && (tok[strlen(tok)-1] == ']') ){
+	    sec_ok=0;
+	  }
+	  else if ( sec_ok ){
+	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
+#ifdef DEBUG
+	      fprintf(stderr,"wcalc_loadsave.c:file_read_val():  could not read value to go"
+		      " with %s=.\n",tok);
+#endif
+	      return NULL;
+	    }
+	    if (strcmp(tok,key) == 0){
+	      ret=strdup(val);
+	      rewind(fp);
+	      return ret;
+	    }
+	  } 
+	} while ( (tok = strtok(NULL,FIELDSEP)) != NULL );
+      }
+    }
+  }
+  
+  /* we shouldn't have gotten here if the key was found */
+  rewind(fp);
+  return NULL;
+}
 
 

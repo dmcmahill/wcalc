@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.h,v 1.6 2001/09/20 12:40:33 dan Exp $ */
+/* $Id: microstrip_gui.h,v 1.1 2001/10/05 00:50:21 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -101,7 +101,7 @@ typedef struct MICROSTRIP_GUI
 } microstrip_gui;
 
 microstrip_gui *microstrip_gui_new(void);
-void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox);
+void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp);
 
 
 #define WC_MICROSTRIP_GUI(x)      ((microstrip_gui *) (x))

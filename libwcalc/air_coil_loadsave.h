@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.h,v 1.1 2001/09/23 17:38:07 dan Exp $ */
+/* $Id: air_coil_loadsave.h,v 1.1 2001/10/05 00:37:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -39,7 +39,10 @@
 /* writes the data from 'coil' to fp */
 void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname);
 
-void air_coil_load(air_coil_coil *coil, char *fname);
+/*
+ * returns 0 on success
+ */
+int air_coil_load(air_coil_coil *coil, FILE *fp);
 /*
  * opens the file "fname", loads the air_coil data contained in it.
  * stores this data in the air_coil_coil pointed to by "coil".

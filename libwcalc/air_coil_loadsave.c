@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.1 2001/10/05 00:37:30 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.2 2001/11/02 01:25:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,8 +33,11 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
+
 #include "config.h"
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,6 +49,7 @@
 
 #include "air_coil.h"
 #include "air_coil_loadsave.h"
+#include "alert.h"
 #include "wcalc_loadsave.h"
 
 #define FILE_VERSION "v1"
@@ -78,15 +82,11 @@ int main(int argc, char **argv)
 #endif
 
 
-#define MAXLINELEN 80
-#define FIELDSEP " \t=\n"
-
 #define SEC_OTHER 0
 #define SEC_COIL 1
 
-void air_coil_load(air_coil_coil *coil, char *fname)
+int air_coil_load(air_coil_coil *coil, FILE *fp)
 {
-  FILE *fp;
   char line[MAXLINELEN];
   char *tok, *val;
   int section=SEC_OTHER;
@@ -114,34 +114,18 @@ void air_coil_load(air_coil_coil *coil, char *fname)
   int got_freq_sf=0;
   int got_freq_units=0;
 
-  const char fsep[]=" \t:\n";
+  assert(fp!=NULL);
 
-  if ( (fp = fopen(fname,"r")) == NULL){
-    fprintf(stderr,"air_coil_load:  could not open \"%s\"\n",fname);
-    exit(1);
+  /* read the model version  */
+  if ( (val=file_read_val(fp,"[air_coil]","file_version")) == NULL ){
+    alert("Could not determine the air_coil file_version\n");
+    return -1;
   }
 
-  /* read the wcalc file version */
-  fgets(line,MAXLINELEN,fp);
-
-  /* read the model type and version line */
-  fgets(line,MAXLINELEN,fp);
-
-  tok = strtok(line,fsep);
-  if ( (tok = strtok(NULL,fsep)) == NULL){
-    fprintf(stderr,"air_coil_load:  could not read air_coil version\n");
-    exit(1);
-  }
-
-  if(strcmp(tok,"air_coil") != 0){
-    fprintf(stderr,"air_coil_load:  Unknown file type: \"%s\"\n",tok);
-    exit(1);
-  }
-  tok = strtok(NULL,fsep);
-  if(strcmp(tok,FILE_VERSION) != 0){
-    fprintf(stderr,"air_coil_load:  unknown file version: \"%s\"\n",tok);
-    exit(1);
-  }
+#ifdef DEBUG
+  printf("air_coil_loadsave.c:air_coil_load():  Got file_version=\"%s\"\n",
+	 val);
+#endif
 
   /*
    * If the file format changes, this is where we would call legacy
@@ -168,11 +152,11 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	  else if ( section==SEC_COIL ){
 	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
 	      fprintf(stderr,"air_coil_load:  could not read value to go"
-		      " with %s= in \"%s\"\n",tok,fname);
+		      " with %s=.\n",tok);
 	      exit(1);
 	    }
 	
-	    if (strcmp(tok,"Nf") == 0){
+	    if (strcmp(tok,"nf") == 0){
 	      coil->Nf = atof(val);
 	      got_Nf = 1;
 	    }
@@ -180,7 +164,7 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	      coil->len = atof(val);
 	      got_len = 1;
 	    }
-	    else if (strcmp(tok,"AWGf") == 0){
+	    else if (strcmp(tok,"awgf") == 0){
 	      coil->AWGf = atof(val);
 	      got_AWGf = 1;
 	    }
@@ -192,7 +176,7 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	      coil->dia = atof(val);
 	      got_dia = 1;
 	    }
-	    else if (strcmp(tok,"L") == 0){
+	    else if (strcmp(tok,"l") == 0){
 	      coil->L = atof(val);
 	      got_L = 1;
 	    }
@@ -220,19 +204,19 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	      coil->dia_units = strdup(val);
 	      got_dia_units = 1;
 	    }
-	    else if (strcmp(tok,"L_sf") == 0){
+	    else if (strcmp(tok,"l_sf") == 0){
 	      coil->L_sf = atof(val);
 	      got_L_sf = 1;
 	    }
-	    else if (strcmp(tok,"L_units") == 0){
+	    else if (strcmp(tok,"l_units") == 0){
 	      coil->L_units = strdup(val);
 	      got_L_units = 1;
 	    }
-	    else if (strcmp(tok,"SRF_sf") == 0){
+	    else if (strcmp(tok,"srf_sf") == 0){
 	      coil->SRF_sf = atof(val);
 	      got_SRF_sf = 1;
 	    }
-	    else if (strcmp(tok,"SRF_units") == 0){
+	    else if (strcmp(tok,"srf_units") == 0){
 	      coil->SRF_units = strdup(val);
 	      got_SRF_units = 1;
 	    }
@@ -243,6 +227,9 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	    else if (strcmp(tok,"freq_units") == 0){
 	      coil->freq_units = strdup(val);
 	      got_freq_units = 1;
+	    }
+	    else if (strcmp(tok,"file_version") == 0){
+	      /* ignore */
 	    }
 	    else {
 	      fprintf(stderr,"air_coil_load:  unknown token \"%s\"\n",tok);
@@ -339,7 +326,7 @@ void air_coil_load(air_coil_coil *coil, char *fname)
     exit(1);
   }
 
-  fclose(fp);
+  return 0;
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.2 2001/10/12 03:53:35 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.3 2001/10/17 02:41:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -45,6 +45,7 @@
 #include <string.h>
 #endif
 
+#include "alert.h"
 #include "epscat.h"
 #include "menus.h"
 #include "misc.h"
@@ -143,7 +144,7 @@ air_coil_gui *air_coil_gui_new(void)
   return new_gui;
 }
 
-void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
+void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 {
   GtkWidget *values_vbox;
   GtkWidget *outputs_vbox;
@@ -152,6 +153,24 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
   air_coil_gui *gui;
 
   gui = WC_AIR_COIL_GUI(wcalc);
+
+  /* if this is an open from file calculator, then open the file */
+  if (fp != NULL){
+#ifdef DEBUG
+    g_print("air_coil_gui.c:air_coil_gui_init():  calling air_coil_load\n");
+#endif
+    if (air_coil_load(gui->coil,fp) != 0) {
+      alert("ERROR:  Could not load the air coil\n"
+	    "data from the chosen file.  The values\n"
+	    "may be corrupted.\n");
+    }
+  }
+  else{
+    /* put any default values here */
+#ifdef DEBUG
+    g_print("air_coil_gui.c:air_coil_gui_init():  new using defaults\n");
+#endif
+  }
 
   /* create the other vbox's and pack them into the main vbox */
   values_vbox = gtk_vbox_new (FALSE, 1);
