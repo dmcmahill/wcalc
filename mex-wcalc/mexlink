@@ -1,4 +1,6 @@
-# $Id: mexopts.sh.in,v 1.2 2004/11/18 14:17:02 dan Exp $
+#!/bin/sh
+#
+# $Id$
 #
 # Copyright (c) 2004 Dan McMahill
 # All rights reserved.
@@ -33,54 +35,33 @@
 #
 #
 
-TMW_ROOT="$MATLAB"
-MFLAGS=''
-MLIBS="-L$TMW_ROOT/bin/$Arch -lmx -lmex"
-
-
-exec_prefix=@exec_prefix@
-prefix=@prefix@
-libdir=@libdir@
-srcdir=@srcdir@
-top_srcdir=@top_srcdir@
-libexecdir=@libexecdir@
-PACKAGE=@PACKAGE@
-VERSION=@VERSION@
-
-pkglibexecdir=${libexecdir}/matlab/${PACKAGE}-${VERSION}
-
-
-RPATH_FLAG="@RPATH_FLAG@"
-
-if test "X$RPATH_FLAG" = "X" ; then
-	rpath=""
-else
-	rpath="${RPATH_FLAG}${libdir}"
-	MLIBS="$MLIBS ${RPATH_FLAG}$TMW_ROOT/bin/$Arch"
-fi
-
 LIBTOOL=../libtool
-LTCOMPILE="$LIBTOOL --mode=compile @CC@"
-LTLINK="$LIBTOOL --mode=link @CC@ -avoid-version -export-dynamic -module -rpath $libdir"
+CC=$1
+libdir=$2
+pkglibexecdir=$3
+shift 3
 
-CC="$LTCOMPILE"
-CFLAGS="@CFLAGS@"
-COPTIMFLAGS="@CFLAGS@"
-CDEBUGFLAGS="@CFLAGS@"
-CLIBS="$MLIBS ../libwcalc/libwcalc.la"
+args=""
 
-# we actually don't care about this part.  Wcalc does not
-# use fortran
-FC="@FC@"
-FFLAGS="@FFLAGS@"
-FOPTIMFLAGS="@FFLAGS@"
-FDEBUGFLAGS="@FFLAGS@"
-FLIBS="@FLIBS@"
+while test $# -ne 0 ; do
+	case $1 in
+	-o )
+		args="$args -o ${2}.la"
+		shift 2
+		;;
 
-#
-LD="$srcdir/mexlink '@CC@' $libdir $pkglibexecdir"
-LDFLAGS="@LDFLAGS@"
-LDOPTIMFLAGS="@LDFLAGS@"
-LDDEBUGFLAGS="@LDFLAGS@"
+	*.o )
+		args="$args `echo $1 | sed 's;\.o;.lo;g'`"
+		shift
+		;;
 
+	* )
+		args="$args $1"
+		shift
+		;;
+	esac
+done
+
+set -x
+$LIBTOOL --mode=link $CC -avoid-version -export-dynamic -module -rpath $pkglibexecdir $args
 
