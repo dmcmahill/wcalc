@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.7 2001/09/15 23:56:39 dan Exp $ */
+/* $Id: wcalc.c,v 1.8 2001/09/16 05:14:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -68,11 +68,11 @@ static void substrate_init(Wcalc *wcalc, GtkWidget *parent);
 static void picture_init(Wcalc *wcalc, GtkWidget *window, GtkWidget *parent);
 static void tooltip_init(Wcalc *wcalc);
 
-
+#ifdef notdef
 static GtkWidget *make_menu_item( gchar *name,
 				  GtkSignalFunc callback,
 				  gpointer data );
-
+#endif
 static void cb_punits_menu_select( GtkWidget *item,
 				   gpointer data);
 
@@ -86,6 +86,7 @@ static GSList *window_list=NULL;
 
 #define ENTRYLENGTH  8
 
+#ifdef notdef
 static gint button_press (GtkWidget *widget, GdkEvent *event)
 {
 
@@ -101,15 +102,16 @@ static gint button_press (GtkWidget *widget, GdkEvent *event)
   /* Tell calling code that we have not handled this event; pass it on. */
   return FALSE;
 }
+#endif
 
 /* Print a string when a menu item is selected */
-
+#ifdef notdef
 static void menuitem_response (gchar *string)
 {
   //gtk_label_set_text( GTK_LABEL(label_funits), string);
   printf ("%s\n", string);
 }
-
+#endif
 
 
 
@@ -288,8 +290,6 @@ static void units_init(Wcalc *wcalc,GtkWidget *parent)
   GtkWidget *text;
   GtkWidget *my_hbox;
   GtkWidget *my_vbox;
-  GtkWidget *menu_model,*menu,*menu_items;
-  GtkWidget *menu_punits,*opt,*item;
   GList *glist=NULL;
   GList *glist1=NULL;
   GList *glist2=NULL;
@@ -731,7 +731,6 @@ static void substrate_init(Wcalc *wcalc, GtkWidget *parent)
 static void picture_init(Wcalc *wcalc, GtkWidget *window,GtkWidget *parent)
 {
   GtkWidget *my_hbox;
-  GtkWidget *button;
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
@@ -975,6 +974,7 @@ static void change_units_text(void * text, char * label)
 
 /* Convenience functions */
 
+#ifdef notdef
 static GtkWidget *make_menu_item( gchar *name,
 				  GtkSignalFunc callback,
 				  gpointer data )
@@ -988,6 +988,7 @@ static GtkWidget *make_menu_item( gchar *name,
   
   return(item);
 }
+#endif
 
 static Wcalc *Wcalc_new(void)
 {

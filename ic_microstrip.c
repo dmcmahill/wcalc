@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.2 2001/09/12 23:49:57 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.3 2001/09/13 19:13:23 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -460,9 +460,6 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   double reltol=0.01e-6;
 
 
-//#ifdef DEBUG
-#define stderr stdout
-//#endif
 
   /* flag to end optimization */
   int done=0;
