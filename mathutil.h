@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.2 2001/09/12 03:52:01 dan Exp $ */
+/*      $Id: mathutil.h,v 1.3 2001/09/18 19:44:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -37,6 +37,7 @@
 #define __MATHUTIL_H__
 
 #include <math.h>
+#include "config.h"
 
 #ifndef M_E
 #define M_E             2.7182818284590452354   /* e */
@@ -47,6 +48,9 @@
 
 double coth(double x);
 
+#ifndef HAVE_RINT
+#define rint(x)  (ceil((x) - 0.5))
+#endif
 
 typedef struct COMPLEX
 {

@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.10 2001/09/17 15:52:10 dan Exp $
+dnl $Id: configure.in,v 1.11 2001/09/18 16:54:24 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -40,27 +40,33 @@ AC_CONFIG_HEADER(config.h)
 dnl determine host type
 AC_CANONICAL_HOST
 
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_AWK
+AC_PROG_INSTALL
+
 AC_CYGWIN
-AC_EXEEXT
 AC_MINGW32
-WIN32=no
-AC_MSG_CHECKING("Checking for windows")
-if test "$CYGWIN" = "yes" -o "$MINGW32" = "yes"
-then
-    WIN32=yes
-fi
-AC_SUBST(WIN32)
-AC_MSG_RESULT($WIN32)
+AC_EXEEXT
 AC_SUBST(EXEEXT)
 
+WIN32=no
+AC_MSG_CHECKING("Checking for windows")
+if test "$CYGWIN" = "yes" -o "$MINGW32" = "yes"; then
+	WIN32=yes
+	CFLAGS="$CFLAGS -fnative-struct"
+fi
+AC_MSG_RESULT($WIN32)
+AC_SUBST(WIN32)
 
-dnl see of make sets MAKE
+if test "$CYGWIN" = "yes"; then
+	CFLAGS="$CFLAGS -fnative-struct -mno-cygwin"
+fi
+
+
+
+dnl see if make sets MAKE
 AC_PROG_MAKE_SET
-
-dnl Checks for programs.
-AC_PROG_AWK
-AC_PROG_CC
-AC_PROG_INSTALL
 
 dnl check for AWK capabilities
 AC_AWK_GENSUB
@@ -68,10 +74,30 @@ AC_AWK_STRFTIME
 
 dnl check for headers
 AC_HEADER_STDC
+AC_CHECK_HEADERS(string.h)
+
+dnl check for math functions
+AC_CHECK_LIB(m,sin)
+AC_CHECK_FUNCS(rint)
 
 dnl GTK checks
 AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
-if test "x$GTK_CONFIG" = "xnone"; then
+if test "$WIN32" = "yes"; then
+	dnl XXX this is a hack.  It needs to be detected...
+	GTK_VER=1.3
+	GLIB_VER=1.3
+	GTK=c:/cygwin/usr/local/src/gtk+
+	GLIB=c:/cygwin/usr/local/src/glib
+	GLIB_CFLAGS="-I${GLIB} -I${GLIB}/gmodule"
+	GTK_CFLAGS="$GLIB_CFLAGS -I${GTK}/gdk -I${GTK}"
+	GLIB_LIBS="-L${GLIB} -lglib-${GLIB_VER} \
+		   -L${GLIB}/gmodule -lgmodule-${GLIB_VER} \
+		   -L${GLIB}/gthread -lgthread-${GLIB_VER} \
+		   -L${GLIB}/gobject -lgobject-${GLIB_VER}"
+	GTK_LIBS="$GLIB_LIBS \
+		  -L${GTK}/gtk -lgtk-${GTK_VER} \
+		  -L${GTK}/gdk -lgdk-${GTK_VER}"
+elif test "x$GTK_CONFIG" = "xnone"; then
 	AC_MSG_ERROR("You must have gtk installed on your system")
 else
 	AC_MSG_CHECKING("if gtk is version 1.2 or later")

@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.1 2001/09/15 14:43:56 dan Exp $ */
+/* $Id: start.c,v 1.2 2001/09/17 19:34:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -96,6 +96,9 @@ void start_popup(void)
   
   /* made it modal */
   gtk_grab_add(window);
+
+  /* don't let the user grow or shrink this window */
+  gtk_window_set_policy(GTK_WINDOW(window),FALSE,FALSE,TRUE);
 
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW(window), "WaveCalc");

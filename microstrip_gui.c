@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.2 2001/09/13 17:54:22 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.3 2001/09/15 14:39:25 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -38,7 +38,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #include "icon_bitmap"
 #include "menus.h"

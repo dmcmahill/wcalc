@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.3 2001/09/15 23:56:40 dan Exp $ */
+/*      $Id: wcalc.h,v 1.4 2001/09/17 20:45:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -40,7 +40,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #include "microstrip.h"
 

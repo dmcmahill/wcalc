@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.9 2001/09/17 14:32:30 dan Exp $ */
+/* $Id: wcalc.c,v 1.10 2001/09/17 20:45:19 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -39,7 +39,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 #include "icon_bitmap"
 #include "menus.h"
