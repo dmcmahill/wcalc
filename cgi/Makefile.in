@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.10 2001/09/14 01:59:05 dan Exp $
+# $Id: Makefile.in,v 1.11 2001/09/15 02:43:06 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -86,6 +86,7 @@ footer_html.c:	footer.html
 # air_coil.cgi
 
 AIR_COIL_CGI_CFILES=	air_coil.cgi.c \
+			alert.c \
 			cgic.c 
 
 AIR_COIL_CGI_OFILES=	${AIR_COIL_CGI_CFILES:.c=.o} \
@@ -117,6 +118,7 @@ air_coil.cgi:  $(AIR_COIL_CGI_OFILES)
 # coupled_microstrip.cgi
 
 COUPLED_MICROSTRIP_CGI_CFILES=	coupled_microstrip.cgi.c \
+				alert.c \
 				cgic.c 
 
 COUPLED_MICROSTRIP_CGI_OFILES=	${COUPLED_MICROSTRIP_CGI_CFILES:.c=.o} \
@@ -148,6 +150,7 @@ coupled_microstrip.cgi:  $(COUPLED_MICROSTRIP_CGI_OFILES)
 # ic_microstrip.cgi
 
 IC_MICROSTRIP_CGI_CFILES=	ic_microstrip.cgi.c \
+				alert.c \
 				cgic.c 
 
 IC_MICROSTRIP_CGI_OFILES=	${IC_MICROSTRIP_CGI_CFILES:.c=.o} \
@@ -178,6 +181,7 @@ ic_microstrip.cgi:  $(IC_MICROSTRIP_CGI_OFILES)
 # microstrip.cgi
 
 MICROSTRIP_CGI_CFILES=	microstrip.cgi.c \
+			alert.c \
 			cgic.c 
 
 MICROSTRIP_CGI_OFILES=	${MICROSTRIP_CGI_CFILES:.c=.o} \
@@ -209,6 +213,7 @@ microstrip.cgi:  $(MICROSTRIP_CGI_OFILES)
 # stripline.cgi
 
 STRIPLINE_CGI_CFILES=	stripline.cgi.c \
+			alert.c \
 			cgic.c 
 
 STRIPLINE_CGI_OFILES=	${STRIPLINE_CGI_CFILES:.c=.o} \

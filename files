@@ -14,6 +14,8 @@ air_coil_gui.c
 air_coil_gui.h
 air_coil_loadsave.c
 air_coil_loadsave.h
+alert.c
+alert.h
 config.h.in
 config.guess
 config.sub
@@ -69,6 +71,7 @@ cgi/air_coil.cgi.c
 cgi/air_coil.html
 cgi/air_coil_html.c
 cgi/air_coil_id.h
+cgi/alert.c
 cgi/cgic.c
 cgi/cgic.h
 cgi/coupled_microstrip.cgi.c
