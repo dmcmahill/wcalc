@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.3 2002/02/16 15:38:54 dan Exp $ */
+/*      $Id: mathutil.h,v 1.4 2002/05/04 20:19:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -134,9 +134,13 @@ complex * c_log_p(complex *x, complex *z);
 
 /* Bessel functions of complex arguments */
 complex c_bessel_J0(complex x);
+complex * c_bessel_J0_p(complex *x, complex *J0);
 complex c_bessel_J1(complex x);
+complex * c_bessel_J1_p(complex *x, complex *J1);
 complex c_bessel_Y0(complex x);
+complex * c_bessel_Y0_p(complex *x, complex *Y0);
 complex c_bessel_Y1(complex x);
+complex * c_bessel_Y1_p(complex *x, complex *Y1);
 
 /* Bessel functions of real arguments */
 double bessel_J0(double x);
@@ -150,9 +154,16 @@ double bessel_Y1p(double x);
 
 /* Hankel functions */
 complex c_hankel0_1(complex x);
+complex * c_hankel0_1_p(complex *x, complex *H);
+
 complex c_hankel0_2(complex x);
+complex * c_hankel0_2_p(complex *x, complex *H);
+
 complex c_hankel1_1(complex x);
+complex * c_hankel1_1_p(complex *x, complex *H);
+
 complex c_hankel1_2(complex x);
+complex * c_hankel1_2_p(complex *x, complex *H);
 
 
 #endif /*__MATHUTIL_H__*/
