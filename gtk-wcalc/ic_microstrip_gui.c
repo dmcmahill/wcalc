@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.10 2004/08/30 22:59:19 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.11 2004/11/06 06:36:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -124,6 +124,7 @@ ic_microstrip_gui *ic_microstrip_gui_new(void)
 
   wcalc->window_title=NULL;
   wcalc->save_needed=NULL;
+  wcalc->units_menu_list = NULL;
 
   /*
    * Initialize the model dependent portions
