@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.5 2001/09/15 23:56:38 dan Exp $ */
+/* $Id: menus.c,v 1.6 2001/09/16 05:14:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -76,7 +76,9 @@ static void window_close (gpointer data,
 
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",           NULL,          NULL,             0, "<Branch>" },
-  { "/File/_New",       "<control>N",  wcalc_setup,      0, NULL },
+  { "/File/_New",       NULL,          NULL,             0, "<Branch>" },
+  { "/File/_New/Microstrip",
+                        NULL,          wcalc_setup,      0, NULL },
   { "/File/sep1",       NULL,          NULL,             0, "<Separator>" },
   { "/File/_Open",      "<control>O",  wcalc_open,       0, NULL },
   { "/File/_Save",      "<control>S",  wcalc_save,       0, NULL },
