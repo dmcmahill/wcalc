@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.10 2003/02/06 02:09:55 dan Exp $ */
+/* $Id: gtk-units.c,v 1.11 2004/07/19 22:37:02 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -62,88 +62,11 @@
 #include <dmalloc.h>
 #endif
 
-
-static wc_units_menu_data *units_menu_data_new(int ind);
-
-GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
-				       Wcalc *gui,
-				       wc_units_gui **ug,
-				       void (*callback)(GtkWidget *,gpointer)
-				       )
-{
-  GtkWidget *hbox;
-  GtkWidget *item;
-  int i;
-
-
-  if ( ((*ug) = malloc(sizeof(wc_units_gui))) == NULL ) {
-    fprintf(stderr,"wc_composite_units_menu_new():  malloc() failed\n");
-    exit(1);
-  }
-
-  (*ug)->units=units;
-  (*ug)->menu_num=NULL;
-  (*ug)->menu_den=NULL;
-  (*ug)->update_list=NULL;
-
-  hbox = gtk_hbox_new(FALSE,0);
-#ifdef DEBUG
-      g_print("wc_composite_units_menu_new():  created new wc_units_gui = %p\n",(*ug));
-      g_print("wc_composite_units_menu_new():      units = %p\n",(*ug)->units);
-      g_print("wc_composite_units_menu_new():  created hbox = %p\n",hbox);
-#endif
-
-  /* the numerator */
-  if (units->nnum == 0) {
-      item = gtk_label_new("1");
-      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-  }
-  else {
-    for (i=0; i<units->nnum; i++) {
-      /* item = wc_units_submenu_new(units->num[i],0,gui,callback); */
-      item = wc_units_submenu_new(units->num[i],0,(*ug),callback);
-
-      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-
-      /* add to our list of numerator menus */
-      (*ug)->menu_num = g_list_append((*ug)->menu_num,item);
-#ifdef DEBUG2
-      g_print("wc_composite_units_menu_new():  added numerator item[%d] = %p to ug %p\n",i,item,*ug);
-      g_print("wc_composite_units_menu_new():        numerator list     = %p\n",(*ug)->menu_num);
-#endif
-      
-      if (i < (units->nnum - 1)) {
-	item = gtk_label_new("-");
-	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-      }
-    }
-  }
-
-  if (units->nden > 0) {
-      item = gtk_label_new("/");
-      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-      
-      for (i=0; i<units->nden; i++) {
-	/* item = wc_units_submenu_new(units->den[i],0,gui,callback); */
-	item = wc_units_submenu_new(units->den[i],0,(*ug),callback);
-	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-	/* add to our list of denominator menus */
-	(*ug)->menu_den = g_list_append((*ug)->menu_den,item);
-#ifdef DEBUG
-	g_print("wc_composite_units_menu_new():  added denominator item[%d] = %p to ug %p\n",i,item,*ug);
-	g_print("wc_composite_units_menu_new():        denominator list     = %p\n",(*ug)->menu_den);
-#endif
-	if (i < (units->nden - 1)) {
-	  item = gtk_label_new("-");
-	  gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-	}
-      }   
-  }
-
-  gtk_widget_show_all(hbox);
-  
-  return hbox;
-}
+static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
+				       const wc_units_data *units, 
+				       int initial,
+				       gpointer gui,
+				       void (*callback)(GtkWidget *, gpointer));
 
 /*
  * wc_units_menu_new()
@@ -184,15 +107,17 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
   }
   else {
     for ( i = 0; i < units->nnum; i++) {
-      item = wc_units_submenu_new(units->num[i], 0, (*ug), wc_units_menu_changed);
+      item = wc_units_submenu_new(gui, units->num[i], 0, (*ug), wc_units_menu_changed);
 
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
       /* add to our list of numerator menus */
       (*ug)->menu_num = g_list_append((*ug)->menu_num, item);
 #ifdef DEBUG2
-      g_print("wc_units_menu_new():  added numerator item[%d] = %p to ug %p\n", i, item, *ug);
-      g_print("wc_units_menu_new():        numerator list     = %p\n", (*ug)->menu_num);
+      g_print("wc_units_menu_new():  added numerator item[%d] = %p to ug %p\n",
+	      i, item, *ug);
+      g_print("wc_units_menu_new():        numerator list     = %p\n",
+	      (*ug)->menu_num);
 #endif
       
       if (i < (units->nnum - 1)) {
@@ -207,7 +132,7 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
       
       for (i=0; i<units->nden; i++) {
-	item = wc_units_submenu_new(units->den[i], 0, (*ug), wc_units_menu_changed);
+	item = wc_units_submenu_new(gui, units->den[i], 0, (*ug), wc_units_menu_changed);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
 	/* add to our list of denominator menus */
@@ -240,7 +165,7 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   /* XXX there must be a better way than fixing this size... */
   char str[80];
   double sf;
-  char *units_str=NULL;
+  static char *units_str = NULL;
 
   ug = (wc_units_gui *) data;
   /* gui = WC_COAX_GUI(data);
@@ -255,8 +180,10 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   
   if ( (ind = g_list_index(ug->menu_num,menu_data->opt_menu)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed numerator[%d] units to %d\n", ug, ind,which);
-    g_print("wc_units_menu_changed():  ug->units->numi[%d] = %d\n", ind, ug->units->numi[ind]);
+    g_print("wc_units_menu_changed():  ug %p changed numerator[%d] units to %d\n", 
+	    ug, ind,which);
+    g_print("wc_units_menu_changed():  ug->units->numi[%d] = %d\n",
+	    ind, ug->units->numi[ind]);
 #endif
     ug->units->numi[ind] = which;
   }
@@ -271,10 +198,14 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
     exit(1);
   }
 
-  units_update(ug->units,&sf,&units_str);
+  sf = wc_units_to_sf(ug->units);
+  if(units_str != NULL)
+    free(units_str);
+  units_str = wc_units_to_str(ug->units);
+
 #ifdef DEBUG
   g_print("wc_units_menu_changed():  Units string = \"%s\", scale factor = %g\n",
-	  units_str,sf);
+	  units_str, sf);
 #endif
 
   /*
@@ -337,27 +268,6 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
 
 }
 
-#ifdef notdef
-static void wc_composite_units_menu_update( coax_gui *gui,int which)
-{
-  gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_abct_units), which);
-
-  gtk_label_set_text(GTK_LABEL(gui->units_b),length_units[which].name);
-  gtk_label_set_text(GTK_LABEL(gui->units_c),length_units[which].name);
-  gtk_label_set_text(GTK_LABEL(gui->units_t),length_units[which].name);
-  gui->line->a_sf = length_units[which].sf;
-  gui->line->b_sf = length_units[which].sf;
-  gui->line->c_sf = length_units[which].sf;
-  gui->line->tshield_sf = length_units[which].sf;
-
-  gui->line->a_units = length_units[which].name;
-  gui->line->b_units = length_units[which].name;
-  gui->line->c_units = length_units[which].name;
-  gui->line->tshield_units = length_units[which].name;
-
-}
-#endif
-
 static wc_units_menu_data *wc_units_menu_data_new(int ind)
 {
   wc_units_menu_data *data;
@@ -372,10 +282,11 @@ static wc_units_menu_data *wc_units_menu_data_new(int ind)
   return data;
 }
 
-GtkWidget *wc_units_submenu_new(const units_data *units, 
-				int initial,
-				gpointer gui,
-				void (*callback)(GtkWidget *, gpointer))
+static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
+				       const wc_units_data *units, 
+				       int initial,
+				       gpointer gui,
+				       void (*callback)(GtkWidget *, gpointer))
 {
   GtkWidget *opt_menu;
   GtkWidget *menu;
@@ -388,8 +299,9 @@ GtkWidget *wc_units_submenu_new(const units_data *units,
   menu = gtk_menu_new();
   
 #ifdef DEBUG
-  g_print("wc_units_submenu_new():  opt_menu = %p\n",opt_menu);
-  g_print("wc_units_submenu_new():  menu     = %p\n",menu);
+  g_print("wc_units_submenu_new():  opt_menu = %p\n", opt_menu);
+  g_print("wc_units_submenu_new():  menu     = %p\n", menu);
+  g_print("wc_units_submenu_new():  gui      = %p\n", gui);
 #endif
 
   i=0;
@@ -398,6 +310,15 @@ GtkWidget *wc_units_submenu_new(const units_data *units,
 #ifdef DEBUG
     /*    g_print("wc_units_submenu_new():  item[%d] = %p\n",i,item); */
 #endif
+    /*
+     * XXX would be nice to only have the wcalc_save_needed get
+     * tickled if the menu actually changes instead of selecting the
+     * same choice again
+     */
+    gtk_signal_connect (GTK_OBJECT(item),
+			"activate",
+			GTK_SIGNAL_FUNC (wcalc_save_needed), 
+			(gpointer) wcgui);
     gtk_signal_connect(GTK_OBJECT(item), "activate",
 		       GTK_SIGNAL_FUNC(callback), 
 		       (gpointer) gui);

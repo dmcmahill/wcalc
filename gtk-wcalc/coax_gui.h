@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.9 2002/07/05 23:18:41 dan Exp $ */
+/* $Id: coax_gui.h,v 1.10 2004/07/19 22:37:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -71,10 +71,8 @@ typedef struct COAX_GUI
    */
   GtkWidget *values_vbox;
   GtkWidget *text_a,*text_b,*text_c,*text_tshield;
-  GtkWidget *menu_abct_units;
-  GtkWidget *units_b,*units_c,*units_t;
 
-  GtkWidget *text_len,*menu_len_units;
+  GtkWidget *text_len;
 
   GtkWidget *text_er,*text_tand,*text_emax;
   GtkWidget *text_z0,*text_elen;
@@ -86,9 +84,9 @@ typedef struct COAX_GUI
   GtkWidget *menu_rho_units_ohm,*menu_rho_units_m;
 
   /*
-   * units for resistivities
+   * units for frequency
    */
-  composite_units_data *freq_units;
+  wc_units *freq_units;
 
 
   /* the radio buttons for fill/length selection */
@@ -110,16 +108,19 @@ typedef struct COAX_GUI
   GtkWidget *text_status;
 
   /*
+   */
+  wc_units *abct_units, *len_units;
+
+  /*
    * units for resistivities
    */
-  composite_units_data *rho_units;
+  wc_units *rho_units;
 
   /*
    * units for the incremental model
    */
-  composite_units_data *R_units, *C_units, *G_units;
+  wc_units *L_units, *R_units, *C_units, *G_units;
 
-  wc_units *L_units;
 } coax_gui;
 
 coax_gui *coax_gui_new(void);
