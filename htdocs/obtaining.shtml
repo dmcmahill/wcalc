@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: obtaining.shtml,v 1.1 2001/10/16 04:15:33 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -40,8 +40,8 @@ stripline synthesis,
     Wcalc comes with complete source code which can easily be compiled
     on most Unix-like operating systems with no modifications.  In
     addition, it can be compiled under WIN32 using the <a
-    href="http://www.mingw.org">mingw</a> toolchain with the <a
-    href="http://www.cygnus.com">cygwin</a> environment.
+    href="http://www.mingw.org">MinGW</a> toolchain with the <a
+    href="http://sources.redhat.com/cygwin">cygwin</a> environment.
     </p>
 
     <H2>Binaries</H2>
@@ -56,8 +56,9 @@ stripline synthesis,
     systems.  Please note that these are maintained by groups other
     than the Wcalc maintainer:<br>
     <ul>
-    <li><a href="http://www.netbsd.org">NetBSD</a><a
-    href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/cad/wcalc/README.html>package</a>.</LI>
+    <li>A<a
+    href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/cad/wcalc/README.html">package</a>
+    for <a href="http://www.netbsd.org">NetBSD</a>.</LI>
     </ul>
     </p>
 

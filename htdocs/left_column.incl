@@ -1,4 +1,4 @@
-<!-- $Id$ -->
+<!-- $Id: left_column.incl,v 1.1 2001/10/16 03:25:19 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -8,7 +8,7 @@
   <td>
   <img src="../pixmaps/logo.png" width="197" height="161"
    alt="Wcalc Logo">
-  <td></tr>
+  </td></tr>
   </table>
 
   <br>
@@ -23,10 +23,11 @@
     </td></tr>
    <tr><td bgcolor="#FFFFFF" nowrap>
       <font face="helvetica, arial" size="-1">
-	&nbsp;<a href="index.html">Wcalc Home</a><br>
 	&nbsp;<a href="about.html">About Wcalc</a><br>
 	&nbsp;<a href="projects.html">Current projects</a><br>
+	&nbsp;<a href="obtaining.html">Obtaining Wcalc</a><br>
 	&nbsp;<a href="screenshots.html">Screenshots</a><br>
+	&nbsp;<a href="index.html">Wcalc Home</a><br>
       </font>
     </td></tr></table>
     </tr>

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: cgi-wcalc.shtml,v 1.1 2001/10/16 03:25:18 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -37,18 +37,28 @@ stripline synthesis,
     </center>
     <p>
 
-
-<!-- Links to the individual CGI pages  -->
-<font face="helvetica, arial" size="+0">
+    <font face="helvetica, arial">
+    The CGI frontend to Wcalc provides an easy way for the CAD support
+    staff in a company to make wcalc available to engineers who may be
+    working on several different computing platforms without needing
+    to compile Wcalc for each system.  The CGI frontend provides full
+    analysis and synthesis capability.
+    </font>
+    </p>
+    <p>
+    
+    <!-- Links to the individual CGI pages  -->
+    <font face="helvetica, arial" size="+0">
     <ul>
-  <LI><A HREF="/cgi-bin/air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
-  <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
-  <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
-  <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
-  <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
-</ul>
-</font>
+    <LI><A HREF="/cgi-bin/air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
+    <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
+    <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
+    <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
+    <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
+    </ul>
+    </font>
 
+    </p>
   </td>
 
 </tr>

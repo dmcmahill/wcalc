@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: screenshots.shtml,v 1.1 2001/10/16 03:25:18 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -31,16 +31,28 @@ stripline synthesis,
     </font>
     <br>
     <br>
-
+    </center>
+    
+    <p>
+    <font face="helvetica, arial">
+    The <a href="http://www.gtk.org">GTK+</a> frontend to Wcalc
+    provides a simple and easy to use standalone program for analysis
+    and synthesis.  The GTK+ frontend runs on most major Unix-like
+    operating systems as well as WIN32.  The following screen shots
+    show examples of the Wcalc GTK+ interface.
+    </font>
+    </p>
+    <br>
+    <br>
+    <p>
+    <center>
     <a href="screen1.png"><img src="screen1.png" width="250" height="262"
-    alt="screenshot #1" hspace="10" vspace="5"></a>
-    <br>
-    <br>
+    alt="screenshot #1"></a>
     <a href="screen2.png"><img src="screen2.png" width="266" height="211"
-    alt="screenshot #2" hspace="10" vspace="5"></a>
+    alt="screenshot #2"></a>
 
     </center>
-    <p>
+    </p>
 
   </td>
 

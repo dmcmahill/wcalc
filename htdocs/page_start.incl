@@ -1,9 +1,9 @@
-<!-- $Id$ -->
+<!-- $Id: page_start.incl,v 1.1 2001/10/16 03:25:20 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 
 <body bgcolor="#ffffff" text="#000000" link="#3535c5" vlink="#700080">
 
 <table border="0" cellspacing="0" cellpadding="5"><tr>
   <td></td>
-  <td rowspan=2 valign="top">
+  <td rowspan=2 valign="top" width="100%">
 

@@ -1,4 +1,4 @@
-<!-- $Id$ -->
+<!-- $Id: main_footer.incl,v 1.1 2001/10/16 03:25:19 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 
 <center>
@@ -8,7 +8,6 @@
 
   <address>
     <font color="#000000" size="-1">
-      $Id$<br>
       Copyright &copy; 2001
       Dan McMahill  ALL RIGHTS RESERVED.
     </font>
