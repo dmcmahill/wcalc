@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: runmatlab.in,v 1.1 2001/10/22 11:24:48 dan Exp $
+# $Id: runmatlab.in,v 1.2 2001/10/23 03:34:58 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -43,9 +43,9 @@ if test ! -f runmatlab ; then
 fi
 
 if test -z "$LD_LIBRARY_PATH" ; then
-	LD_LIBRARY_PATH=@BUILDDIR@/../libwcalc/.libs:@BUILDDIR@
+	LD_LIBRARY_PATH=@BUILDDIR@/../libwcalc/.libs:@BUILDDIR@:@BUILDDIR@/.libs
 else
-	LD_LIBRARY_PATH=@BUILDDIR@/../libwcalc/.libs:@BUILDDIR@:$LD_LIBRARY_PATH
+	LD_LIBRARY_PATH=@BUILDDIR@/../libwcalc/.libs:@BUILDDIR@:@BUILDDIR@/.libs:$LD_LIBRARY_PATH
 fi
 export LD_LIBRARY_PATH
 
