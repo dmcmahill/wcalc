@@ -1,8 +1,13 @@
-# $Id: ic_microstrip.dat,v 1.1 2004/08/03 02:03:20 dan Exp $
+# $Id: ic_microstrip.dat,v 1.2 2004/11/22 22:36:40 dan Exp $
 #
 # I.C. microstrip test data
 #
 #
+*****************************************
+*
+* Analysis
+*
+*****************************************
 * [z0, L, R, C, G] = 
 *  ic_microstrip_calc(w, l, tox, eox, h, es, sigmas, tmet, rho, rough, f);
 *
@@ -19,4 +24,7 @@ ic_microstrip_calc 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4
 * [w_out, h_out, tox_out, l_out] = ...
 *    ic_microstrip_syn(z0,elen,w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f,flag);
 *
+ic_microstrip_syn 50.00 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 0
+ic_microstrip_syn 50.00 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 1
+ic_microstrip_syn 100.0 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 2
 
