@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/30 04:08:24 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/30 23:52:53 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -67,7 +67,7 @@ left_column.incl: $(srcdir)/../left_column.incl
 main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
-whatis.incl: ${SCIMANS} Makefile
+whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk
 	@echo "****************************************************"
 	@echo "Generating the HTML whatis table"
 	@echo "****************************************************"
