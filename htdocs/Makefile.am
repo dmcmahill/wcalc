@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.24 2004/09/02 00:51:41 dan Exp $
+## $Id: Makefile.am,v 1.25 2004/11/24 03:47:48 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -92,7 +92,9 @@ BUILT_INCL_FILES=\
 HTML_OUT=	${SHTML_IN:.shtml=.html}
 
 PNGS=\
+	screen1-thumb.png \
 	screen1.png \
+	screen2-thumb.png \
 	screen2.png
 
 favicon.ico: favicon.xpm

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: gtk-wcalc.shtml,v 1.4 2004/07/28 11:49:05 dan Exp $ -->
+<!-- $Id: gtk-wcalc.shtml,v 1.5 2004/11/24 03:47:48 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -51,9 +51,9 @@ stripline synthesis,
     <br>
     <p>
     <center>
-    <a href="screen1.png"><img src="screen1.png" width="250" height="262"
+    <a href="screen1.png"><img src="screen1-thumb.png" width="319" height="303"
     alt="screenshot #1"></a>
-    <a href="screen2.png"><img src="screen2.png" width="266" height="211"
+    <a href="screen2.png"><img src="screen2-thumb.png" width="315" height="224"
     alt="screenshot #2"></a>
 
     </center>
