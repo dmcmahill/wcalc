@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.7 2001/12/09 21:53:49 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.8 2002/01/03 03:54:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -147,7 +147,6 @@ char * file_read_val(FILE *fp, const char *section, const char *key)
   char line[MAXLINELEN];
   char *tok, *val, *ret;
   int sec_ok=0;
-  int i;
   
   rewind(fp);
   
@@ -434,7 +433,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
   }
 
   fprintf(fp,"\n");
-
+  free(fspec_write_string(list,base));
   return 0;
 }
 
@@ -442,7 +441,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
 int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 {
   fspec *cur;
-  void *addr;
+  void *addr=NULL;
   int *gotval;
   int whichval;
   int nvals;
@@ -450,7 +449,7 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
   char *tok,*val;
   int i;
   int found_section,found_key;
-  char *section;
+  char *section=NULL;
   int rslt=0;
 
   assert(list != NULL);
@@ -651,6 +650,183 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
     }
   }
 
+  return rslt;
+}
+
+char * fspec_write_string(fspec *list, unsigned long base)
+{
+  fspec *cur;
+  void *addr;
+  int len=1;
+  int pass;
+  char *str=NULL;
+  /* XXX fixme (no overflow) */
+  char tmps[80];
+
+  assert(list != NULL);
+
+  for (pass=0; pass<2; pass++){
+    cur = list;
+    while ( cur != NULL) {
+      switch (cur->spec_type) {
+	
+      case SPEC_SECTION:
+	/*
+	if (!pass)
+	  len = len + 1 + strlen(cur->key);
+	else {
+	  strcat(str,cur->key);
+	  strcat(str," ");
+	}
+	*/
+	break;
+      
+      case SPEC_KEY:
+	/*
+	if (!pass)
+	  len = len + 1 + strlen(cur->key);
+	else {
+	  strcat(str,cur->key);
+	  strcat(str,"=");
+	}
+	*/
+	if (base != NULL) {
+	  addr = (void *) (base + cur->ofs);
+	  switch (cur->type){
+	  
+	  case 'd':
+	    sprintf(tmps,"%.15g",*((double *)addr));
+	    break;
+	    
+	  case 'i':
+	    sprintf(tmps,"%d",*((int *)addr));
+	    break;
+	    
+	  case 's':
+	    sprintf(tmps,"%s",*((char **)addr));
+	    break;
+	    
+	  case 'f':
+	    sprintf(tmps,"%s",(char *) cur->ofs);
+	    break;
+	    
+	  default:
+	    fprintf(stderr,"fspec_write_string():  Invalid type, '%c' in fspec\n",cur->type);
+	    exit(1);
+	  }
+	}
+	if (!pass)
+	  len = len + 1 + strlen(tmps);
+	else {
+	  strcat(str,tmps);
+	  strcat(str," ");
+	}
+	
+	break;
+	
+      case SPEC_FIXED:
+	if (!pass) {
+	  /* len = len + 2 + strlen(cur->key) + strlen((char *)
+	     cur->ofs); */
+	  len = len + 1 + strlen((char *) cur->ofs);
+	}
+	else {
+	  /*
+	  strcat(str,cur->key);
+	  strcat(str,"=");
+	  */
+	  strcat(str,(char *)cur->ofs);
+	  strcat(str," ");
+	}
+	break;
+	
+      case SPEC_COMMENT:
+	break;
+	
+      default:
+	fprintf(stderr,"fspec_write_string():  Invalid type, '%c' in fspec\n",cur->type);
+	exit(1);
+      }
+      
+      cur = cur->next;
+    }
+    
+    if (!pass) {
+      if ( (str = malloc(len*sizeof(char))) == NULL) {
+	fprintf(stderr,"fspec_write_string():  malloc() failed\n");
+	exit(1);
+      }
+      printf("allocated %d bytes for string\n",len);
+      str[0]='\0';
+    }
+  } 
+
+  printf("String is \"%s\"\n",str);
+  printf("len = %d, strlen(str) = %d\n",len,strlen(str));
+
+  return str;
+}
+
+int fspec_read_string(fspec *list, char *str, unsigned long base)
+{
+  fspec *cur;
+  void *addr;
+  int rslt=0;
+  char *tok;
+
+  assert(list != NULL);
+
+  cur = list;
+  tok=strtok(str," ");
+
+  while ( cur != NULL) {
+    switch (cur->spec_type) {
+      
+    case SPEC_SECTION:
+      break;
+      
+    case SPEC_KEY:
+      if (base != NULL) {
+	addr = (void *) (base + cur->ofs);
+	switch (cur->type){
+	  
+	case 'd':
+	  *((double *)addr) = atof(tok);
+	  break;
+	  
+	case 'i':
+	  *((int *)addr) = atoi(tok);
+	  break;
+	  
+	case 's':
+	  *((char **)addr) = strdup(tok);
+	  break;
+	  
+	case 'f':
+	  break;
+	  
+	default:
+	  fprintf(stderr,"fspec_read_string():  Invalid type, '%c' in fspec\n",cur->type);
+	  exit(1);
+	}
+      }
+      break;
+	
+    case SPEC_FIXED:
+      break;
+	
+    case SPEC_COMMENT:
+      break;
+	
+    default:
+      fprintf(stderr,"fspec_write_string():  Invalid type, '%c' in fspec\n",cur->type);
+      exit(1);
+    }
+    
+    cur = cur->next;
+    tok=strtok(NULL," ");
+  }
+  
   return rslt;
 }
 
