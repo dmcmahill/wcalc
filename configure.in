@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.38 2001/10/31 14:56:35 dan Exp $
+dnl $Id: configure.in,v 1.39 2002/02/06 01:33:56 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -157,7 +157,7 @@ AC_SUBST(CGI_WCALC)
 AC_ARG_ENABLE([gtk],
 [  --enable-gtk            Causes the GTK+ frontend to be built [default=yes]],
 [
-if test "X$enable_cgi" = "Xno" ; then
+if test "X$enable_gtk" = "Xno" ; then
 	GTK_WCALC=""
 else
 	GTK_WCALC="gtk-wcalc"
