@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.6 2004/07/27 21:01:41 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.7 2004/08/05 21:42:51 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -45,6 +45,10 @@
 
 #include <math.h>
 #include <stdio.h>
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 /* CGI specific */
 #include "cgic.h"

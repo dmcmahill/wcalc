@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.10 2004/07/28 04:41:50 dan Exp $ */
+/* $Id: cgi-units.c,v 1.11 2004/08/02 22:11:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -33,11 +33,17 @@
  * SUCH DAMAGE.
  */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #include <assert.h>
 #include <stdio.h>
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif

@@ -1,4 +1,4 @@
-/* $Id: cookie.c,v 1.4 2004/07/23 22:11:53 dan Exp $ */
+/* $Id: cookie.c,v 1.5 2004/08/05 16:16:28 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -10,10 +10,22 @@
  * for infomation on cookies.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
+
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+
 #include <ctype.h>
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+
 #include <time.h>
 #ifndef NO_UNISTD
 #include <unistd.h>

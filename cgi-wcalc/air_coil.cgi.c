@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.16 2004/07/28 04:46:53 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.17 2004/08/05 21:42:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -45,6 +45,10 @@
 
 #include <math.h>
 #include <stdio.h>
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 /* CGI specific */
 #include "cgic.h"
