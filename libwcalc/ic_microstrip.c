@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.13 2004/01/10 14:42:04 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.14 2004/07/26 22:22:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -901,7 +901,7 @@ ic_microstrip_line *ic_microstrip_line_new(void)
 #endif
 
   /* and do a calculation to finish the initialization */
-  ic_microstrip_calc(newline,newline->freq);
+  ic_microstrip_calc(newline, newline->freq);
   
 #if defined(DEBUG_CALC) || defined(DEBUG_SYN)
   printf("ic_microstrip_line_new():  all done\n");
