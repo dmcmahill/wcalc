@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.11 2004/08/03 02:07:33 dan Exp $ */
+/* $Id: main.c,v 1.12 2004/08/04 23:49:45 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -87,9 +87,10 @@ static void exec_ic_microstrip_calc(double *args);
 static void exec_microstrip_calc(double *args);
 static void exec_stripline_calc(double *args);
 
+static void exec_air_coil_syn(double *args);
+
 /*
  * not implemented yet here
-static void exec_air_coil_syn(double *args);
 static void exec_coax_syn(double *args);
 static void exec_coupled_microstrip_syn(double *args);
 static void exec_ic_microstrip_syn(double *args);
@@ -109,7 +110,19 @@ int main(int argc, char **argv)
   void (*fn) (double *);
   double params[15];
   int lineno = 1;
+  int verbose = 0;
 
+  if( argc > 1) {
+    if( (strcmp(argv[1], "-v") == 0) ||
+	(strcmp(argv[1], "--verbose") == 0) ) {
+      verbose = 1;
+    } else {
+      printf("option \"%s\" is not understood\n",
+	     argv[1]);
+      exit(1);
+    }
+  }
+      
   while( fgets(line, sizeof(line), stdin) != NULL ) {
     /* strip off the final newline */
     nl = strpbrk(line, "\n");
@@ -143,6 +156,9 @@ int main(int argc, char **argv)
     } else if(strcmp(tok, "air_coil_calc") == 0) {
       narg = 8;
       fn = &exec_air_coil_calc;
+    } else if(strcmp(tok, "air_coil_syn") == 0) {
+      narg = 9;
+      fn = &exec_air_coil_syn;
     } else if(strcmp(tok, "coax_calc") == 0) {
       narg = 10;
       fn = &exec_coax_calc;
@@ -161,6 +177,10 @@ int main(int argc, char **argv)
     } else {
       fprintf(stderr, "stdio-wcalc: unknown command \"%s\"\n", tok);
       exit(1);
+    }
+
+    if( verbose && (fn != NULL) ) {
+      printf("--> %s\n", tmps);
     }
 
     /* 
@@ -223,6 +243,42 @@ static void exec_air_coil_calc(double *args)
   printf("%g %g %g %g %g %g\n", 
 	 line->L, line->Q, line->SRF,
 	 line->len, line->fill, line->Lmax);
+
+  /* clean up */
+  air_coil_free(line);
+  
+  return;
+}
+
+/*
+ *  [N,LEN,FILL,Q,SRF,Lmax] = 
+ *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
+ */
+static void exec_air_coil_syn(double *args)
+{
+  int i, flag;
+  /* our air_coil for calculations */
+  air_coil_coil *line;
+
+  /* create the line and fill in the parameters */
+  line = air_coil_new();
+  i = 0;
+  line->L     = args[i++];
+  line->Nf    = args[i++];
+  line->len   = args[i++];
+  line->fill  = args[i++];
+  line->AWGf  = args[i++];
+  line->rho   = args[i++];
+  line->dia   = args[i++];
+  line->freq  = args[i++];
+  flag        = (int) rint(args[i++]);
+
+  /* run the calculation */
+  air_coil_syn(line, line->freq, flag);
+  
+  /* print the outputs */
+  printf("%g %g %g %g %g %g\n", 
+	 line->Nf, line->len, line->fill, line->Q, line->SRF, line->Lmax);
 
   /* clean up */
   air_coil_free(line);
