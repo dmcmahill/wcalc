@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.7 2001/09/17 20:45:16 dan Exp $ */
+/* $Id: microstrip.c,v 1.8 2001/09/27 17:42:46 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -36,10 +36,13 @@
 //#define DEBUG_CALC   /* debug the microstrip_calc() function */
 //#define DEBUG_SYN    /* debug the microstrip_syn() function  */
 
+#include "config.h"
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "alert.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "microstrip.h"
@@ -394,9 +397,9 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag)
        /* warn the user if the loss calc is suspect. */
        if(t < 3.0*depth)
 	 {
-	   printf("Warning:  The metal thickness is less than\n");
-	   printf("three skin depths.  Use the loss results with\n");
-	   printf("caution.\n");
+	   alert("Warning:  The metal thickness is less than\n"
+		 "three skin depths.  Use the loss results with\n"
+		 "caution.\n");
 	 }
 
        /*
@@ -681,8 +684,7 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0){
-      fprintf(stderr,
-	      "microstrip_syn():  could not bracket the solution\n");
+      alert("microstrip_syn():  could not bracket the solution\n");
       exit(1);
     }
   
@@ -754,7 +756,7 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      fprintf(stderr,"MLISYN failed to converge in %d iterations\n",
+      alert("MLISYN failed to converge in %d iterations\n",
 	      maxiters);
       exit(1);
     }
