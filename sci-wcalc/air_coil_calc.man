@@ -1,0 +1,118 @@
+.\" $Id$
+.\"
+.\" Copyright (c) 2001 Dan McMahill
+.\" All rights reserved.
+.\"
+.\" This code is derived from software written by Dan McMahill
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and.\"or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"        This product includes software developed by Dan McMahill
+.\"  4. The name of the author may not be used to endorse or promote products
+.\"     derived from this software without specific prior written permission.
+.\" 
+.\"  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\"  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\"  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\"  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\"  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+.\"  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\"  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+.\"  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+.\"  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\"  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\"  SUCH DAMAGE.
+.\"
+
+.TH air_coil_calc 1 "March 2001" "Dan McMahill" "Wcalc"
+.\".so ../sci.an
+.SH NAME
+air_coil_calc - Single layer air core solenoid inductor analysis
+.SH CALLING SEQUENCE
+.nf
+[L,Q,SRF,len_out,fill_out] = air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+.fi
+.SH PARAMETERS
+.TP 10
+N
+: Number of turns
+.TP
+len
+: length of the coil (meters)
+.TP
+fill
+: ratio of coil length to closewound length
+.TP
+AWG
+: wire size (A.W.G.)
+.TP
+rho
+: resistivity of wire (not used currently)
+.TP
+dia
+: inside diameter of coil (meters)
+.TP
+freq
+: analysis frequency (Hz)
+.TP
+flag
+: used to calculate coil length.
+.RS
+.TP 5
+flag=0
+: the length given by len is used.
+.TP
+flag=1
+: the length is calculated from the wire size, number of turns and
+fill input.
+.RE
+.TP
+L
+: calculated inductance (H)
+.TP
+Q
+: calculated quality factor
+.TP
+SRF
+: calculated self resonant frequency (Hz)
+.TP
+len_out
+: length used for the analysis (meters)
+.TP
+fill_out
+: fill used for the analysis
+.SH DESCRIPTION
+function to analyze the electrical characteristics of a single layer,
+uniformly spaced, air core, solenoid inductor.  The physical
+dimensions of the coil are given as inputs and the inductance, quality
+factor, and self resonant frequency are calculated.
+.SH EXAMPLE
+.nf
+N=5;            // number of turns
+len=0;          // we'll use the fill parameter instead
+fill=1.2;       // the coil is 20% longer than the minimum
+AWG=22;         // wire size
+rho=1;          // not used yet
+dia=0.25/25.4;  // 0.25 inches inside diameter
+f=10e6;         // 10 MHz operation
+flag=1;         // use fill to calculate length
+[L,Q,SRF,len_out,fill_out] = ...
+  air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
+printf("L=%g nH",L*1e9);
+printf("Q=%g at %g MHz",Q,f/1e6);
+printf("Self Resonant Freq=%g MHz",SRF/1e6);
+printf("Length=%g inches",len_out*25.4);
+printf("Fill=%g",fill_out);
+.fi
+.SH SEE ALSO
+air_coil_syn
+.SH AUTHOR
+Dan McMahill
