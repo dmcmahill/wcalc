@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.5 2001/11/11 03:46:53 dan Exp $ */
+/* $Id: wcalc.c,v 1.6 2001/11/12 04:02:48 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -52,6 +52,7 @@
 
 /* the individual models */
 #include "air_coil_gui.h"
+#include "coax_gui.h"
 #include "ic_microstrip_gui.h"
 #include "microstrip_gui.h"
 #include "stripline_gui.h"
@@ -176,6 +177,11 @@ static void global_model_init()
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Air Core Inductor");
   global_model_new = g_list_append(global_model_new,air_coil_gui_new);
 
+  global_model_names = g_list_append(global_model_names,
+				     "Coaxial Transmission Line");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_Coax");
+  global_model_new = g_list_append(global_model_new,coax_gui_new);
+
   /*
   global_model_names = g_list_append(global_model_names,"Coupled Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coupled Microstrip");
@@ -236,6 +242,10 @@ void wcalc_setup (gpointer data,
     switch (type) {
     case MODEL_AIR_COIL:
       new_cmd = (void *) air_coil_gui_new;
+      break;
+
+    case MODEL_COAX:
+      new_cmd = (void *) coax_gui_new;
       break;
       /*
     case MODEL_COUPLED_MICROSTRIP:

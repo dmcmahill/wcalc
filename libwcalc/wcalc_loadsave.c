@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.4 2001/11/03 16:47:28 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.5 2001/11/25 16:33:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -109,6 +109,9 @@ int wcalc_load(FILE *fp)
   
   if (strcmp(val,FILE_AIR_COIL) == 0) {
     return MODEL_AIR_COIL;
+  }
+  else if (strcmp(val,FILE_COAX) == 0) {
+    return MODEL_COAX;
   }
   else if (strcmp(val,FILE_COUPLED_MICROSTRIP) == 0) {
     return MODEL_COUPLED_MICROSTRIP;

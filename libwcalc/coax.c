@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.2 2001/10/29 01:28:42 dan Exp $ */
+/* $Id: coax.c,v 1.1 2001/11/27 04:46:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -498,15 +498,51 @@ coax_line *coax_new()
   newline->b = 2.0;
   newline->c = 0.0;
   newline->tshield = 0.1;
+  newline->len = 1.0;
 
   newline->rho_a = 3e-8;
   newline->rho_b = 3e-8;
   newline->er    = 1.0;
+  newline->tand  = 1e-6;
+  newline->freq  = 10e6;
+  /*  newline->emax  = 1e8; */
 
-  newline->freq = 10e6;
+  newline->a_sf = 1.0;
+  newline->b_sf = 1.0;
+  newline->c_sf = 1.0;
+  newline->tshield_sf = 1.0;
+  newline->len_sf = 1.0;
+  newline->rho_a_sf = 1.0;
+  newline->rho_b_sf = 1.0;
+  newline->L_sf = 1.0;
+  newline->R_sf = 1.0;
+  newline->C_sf = 1.0;
+  newline->G_sf = 1.0;
 
+  newline->fc_sf = 1.0;
   newline->freq_sf = 1.0e6;
+
+  newline->delay_sf = 1.0;
+  newline->loss_sf = 1.0;
+  newline->losslen_sf = 1.0;
+
+  newline->a_units = "m";
+  newline->b_units = "m";
+  newline->c_units = "m";
+  newline->tshield_units = "m";
+  newline->len_units = "m";
+  newline->rho_a_units = "Ohm-m";
+  newline->rho_b_units = "Ohm-m";
+  newline->L_units = "Henries/m";
+  newline->R_units = "Ohms/m";
+  newline->C_units = "Farads/m";
+  newline->G_units = "Siemens/m";
   newline->freq_units="MHz";
+
+  newline->delay_units = "s";
+  newline->loss_units = "dB";
+  newline->losslen_units = "dB/m";
+
 
   /* get the rest of the entries in sync */
   coax_calc(newline,newline->freq);

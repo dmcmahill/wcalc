@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.10 2001/11/11 03:46:51 dan Exp $
+## $Id: Makefile.am,v 1.11 2001/11/12 04:02:46 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -41,6 +41,8 @@ wcalc_SOURCES = \
 	alert.c \
 	air_coil_gui.c \
 	air_coil_gui.h \
+	coax_gui.c \
+	coax_gui.h \
 	epscat.c \
 	epscat.h \
 	files.c \
