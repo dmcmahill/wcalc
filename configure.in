@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.65 2004/09/02 05:16:25 dan Exp $
+dnl $Id: configure.in,v 1.66 2004/09/08 22:48:52 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -275,8 +275,41 @@ fi
 
 
 if test "X$OCT_WCALC" != "X"; then
-	AC_MSG_CHECKING([if octave supports mex files])
-	AC_MSG_RESULT([not done yet.  FIXME])
+	AC_MSG_CHECKING([if $OCTMEX is octave mex])
+	AC_LANG(C)
+	ac_ext=c
+	ac_cpp='$OCTMEX $CPPFLAGS'
+	ac_compile='$OCTMEX -c conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+	ac_link='$OCTMEX conftest.$ac_ext  >&AS_MESSAGE_LOG_FD'
+	ac_compiler_gnu=$ac_cv_c_compiler_gnu
+	save_ac_exeext=$ac_exeext
+	ac_exeext=.oct
+
+	AC_LINK_IFELSE([
+#include "mex.h"
+void mexFunction(
+                 int nlhs,
+                 mxArray *plhs[[]],
+                 int nrhs,
+#if !defined(V4_COMPAT) && !defined(SCI_MEX)
+                 const mxArray *prhs[[]]
+#else
+                 mxArray *prhs[[]]
+#endif
+                 )
+{
+	mexPrintf("Hello, world\n");
+}
+],
+	AC_MSG_RESULT([yes])
+,
+	AC_ERROR([$OCTMEX is either broken or is not octave mex])
+)
+
+	# restore the language settings
+	ac_exeext=$save_ac_exeext
+	AC_LANG(C)
+
 fi
 
 if test "X$OCT_WCALC" != "X"; then
