@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/10 02:31:59 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/11 02:33:58 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,9 @@
 ##  SUCH DAMAGE.
 ##
 
+# list of all the mex files
+include $(srcdir)/mex.mk
+
 lib_LTLIBRARIES = libsci_wcalc.la
 
 libsci_wcalc_la_SOURCES = \
@@ -43,3 +46,6 @@ libsci_wcalc_la_SOURCES = \
 libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines
+
+EXTRA_DIST=	mex.mk
+
