@@ -1,4 +1,5 @@
-## $Id: Makefile.am,v 1.2 2004/01/10 06:33:43 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.3 2004/01/10 19:53:04 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
