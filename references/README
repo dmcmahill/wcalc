@@ -1,7 +1,32 @@
-# $Id: README,v 1.2 2002/08/03 17:58:37 dan Exp $
+# $Id: README,v 1.3 2002/08/28 12:43:51 dan Exp $
 
 This directory contains several of the technical references used in the
 development of the routines in libwcalc.
+
+
+=========================================================================
+COUPLED MICROSTRIP
+=========================================================================
+
+Garg_and_Bahl_MTT-27.pdf
+------------------------
+Ramesh Garg and I. J. Bahl, "Characteristics of Coupled Microstriplines",
+IEEE Transactions on Microwave Theory and Techniques, Vol. MTT-27, No. 7,
+July 1979.
+
+Has some simplified equations for coupled microstrip impedance.  Of
+more importance is the loss calculations.  They use Wheeler's incremental
+inductance method applied to the closed form expressions for impedance
+to come up with some closed form expressions for conductor loss.
+They compare to Rao who did not include loss in the ground plane.  The
+dielectric loss reported here is referenced as coming from Rao.
+
+Rao_MTT-22.pdf
+--------------
+B. R. Rao, "Effect of loss and frequency dispersion on the performance of
+microstrip directional couplers and coupled line filters," IEEE Transactions
+on Microwave Theory and Techniques, Vol. MTT-22, pp. 747-750, July 1974.
+
 
 
 =========================================================================
