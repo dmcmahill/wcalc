@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.3 2002/01/15 01:49:19 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.4 2002/02/20 01:10:09 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -344,17 +344,14 @@ int cgiMain(void){
   if (!input_err){
     cookie_str = coax_save_string(line);
     cookie = cgiCookie_new(name_string,cookie_str);
-    cgiCookie_MaxAge_set(cookie,60*60*24);
+    cgiCookie_MaxAge_set(cookie,COOKIE_AGE);
     cgiHeaderSetCookie(cookie);
     
     /* Put out the CGI header */
     cgiHeaderContentType("text/html");  
   }
   else {
-    fprintf(cgiOut,"<P>There were errors in your input values.  "
-	    "Please hit the \"back\" button on your browser, "
-	    "correct the errors, and resubmit the form."
-	    "</P><HR>\n");
+    fixInputMsg();
   }
 
 #ifdef DEBUG
