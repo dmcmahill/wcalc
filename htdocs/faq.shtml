@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: about.shtml,v 1.1 2001/10/16 04:15:32 dan Exp $ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Wcalc F.A.Q.</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc F.A.Q.
+    </font>
+    <br>
+    <br>
+    </center>
+    
+    <font face="helvetica, arial">
+    <H2>Can I run wcalc on my favorite operating system?</H2>
+    <p>
+	Wcalc is primarily developed under <a href="http://www.netbsd.org>NetBSD</a>,
+	but should be easily compiled on most major unix-like operating systems.  In
+	addition, Wcalc can be compiled as a native windows application.
+    </p>
+    <H2>I can't get the matlab interface to work on my computer!</H2>
+    <p>
+    Due to the high cost of Matlab, I have a very limited access to systems where
+    I can test <a href="mex-wcalc.html">MEX-Wcalc</a>.  Please report exactly what
+    system you have, the matlab version, and the exact errors.
+    </p>
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>
