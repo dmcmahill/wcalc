@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.7 2001/02/17 16:56:34 dan Exp $
+# $Id: Makefile.in,v 1.8 2001/09/11 02:01:43 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -57,8 +57,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 AWK = @AWK@
 CC = @CC@
-CFLAGS = @CFLAGS@ -DVER=\"${VERSION}\"
-LDFLAGS = @LDFLAGS@
+CFLAGS = @CFLAGS@ @GTK_CFLAGS@ -DVER=\"${VERSION}\"
+LDFLAGS = @LDFLAGS@ @GTK_LIBS@
 LIBS = @LIBS@
 
 
