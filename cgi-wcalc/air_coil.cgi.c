@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.9 2002/01/14 02:53:54 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.10 2002/02/23 18:43:29 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -51,8 +51,10 @@
 
 /* libwcalc */
 #include "air_coil.h"
+#include "air_coil_loadsave.h"
 #include "misc.h"
 #include "physconst.h"
+#include "wcalc_loadsave.h"
 
 /* ID's for this module */
 #include "air_coil_id.h"
@@ -97,6 +99,10 @@ int cgiMain(void){
 
   char *fill_choices[] = {"no","yes"};
 
+  char *cookie_str;
+  char cookie_load_str[COOKIE_MAX+1];
+  cgiCookieType *cookie;
+  
   input_err=0;
 
   /* 
@@ -196,7 +202,7 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
-      
+    
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
       inputErr(&input_err);
@@ -251,14 +257,14 @@ int cgiMain(void){
 #ifdef DEBUG
       printf("%s:  loading cookie \"%s\"\n",name_string,cookie_load_str);
 #endif
-      air_coil_load_string(line,cookie_load_str);
+      air_coil_load_string(coil,cookie_load_str);
 #ifdef DEBUG
       printf("%s:  finished loading cookie\n",name_string);
 #endif
     }
-
+  }
   if (!input_err){
-    cookie_str = air_coil_save_string(line);
+    cookie_str = air_coil_save_string(coil);
     cookie = cgiCookie_new(name_string,cookie_str);
     cgiCookie_MaxAge_set(cookie,COOKIE_AGE);
     cgiHeaderSetCookie(cookie);

@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.4 2002/02/20 01:10:09 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.5 2002/02/23 18:50:22 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -88,9 +88,6 @@
 
 #define defRO     50.0
 #define defELEN   90.0
-
-/* XXX find a better way... */
-#define COOKIE_MAX 512
 
 static const char *name_string="coax.cgi";
 static int input_err;
