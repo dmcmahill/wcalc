@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/14 03:30:28 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/10/17 03:41:48 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -37,7 +37,7 @@ pkgdata_DATA = \
 	copying.html \
 	index.html
 
-cgibinexecdir = $(libexecdir)/cgi-bin
+cgibinexecdir = @CGIBINDIR@
 
 cgibinexec_PROGRAMS = \
 	air_coil.cgi \

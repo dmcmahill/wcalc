@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.21 2001/10/16 03:26:27 dan Exp $
+dnl $Id: configure.in,v 1.22 2001/10/17 03:41:48 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -145,6 +145,24 @@ AC_SUBST(GTK_WCALC)
 # ------------- done with --enable-gtk -------------------
 
 # ------------- pathnames  -------------------
+
+# where to install the CGI programs
+
+AC_ARG_WITH([cgibin],
+[  --with-cgibin=cgibin    Install the CGI programs in the specified
+                          directory.  [default = libexecdir/cgi-bin]],
+[
+if test "X$with_cgibin" = "Xno" ; then
+	AC_ERROR([--without-cgibin is not allowed])
+else
+	CGIBINDIR=$with_cgibin
+fi
+],
+[
+CGIBINDIR='${libexecdir}/cgi-bin'
+])
+
+AC_SUBST(CGIBINDIR)
 
 # where to install the HTML pages and .PNG files:
 
