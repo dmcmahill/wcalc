@@ -1,0 +1,121 @@
+# $Id$
+#
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/ic_microstrip.wc
+# Modified:  Tue Jul 27 23:12:19 2004
+# Modified:  Wed Jul 28 16:00:16 2004
+# Wcalc Version 0.5
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = ic_microstrip
+
+
+[ic_microstrip]
+
+# I.C. microstrip file version
+file_version = 0.1
+
+# Length (meters)
+L = 0.001
+
+# Width (meters)
+W = 0.00015
+
+# Characteristic Impedance (ohms)
+Ro = 56.0013785171151
+
+# Electrical Length (degrees)
+Elen = 7.77556162890177
+
+# Frequency of operation
+freq = 2400000000
+
+# User units
+
+# Length, width, oxide, substrate and metal thickness units
+units_lwht = 1
+# [um]
+
+# Incremental inductance units
+units_L = 1-2
+# [nH/mm]
+
+# Incremental resistance units
+units_R = 0-2
+# [mOhm/mm]
+
+# Incremental capacitance units
+units_C = 0-2
+# [fF/mm]
+
+# Incremental conductance units
+units_G = 0-2
+# [uMho/mm]
+
+# Line physical length units
+units_len = 0
+# [nm]
+
+# Frequency units
+units_freq = 4
+# [GHz]
+
+# Loss units
+units_loss = 0
+# [dB]
+
+# Loss/length units
+units_losslen = 0-2
+# [dB/mm]
+
+# Metal resistivity units
+units_rho = 1-4
+# [Ohm-m]
+
+# Substrate conductivity units
+units_sigmas = 2-4
+# [Mho-m]
+
+# Surface roughness units (RMS)
+units_rough = 1
+# [um]
+
+# Delay units
+units_delay = 2
+# [ps]
+
+# Skin depth units
+units_depth = 1
+# [um]
+
+# End correction units
+units_deltal = 0
+# [nm]
+
+
+[substrate]
+
+# Metalization thickness (meters)
+TMET = 8e-07
+
+# Metalization resistivity relative to copper
+RHO = 3e-08
+
+# Metalization surface roughness (meters-RMS)
+ROUGH = 0
+
+# Oxide relative dielectric constant
+Eox = 4
+
+# Oxide thickness (meters)
+Tox = 1.5e-06
+
+# Substrate thickness (meters)
+H = 0.00025
+
+# Substrate relative dielectric constant
+Es = 11.8
+
+# Substrate conductivity (1/(ohm-meters))
+sigmas = 0.5
+

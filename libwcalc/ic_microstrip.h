@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.h,v 1.6 2002/06/12 11:30:27 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.7 2004/07/26 22:22:28 dan Exp $ */
 
 /*
  * Copyright (c)  2001, 2002, 2004 Dan McMahill
@@ -64,6 +64,7 @@ typedef struct IC_MICROSTRIP_LINE
   /* electrical length (degrees) */
   double len;
 
+  double delay;
 
   /* effective dielectric constant */
   double keff;

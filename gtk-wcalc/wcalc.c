@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.15 2004/07/21 04:32:29 dan Exp $ */
+/* $Id: wcalc.c,v 1.16 2004/07/28 03:24:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -324,21 +324,37 @@ void wcalc_setup (gpointer data,
     /* this is a file->open command */
     fname = (char *) data;
 #ifdef DEBUG
-    g_print("wcalc_setup():  file open requested (%p)\n",data);
-    g_print("                file = \"%s\"\n",fname);
+    g_print("wcalc_setup():  file open requested (%p)\n", data);
+    if (fname != NULL )
+      g_print("                file = \"%s\"\n", fname);
 #endif
 
     if ( fp == NULL ) {
-      if ( (fp=fopen(data,"r")) == NULL ) {
-	alert("Could not open the file\n"
-	      "\"%s\"\n"
-	      "for reading.",fname);
-	return;
+      if( fname != NULL ) {
+#ifdef DEBUG
+	g_print("wcalc_setup():  Trying to open \"%s\"\n", fname);
+#endif
+	if ( (fp = fopen(data, "r")) == NULL ) {
+	  alert("Could not open the file\n"
+		"\"%s\"\n"
+		"for reading.", fname);
+	  return;
+	}
+      } else {
+	alert("wcalc_setup():  fp == NULL and fname == NULL\n"
+	      "Please report this bug\n");
+	return ;
       }
     }
 
     /* extract the _new function for our selected model */
+#ifdef DEBUG
+    g_print("wcalc_setup():  extracting model type\n");
+#endif
     type = wcalc_load(fp);
+#ifdef DEBUG
+    g_print("wcalc_setup():  model type = %d\n", type);
+#endif
     switch (type) {
     case MODEL_AIR_COIL:
       new_cmd = (void *) air_coil_gui_new;

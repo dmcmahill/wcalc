@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.h,v 1.4 2002/06/12 11:30:16 dan Exp $ */
+/* $Id: microstrip_gui.h,v 1.5 2004/07/24 04:07:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MICROSTRIP_GUI_H_
-#define __MICROSTRIP_GUI_H_
+#ifndef __MICROSTRIP_GUI_H__
+#define __MICROSTRIP_GUI_H__
 
 #include "microstrip.h"
 #include "wcalc.h"
@@ -47,7 +47,7 @@ typedef struct MICROSTRIP_GUI
   /* Model Dependent Elements */
 
   /*
-   * the microstrip line which is being analyzed
+   * the microstrip which is being analyzed
    */
   microstrip_line *line;
 
@@ -55,9 +55,6 @@ typedef struct MICROSTRIP_GUI
    * Frequency/Units/Model vbox and its contents 
    */
   GtkWidget *units_vbox;
-
-  /* frequency entry */
-  GtkWidget *text_freq;
 
   /* frequency units */
   GtkWidget *combo_funits;
@@ -72,20 +69,16 @@ typedef struct MICROSTRIP_GUI
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
-  GtkWidget *text_W,*text_L,*text_Z0,*text_elen;
+  GtkWidget *text_w,*text_l,*text_h,*text_er,*text_tand;
+  GtkWidget *text_z0,*text_elen,*text_tmet,*text_rho,*text_rough;
+  GtkWidget *text_freq;
 
   /*
    * Outputs vbox and its contents
    */
   GtkWidget *outputs_vbox;
-  GtkWidget *label_keff,*label_loss,*label_losslen,*label_skindepth;
-
-
-  /*
-   * Substrate vbox and its contents
-   */
-  GtkWidget *substrate_vbox;
-  GtkWidget *text_H,*text_er,*text_rho,*text_rough,*text_tmet,*text_tand;
+  GtkWidget *label_delay,*label_loss,*label_losslen,*label_depth;
+  GtkWidget *label_deltal,*label_Ls,*label_Rs,*label_Cp,*label_Gp;
 
   /*
    * Picture vbox and its contents
@@ -106,5 +99,5 @@ void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp);
 
 #define WC_MICROSTRIP_GUI(x)      ((microstrip_gui *) (x))
 
-#endif /*__MICROSTRIP_GUI_H_*/
+#endif /*__MICROSTRIP_GUI_H__*/
 

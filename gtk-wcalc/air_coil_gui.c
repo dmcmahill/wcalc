@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.9 2004/07/26 01:06:49 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.10 2004/07/28 03:25:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -86,11 +86,6 @@ static void picture_init(air_coil_gui *gui,
 			 GtkWidget *window,
 			 GtkWidget *parent);
 static void tooltip_init(air_coil_gui *gui);
-
-
-#define ENTRYLENGTH  8
-#define XPAD 2
-#define YPAD 0
 
 static char *name="Air Core Inductor Analysis/Synthesis";
 static char *version="v0.1";
@@ -242,7 +237,6 @@ static void values_init(air_coil_gui *gui,
   /* the "Len/Fill" radio button group */
   GSList *len_group;
 
-#define WIDTH 60
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(value_parent), frame);
@@ -265,7 +259,7 @@ static void values_init(air_coil_gui *gui,
 		      GTK_SIGNAL_FUNC (analyze), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 
-		   0, GTK_EXPAND|GTK_FILL, XPAD, YPAD);
+		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
   gtk_widget_show (button);
   
   /* 
@@ -280,7 +274,7 @@ static void values_init(air_coil_gui *gui,
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show (button);
 
   /* I.D. */
@@ -290,7 +284,7 @@ static void values_init(air_coil_gui *gui,
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_set_sensitive (button, FALSE);
   gtk_widget_show (button);
 
@@ -301,7 +295,7 @@ static void values_init(air_coil_gui *gui,
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
   gtk_widget_show (button);
 
 
@@ -309,13 +303,13 @@ static void values_init(air_coil_gui *gui,
   /* ---------------- Number of Turns -------------- */
 
   text = gtk_label_new( "N" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_Nf = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gui->text_Nf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_entry_set_text(GTK_ENTRY(gui->text_Nf),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_Nf, 1, 2, 0, 1,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_Nf),WIDTH,0);
+  gtk_table_attach (GTK_TABLE(table), gui->text_Nf, 1, 2, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_Nf),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
@@ -324,12 +318,12 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Coil Diameter -------------- */
   text = gtk_label_new( "I.D." );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_dia = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_dia, 1, 2, 1, 2,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_dia),WIDTH,0);
+  gui->text_dia = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_dia, 1, 2, 1, 2,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_dia),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
@@ -338,17 +332,17 @@ static void values_init(air_coil_gui *gui,
 
   text = wc_units_menu_new(gui->coil->units_dia, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   /* ---------------- Wire Size  -------------- */
 
   text = gtk_label_new( _("Wire Dia.") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_AWGf = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, 6, 7, 0, 1,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WIDTH,0);
+  gui->text_AWGf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, 6, 7, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
@@ -357,7 +351,7 @@ static void values_init(air_coil_gui *gui,
 
   hbox = gtk_hbox_new(FALSE,1);
   gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 0, 1, 
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+		   GTK_EXPAND|GTK_FILL,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(hbox);
   text = gtk_label_new( _("AWG") );
   gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
@@ -366,13 +360,13 @@ static void values_init(air_coil_gui *gui,
   /* ---------------- Resistivity  -------------- */
 
   text = gtk_label_new( _("Resistivity") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_rho = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gui->text_rho = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_rho, 
-		    6, 7, 1, 2, 0, 0, XPAD, YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WIDTH,0);
+		    6, 7, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
@@ -381,17 +375,17 @@ static void values_init(air_coil_gui *gui,
 
   text = wc_units_menu_new(gui->coil->units_rho, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   /* ----------------  Inductance  -------------- */
 
   text = gtk_label_new( _("Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_L = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_L, 6, 7, 2, 3,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WIDTH,0);
+  gui->text_L = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_L, 6, 7, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
@@ -401,19 +395,19 @@ static void values_init(air_coil_gui *gui,
 
   text = wc_units_menu_new(gui->coil->units_L, WC_WCALC(gui), &L_ug);
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   /* ----------------  Frequency  -------------- */
 
   text = gtk_label_new( _("Frequency") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
-  gui->text_freq = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gui->text_freq = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_freq,
-		    6, 7, 3, 4, 0, 0, XPAD, YPAD);  
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WIDTH,0);
+		    6, 7, 3, 4, 0, 0, WC_XPAD, WC_YPAD);  
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
@@ -423,31 +417,31 @@ static void values_init(air_coil_gui *gui,
 
   text = wc_units_menu_new(gui->coil->units_freq, WC_WCALC(gui), &f_ug);
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   /* ----------------    -------------- */
 
   text = gtk_label_new( " " );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
 		   GTK_EXPAND|GTK_FILL, 0,
-		   XPAD,YPAD);
+		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
   /* ----------------  Coil Length  -------------- */
   /* the 2 text entries */
-  gui->text_len = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_len, 1, 2, 2, 3,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_len),WIDTH,0);
+  gui->text_len = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_len, 1, 2, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_len),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_len);
 
-  gui->text_fill = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_fill, 1, 2, 3, 4,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_fill),WIDTH,0);
+  gui->text_fill = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_fill, 1, 2, 3, 4,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_fill),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
@@ -456,7 +450,7 @@ static void values_init(air_coil_gui *gui,
 
   /* */
   button = gtk_radio_button_new_with_label (NULL, _("Len."));
-  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 2, 3, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(use_len_pressed),
 		     gui);
@@ -466,7 +460,7 @@ static void values_init(air_coil_gui *gui,
 
   len_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
   button = gtk_radio_button_new_with_label(len_group, "Fill");
-  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 3, 4, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 3, 4, 0,0,WC_XPAD,WC_YPAD);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(use_fill_pressed),
 		     gui);
@@ -485,7 +479,7 @@ static void values_init(air_coil_gui *gui,
 
   text = wc_units_menu_new(gui->coil->units_len, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   /* ----------------    -------------- */
 
@@ -500,11 +494,8 @@ static void values_init(air_coil_gui *gui,
 
   gtk_widget_show (table);
 
-#undef WIDTH
 
   /* ----------------  Outputs  -------------- */
-
-#define OUTPUT_TEXT "     "
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(output_parent), frame);
@@ -518,17 +509,17 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Q -------------- */
   text = gtk_label_new( "Q" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->label_Q = gtk_label_new( OUTPUT_TEXT );
+  gui->label_Q = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Q, 
-		    1,2,0,1, 0,0,XPAD,YPAD);
+		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_Q);
 
   gui->label_Qfreq = gtk_label_new( " " );
   gtk_table_attach(GTK_TABLE(table), gui->label_Qfreq, 2, 3, 0, 1,
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Qfreq);
   gtk_misc_set_alignment(GTK_MISC(gui->label_Qfreq), 0, 0);
   wc_units_attach_units_label(f_ug, gui->label_Qfreq);
@@ -536,51 +527,53 @@ static void values_init(air_coil_gui *gui,
   
   /* ---------------- Self resonant freq.  -------------- */
   text = gtk_label_new( _("Self Resonant Freq.") );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->label_SRF = gtk_label_new( OUTPUT_TEXT );
+  gui->label_SRF = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_SRF, 
-		    1, 2, 1, 2, 0, 0, XPAD, YPAD);
+		    1, 2, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_SRF);
 
   text = wc_units_menu_new(gui->coil->units_SRF, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
+  wc_units_attach_label(ug, gui->label_SRF, &(gui->coil->SRF), NULL, NULL, WC_FMT_G, 1);
 
   /* ---------------- closewound inductance -------------- */
 
   text = gtk_label_new( _("Closewound Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->label_Lmax = gtk_label_new( OUTPUT_TEXT );
+  gui->label_Lmax = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Lmax, 
-		    5, 6, 0, 1, 0, 0, XPAD, YPAD);
+		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Lmax);
 
   text = gtk_label_new( "" );
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1,
-		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   wc_units_attach_units_label(L_ug, text);
+  wc_units_attach_label(L_ug, gui->label_Lmax, &(gui->coil->Lmax), NULL, NULL, WC_FMT_G, 1);
 
   /* ---------------- Fill factor -------------- */
 
   text = gtk_label_new( _("Len/Closewound Len") );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
 
-  gui->label_fill = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_fill, 5,6,1,2, 0,0,XPAD,YPAD);
+  gui->label_fill = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_fill, 5,6,1,2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_fill);
 
   text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
@@ -588,11 +581,8 @@ static void values_init(air_coil_gui *gui,
   text = gtk_label_new( "                " );
   gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
 		   GTK_EXPAND|GTK_FILL, 0,
-		   XPAD,YPAD);
+		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-
-
-#undef OUTPUT_TEXT
 
   gtk_widget_show(table);
 
@@ -776,54 +766,53 @@ static void update_display(air_coil_gui *gui)
 {
   char str[80];
 
-  sprintf(str, "%.4g", gui->coil->Nf);
+  /* ----------------  N  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->Nf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_Nf), str );
 
-  sprintf(str, "%.4g", gui->coil->dia/gui->coil->units_dia->sf);
+  /* ----------------  Diameter  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->dia/gui->coil->units_dia->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_dia), str );
 
-  sprintf(str, "%.4g", gui->coil->len/gui->coil->units_len->sf);
+  /* ----------------  length  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->len/gui->coil->units_len->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_len), str );
 
-  sprintf(str, "%.4g", gui->coil->fill);
+  /* ----------------  fill  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->fill);
   gtk_entry_set_text( GTK_ENTRY(gui->text_fill), str );
 
-  sprintf(str, "%.4g", gui->coil->L/gui->coil->units_L->sf);
-  gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
-  
-  sprintf(str, "%.4g", gui->coil->rho/gui->coil->units_rho->sf);
+  /* ----------------  AWG  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->AWGf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
+
+  /* ----------------  resistivity  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->rho/gui->coil->units_rho->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
   
-  sprintf(str, "%.4g", gui->coil->AWGf);
-  gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
+  /* ----------------  inductance  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->L/gui->coil->units_L->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
   
-  sprintf(str, "%.4g", gui->coil->freq/gui->coil->units_freq->sf);
+  /* ----------------  frequency  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->freq/gui->coil->units_freq->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
   
-  sprintf(str, "%8.4g @ %.4g", gui->coil->Q, 
+  /* ----------------  Q  -------------- */
+  sprintf(str, WC_FMT_G " @ " WC_FMT_G, gui->coil->Q, 
 	  gui->coil->freq/gui->coil->units_freq->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Q), str );
     
-  /* XXX eng_units() must die */
-#ifdef notdef
-  vstr = eng_units(gui->coil->freq,"Hz",&sf);
-  sprintf(str, "@ %.4g %s",sf*gui->coil->freq,vstr);
-  free(vstr);
-  gtk_label_set_text(GTK_LABEL(gui->label_Qfreq),str);
-
-  vstr = eng_units(gui->coil->SRF,"Hz",&sf);
-  gtk_label_set_text(GTK_LABEL(gui->label_SRF_units),vstr);
-  sprintf(str, "@ %.4g %s", sf*gui->coil->freq,vstr);
-  free(vstr);
-#endif
-
-  sprintf(str, "%8.4g", gui->coil->SRF/gui->coil->units_SRF->sf);
+  /* ----------------  SRF  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->SRF/gui->coil->units_SRF->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_SRF), str );
 
-  sprintf(str, "%8.4g", gui->coil->Lmax/gui->coil->units_L->sf);
+  /* ----------------  Lmax  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->Lmax/gui->coil->units_L->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Lmax), str );
   
-  sprintf(str, "%8.4g", gui->coil->fill);
+  /* ----------------  fill (output)  -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->fill);
   gtk_label_set_text( GTK_LABEL(gui->label_fill), str );
 
 }
@@ -911,7 +900,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"newline\n");
   fprintf(fp,"newline\n");
   fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n",global_print_config->paperwidth);
+  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
   fprintf(fp,"/coly currentpoint exch pop def\n");
   fprintf(fp,"/linespace 1.5 def\n");
   fprintf(fp,"\n");
@@ -919,36 +908,36 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
   fprintf(fp,"(N) show tab1 (=) show tab2 (%g turns) show newline\n",
 	  gui->coil->Nf);
-  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->dia/gui->coil->units_dia->sf,
 	  gui->coil->units_dia->name);
-  fprintf(fp,"(Len.) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(Len.) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->len/gui->coil->units_len->sf,
 	  gui->coil->units_len->name);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (%g AWG) show newline\n",
+  fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (" WC_FMT_G " AWG) show newline\n",
 	  gui->coil->AWGf);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->rho/gui->coil->units_rho->sf,
 	  gui->coil->units_rho->name);
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->L/gui->coil->units_L->sf,
 	  gui->coil->units_L->name);
-  fprintf(fp,"(Q) show tab1 (=) show tab2 (%g at %g %s) show newline\n",
+  fprintf(fp,"(Q) show tab1 (=) show tab2 (" WC_FMT_G " at " WC_FMT_G " %s) show newline\n",
 	  gui->coil->Q, gui->coil->freq/gui->coil->units_freq->sf,
 	  gui->coil->units_freq->name);
-  fprintf(fp,"(SRF) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(SRF) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->SRF/gui->coil->units_SRF->sf,
 	  gui->coil->units_SRF->name);
   fprintf(fp,"(Closewound) show\n");
   fprintf(fp,"linespace /linespace 1.0 def newline /linespace exch def \n");
-  fprintf(fp,"(inductance) show tab1 (=) show tab2 (%g %s) show newline\n",
+  fprintf(fp,"(inductance) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->Lmax/gui->coil->units_L->sf,
 	  gui->coil->units_L->name);
-  fprintf(fp,"(fill) show tab1 (=) show tab2 (%g) show newline\n",
+  fprintf(fp,"(fill) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->coil->fill);
   fprintf(fp,"newline\n");
   

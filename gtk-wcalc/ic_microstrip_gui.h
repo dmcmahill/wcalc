@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.h,v 1.2 2002/05/10 22:52:41 dan Exp $ */
+/* $Id: ic_microstrip_gui.h,v 1.3 2002/06/12 11:30:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -51,20 +51,6 @@ typedef struct IC_MICROSTRIP_GUI
    */
   ic_microstrip_line *line;
 
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
-
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
   /*
    * Values vbox and its contents
    */
@@ -89,10 +75,6 @@ typedef struct IC_MICROSTRIP_GUI
   GtkWidget *picture_vbox;
   GtkWidget *text_status;
 
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
 
 } ic_microstrip_gui;
 

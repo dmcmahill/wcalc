@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.5 2004/07/26 22:22:28 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.6 2004/07/28 03:28:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -107,8 +107,10 @@ static fspec * get_fspec(int which_one)
 		  'u', &line->units_loss);
     fspec_add_key(linespec, "units_losslen", "Loss/length units",  
 		  'u', &line->units_losslen);
-    fspec_add_key(linespec, "units_rho", "Resistivity units",  
+    fspec_add_key(linespec, "units_rho", "Metal resistivity units",  
 		  'u', &line->units_rho);
+    fspec_add_key(linespec, "units_sigmas", "Substrate conductivity units",  
+		  'u', &line->units_sigmas);
     fspec_add_key(linespec, "units_rough", "Surface roughness units (RMS)",  
 		  'u', &line->units_rough);
     fspec_add_key(linespec, "units_delay", "Delay units",

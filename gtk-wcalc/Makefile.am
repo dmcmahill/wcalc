@@ -1,7 +1,8 @@
-## $Id: Makefile.am,v 1.23 2002/12/17 15:29:34 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.24 2002/12/18 13:56:43 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -68,6 +69,13 @@ wcalc_SOURCES = \
 
 man_MANS=	wcalc.1
 
+pkgdata_DATA= \
+	air_coil.wc \
+	coax.wc \
+	ic_microstrip.wc \
+	microstrip.wc \
+	stripline.wc
+
 ASCIITABS=\
 	AWG.asciitab \
 	permeability.asciitab \
@@ -81,7 +89,7 @@ BUILT_SOURCES=	${GTKTABS} AWG.asciitab
 
 FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
-EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS}
+EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS} ${pkgdata_DATA}
 
 DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
 

@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.11 2004/07/21 04:32:30 dan Exp $ */
+/*      $Id: wcalc.h,v 1.12 2004/07/28 03:24:38 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -80,6 +80,19 @@ GList *global_model_defaults;
 print_config *global_print_config;
 
   
+/* Format string used by many forms and postscript output */
+#define WC_FMT_G "%.4g"
+
+/* Width of entries used in many forms */
+#define WC_ENTRYLENGTH  8
+#define WC_WIDTH 60
+
+/* Padding used in all the forms */
+#define WC_XPAD 2
+#define WC_YPAD 0
+
+/* place holder text */
+#define WC_OUTPUT_TEXT "     "
 
 typedef struct WCALC
 {

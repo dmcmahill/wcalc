@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.8 2004/07/26 22:22:26 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.11 2004/07/28 03:25:27 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -33,7 +33,8 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
+
 #include "config.h"
 
 #include <gtk/gtk.h>
@@ -47,11 +48,15 @@
 #include "alert.h"
 #include "epscat.h"
 #include "menus.h"
+#include "misc.h"
+
 #include "microstrip.h"
 #include "microstrip_gui.h"
 #include "microstrip_loadsave.h"
 #include "physconst.h"
+#include "units.h"
 
+#include "gtk-units.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -60,27 +65,24 @@
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
-static void mscalc_analyze( GtkWidget *w, gpointer data );
-static void mscalc_synthesize( GtkWidget *w, gpointer data );
-static void mscalc( microstrip_gui *gui, GtkWidget *w, gpointer data );
-
-static void vals_changedCB( GtkWidget *widget, gpointer data );
+static void analyze( GtkWidget *w, gpointer data );
+static void synthesize_w( GtkWidget *w, gpointer data );
+static void synthesize_l( GtkWidget *w, gpointer data );
+static void synthesize_h( GtkWidget *w, gpointer data );
+static void synthesize_er( GtkWidget *w, gpointer data );
+static void calculate( microstrip_gui *gui, GtkWidget *w, gpointer data );
+static void update_display( microstrip_gui *gui);
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
-static void units_init(microstrip_gui *gui, GtkWidget *parent);
+static void vals_changedCB( GtkWidget *widget, gpointer data );
+
 static void values_init(microstrip_gui *gui, GtkWidget *parent);
 static void outputs_init(microstrip_gui *gui, GtkWidget *parent);
-static void substrate_init(microstrip_gui *gui, GtkWidget *parent);
-static void picture_init(microstrip_gui *gui, GtkWidget *window, GtkWidget *parent);
+static void picture_init(microstrip_gui *gui,
+			 GtkWidget *window,
+			 GtkWidget *parent);
 static void tooltip_init(microstrip_gui *gui);
-
-static void cb_punits_menu_select( GtkWidget *item,
-				   gpointer data);
-
-
-#define ENTRYLENGTH  8
-
 
 static char *name="Microstrip Analysis/Synthesis";
 static char *version="v0.1";
@@ -125,68 +127,66 @@ microstrip_gui *microstrip_gui_new(void)
 
   wcalc->window_title=NULL;
   wcalc->save_needed=NULL;
+  wcalc->units_menu_list = NULL;
 
   /*
    * Initialize the model dependent portions
    */
 
   /* create the microstrip line which will be used */
-#ifdef DEBUG
-  g_print("microstrip_gui_new():  Creating new microstrip line\n");
-#endif
   new_gui->line = microstrip_line_new();
   new_gui->phys_units_text = NULL;
-
-#ifdef DEBUG
-  g_print("microstrip_gui_new():  New pointer is %p\n", new_gui);
-  g_print("              wcalc->line = %p\n", new_gui->line);
-  g_print("              wcalc->line->subs = %p\n", new_gui->line->subs);
-#endif
 
   return new_gui;
 }
 
-void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
+void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 {
-  GtkWidget *units_vbox;
   GtkWidget *values_vbox;
   GtkWidget *outputs_vbox;
-  GtkWidget *substrate_vbox;
   GtkWidget *picture_vbox;
 
   microstrip_gui *gui;
 
   gui = WC_MICROSTRIP_GUI(wcalc);
 
+  /* if this is an open from file calculator, then open the file */
+  if (fp != NULL){
+#ifdef DEBUG
+    g_print("microstrip_gui.c:microstrip_gui_init():  calling microstrip_load\n");
+#endif
+    if (microstrip_load(gui->line,fp) != 0) {
+      alert("ERROR:  Could not load the microstrip\n"
+	    "data from the chosen file.  The values\n"
+	    "may be corrupted.\n");
+    }
+  }
+  else{
+    /* put any default values here */
+#ifdef DEBUG
+    g_print("microstrip_gui.c:microstrip_gui_init():  new using defaults\n");
+#endif
+  }
+
   /* create the other vbox's and pack them into the main vbox */
-  units_vbox = gtk_vbox_new (FALSE, 1);
   values_vbox = gtk_vbox_new (FALSE, 1);
   outputs_vbox = gtk_vbox_new (FALSE, 1);
-  substrate_vbox = gtk_vbox_new (FALSE, 1);
   picture_vbox = gtk_vbox_new (FALSE, 1);
 
-  gtk_container_set_border_width (GTK_CONTAINER (units_vbox), 5); 
   gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5); 
   gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (substrate_vbox), 5); 
   gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5); 
 
-  gtk_box_pack_start (GTK_BOX (main_vbox), units_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), values_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), outputs_vbox, FALSE, TRUE, 0);
-  gtk_box_pack_start (GTK_BOX (main_vbox), substrate_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), picture_vbox, FALSE, TRUE, 0);
 
-  gtk_widget_show (units_vbox);
   gtk_widget_show (values_vbox);
   gtk_widget_show (outputs_vbox);
-  gtk_widget_show (substrate_vbox);
   gtk_widget_show (picture_vbox);
 
-  units_init(gui,units_vbox);
   values_init(gui,values_vbox);
   outputs_init(gui,outputs_vbox);
-  substrate_init(gui,substrate_vbox);
   picture_init(gui,wcalc->window,picture_vbox);
 
   tooltip_init(gui);
@@ -194,107 +194,28 @@ void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   gtk_widget_show (wcalc->window);
 
   wcalc->init_done=1;
+
+  update_display(gui);
+
+  wc_units_menu_init( wcalc );
+  analyze(NULL, gui);
+  wc_units_menu_init( wcalc );
+
 }
 
 /*
  * Private Functions
  */
 
-static void units_init(microstrip_gui *gui,GtkWidget *parent)
-{
-  GtkWidget *text;
-  GtkWidget *my_hbox;
-  GtkWidget *my_vbox;
-  GList *glist=NULL;
-  GList *glist2=NULL;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_vbox = gtk_vbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_vbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_vbox);
-  gtk_widget_show (my_vbox);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_box_pack_start (GTK_BOX (my_vbox), my_hbox, TRUE, FALSE, 1);
-  gtk_widget_show (my_hbox);
-
-
-  text = gtk_label_new( "Frequency:" );
-  gtk_box_pack_start (GTK_BOX (my_hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-
-  gui->text_freq = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_freq, FALSE, FALSE, 0);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),60,0);
-  gtk_widget_show(gui->text_freq);
-
-  
-  glist = g_list_append(glist,"kHz");
-  glist = g_list_append(glist,"MHz");
-  glist = g_list_append(glist,"GHz");
-
-  gui->combo_funits =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(gui->combo_funits), glist);
-  gtk_combo_set_use_arrows( GTK_COMBO(gui->combo_funits), 1);
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->combo_funits, FALSE, FALSE, 0);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(gui->combo_funits)->entry), FALSE);
-  //gdk_string_width()
-  gtk_widget_set_usize(GTK_WIDGET( gui->combo_funits),60,0);
-  gtk_widget_show( gui->combo_funits );
-
-
-  /* 
-   * Note, these strings are the same length so the window layout
-   * won't change as we select different physical units.
-   */
-
-  glist2 = NULL;
-  glist2 = g_list_append(glist2,MILSTR);
-  glist2 = g_list_append(glist2,UMSTR);
-  glist2 = g_list_append(glist2,MMSTR);
-  glist2 = g_list_append(glist2,CMSTR);
-  glist2 = g_list_append(glist2,MSTR);
-
-
-  gui->combo_punits =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(gui->combo_punits), glist2);
-  gtk_combo_set_use_arrows( GTK_COMBO(gui->combo_punits), 1);
-  gtk_box_pack_end (GTK_BOX (my_hbox), gui->combo_punits, FALSE, FALSE, 0);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(gui->combo_punits)->entry), FALSE);
-  gtk_widget_set_usize(GTK_WIDGET( gui->combo_punits),100,0);
-  gtk_signal_connect (GTK_OBJECT (GTK_COMBO(gui->combo_punits)->entry), "changed",
-		      GTK_SIGNAL_FUNC (cb_punits_menu_select),
-		      (gpointer) gui);
-  gtk_widget_show( gui->combo_punits );
-  
-
-  text = gtk_label_new( "Physical Units:" );
-  gtk_box_pack_end (GTK_BOX (my_hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-
-
-  gtk_entry_set_text( GTK_ENTRY(gui->text_freq),"1.88" );
-  gtk_entry_set_text( GTK_ENTRY(GTK_COMBO(gui->combo_funits)->entry),"GHz" );
-
-}
-
 static void values_init(microstrip_gui *gui, GtkWidget *parent)
 {
   GtkWidget *table;
   GtkWidget *text;
+  GtkWidget *lwht;
   GtkWidget *button;
   GtkWidget *frame;
+  wc_units_gui *ug;
+
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -305,92 +226,272 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
 
 
   /* Setup the values_vbox contents */
-  table = gtk_table_new (2, 7, FALSE);
+  table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
   
+
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze->");
+  button = gtk_button_new_with_label ("Analyze");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (mscalc_analyze), (gpointer) gui);
-  gtk_table_attach_defaults (GTK_TABLE(table), button, 3, 4, 0, 1);
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (analyze), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 0,GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
   gtk_widget_show (button);
   
-  /* Synthesize button */
+  /* 
+   * Synthesize buttons 
+   */
+
+  /* width */
   button = gtk_button_new_with_label ("<-Synthesize");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (mscalc_synthesize), (gpointer) gui);
-  /* Insert button 2 into the upper right quadrant of the table */
-  gtk_table_attach_defaults (GTK_TABLE(table), button, 3, 4, 1, 2);
-  
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show (button);
-  
 
-  /* Text labels */
-  text = gtk_label_new( "Width" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 0, 1);
-  gtk_widget_show(text);
-  text = gtk_label_new( "Length" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 1, 2);
+  /* height */
+  button = gtk_button_new_with_label ("<-Synthesize");
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_h), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show (button);
+
+  /* dielectric constant */
+  button = gtk_button_new_with_label ("<-Synthesize");
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_er), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 3, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_widget_show (button);
+
+
+
+
+  /* ---------------- Width  -------------- */
+
+  text = gtk_label_new( "Width (W)" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( MILSTR );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2, 3, 0, 1);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
+  text = wc_units_menu_new(gui->line->units_lwht, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   2, 3, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  text = gtk_label_new( MILSTR );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2, 3, 1, 2);
+
+  /* ---------------- Length  -------------- */
+  text = gtk_label_new( "Length (L)" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 1, 2, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+
+  /* ---------------- Height  -------------- */
+
+  text = gtk_label_new( "Height (H)" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  /* ---------------- Dielectric Constant -------------- */
+
+  text = gtk_label_new( "Er" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+
+  /* ---------------- Loss Tangent -------------- */
+
+  text = gtk_label_new( "Tand" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  /* ----------------  Impedance -------------- */
 
   text = gtk_label_new( "Z0" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 4, 5, 0, 1);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-  text = gtk_label_new( "E. Len." );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 4, 5, 1, 2);
+
+  /* ----------------  Electrical length -------------- */
+
+  text = gtk_label_new( "Elec. Len." );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-  text = gtk_label_new( "Ohms" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 6, 7, 0, 1);
+
+  /* ---------------- Metal thickness -------------- */
+
+  text = gtk_label_new( "Tmet" );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-  text = gtk_label_new( "Degrees" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 6, 7, 1, 2);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 8, 9, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  /* ---------------- Resistivity -------------- */
+
+  text = gtk_label_new( "Rho" );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
+
+  text = wc_units_menu_new(gui->line->units_rho, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   8, 9, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+
+  /* ---------------- Surface roughness -------------- */
+
+  text = gtk_label_new( "Rough" );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  text = wc_units_menu_new(gui->line->units_rough, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   8, 9, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  /* ---------------- Frequency -------------- */
+
+  text = gtk_label_new( "Frequency" );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 5, 6, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   8, 9, 5, 6, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+
+
+  text = gtk_label_new( " " );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0,
+		   WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
   
-#define WIDTH 60
-  gui->text_W = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_entry_set_text(GTK_ENTRY(gui->text_W),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_W, 1, 2, 0, 1,0,0,0,0);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_W),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_W), "changed",
+  gui->text_w = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_entry_set_text(GTK_ENTRY(gui->text_w),"      ");
+  gtk_table_attach (GTK_TABLE(table), gui->text_w, 1, 2, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_w),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_W);
+  gtk_widget_show(gui->text_w);
 
-  gui->text_L = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_L, 1, 2, 1, 2,0,0,0,0);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
+  gui->text_l = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_l, 1, 2, 1, 2,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_l),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_L);
+  gtk_widget_show(gui->text_l);
 
-  gui->text_Z0 = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_Z0, 5, 6, 0, 1);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_Z0),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_Z0), "changed",
+  gui->text_h = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_h, 1, 2, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_h),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_Z0);
+  gtk_widget_show(gui->text_h);
 
-  gui->text_elen = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_elen, 5, 6, 1, 2);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_elen),WIDTH,0);
+  gui->text_er = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_er, 1, 2, 3, 4,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_er),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_er);
+
+  gui->text_tand = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_tand, 1, 2, 4, 5,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_tand),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_tand);
+
+  gui->text_z0 = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_z0, 7, 8, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_z0),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_z0), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_z0), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_z0);
+
+  gui->text_elen = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_elen, 7, 8, 1, 2,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_elen),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_elen), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_elen), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_elen);
 
+  gui->text_tmet = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_tmet, 7, 8, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_tmet),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_tmet);
 
-  gtk_entry_set_text( GTK_ENTRY(gui->text_W),"100" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_L),"1000" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_Z0),"50" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_elen),"90" );
+
+  gui->text_rho  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_rho, 7, 8, 3, 4,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_rho);
+
+  gui->text_rough  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_rough, 7, 8, 4, 5,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_rough),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_rough);
+
+  gui->text_freq  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_freq, 7, 8, 5, 6,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_freq);
 
   gtk_widget_show (table);
 }
@@ -400,7 +501,7 @@ static void outputs_init(microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
-  GtkWidget *box;
+  wc_units_gui *ug;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -409,219 +510,175 @@ static void outputs_init(microstrip_gui *gui, GtkWidget *parent)
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
 
-  table = gtk_table_new (3, 6, FALSE);
+  table = gtk_table_new (5, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
-  /* Text labels */
-  /* Keff */
-  text = gtk_label_new( "Keff" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 0, 1);
+  /* ---------------- Delay -------------- */
+  text = gtk_label_new( "Delay" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  box = gtk_hbox_new(FALSE,0);
-  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,0,1);
-  gtk_widget_show(box);
-  text = gtk_label_new( "--" );
-  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
+  gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
+		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(gui->label_delay);
 
-  /* Loss */
+  text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* ---------------- Loss -------------- */
   text = gtk_label_new( "Loss" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,1,2);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  box = gtk_hbox_new(FALSE,0);
-  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,1,2);
-  gtk_widget_show(box);
-  text = gtk_label_new( "dB" );
-  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-  /* Loss/length */
-  text = gtk_label_new( "Loss/Len" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,2,3);
-  gtk_widget_show(text);
-
-  box = gtk_hbox_new(FALSE,0);
-  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,2,3);
-  gtk_widget_show(box);
-  text = gtk_label_new( "dB/" );
-  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-  text = gtk_label_new( MILSTR );
-  gtk_box_pack_start (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
-
-  /* Skin Depth */
-  text = gtk_label_new( "Skin Depth" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 0, 1);
-  gtk_widget_show(text);
-
-  box = gtk_hbox_new(FALSE,0);
-  gtk_table_attach_defaults (GTK_TABLE(table), box, 2,3,2,3);
-  gtk_widget_show(box);
-  text = gtk_label_new( MILSTR );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,0,1);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
-
-#define OUTPUT_TEXT "     "
-  gui->label_keff = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->label_keff, 1,2,0,1);
-  gtk_widget_show(gui->label_keff);
-
-  gui->label_loss = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->label_loss, 1,2,1,2);
+  gui->label_loss = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_loss, 
+		    1,2,1,2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_loss);
 
-  gui->label_losslen = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->label_losslen, 1,2,2,3);
+  text = wc_units_menu_new(gui->line->units_loss, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 1, 2, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_loss, &(gui->line->loss), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* ----------------  Loss/Length -------------- */
+  text = gtk_label_new( "Loss/Length" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_losslen = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_losslen, 
+		    1,2,2,3, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_losslen);
 
-  gui->label_skindepth = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->label_skindepth, 4,5,0,1);
-  gtk_widget_show(gui->label_skindepth);
+  text = wc_units_menu_new(gui->line->units_losslen, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 2, 3, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-#undef OUTPUT_TEXT
+  wc_units_attach_label(ug, gui->label_losslen, &(gui->line->losslen), 
+			NULL, NULL, WC_FMT_G, 1);
 
-  gtk_widget_show(table);
-
-}
-
-
-static void substrate_init(microstrip_gui *gui, GtkWidget *parent)
-{
-  GtkWidget *table;
-  GtkWidget *text;
-  GtkWidget *frame;
-  GtkWidget *box;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label( GTK_FRAME(frame), "Substrate Parameters" );
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-  /* Setup the values_vbox contents */
-  table = gtk_table_new (3, 6, FALSE);
-  gtk_container_add (GTK_CONTAINER (frame), table);
-
-  /* Text labels */
-  text = gtk_label_new( "Height" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 0, 1);
+  /* ----------------  Skin Depth -------------- */
+  text = gtk_label_new( "Skin Depth" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_H = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_H, 1,2,0,1);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_H),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_H), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_H);
+  gui->label_depth = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_depth, 
+		    1,2,3,4, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(gui->label_depth);
 
-  text = gtk_label_new( MILSTR );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,0,1);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
+  text = wc_units_menu_new(gui->line->units_depth, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  text = gtk_label_new( "Er" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,1,2);
-  gtk_widget_show(text);
+  wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth), 
+			NULL, NULL, WC_FMT_G, 1);
 
-  gui->text_er = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_er, 1,2,1,2);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_er),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_er);
 
-  text = gtk_label_new( "--" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,1,2);
+  /* ----------------  End correction -------------- */
+  text = gtk_label_new( "Delta L" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "TanD" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,2,3);
+  gui->label_deltal = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_deltal, 
+		    1,2,4,5, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(gui->label_deltal);
+
+  text = wc_units_menu_new(gui->line->units_deltal, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_deltal, &(gui->line->deltal), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* ---------------- L -------------- */
+  text = gtk_label_new( "L" );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_tand = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_tand, 1,2,2,3);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_tand),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_tand);
+  gui->label_Ls = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
+		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Ls);
 
-  text = gtk_label_new( "--" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,2,3);
+  text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Ls, &(gui->line->Ls), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* ---------------- R -------------- */
+  text = gtk_label_new( "R" );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Tmet" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 0, 1);
+  gui->label_Rs = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
+		    5, 6, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Rs);
+
+  text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* ---------------- C -------------- */
+  text = gtk_label_new( "C" );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_tmet = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_tmet, 4,5,0,1);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_tmet),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_tmet);
+  gui->label_Cp = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
+		    5, 6, 2, 3, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Cp);
 
-  text = gtk_label_new( MILSTR );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,0,1);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
+  text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  text = gtk_label_new( "Rho" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 1, 2);
-  gtk_widget_show(text);
+  wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
+			NULL, NULL, WC_FMT_G, 1);
 
-  gui->text_rho = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_rho, 4,5,1,2);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rho);
-
-  text = gtk_label_new( "--" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,1,2);
+  /* ---------------- G -------------- */
+  text = gtk_label_new( "G" );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Rough" );
-  gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4,2,3);
+  gui->label_Gp = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
+		    5, 6, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Gp);
+
+  text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  /* spacer */
+
+  text = gtk_label_new( "                " );
+  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0,
+		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-
-  gui->text_rough = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach_defaults (GTK_TABLE(table), gui->text_rough, 4,5,2,3);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rough),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rough);
-
-  box = gtk_hbox_new(FALSE,0);
-  gtk_table_attach_defaults (GTK_TABLE(table), box, 5,6,2,3);
-  gtk_widget_show(box);
-  text = gtk_label_new( "-rms" );
-  gtk_box_pack_end (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-  text = gtk_label_new( MILSTR );
-  gtk_box_pack_end (GTK_BOX (box), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-  gui->phys_units_text = g_list_append(gui->phys_units_text, text);
-
-  gtk_entry_set_text( GTK_ENTRY(gui->text_H),"62" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_er),"4.8" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_tand),"0.01" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_tmet),"1.4" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_rho),"1" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_rough),"0.055" );
-
 
 
   gtk_widget_show(table);
 
 }
-
-
 
 
 #include "pixmaps/microstrip.xpm"
@@ -637,7 +694,6 @@ static void picture_init(microstrip_gui *gui, GtkWidget *window,GtkWidget *paren
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
-  //  gtk_frame_set_label( GTK_FRAME(frame), "Output Values" );
   gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
@@ -664,14 +720,6 @@ static void picture_init(microstrip_gui *gui, GtkWidget *window,GtkWidget *paren
   gtk_widget_show( pixmapwid );
     
 
-  /* Create "Quit" button */
-  /*  button = gtk_button_new_with_label ("Quit");
-      gtk_signal_connect (GTK_OBJECT (button), "clicked",
-      GTK_SIGNAL_FUNC (delete_event), NULL);
-      gtk_box_pack_start (GTK_BOX (my_hbox), button, FALSE, FALSE, 0);
-      gtk_widget_show (button);
-  */
-
   gui->text_status = gtk_label_new( "Values Out Of Sync" );
   gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_status, FALSE, FALSE, 0);
   gtk_widget_show (gui->text_status);
@@ -679,137 +727,241 @@ static void picture_init(microstrip_gui *gui, GtkWidget *window,GtkWidget *paren
 
 }
 
-static void mscalc_analyze( GtkWidget *w, gpointer data )
+static void analyze( GtkWidget *w, gpointer data )
 {
-  mscalc(WC_MICROSTRIP_GUI(data), w, "analyze");
+  calculate(WC_MICROSTRIP_GUI(data), w, "analyze");
 }
 
-static void mscalc_synthesize( GtkWidget *w, gpointer data )
+static void synthesize_w( GtkWidget *w, gpointer data )
 {
-  mscalc(WC_MICROSTRIP_GUI(data), w, "synthesize");
+  calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_w");
 }
 
-static void mscalc( microstrip_gui *gui, GtkWidget *w, gpointer data )
+static void synthesize_l( GtkWidget *w, gpointer data )
 {
-  double freq;
-  char str[80];
+  calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_l");
+}
+
+static void synthesize_h( GtkWidget *w, gpointer data )
+{
+  calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_h");
+}
+
+static void synthesize_er( GtkWidget *w, gpointer data )
+{
+  calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_er");
+}
+
+
+static void calculate( microstrip_gui *gui, GtkWidget *w, gpointer data )
+{
   char *vstr;
-  double sf=1.0;
+  int rslt=0;
 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 
+  gui->line->w=atof(vstr)*gui->line->units_lwht->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  w = %g\n", gui->line->w);
+#endif
 
-  /* get the physical units */
-  vstr = gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(gui->combo_punits)->entry) ); 
-  if (strcmp(vstr,MILSTR)==0)
-    sf = 1.0;
-  else if (strcmp(vstr,UMSTR)==0)
-    sf = MICRON2MIL(1.0);
-  else if (strcmp(vstr,MMSTR)==0)
-    sf = MM2MIL(1.0);
-  else if (strcmp(vstr,CMSTR)==0)
-    sf = CM2MIL(1.0);
-  else if (strcmp(vstr,MSTR)==0)
-    sf = M2MIL(1.0);
-  else
-    {
-      fprintf(stderr,"bad phyusical units.  contact the author\n");
-      exit(1);
-    }
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
+  gui->line->l=atof(vstr)*gui->line->units_lwht->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  l = %g\n", gui->line->l);
+#endif
 
-  /* get the substrate parameters */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_H) ); 
-  gui->line->subs->h=sf*atof(vstr);
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) ); 
+  gui->line->subs->h=atof(vstr)*gui->line->units_lwht->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  h = %g\n", gui->line->subs->h);
+#endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
   gui->line->subs->er=atof(vstr);
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  er = %g\n", gui->line->subs->er);
+#endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tand) ); 
   gui->line->subs->tand=atof(vstr);
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  tand = %g\n", gui->line->subs->tand);
+#endif
+
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
+  gui->line->Ro=atof(vstr);
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  z0 = %g\n", gui->line->z0);
+#endif
+
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
+  gui->line->len=atof(vstr);
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  elen = %g\n", gui->line->len);
+#endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) ); 
-  gui->line->subs->tmet=sf*atof(vstr);
-
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
-  gui->line->subs->rough=sf*atof(vstr);
+  gui->line->subs->tmet=atof(vstr)*gui->line->units_lwht->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  tmet = %g\n", gui->line->subs->tmet);
+#endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
-  gui->line->subs->rho=atof(vstr);
+  gui->line->subs->rho=atof(vstr)*gui->line->units_rho->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  rho = %g\n", gui->line->subs->rho);
+#endif
 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
+  gui->line->subs->rough=atof(vstr)*gui->line->units_rough->sf;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  rough = %g\n",
+	  gui->line->subs->rough);
+#endif
 
 
   /* get the frequency */
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
-  freq=atof(vstr);
+  gui->line->freq=atof(vstr)*gui->line->units_freq->sf;
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(gui->combo_funits)->entry) ); 
-  if (strcmp(vstr,"kHz")==0)
-    freq = 1.0e3*freq;
-  else if (strcmp(vstr,"MHz")==0)
-    freq = 1.0e6*freq;
-  else if (strcmp(vstr,"GHz")==0)
-    freq = 1.0e9*freq;
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  freq = %g\n",
+	  gui->line->freq);
+#endif
 
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  calculation with \"%s\"\n",
+	  (char *) data);
+#endif
 
-  /* if "analyze" get W and L */
-  if( strcmp(data,"analyze")==0)
-    {
-      vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_W) ); 
-      gui->line->w=sf*atof(vstr);
-      
-      vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_L) ); 
-      gui->line->l=sf*atof(vstr);
+  /* XXX should use an enum and switch... */
+  if( strcmp(data,"analyze")==0) {
+    rslt=microstrip_calc(gui->line, gui->line->freq);
+  }
+  else if( strcmp(data,"synthesize_w")==0) {
+    rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_W);
+  }
+  else if( strcmp(data,"synthesize_l")==0) {
+    rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_L);
+  }
+  else if( strcmp(data,"synthesize_h")==0) {
+    rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_H);
+  }
+  else if( strcmp(data,"synthesize_er")==0) {
+    rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_ES);
+  }
+  else{
+    fprintf(stderr,"microstrip_gui.c:  error in microstrip callback\n"
+	    "Please report this bug and how you triggered it\n");
+    exit(1);
+  }
+  
+#ifdef DEBUG
+  g_print("microstrip_gui.c:calculate():  finished calculation\n");
+#endif
 
-      if (microstrip_calc(gui->line,freq) != 0)
-      	alert("Analysis failed for an unknown reason.\n"
-	      "Please save your inputs and send the file\n"
-	      "to the program author.\n");
+  update_display(gui);
 
-      sprintf(str,"%8f",gui->line->z0);
-      gtk_entry_set_text( GTK_ENTRY(gui->text_Z0), str );
-			  
-      sprintf(str,"%8f",gui->line->len);
-      gtk_entry_set_text( GTK_ENTRY(gui->text_elen), str );
-
-
-    }
-  else if( strcmp(data,"synthesize")==0)
-    {
-      /* if "synthesize" get z0 and len */
-      vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Z0) ); 
-      gui->line->z0 = atof(vstr);
-      gui->line->Ro = gui->line->z0;
-
-      vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
-      gui->line->len = atof(vstr);
-
-      if (microstrip_syn(gui->line,freq,MLISYN_W) != 0)
-	alert("Synthesis failed\n");
-
- 
-      sprintf(str,"%8f",gui->line->w/sf);
-      gtk_entry_set_text( GTK_ENTRY(gui->text_W), str );
-			  
-      sprintf(str,"%8f",gui->line->l/sf);
-      gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
-
-    }
+  /*
+   * if the calculation completed with no errors, then clear the
+   * "values out of sync" field
+   */
+  if (rslt==0)
+    gtk_label_set_text(GTK_LABEL(gui->text_status), "");
   else
-    {
-      g_print("error in mstrip callback");
-    }
+    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values out of\nrange.");
 
-  sprintf(str,"%8f",gui->line->keff);
-  gtk_label_set_text( GTK_LABEL(gui->label_keff), str );
+}
+
+static void update_display(microstrip_gui *gui)
+{
+  char str[80];
+
+  /* the entries */
+
+  /* ---------------- w -------------- */
+  sprintf(str,WC_FMT_G,gui->line->w/gui->line->units_lwht->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_w), str );
+
+  /* ---------------- l -------------- */
+  sprintf(str,WC_FMT_G,gui->line->l/gui->line->units_lwht->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_l), str );
+
+  /* ---------------- h -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->h/gui->line->units_lwht->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_h), str );
+
+  /* ---------------- er -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->er);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_er), str );
+
+  /* ---------------- tand -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->tand);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_tand), str );
+
+  /* ---------------- z0 -------------- */
+  sprintf(str,WC_FMT_G,gui->line->z0);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_z0), str );
+
+  /* ---------------- elen -------------- */
+  sprintf(str,WC_FMT_G,gui->line->len);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_elen), str );
+
+  /* ---------------- tmet -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->tmet/gui->line->units_lwht->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_tmet), str );
   
-  sprintf(str,"%8f",gui->line->loss);
+  /* ---------------- rho -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->rho/gui->line->units_rho->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
+  
+  /* ---------------- rough -------------- */
+  sprintf(str,WC_FMT_G,gui->line->subs->rough/gui->line->units_rough->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_rough), str );
+  
+  /* ---------------- freq -------------- */
+  sprintf(str,WC_FMT_G,gui->line->freq/gui->line->units_freq->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
+  
+
+  /* the labels */
+
+  /* ---------------- delay -------------- */
+  sprintf(str,WC_FMT_G, gui->line->delay/gui->line->units_delay->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_delay), str );
+  
+  /* ---------------- loss -------------- */
+  sprintf(str,WC_FMT_G, gui->line->loss/gui->line->units_loss->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_loss), str );
-  
-  sprintf(str,"%8f",gui->line->losslen*sf);
+    
+  /* ---------------- loss/len -------------- */
+  sprintf(str,WC_FMT_G, gui->line->losslen/gui->line->units_losslen->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_losslen), str );
-  
-  sprintf(str,"%8f",gui->line->skindepth/sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_skindepth), str );
-  
-  gtk_label_set_text(GTK_LABEL(gui->text_status), "");
+    
+  /* ---------------- depth -------------- */
+  sprintf(str,WC_FMT_G, gui->line->skindepth/gui->line->units_depth->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_depth), str );
+    
+  /* ---------------- deltal -------------- */
+  sprintf(str,WC_FMT_G, gui->line->deltal/gui->line->units_deltal->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_deltal), str );
+    
+  /* ---------------- L -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Ls/gui->line->units_L->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Ls), str );
+    
+  /* ---------------- R -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Rs/gui->line->units_R->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Rs), str );
+    
+  /* ---------------- C -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Cs/gui->line->units_C->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Cp), str );
+    
+  /* ---------------- R -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Gs/gui->line->units_G->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Gp), str );
+    
 
 }
 
@@ -820,56 +972,21 @@ static void tooltip_init(microstrip_gui *gui)
 
   tips = gtk_tooltips_new();
 
+  gtk_tooltips_set_tip(tips, gui->text_w, "Width of microstrip", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_l, "Length of microstrip", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_h, "Total substrate thickness", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_er, "Substrate relative"
+		       " dielectric constant",NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tand, "Substrate loss tangent", NULL);
+
+  gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tmet, "Line metal thickness", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_rho, "Metal resistivity", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_rough, "Metal surface roughness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_W, "Width of the microstrip line", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_L, "Length of the microstrip line", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_Z0, "Characteristic impedance of the microstrip line", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length of the microstrip line", NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_H, "Thickness of the substrate dielectric", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_er, "Relative permitivity of the dielectric", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tand, "Loss tangent of the dielectric", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tmet, "Thickness of the metalization", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rho, "Resistance of the metalization relative to copper", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rough, "RMS deviation of the metal surface from a plane" 
-		       "(surface roughness)", NULL);
-
   
 }
-
-static void change_units_text(void * , char *);
-
-static void cb_punits_menu_select( GtkWidget *item,
-				   gpointer data)
-{
-  char *units;
-  microstrip_gui *gui;
-
-  gui = WC_MICROSTRIP_GUI(data);
-
-  units = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(gui->combo_punits)->entry));
-
-  /* Set the value position on both scale widgets */
-  /*
-  g_sf = sf; 
-  g_print("set global physical scale factor to %g\n",sf);
-  g_print("set global physical units to \"%s\"\n",punit);
-  g_print("cb_punits_menu_select():  \n");
-  */
-
-  g_list_foreach( gui->phys_units_text,
-		  (GFunc) change_units_text,
-		  units );
-}
-
-
-static void change_units_text(void * text, char * label)
-{
-  gtk_label_set_text(GTK_LABEL(text),label);
-}
-
-
 
 static void vals_changedCB(GtkWidget *widget, gpointer data )
 {
@@ -880,6 +997,7 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
 }
+
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
@@ -920,48 +1038,58 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"col1x coly moveto\n");
   fprintf(fp,"/leftcol col1x  def\n");
 
-  fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->w,gui->line->units_lwht->name);
-  fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->h,gui->line->units_lwht->name);
-  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->l,gui->line->units_lwht->name);
+  fprintf(fp,"(W) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->w/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
+  fprintf(fp,"(H) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->subs->h/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->l/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->tmet,gui->line->subs->tmet_units);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->rho,gui->line->subs->rho_units);
-  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
-	  gui->line->subs->rough,gui->line->subs->rough_units);
-  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
+  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->subs->tmet/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->subs->rho/gui->line->units_rho->sf,
+	  gui->line->units_rho->name);
+  fprintf(fp,"(Rough) show tab1 (=) show tab2 (" WC_FMT_G " %s-rms) show newline\n",
+	  gui->line->subs->rough/gui->line->units_rough->sf,
+	  gui->line->units_rough->name);
+  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->line->subs->er);
-  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
+  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->line->subs->tand);
-
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g ) show (W) symbolshow newline\n",
+  fprintf(fp,"(Z0) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
 	  gui->line->z0);
-  fprintf(fp,"(keff) show tab1 (=) show tab2 (%g) show newline\n",
-	  gui->line->keff);
-  fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
+  fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
 	  gui->line->len);
-  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
-	  gui->line->loss);
-  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
-	  gui->line->losslen);
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
-	  gui->line->skindepth);
+  fprintf(fp,"(Loss) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->loss/gui->line->units_loss->sf,
+	  gui->line->units_loss->name);
+  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->losslen/gui->line->units_losslen->sf,
+	  gui->line->units_losslen->name);
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->skindepth/gui->line->units_depth->sf,
+	  gui->line->units_depth->name);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->Ls, gui->line->units_L->name);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->Rs, gui->line->units_R->name);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->Cs, gui->line->units_C->name);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->Gs, gui->line->units_G->name);
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Ls/gui->line->units_L->sf,
+	  gui->line->units_L->name);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Rs/gui->line->units_R->sf,
+	  gui->line->units_R->name);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Cs/gui->line->units_C->sf,
+	  gui->line->units_C->name);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Gs/gui->line->units_G->sf,
+	  gui->line->units_G->name);
   
 }
 

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.14 2004/07/26 22:22:27 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.15 2004/07/28 03:29:40 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -494,6 +494,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 
 
   /* XXX fix these */
+  line->loss=0;
   line->losslen=0;
   line->met_skindepth=0;
   line->subs_skindepth=0;
@@ -501,6 +502,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* electrical length */
   line->len  = 360*line->l/lambda_mis;
 
+  /* XXX double check thiss */
+  line->delay = (line->l/lambda_mis)/line->freq;
 
   free(Ytot);
   free(Ztot);
