@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2001/09/12 23:55:04 dan Exp $
+# $Id: Makefile,v 1.4 2001/09/13 13:26:10 dan Exp $
 #
 
 # Copyright (c) 2001 Dan McMahill
@@ -48,9 +48,12 @@ PNGS=	${TGIF_SRCS:.obj=.png}
 TGIF=		tgif
 TGIF_FLAGS=	-print -color
 
-all:	${XPMS} ${GIFS} ${PNGS}
+all:	${GIFS} ${PNGS} ${XPMS}
 
-.SUFFIXES : .obj .xpm .xbm .gif
+clean:
+	rm -f *.xpm *.xbm *.gif *.png *~
+
+.SUFFIXES : .obj .xpm .xbm .gif .png
 
 .obj.gif :
 	$(TGIF) $(TGIF_FLAGS) -gif $*.obj
