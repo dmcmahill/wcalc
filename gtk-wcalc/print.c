@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.1 2001/10/05 01:48:24 dan Exp $ */
+/* $Id: print.c,v 1.2 2001/10/17 02:41:06 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -252,6 +252,8 @@ void print_popup(gpointer data,
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(to_printer_pressed),
 		     NULL);
+#else
+  gtk_widget_set_sensitive (button, FALSE);
 #endif
   gtk_table_attach_defaults (GTK_TABLE(table), button, 1, 2, 0, 1);
   if (where_print == PRINT_TO_PRINTER)
