@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.19 2004/08/27 22:58:04 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.20 2004/08/30 22:21:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -272,24 +272,25 @@ int cgiMain(void){
   }  /* if ( (action != RESET) && (action != LOAD) ) */
   else {
 #ifdef DEBUG
-    printf(_("%s:  checking for a cookie to load\n"),name_string);
+    printf(_("%s:  checking for a cookie to load\n"), name_string);
 #endif
     /* load a stored cookie if it exists */
-    if(cgiCookieStringNoNewlines(name_string,cookie_load_str,COOKIE_MAX) ==
+    if(cgiCookieStringNoNewlines(name_string, cookie_load_str, COOKIE_MAX) ==
        cgiCookieSuccess) {
 #ifdef DEBUG
-      printf(_("%s:  loading cookie \"%s\"\n"),name_string,cookie_load_str);
+      printf(_("%s:  loading cookie \"%s\"\n"), name_string, cookie_load_str);
 #endif
-      air_coil_load_string(coil,cookie_load_str);
+      air_coil_load_string(coil, cookie_load_str);
 #ifdef DEBUG
       printf(_("%s:  finished loading cookie\n"),name_string);
 #endif
     }
   }
+
   if (!input_err){
     cookie_str = air_coil_save_string(coil);
-    cookie = cgiCookie_new(name_string,cookie_str);
-    cgiCookie_MaxAge_set(cookie,COOKIE_AGE);
+    cookie = cgiCookie_new(name_string, cookie_str);
+    cgiCookie_MaxAge_set(cookie, COOKIE_AGE);
     cgiHeaderSetCookie(cookie);
     
     /* Put out the CGI header */
