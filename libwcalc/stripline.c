@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.16 2004/09/08 22:40:22 dan Exp $ */
+/*      $Id: stripline.c,v 1.17 2004/11/22 22:36:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -314,7 +314,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        if(line->skindepth <= line->subs->tmet)
 	 {
    
-	   /* Use Wheelers "" approach */
+	   /* Use Wheelers "incremental inductance" approach */
 
 	   /* clone the line */
 	   tmp_line = *line;
