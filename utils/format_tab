@@ -1,0 +1,181 @@
+#!/usr/bin/awk -f
+#
+# $Id$
+#
+# Copyright (c) 2002 Dan McMahill
+# All rights reserved.
+#
+# This code is derived from software written by Dan McMahill
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#        This product includes software developed by Dan McMahill
+#  4. The name of the author may not be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+# 
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+#  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+#  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+#  SUCH DAMAGE.
+#
+#
+# ========
+# Overview
+# ========
+# Formats table data to GTK or HTML format
+# 
+# ------------------
+# Special characters
+# ------------------
+# The following special characters get translated during formatting.
+#
+#  Character        GTK      HTML
+#  ---------        ---      ----
+#    \n             \n       <BR>
+#
+#
+# =========================
+# Format control variables
+# =========================
+# The ouptut modes each have variables which can be set on the command
+# line to effect the details of the formatted output.
+#
+# ------------------
+# GTK mode variables
+# ------------------
+#    gtk_fname  =  generated function name
+#    gtk_xpad   =  x padding in the table
+#    gtk_ypad   =  x padding in the table
+#
+# -------------------
+# HTML mode variables
+# -------------------
+#    html_border  = BORDER value for table
+#
+# ========
+# Examples
+# ========
+#
+# Generate a GTK function called 'foo':
+#   gawk -f format_tab type=gtk gtk_fname=foo test.txt > test.c
+#
+# Generate a HTML table
+#   gawk -f format_tab type=html text.txt > test.html
+
+BEGIN {
+  FS="|";
+  first=1;
+}
+
+first==1 {
+  if (type == "gtk") {
+    r=1;
+    cmax=0;
+    rmax=0;
+    if (gtk_fname == "") {gtk_fname = "text_table_new";}
+    if (gtk_xpad == "") {gtk_xpad = 1;}
+    if (gtk_ypad == "") {gtk_ypad = 1;}
+    printf("/* ************************************** */\n");
+    printf("/* *********** Generated File *********** */\n");
+    printf("/* ***********  Do Not Edit   *********** */\n");
+    printf("/* ************************************** */\n");
+    printf("\n");
+    printf("#include <gtk/gtk.h>\n");
+    printf("\n");
+    printf("GtkWidget * %s(void)\n",gtk_fname);
+    printf("{\n");
+    printf("  GtkWidget *item,*tab;\n");
+    printf("\n");
+    printf("  tab=gtk_table_new(0,0,FALSE);\n");
+    printf("\n");
+  }
+  else if (type == "html") {
+    if (html_border == "") {html_border = 2;}
+    printf("<TABLE BORDER=%d>\n",html_border);
+    printf("<CAPTION>\n");
+    printf("<font COLOR=\"#FF0000\" SIZE=+2>\n");
+    printf("Popular Substrate Materials\n");
+    printf("</font>\n");
+    printf("</CAPTION>\n");
+  }
+  first=0;
+}
+
+type == "html" {
+  gsub(/\\n/,"<BR>");
+  printf("<TR>\n");
+  for (i=1; i<=NF; i++) {
+    printf("<TD>%s</TD>\n",$i);
+  }
+  printf("</TR>\n");
+}
+
+type == "gtk" {
+# escape \ characters
+#  gsub(/\\/,"\\\\");
+# escape " characters
+  gsub(/\"/,"\\\"");
+
+# Add the text to the table skipping every other row and
+# column.  The skipped ones will be used later for gridlines
+  printf("\n  /*\n   * Table Row %d-%d\n   */\n\n",r,r+1);
+  c=1;
+  for (i=1; i<=NF; i++) {
+    printf("  /* Table column %d-%d */\n",c,c+1);
+    printf("  item=gtk_label_new(\"%s\");\n",$i);
+    printf("  gtk_misc_set_alignment(GTK_MISC(item),0,0.5);\n");
+    printf("  gtk_label_set_justify(GTK_LABEL(item),GTK_JUSTIFY_LEFT);\n");
+    printf("  gtk_label_set_line_wrap(GTK_LABEL(item),TRUE);\n");
+    printf("  gtk_table_attach(GTK_TABLE(tab),item,%d,%d,%d,%d,\n",
+      c,c+1,r,r+1);
+    printf("    GTK_EXPAND|GTK_FILL, GTK_EXPAND|GTK_FILL,%d,%d);\n\n",
+      gtk_xpad,gtk_ypad);
+
+    c += 2;
+  }
+    r += 2;
+
+# keep track of the max number of rows and/or columns
+  if (c > cmax) { cmax = c; }
+  if (r > rmax) { rmax = r; }
+}
+
+END {
+  if (type == "gtk") {
+    # Add gridlines to the table
+    printf("\n  /*\n   * Add table grid lines\n   */\n\n");
+    for (i=0; i<rmax; i+=2) {
+      printf("  item=gtk_hseparator_new();\n");
+      printf("  gtk_table_attach(GTK_TABLE(tab),item,%d,%d,%d,%d,\n",
+        0,cmax,i,i+1);
+      printf("    GTK_FILL, GTK_FILL,%d,%d);\n\n",
+        gtk_xpad,gtk_ypad);
+    }
+    for (i=0; i<cmax; i+=2) {
+      printf("  item=gtk_vseparator_new();\n");
+      printf("  gtk_table_attach(GTK_TABLE(tab),item,%d,%d,%d,%d,\n",
+        i,i+1,0,rmax);
+      printf("    GTK_FILL, GTK_FILL,%d,%d);\n\n",
+        gtk_xpad,gtk_ypad);
+    }
+    printf("  return tab;\n}\n");
+  }
+  else if (type == "html") {
+    printf("</TABLE>\n");
+  }
+}

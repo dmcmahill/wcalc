@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/18 12:13:56 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -33,5 +33,5 @@
 ##  SUCH DAMAGE.
 ##
 
-EXTRA_DIST=	eps2c epslint html2c shtml2html
+EXTRA_DIST=	eps2c epslint format_tab html2c shtml2html
 
