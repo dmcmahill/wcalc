@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2001/10/30 23:54:54 dan Exp $
+## $Id: Makefile.am,v 1.13 2002/01/03 03:54:44 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -58,7 +58,7 @@ stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\"
 
 LDADD = ../libwcalc/libwcalc.la
-LDFLAGS = -all-static
+#LDFLAGS = -all-static
 
 HTML_FILES= \
 	air_coil.html \

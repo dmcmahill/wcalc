@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.1 2001/10/05 00:37:35 dan Exp $ */
+/* $Id: misc.c,v 1.2 2002/01/03 03:54:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -125,6 +125,64 @@ const units_data time_units[]=
   {"s", 1.0},
   {NULL,0}
 };
+
+void units_autoscale(const units_data *units, 
+		     double *sf, 
+		     char **name,
+		     double val)
+{
+  int i=0;
+
+  while ((units[i].name != NULL) && ((val / units[i].sf) > 1000) ){
+    i++;
+  }
+  
+  if (units[i].name == NULL)
+    i--;
+
+#ifdef DEBUG
+  printf("units_autoscale():  index = %d\n",i);
+#endif
+
+  *sf   = units[i].sf;
+  *name = units[i].name;
+
+}
+
+int units_size(const units_data *units)
+{
+  int i;
+
+  i=0;
+  while (units[i].name != NULL){
+    i++;
+  }
+
+  return i;
+}
+
+char ** units_strings_get(const units_data *units)
+{
+  int i;
+  char ** u;
+
+  i=units_size(units);
+  
+  /* allocate memory */
+  if ( (u = malloc(i*sizeof(char *))) == NULL ) {
+    fprintf(stderr,"cgi_units_strings():  malloc() failed\n");
+    exit(1);
+  }
+
+  /* copy over pointers to the strings */
+  i=0;
+  while (units[i].name != NULL){
+    u[i] = units[i].name;
+    i++;
+  }
+
+  return u;
+}
 
 int units_get_index(const units_data *units, double sf)
 {

@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.1 2001/10/05 00:37:29 dan Exp $ */
+/* $Id: air_coil.c,v 1.2 2001/10/29 01:28:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -522,17 +522,20 @@ air_coil_coil *air_coil_new()
 
   newcoil->use_fill=0;
 
+  /* XXX need better way to initialize these */
   newcoil->len_sf = 25.4e-3;
   newcoil->dia_sf = 25.4e-3;
   newcoil->L_sf = 1.0e-9;
   newcoil->SRF_sf = 1.0e6;
   newcoil->freq_sf = 1.0e6;
+  newcoil->rho_sf = 1.0;
 
-  newcoil->len_units="inches";
-  newcoil->dia_units="inches";
+  newcoil->len_units="inch";
+  newcoil->dia_units="inch";
   newcoil->L_units="nH";
   newcoil->SRF_units="MHz";
   newcoil->freq_units="MHz";
+  newcoil->rho_units="Ohm-m";
 
   /* get the rest of the entries in sync */
   air_coil_calc(newcoil,newcoil->freq);

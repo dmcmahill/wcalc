@@ -1,4 +1,4 @@
-/* $Id: air_coil.h,v 1.5 2001/09/27 02:01:47 dan Exp $ */
+/* $Id: air_coil.h,v 1.1 2001/10/05 00:37:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -42,33 +42,33 @@ typedef struct AIR_COIL_COIL
   /* Number of turns */
   double Nf;
 
-  /* length of coil */
+  /* length of coil (meters) */
   double len;
 
   /* wire gauge */
   double AWGf;
 
-  /* resistivity relative to copper */
+  /* resistivity  (ohm-meters) */
   double rho;
 
-  /* inside diameter of coil */
+  /* inside diameter of coil (meters) */
   double dia;
 
-  /* inductance (H) */
+  /* inductance (Henries) */
   double L;
 
-  /* inductance when the length is at a minimum (nH) */
+  /* inductance when the length is at a minimum (Henries) */
   double Lmax;
 
   /* ratio of length to minimum length */
   double fill;
 
-  /* Q at freq (Hz) */
+  /* Q at freq (Hertz) */
   double Q;
   double freq;
 
 
-  /* Self resonant frequency */
+  /* Self resonant frequency (Hertz) */
   double SRF;
 
   /* 
@@ -86,8 +86,8 @@ typedef struct AIR_COIL_COIL
    *   L_units="nH" and L_sf = 1e-9;
    */
   
-  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf;
-  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units;
+  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf, rho_sf;
+  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units, *rho_units;
 
 } air_coil_coil;
 

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2001/11/12 04:02:46 dan Exp $
+## $Id: Makefile.am,v 1.12 2001/11/28 07:18:55 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -65,7 +65,7 @@ wcalc_SOURCES = \
 
 man_MANS=	wcalc.1
 
-EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS}
+EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} resistivity.asciitab
 
 INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
 

@@ -1,4 +1,4 @@
-<!-- $Id: air_coil.html,v 1.4 2001/12/14 02:24:13 dan Exp $ -->
+<!-- $Id: air_coil.html,v 1.5 2002/01/03 03:54:45 dan Exp $ -->
 <!--
  * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
@@ -78,25 +78,25 @@ Air Core Inductor
 
 <TR>
 <TD>L =</TD>
-<TD><@g@L*1e9@></TD>
-<TD>[nH]</TD>
+<TD><@g@coil->L/coil->L_sf@></TD>
+<TD><@s@coil->L_units@></TD>
 </TR>
 
 <TR>
 <TD>Q =</TD>
-<TD><@g@coil->Q@> @ <@g@coil->freq*1e-6@> MHz</TD>
+<TD><@g@coil->Q@> @ <@g@coil->freq/coil->freq_sf@> <@s@coil->freq_units@></TD>
 </TR>
 
 <TR>
 <TD>Self Resonant Freq =</TD>
-<TD><@g@coil->SRF*1e-6@></TD>
-<TD>[MHz]</TD>
+<TD><@g@coil->SRF/coil->SRF_sf@></TD>
+<TD><@s@coil->SRF_units@></TD>
 </TR>
 
 <TR>
 <TD>Max Inductance =</TD>
-<TD><@g@coil->Lmax*1e9@></TD>
-<TD>[nH]</TD>
+<TD><@g@coil->Lmax/coil->L_sf@></TD>
+<TD><@s@coil->L_units@></TD>
 </TR>
 
 <TR>
@@ -123,25 +123,27 @@ Air Core Inductor
 
 <TR>
 <TD>Inside Diameter (I.D.)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="dia" VALUE="<@g@M2INCH(coil->dia)@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="dia" VALUE="<@g@coil->dia/coil->dia_sf@>"></TD>
 <TD>
 <!-- dia units menu -->
-<@s@cgi_units_menu_show(length_units,"dia_units",1)@>
+<@s@cgi_units_menu_show(length_units,"dia_units",units_get_index_name(length_units,coil->dia_units))@>
 </TD>
 </TR>
 
 <TR>
-<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="no" <@d@coil->use_fill@>>Solenoid length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@M2INCH(coil->len)@>"></TD>
+<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="no" 
+<@s@coil->use_fill == 0 ? "CHECKED" : ""@>>Solenoid length (L)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@coil->len/coil->len_sf@>"></TD>
 <TD>
 <!-- length units menu -->
-<@s@cgi_units_menu_show(length_units,"len_units",1)@>
+<@s@cgi_units_menu_show(length_units,"len_units",units_get_index_name(length_units,coil->len_units))@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_nfix" VALUE="calc"></TD>
 </TR>
 
 <TR>
-<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="yes" <@d@coil->use_fill@>>Fill (L/Lmin)</TD>
+<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="yes" 
+<@s@coil->use_fill == 1 ? "CHECKED" : ""@>>Fill (L/Lmin)</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="fill" VALUE="<@g@coil->fill@>"></TD>
 <TD></TD>
 </TR>
@@ -152,6 +154,7 @@ Air Core Inductor
 <TD>[AWG]</TD>
 </TR>
 
+<!-- XXX need to fix units here -->
 <TR>
 <TD>Metal resistivity</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@coil->rho@>"></TD>
@@ -163,7 +166,7 @@ Air Core Inductor
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@coil->freq/coil->freq_sf@>"></TD>
 <TD>
 <!-- frequency units menu -->
-<@s@cgi_units_menu_show(frequency_units,"freq_units",1)@>
+<@s@cgi_units_menu_show(frequency_units,"freq_units",units_get_index_name(frequency_units,coil->freq_units))@>
 </TD>
 </TR>
 
@@ -177,7 +180,7 @@ Air Core Inductor
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="L" VALUE="<@g@coil->L/coil->L_sf@>"></TD>
 <TD>
 <!-- inductance units menu -->
-<@s@cgi_units_menu_show(inductance_units,"L_units",1)@>
+<@s@cgi_units_menu_show(inductance_units,"L_units",units_get_index_name(inductance_units,coil->L_units))@>
 </TD>
 </TR>
 

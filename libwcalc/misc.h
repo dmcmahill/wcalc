@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.1 2001/10/05 00:37:35 dan Exp $ */
+/* $Id: misc.h,v 1.2 2002/01/03 03:54:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -68,7 +68,14 @@ extern const units_data inductance_units[];
 extern const units_data length_units[];
 extern const units_data resistance_units[];
 extern const units_data time_units[];
+void units_autoscale(const units_data *units, 
+		     double *sf, 
+		     char **name,
+		     double val);
+int units_size(const units_data *units);
+char ** units_strings_get(const units_data *units);
 int units_get_index(const units_data *units, double sf);
+int units_get_index_name(const units_data *units, char *name);
 composite_units_data * resistivity_units_new(void);
 void resistivity_units_free(composite_units_data *u);
 void resistivity_units_set(composite_units_data *units,char *str);
