@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.2 2001/11/28 15:39:43 dan Exp $ */
+/* $Id: coax_gui.c,v 1.3 2001/12/15 23:16:43 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -321,9 +321,17 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 0, 1, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
 
   text = gtk_label_new( "b" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
   /*
@@ -354,9 +362,19 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+
   text = gtk_label_new( "Length" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
+
+  text = gtk_label_new( "m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 3, 4, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
 
   text = gtk_label_new( "Er" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
@@ -370,8 +388,17 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 6, 7, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "V/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 6, 7, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+
   text = gtk_label_new( "t" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 7, 8, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 7, 8, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
 
@@ -396,17 +423,34 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "MHz" );
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
 
   text = gtk_label_new( "Frequency" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "MHz" );
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+
   text = gtk_label_new( "RHO_a" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "ohm-m" );
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 4, 5, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "RHO_b" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 5, 6, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "ohm-m" );
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 5, 6, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
 
@@ -611,7 +655,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "H/m" );
+  text = gtk_label_new( "Henries/m" );
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -627,7 +671,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "F/m" );
+  text = gtk_label_new( "Farads/m" );
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
