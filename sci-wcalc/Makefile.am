@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.34 2004/11/08 23:48:55 dan Exp $
+## $Id: Makefile.am,v 1.35 2004/11/09 12:55:44 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -37,7 +37,7 @@
 include $(srcdir)/mex.mk
 
 scimandir=	${datadir}/${PACKAGE}-${VERSION}/man
-sciman_DATA=	${SCIMANS} ${SCICATS} whatis whatis.htm
+sciman_DATA=	${SCIHTML} ${SCIMANS} ${SCICATS} whatis whatis.htm
 demodir=		${datadir}/${PACKAGE}-${VERSION}/demos
 demo_DATA=	${SCIDEMOS}
 
@@ -76,7 +76,8 @@ CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
-	whatis whatis.htm ${SCICATS} ${SCIHTML}
+	whatis whatis.htm ${SCICATS} ${SCIHTML} \
+	wcalc_test.sci.in
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
 
