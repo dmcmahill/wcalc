@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.8 2001/11/12 04:02:49 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/11/27 04:46:31 dan Exp $
 
 ##
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -35,10 +35,15 @@
 
 lib_LTLIBRARIES = libwcalc.la
 
-noinst_PROGRAMS = coax_test
+noinst_PROGRAMS = coax_test ic_microstrip_test mathutil_test
 
 coax_test_SOURCES = alert.c coax_test.c 
-coax_test_LDADD = libwcalc.la
+
+ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
+
+mathutil_test_SOURCES = alert.c mathutil_test.c 
+
+LDADD = libwcalc.la
 
 libwcalc_la_SOURCES = \
 	air_coil.c \
