@@ -1,4 +1,4 @@
-/* $Id: physconst.h,v 1.2 2002/05/10 22:52:56 dan Exp $ */
+/* $Id: physconst.h,v 1.3 2002/06/12 11:30:31 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -40,7 +40,10 @@
 #ifndef __PHYSCONST_H__
 #define __PHYSCONST_H__
 
+/* free space speed of light, meters/second */
 #define LIGHTSPEED 2.997925e8
+/* free space impedance, Ohms */
+#define FREESPACEZ0 (4.0*M_PI*1.0e-7*LIGHTSPEED)
 
 #define MIL2MICRON(x)  (x*25.4)
 #define MICRON2MIL(x)  (x/25.4)
