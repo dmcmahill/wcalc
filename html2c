@@ -1,0 +1,126 @@
+#! /usr/bin/awk -f
+#
+# $Id$
+#
+# Copyright (c) 2001 Dan McMahill
+# All rights reserved.
+#
+# This code is derived from software written by Dan McMahill
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#        This product includes software developed by Dan McMahill
+#  4. The name of the author may not be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+# 
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+#  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+#  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+#  SUCH DAMAGE.
+#
+#
+#
+# This script operates on a html file to produce a C program which
+# will print the html file.  In addition one extra markup is introduced.
+#
+#  <@fmt@var>  will cause a line like:
+#    printf("%fmt",var);
+#
+# In the generated C code.
+#
+# Typical usage would be:
+#
+#    html2c foo.html > foo.c
+#
+# Then in, for example, bar.c you could do something like:
+#
+#  print_html()
+#  {
+#    /* declare variables and do whatever else you need */
+#    /* .... */
+#
+#    /* include the print out of our html */
+#    #include "foo.c"
+#
+#  }
+#
+#
+# The idea is that its a pain in the ass to write HTML in C.  Its much
+# easier to work on an HTML file that you can quickly edit and preview.
+# Then when you're done, you can quickly generate some C code that you
+# might use as part of a CGI program
+#
+
+BEGIN{
+  printf("\n");
+  printf("/* ********* Automatically Generated.  Do not edit! ******** */\n");
+  printf("/* *********         Created with html2c            ******** */\n\n");
+}
+
+{
+# escape all backslashes
+  gsub(/\\/,"\\\\");
+ 
+# escape all double quotes
+  gsub(/\"/,"\\\"");
+
+# escape all percents
+  gsub(/%/,"%%");
+
+# replace all <@fmt@var> markup with %fmt
+  line = gensub(/<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/,"%\\1","g");
+
+# see if the line had a <@fmt@var> markup and if so, we need to
+# make sure to print out the variables
+  numvars = 0;
+  if ($0 ~ /<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/){
+    templine = $0;
+    done = 0;
+    while (!done){
+      where = match(templine, /<@([a-zA-Z0-9.]*)@[a-zA-Z_]+[a-zA-Z0-9_]*>/);
+      if (where == 0){
+	done = 1;
+      }
+      else{
+# pick out the <@fmt@var> markup by its self
+	tmpstr = substr(templine,where,RLENGTH);
+
+# keep the rest of the line
+	templine = substr(templine,where+RLENGTH);
+	
+# extract the variable name	
+	varname[numvars] = gensub(/<@[a-zA-Z0-9.]*@([a-zA-Z_]+[a-zA-Z0-9_]*)>/,"\\1","g",tmpstr);
+	numvars = numvars + 1;
+      }
+    }
+  }
+
+  printf("printf(\"%s\\n\"",line);
+  for (i = 0; i<numvars; i=i+1){
+    printf(",%s",varname[i]);
+  }
+  printf(");\n");
+
+}
+
+END{
+  printf("\n");
+  printf("/* *********        End of Generated Code           ******** */\n\n");
+}
+
+
