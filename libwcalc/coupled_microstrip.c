@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.22 2004/08/30 22:23:08 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.23 2004/08/31 21:38:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -1081,6 +1081,9 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   line->s = s;
   coupled_microstrip_calc(line, line->freq);
 
+  /* scale the line length to get the desired electrical length */
+  line->l = line->l * len/line->len;
+  coupled_microstrip_calc(line, line->freq);
 
 #ifdef DEBUG_SYN
   printf("Took %d iterations, err = %g\n", iters, err);
