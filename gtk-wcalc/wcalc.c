@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.3 2001/11/03 04:12:26 dan Exp $ */
+/* $Id: wcalc.c,v 1.4 2001/11/03 16:47:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -53,7 +53,7 @@
 /* the individual models */
 #include "air_coil_gui.h"
 #include "microstrip_gui.h"
-//#include "stripline_gui.h"
+#include "stripline_gui.h"
 
 
 #include "physconst.h"
@@ -188,11 +188,9 @@ static void global_model_init()
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
   global_model_new = g_list_append(global_model_new,microstrip_gui_new);
 
-  /*
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
   global_model_new = g_list_append(global_model_new,stripline_gui_new);
-  */
 }
 
 void wcalc_setup (gpointer data,
@@ -250,11 +248,11 @@ void wcalc_setup (gpointer data,
     case MODEL_MICROSTRIP:
       new_cmd = (void *) microstrip_gui_new;
       break;
-      /*
+
     case MODEL_STRIPLINE:
       new_cmd = (void *) stripline_gui_new;
       break;
-      */
+
     default:
       alert("Bad model type in \"%s\"",fname);
       return;

@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.1 2001/10/05 00:37:33 dan Exp $ */
+/*      $Id: stripline.c,v 1.2 2001/11/02 00:29:23 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,7 @@
  * SUCH DAMAGE.
  */
 
-
-//#define DEBUG_SYN  /* debug stripline_syn()  */
+#define DEBUG_SYN  /* debug stripline_syn()  */
 //#define DEBUG_CALC /* debug stripline_calc() */
 
 #include <math.h>
@@ -473,138 +472,6 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
  *
  */
 
-#ifdef USE_OLD_SYN
-int stripline_syn(stripline_line *line, double f, int flag)
-{
-  int rslt;
-
-  /* physical width/length of line */
-  double wmil,w,lmil,l;
-
-  double z0,len;
-
-  /* substrate parameters */
-  double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
-
-  /* synthesis variables */
-  double q,N,D,No,Do,k,m,B,w0,deltaW,v;
-  int i;
-
-
-  /* desired impedance (ohms) and electrical length (degrees) */
-  z0 = line->z0;
-  len = line->len;
-
-  /* Substrate dielectric thickness (mils) */
-  hmil = line->subs->h;
-  h = MIL2M(hmil);
-  /* Substrate relative permittivity */
-  er = line->subs->er;
-  /* Metal resistivity relative to copper */
-  rho = line->subs->rho;
-  /* Loss tangent of the dielectric material */
-  tand = line->subs->tand;
-  /* Metal thickness (mils) */
-  tmil = line->subs->tmet;
-  t = MIL2M(tmil);
-  /* Metalization roughness */
-  roughmil = line->subs->rough;
-  rough = MIL2M(roughmil);
-
-
-#ifdef DEBUG_SYN
-  printf("stripline_syn(): --------------- Stripline Synthesis ------------\n");
-  printf("stripline_syn(): Metal width                 = %g mil\n",line->w);
-  printf("stripline_syn(): Metal thickness             = %g mil\n",line->subs->tmet);
-  printf("stripline_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("stripline_syn(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("stripline_syn(): Substrate thickness         = %g mil\n",line->subs->h);
-  printf("stripline_syn(): Substrate dielectric const. = %g \n",line->subs->er);
-  printf("stripline_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
-  printf("stripline_syn(): Frequency                   = %g MHz\n",f/1e6); 
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
-  printf("stripline_syn(): Desired Zo                  = %g ohm\n",Ro);
-  printf("stripline_syn(): Desired electrical length   = %g degrees\n",len);
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
-  printf("stripline_syn(): Starting optimization value = %g\n",var);
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
-#endif
-
-  /*
-   * Start of stripline calculations
-   */
-
-
-
-  if(t < h/1000)
-    {
-      /*
-       * Thin strip case:
-       * disp('Doing thin strip synthesis');
-       */
-      q = exp(-29.976*M_PI*M_PI/(z0*sqrt(er)));
-      N=0.0;
-      D=0.5;
-      i=0;
-      No=1.0;
-      Do=1.0;
-
-      while((N-No) || (D-Do))
-	{
-	  i++;
-	  No=N;
-	  Do=D;
-	  N = N + pow(q,(i*(i-1)));
-	  D = D + pow(q,(i*i));
-	}
-#ifdef DEBUG_SYN
-      printf("stripline_syn(): Took %d iters\n",i);
-#endif
-
-      k = sqrt(q)*(pow((N/D),2.0));
-      w = (2.0*h/M_PI)*log(1.0/k + sqrt(pow((1.0/k),2.0) - 1.0));
-    }
-  else
-    {
-      /*
-       * Finite strip case: 
-       */
-#ifdef DEBUG_SYN
-      printf("stripline_syn(): doing finite thickness strip synthesis\n");
-#endif
-      m = 6.0*(h-t)/(3.0*h-t);
-      B = exp(z0*sqrt(er)/30.0);
-      w0 = (8.0*(h-t)/M_PI)*sqrt(B + 0.568)/(B-1);
-
-      deltaW = (t/M_PI)*(1.0 - 0.5*log( pow((t/(2*h-t)),2.0) + pow((0.0796*t/(w0 - 0.26*t)),m) ));
-      w = w0 - deltaW;
-    }
-
-  /* convert to mils */
-  wmil = M2MIL(w);
-
-
-  /*
-   * Electrical Length
-   */
-
-  /* propagation velocity (meters/sec) */
-  v = LIGHTSPEED / sqrt(er);
-  l = (len/360.0)*(v/f);
-  lmil = M2MIL(l);
-
-  /*
-   * Run analysis to get loss
-   */
-
-  /* XXX - need to add this call */
-  /*[ztmp,ltmp,loss]=slicalc(w,l,f,subs);*/
-
-  
-  return(0);
-}
-
-#else /* !USE_OLD_SYN */
 
 int stripline_syn(stripline_line *line, double f, int flag)
 {
@@ -680,7 +547,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
     var    = line->w;
     break;
 
-  case SLISYN_ES:
+  case SLISYN_ER:
     optpar = &(line->subs->er);
     varmax = 100.0;
     varmin = 1.0;
@@ -884,7 +751,6 @@ int stripline_syn(stripline_line *line, double f, int flag)
   return 0;
 }
 
-#endif /* USE_OLD_SYN */
 
 
 void stripline_line_free(stripline_line * line)
@@ -909,15 +775,29 @@ stripline_line *stripline_line_new()
 
   /* initialize the values to something */
   newline->l    = 1000.0;
+  newline->l_sf = 1.0;
+  newline->l_units = NULL;
   newline->w    = 110.0;
+  newline->w_sf = 1.0;
+  newline->w_units = NULL;
   newline->freq = 1.0e9;
+  newline->freq_sf = 1.0;
+  newline->freq_units = NULL;
 
   newline->subs->h     = 62.0;
+  newline->subs->h_sf = 1.0;
+  newline->subs->h_units = NULL;
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
   newline->subs->tmet  = 1.4;
+  newline->subs->tmet_sf = 1.0;
+  newline->subs->tmet_units = NULL;
   newline->subs->rho   = 1.0;
+  newline->subs->rho_sf = 1.0;
+  newline->subs->rho_units = NULL;
   newline->subs->rough = 0.055;
+  newline->subs->rough_sf = 1.0;
+  newline->subs->rough_units = NULL;
 
   /* and do a calculation to finish the initialization */
   stripline_calc(newline,newline->freq);
@@ -939,4 +819,3 @@ stripline_subs *stripline_subs_new(void)
 
   return(newsubs);
 }
-

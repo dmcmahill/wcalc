@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/29 11:57:36 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/10/30 23:54:08 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -53,6 +53,8 @@ wcalc_SOURCES = \
 	print.h \
 	start.c \
 	start.h \
+	stripline_gui.c \
+	stripline_gui.h \
 	version.c \
 	wcalc.c \
 	wcalc.h

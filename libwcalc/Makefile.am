@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2001/11/02 01:25:41 dan Exp $
+## $Id: Makefile.am,v 1.6 2001/11/03 16:47:25 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -55,6 +55,8 @@ libwcalc_la_SOURCES = \
 	physconst.h \
 	stripline.c \
 	stripline.h \
+	stripline_loadsave.c \
+	stripline_loadsave.h \
 	wcalc_loadsave.c \
 	wcalc_loadsave.h
 
