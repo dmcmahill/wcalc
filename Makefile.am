@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2001/10/12 22:36:13 dan Exp $
+# $Id: Makefile.am,v 1.6 2001/10/13 02:09:27 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,7 @@
 #  SUCH DAMAGE.
 #
 
-SUBDIRS = include libwcalc pixmaps gtk-wcalc @CGI_WCALC@ @SCI_WCALC@ 
+SUBDIRS = include libwcalc pixmaps @GTK_WCALC@ @CGI_WCALC@ @SCI_WCALC@ 
 DIST_SUBDIRS = include libwcalc pixmaps gtk-wcalc cgi-wcalc sci-wcalc 
 
 # XXX need to move the ps stuff
