@@ -1,4 +1,4 @@
-/* $Id: coax_calc.c,v 1.5 2001/10/30 23:42:06 dan Exp $ */
+/* $Id: coax_calc.c,v 1.1 2001/12/09 15:14:40 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -54,8 +54,8 @@
 #define	B_IN	  prhs[1]
 #define	C_IN	  prhs[2]
 #define	T_IN      prhs[3]
-#define	RHOA_IN   prhs[4]
-#define	RHOB_IN   prhs[5]
+#define	RHO_A_IN  prhs[4]
+#define	RHO_B_IN  prhs[5]
 #define	ER_IN	  prhs[6]
 #define	TAND_IN	  prhs[7]
 #define LEN_IN    prhs[8]
@@ -134,9 +134,6 @@ void mexFunction(
   /* do we have any vectors in our input */
   int vector=0;
 
-  /* we've been given the fill/len flag */
-  int has_flag=0;
-
   /* indices for the main loop */
   unsigned int ind=0, fixed=0;
 
@@ -202,7 +199,7 @@ void mexFunction(
   G    = mxGetPr(G_OUT);
 
   /* the actual computation */
-  line = coax_line_new();
+  line = coax_new();
 
   /* XXX get from flags */
 
@@ -214,16 +211,16 @@ void mexFunction(
      * which inputs are scalar and which are matrices easily.  (It's
      * done when processsing the input arguments.
      */
-    line->a      = a[*ind_a];
-    line->b      = b[*ind_b];
-    line->c      = c[*ind_c];
-    line->t      = t[*ind_t];
-    line->rho_a  = rho_a[*ind_rho_a];
-    line->rho_b  = rho_a[*ind_rho_b];
-    line->er     = len[*ind_er];
-    line->tand   = len[*ind_tand];
-    line->len    = len[*ind_len];
-    line->freq   = freq[*ind_freq];
+    line->a       = a[*ind_a];
+    line->b       = b[*ind_b];
+    line->c       = c[*ind_c];
+    line->tshield = t[*ind_t];
+    line->rho_a   = rho_a[*ind_rho_a];
+    line->rho_b   = rho_a[*ind_rho_b];
+    line->er      = len[*ind_er];
+    line->tand    = len[*ind_tand];
+    line->len     = len[*ind_len];
+    line->freq    = freq[*ind_freq];
 
     /* run the calculation */
     coax_calc(line,line->freq);
