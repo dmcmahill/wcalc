@@ -1,4 +1,4 @@
-.\" $Id$
+.\" $Id: air_coil_calc.man,v 1.1 2001/10/23 00:47:52 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -96,20 +96,20 @@ dimensions of the coil are given as inputs and the inductance, quality
 factor, and self resonant frequency are calculated.
 .SH EXAMPLE
 .nf
-N=5;            // number of turns
-len=0;          // we'll use the fill parameter instead
-fill=1.2;       // the coil is 20% longer than the minimum
-AWG=22;         // wire size
-rho=1;          // not used yet
-dia=0.25/25.4;  // 0.25 inches inside diameter
-f=10e6;         // 10 MHz operation
-flag=1;         // use fill to calculate length
+N=5;              // number of turns
+len=0;            // we'll use the fill parameter instead
+fill=1.2;         // the coil is 20% longer than the minimum
+AWG=22;           // wire size
+rho=1;            // not used yet
+dia=0.25*0.0254;  // 0.25 inches inside diameter
+f=10e6;           // 10 MHz operation
+flag=1;           // use fill to calculate length
 [L,Q,SRF,len_out,fill_out] = ...
   air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
 printf("L=%g nH",L*1e9);
 printf("Q=%g at %g MHz",Q,f/1e6);
 printf("Self Resonant Freq=%g MHz",SRF/1e6);
-printf("Length=%g inches",len_out*25.4);
+printf("Length=%g inches",len_out/0.0254);
 printf("Fill=%g",fill_out);
 .fi
 .SH SEE ALSO
