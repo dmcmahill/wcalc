@@ -71,31 +71,80 @@ microstrip
 <TD>
 
 <TABLE>
+<!--
 <TR>
 <TD>Ls =</TD>
-<TD><@g@Ls*1e6@></TD>
-<TD>[pH/um]</TD>
+<TD><@g@Ls*1e9@></TD>
+<TD>[nH/mil]</TD>
 </TR>
+
 <TR>
 <TD>Rs =</TD>
-<TD><@g@Rs*1e-6@></TD>
-<TD>[ohm/um]</TD>
+<TD><@g@Rs@></TD>
+<TD>[ohm/mil]</TD>
 </TR>
+
 <TR>
 <TD>Cs =</TD>
-<TD><@g@Cs*1e9@></TD>
-<TD>[fF/um]</TD>
+<TD><@g@Cs*1e12@></TD>
+<TD>[pF/mil]</TD>
 </TR>
+
 <TR>
 <TD>Gs =</TD>
-<TD><@g@Gs*1e-6@></TD>
-<TD>[(ohm-cm)^-1]</TD>
+<TD><@g@Gs@></TD>
+<TD>[(ohm-mil)^-1]</TD>
 </TR>
+-->
+
 <TR>
 <TD>Z0 =</TD>
 <TD><@g@Ro@> + j <@g@Xo@></TD>
 <TD>[ohm]</TD>
 </TR>
+
+<TR>
+<TD>Keff =</TD>
+<TD><@g@line->keff@></TD>
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Loss =</TD>
+<TD><@g@line->loss@></TD>
+<TD>[dB]</TD>
+</TR>
+
+<TR>
+<TD>Loss/len =</TD>
+<TD><@g@line->losslen@></TD>
+<TD>[dB/mil]</TD>
+</TR>
+
+<TR>
+<TD>Skin depth =</TD>
+<TD><@g@line->skindepth@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Delay =</TD>
+<TD><@g@delay@></TD>
+<TD>[ns]</TD>
+</TR>
+
+<TR>
+<TD>End correction =</TD>
+<TD><@g@line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Corrected length =</TD>
+<TD><@g@l-line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
 </TABLE>  <!-- end of model parameter table -->
 </TD>
 </TR>
@@ -116,6 +165,13 @@ microstrip
 <TD>Trace length</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>"></TD>
 <TD>[mil]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
+<TD>[mil]</TD>
 </TR>
 
 <TR>
@@ -125,9 +181,9 @@ microstrip
 </TR>
 
 <TR>
-<TD>Metal Thickness</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
-<TD>[mil]</TD>
+<TD>Metal surface roughness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@rough@>"></TD>
+<TD>[mil-rms]</TD>
 </TR>
 
 <TR>
@@ -181,5 +237,5 @@ microstrip
 
 </FORM>
 
-<!-- $Id: microstrip.html,v 1.1 2001/09/13 14:52:02 dan Exp $ -->
+<!-- $Id: microstrip.html,v 1.2 2001/09/13 15:09:54 dan Exp $ -->
 

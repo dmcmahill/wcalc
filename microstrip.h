@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.1 2001/02/11 19:26:26 dan Exp $ */
+/* $Id: microstrip.h,v 1.2 2001/02/17 16:56:36 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -55,8 +55,16 @@ typedef struct MICROSTRIP_LINE
   /* electrical length (degrees) */
   double len;
 
+  /* open end length correction */
+  double deltal;
 
   double keff,loss,losslen,skindepth;
+
+  /* incremental circuit model */
+  double Ls, Rs, Cs, Gs;
+
+  /* the actual characteristic impedance is Ro + j Xo */
+  double Ro, Xo;
 
   microstrip_subs *subs;
 
@@ -64,9 +72,20 @@ typedef struct MICROSTRIP_LINE
 
 
 double microstrip_calc(microstrip_line *line, double f);
-int microstrip_syn(microstrip_line *line, double f);
+int microstrip_syn(microstrip_line *line, double f, int flag);
 
+void microstrip_line_free(microstrip_line * line);
 microstrip_line *microstrip_line_new(void);
 microstrip_subs *microstrip_subs_new(void);
+
+/*
+ * Flags for synthesis
+ */
+
+#define MLISYN_W    0    /* Synthesize the metal width         */
+#define MLISYN_H    1    /* Synthesize the substrate thickness */
+#define MLISYN_ES   2    /* Synthesize the dielectric constant */
+#define MLISYN_L    3    /* Synthesize the length */
+
 
 #endif /*__MICROSTRIP_H_*/
