@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.66 2004/09/08 22:48:52 dan Exp $
+dnl $Id: configure.in,v 1.67 2004/09/09 22:04:46 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -280,7 +280,7 @@ if test "X$OCT_WCALC" != "X"; then
 	ac_ext=c
 	ac_cpp='$OCTMEX $CPPFLAGS'
 	ac_compile='$OCTMEX -c conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
-	ac_link='$OCTMEX conftest.$ac_ext  >&AS_MESSAGE_LOG_FD'
+	ac_link='$OCTMEX conftest.$ac_ext $LIBS >&AS_MESSAGE_LOG_FD'
 	ac_compiler_gnu=$ac_cv_c_compiler_gnu
 	save_ac_exeext=$ac_exeext
 	ac_exeext=.oct
@@ -306,6 +306,40 @@ void mexFunction(
 	AC_ERROR([$OCTMEX is either broken or is not octave mex])
 )
 
+	wc_save_LIBS="$LIBS"
+	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
+	    LIBS="$wd_save_LIBS ${fl}path"
+	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
+	    AC_LINK_IFELSE([
+#include "mex.h"
+void mexFunction(
+                 int nlhs,
+                 mxArray *plhs[[]],
+                 int nrhs,
+#if !defined(V4_COMPAT) && !defined(SCI_MEX)
+                 const mxArray *prhs[[]]
+#else
+                 mxArray *prhs[[]]
+#endif
+                 )
+{
+	mexPrintf("Hello, world\n");
+}
+],
+
+		AC_MSG_RESULT([yes])
+		rpath=$fl, 
+		AC_MSG_RESULT([no]))
+		test -n "$rpath" && break
+	done
+	if test -n "$rpath"; then
+	   OCTMEX_RPATH="$rpath"
+	else
+	   OCTMEX_RPATH=""
+	fi
+	LIBS="$wc_save_LIBS"
+
 	# restore the language settings
 	ac_exeext=$save_ac_exeext
 	AC_LANG(C)
@@ -329,6 +363,7 @@ AC_SUBST(OCTAVE)
 AC_SUBST(OCTAVE_CONFIG)
 AC_SUBST(MKOCTFILE)
 AC_SUBST(OCTMEX)
+AC_SUBST(OCTMEX_RPATH)
 AC_SUBST(SITEOCT)
 AC_SUBST(SITEOCTM)
 
