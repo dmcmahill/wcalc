@@ -1,4 +1,4 @@
-.\" $Id: coax_syn.man,v 1.1 2001/12/11 03:38:23 dan Exp $
+.\" $Id: coax_syn.man,v 1.2 2001/12/13 05:08:32 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -38,7 +38,8 @@
 coax_syn - Coaxial transmission line analysis
 .SH CALLING SEQUENCE
 .nf
-[a,b,c,er,len,loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out,b_out,c_out,er_out,len,loss] = 
+  coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 .fi
 .SH PARAMETERS
 .TP 10
@@ -71,16 +72,50 @@ len
 .TP
 f
 : operating frequency (Hertz)
+.TP
+flag
+: indicates which parameters should be optimized
+.RS
+.TP 5
+flag=0
+: synthesize a
+.TP
+flag=1
+: synthesize b
+.TP
+flag=2
+: synthesize c
+.TP
+flag=3
+: synthesize er
+.RE
+.TP
+a_out
+: synthesized radius of inner conductor (meters)
+.TP
+b_out
+: synthesized inner radius of outer conductor (meters)
+.TP
+c_out
+: synthesized offset of the inner conductor from the center (meters)
+.TP
+er_out
+: synthesized relative permitivitty of dielectric
+.TP
+len
+: synthesized physical length of line (meters)
+.TP
+loss
+: resulting loss of line (dB)
 .SH DESCRIPTION
-function to analyze the electrical characteristics of a
-coaxial transmission line.
-The physical
-dimensions of the line are given as inputs and the 
-characteristic impedand and incremental circuit model
-elements are calculated.
+function to synthesize the physical parameters of a
+coaxial transmission line to achieve a given set of
+electrical characteristics.
 .SH EXAMPLE
 .nf
 sf=25.4e-6;       // mils to meters conversion factor
+z0=75.0;          // desired characteristic impedance
+elen=90.0;        // desired electrical length (degrees)
 a=10.0*sf;        // radius of inner conductor
 b=100.0*sf;       // inner radius of outer conductor
 c=0*sf;           // offset of inner conductor
@@ -89,16 +124,17 @@ rho_a=3.5e-8;     // resistivity of inner conductor
 rho_b=rho_a;      // resistivity of outer conductor
 er=9.5;           // relative permitivitty of dielectric
 tand=0.01;        // dielectric loss tangent
-len=1.0;          // length of line
 f=100e6;          // 100 MHz operation
-[z0,elen,loss,L,R,C,G] = coax_syn(a,b,c,t,rho_a,rho_b,er,tand,len,f);
+flag=1;           //
+[a,b,c,er,len,loss] = ...
+   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %g Ohms',z0));
 disp(sprintf('elen = %g degrees',elen));
 disp(sprintf('loss = %g dB',loss));
-disp(sprintf('L    = %g H/m',L));
-disp(sprintf('R    = %g Ohms/m',R));
-disp(sprintf('C    = %g F/m',C));
-disp(sprintf('G    = %g S/m',G));
+disp(sprintf('a    = %g m',a));
+disp(sprintf('b    = %g m',b));
+disp(sprintf('c    = %g m',c));
+disp(sprintf('er   = %g ',er));
 .fi
 .SH SEE ALSO
 coax_calc
