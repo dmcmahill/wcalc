@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: projects.shtml,v 1.1 2001/10/16 04:15:33 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -32,7 +32,31 @@ stripline synthesis,
     <br>
     <br>
     </center>
-    
+
+    <H2>In Progress<H2>
+    <UL>
+    <LI>Improved handling of units.  The current code for letting the
+    user choose units is a bit of a mess.  This must be fixed before
+    the first release.</LI>
+    <LI>Add the ability to load a previously saved design.</LI>
+    <LI>Finish the mex/sci-wcalc interfaces.</LI>
+    <LI>Make GUI's for the remaining models.</LI>
+    </UL>
+
+    <H2>Future</H2>
+    <UL>
+    <LI>i18n.  Once the cleanup of the units handling code is
+    complete, it should be a relatively straightforward job.</LI>
+    <LI>More models.
+        <UL>
+	<LI>co-planar waveguide</LI>
+        <LI>coax</LI>
+	<LI>various microstrip discontinuities</LI>
+	<LI>spiral inductors</LI>
+	</UL></LI>
+    <LI>ability to print under WIN32</LI>
+    </UL>
+
     <font face="helvetica, arial">
     </font>
 
