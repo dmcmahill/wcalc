@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/22 11:32:44 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/23 00:50:59 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -62,7 +62,7 @@ BUILT_SOURCES= libsci_wcalc.c load_wcalc.sce test_wcalc.sce whatis ${SCICATS}
 # Generate the entry point function that scilab uses to access the
 # mex-functions
 #
-libsci_wcalc.c: $(srcdir)/mex.mk Makefile
+libsci_wcalc.c: $(srcdir)/mex.mk
 	@echo "****************************************************"
 	@echo "Generating the scilab gateway function in $@"
 	@echo "****************************************************"
@@ -94,7 +94,7 @@ libsci_wcalc.c: $(srcdir)/mex.mk Makefile
 # path hard coded in it and is used for testing before installation
 # ("test_wcalc.sce")
 #
-load_wcalc.sce.in: $(srcdir)/mex.mk Makefile
+load_wcalc.sce.in: $(srcdir)/mex.mk 
 	@echo "****************************************************"
 	@echo "Generating the scilab loader function in $@"
 	@echo "****************************************************"
@@ -131,7 +131,7 @@ test_wcalc.sce:	load_wcalc.sce.in
 	@echo "****************************************************"
 
 
-whatis: ${SCIMANS} Makefile
+whatis: ${SCIMANS} 
 	@echo "****************************************************"
 	@echo "Generating the whatis table"
 	@echo "****************************************************"
@@ -146,7 +146,7 @@ whatis: ${SCIMANS} Makefile
 
 SUFFIXES = .cat .man
 
-.man.cat : Makefile
+.man.cat : 
 	@echo "****************************************************"
 	@echo "Processing $*.man to produce $*.cat"
 	@echo "****************************************************"
