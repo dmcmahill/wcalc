@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: version.c,v 1.1 2001/02/11 19:26:29 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,4 +33,4 @@
  * SUCH DAMAGE.
  */
 
-char version[] = "Wcalc, version 0.1";
+char version[] = "Wcalc, version " VER;

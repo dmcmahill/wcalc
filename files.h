@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: files.h,v 1.1 2001/02/11 19:26:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -37,5 +37,7 @@
 #define __FILES_H__
 
 void wcalc_save_as(void);
+void wcalc_save(void);
+void wcalc_open(void);
 
 #endif /*__FILES_H__*/

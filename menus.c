@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: menus.c,v 1.1 2001/02/11 19:26:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -73,24 +73,16 @@ static void print_hello( GtkWidget *w,
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",         NULL,         NULL, 0, "<Branch>" },
   { "/File/tearoff",  NULL,            0, 0, "<Tearoff>"},
-  { "/File/_New",     "<control>N", print_hello, 0, NULL },
-  { "/File/_Open",    "<control>O", print_hello, 0, NULL },
-  { "/File/_Save",    "<control>S", print_hello, 0, NULL },
+  { "/File/_Open",    "<control>O", wcalc_open, 0, NULL },
+  { "/File/_Save",    "<control>S", wcalc_save, 0, NULL },
   { "/File/Save _As", NULL,         wcalc_save_as, 0, NULL },
   { "/File/sep1",     NULL,         NULL, 0, "<Separator>" },
   { "/File/Quit",     "<control>Q", gtk_main_quit, 0, NULL },
   { "/_Options",                     NULL,        NULL, 0, "<Branch>" },
   { "/Options/tearoff",              NULL,           0, 0, "<Tearoff>"},
-  { "/Options/Frequency Units",      NULL,        NULL, 0, "<Branch>" },
-  { "/Options/Frequency Units/MHz",  NULL,        NULL, 0, "<RadioItem>" },
-  { "/Options/Frequency Units/GHz",  NULL,        NULL, 0, "/Options/Frequency Units/MHz" },
-  { "/Options/Physical Units",       NULL,        NULL, 0, "<Branch>" },
-  { "/Options/Physical Units/micron",NULL,        NULL, 0, "<RadioItem>" },
-  { "/Options/Physical Units/mm",    NULL,        NULL, 0,  "/Options/Physical Units/micron" },
-  { "/Options/Physical Units/cm",    NULL,        NULL, 0, "/Options/Physical Units/micron" },
-  { "/Options/Physical Units/mil",   NULL,        NULL, 0, "/Options/Physical Units/micron" },
   { "/_Help",                        NULL,        NULL, 0, "<LastBranch>" },
   { "/_Help/About",                  NULL, about_popup, 0, NULL },
+  { "/_Help/Copyright",              NULL, copyright_popup, 0, NULL },
 };
 
 

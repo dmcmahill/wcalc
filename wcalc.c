@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: wcalc.c,v 1.1 2001/02/11 19:26:29 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -326,6 +326,7 @@ static void units_init(GtkWidget *parent)
   */
 
   glist1 = g_list_append(glist1,"Microstrip");
+  /* glist1 = g_list_append(glist1,"Stripline"); */
   combo_model =  gtk_combo_new();
   gtk_combo_set_popdown_strings( GTK_COMBO(combo_model), glist1);
   gtk_combo_set_use_arrows( GTK_COMBO(combo_model), 1);

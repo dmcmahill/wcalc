@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: about.h,v 1.1 2001/02/11 19:26:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -37,5 +37,6 @@
 #define __ABOUT_H__
 
 void about_popup(void);
+void copyright_popup(void);
 
 #endif /*__ABOUT_H__*/
