@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.8 2002/01/03 03:54:52 dan Exp $ */
+/* $Id: coax.c,v 1.9 2002/01/14 22:00:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -295,13 +295,14 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     printf("coax_calc_int():  finding TE10 cutoff freq.  initial = %g Hz\n",
 	   line->fc);
 #endif
-
-    while (fabs(err/k) > 5*DBL_EPSILON) {
+    i=0;
+    while ( (fabs(err/k) > 5*DBL_EPSILON) && (i < 10) ){
       ddk = (err - errold)/(k - kold);
       kold = k;
       errold = err;
       k = k - err/ddk;
       err = coax_TE10_err(line,k);
+      i++;
 
 #ifdef DEBUG_CALC
       printf("coax_calc_int():  k=%10.6g,"
