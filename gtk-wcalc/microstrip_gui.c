@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.12 2001/09/28 00:26:22 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.1 2001/10/05 00:50:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -44,6 +44,7 @@
 #endif
 
 #include "alert.h"
+#include "epscat.h"
 #include "menus.h"
 #include "microstrip.h"
 #include "microstrip_gui.h"
@@ -873,19 +874,19 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {
   microstrip_gui *gui;
-
-  int bbox_llx, bbox_lly, bbox_urx, bbox_ury;
+  char *file;
 
   gui = WC_MICROSTRIP_GUI(wcalc);
-  
-  bbox_llx=101;
-  bbox_lly=664;
-  bbox_urx=309;
-  bbox_ury=775;
 
+  /* print the EPS file */
 
-#include "ps_microstrip.c"
+  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("microstrip.eps")+2)*sizeof(char));
+  sprintf(file,"%s%c%s",global_print_config->eps_dir,
+	  global_print_config->dir_sep,
+	  "microstrip.eps");
+  eps_cat(file,fp);
 
+  /* print the data */
 
   fprintf(fp,"%% spit out the numbers\n");
   fprintf(fp,"newline\n");

@@ -1,4 +1,4 @@
-/* $Id: print.h,v 1.3 2001/09/20 20:32:52 dan Exp $ */
+/* $Id: print.h,v 1.1 2001/10/05 01:48:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -44,6 +44,7 @@ void print_popup(gpointer data,
 void global_printer_init(void);
 
 typedef struct PRINT_CONFIG {
+  /* format options */
   double fontsize;
   double leftmargin;
   double topmargin;
@@ -54,6 +55,11 @@ typedef struct PRINT_CONFIG {
   double tab2;
   double tab3;
   double tab4;
+
+  /* directory options */
+  char *eps_dir;
+  char dir_sep;
+
 } print_config;
 
 #endif /*__PRINT_H__*/

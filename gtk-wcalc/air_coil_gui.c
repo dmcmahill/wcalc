@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.1 2001/10/05 00:50:20 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.2 2001/10/12 03:53:35 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -45,6 +45,7 @@
 #include <string.h>
 #endif
 
+#include "epscat.h"
 #include "menus.h"
 #include "misc.h"
 
@@ -1024,24 +1025,23 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
   air_coil_save(WC_AIR_COIL_GUI(wcalc)->coil,fp,name);
 }
 
-  /* XXX this is not the way to include this.... */
-//#include "pixmaps/air_coil.c"
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {
   air_coil_gui *gui;
-
-  int bbox_llx, bbox_lly, bbox_urx, bbox_ury;
+  char *file;
 
   gui = WC_AIR_COIL_GUI(wcalc);
-  
-  bbox_llx=101;
-  bbox_lly=664;
-  bbox_urx=309;
-  bbox_ury=775;
 
-  /* XXX this is not the way to include this.... */
-  //air_coil_eps(fp);
+  /* print the EPS file */
+
+  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("air_coil.eps")+2)*sizeof(char));
+  sprintf(file,"%s%c%s",global_print_config->eps_dir,
+	  global_print_config->dir_sep,
+	  "air_coil.eps");
+  eps_cat(file,fp);
+
+  /* print the data */
 
   fprintf(fp,"%% spit out the numbers\n");
   fprintf(fp,"newline\n");

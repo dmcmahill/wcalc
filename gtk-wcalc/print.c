@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.9 2001/09/22 04:37:09 dan Exp $ */
+/* $Id: print.c,v 1.1 2001/10/05 01:48:24 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -114,7 +114,7 @@ void global_printer_init()
   /* allocate memory for the configuration */
   global_print_config = g_malloc(sizeof(print_config));
 
-  /* initialize the configuration */
+  /* initialize the page format configuration */
   global_print_config->fontsize=12;
   global_print_config->leftmargin=1.0;
   global_print_config->topmargin=1.5;
@@ -130,6 +130,22 @@ void global_printer_init()
   global_print_config->tab3 += global_print_config->tab2;
   global_print_config->tab4 += global_print_config->tab3;
 
+
+  /* find the directory with the eps files for the various models.  */
+  if ( (global_print_config->eps_dir=getenv("WCALC_DATADIR")) == NULL) {
+    global_print_config->eps_dir=WCALC_DATADIR;
+  }
+
+#ifdef WIN32
+  global_print_config->dir_sep='\\';
+#else
+  global_print_config->dir_sep='/';
+#endif
+
+#ifdef DEBUG
+  g_print("print.c:global_printer_init():  Set eps_dir=\"%s\"\n",
+	  global_print_config->eps_dir);
+#endif
 }
 
 /* the main print dialog box */
@@ -152,7 +168,11 @@ void print_popup(gpointer data,
   stop_sig=1;
 
   if (first_time){
+#ifdef WIN32
+    where_print=PRINT_TO_FILE;
+#else
     where_print=PRINT_TO_PRINTER;
+#endif
     print_cmd = g_string_new("lpr");
     print_file = g_string_new("wcalc.ps");
     first_time = 0;
@@ -227,9 +247,12 @@ void print_popup(gpointer data,
 
 
   button = gtk_radio_button_new_with_label (NULL, "Printer");
+  /* we don't support printing to printers yet in win32 */
+#ifndef WIN32
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(to_printer_pressed),
 		     NULL);
+#endif
   gtk_table_attach_defaults (GTK_TABLE(table), button, 1, 2, 0, 1);
   if (where_print == PRINT_TO_PRINTER)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);

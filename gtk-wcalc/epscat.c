@@ -1,4 +1,4 @@
-/* $Id: epscat.c,v 1.1 2001/10/05 00:57:25 dan Exp $ */
+/* $Id: epscat.c,v 1.1 2001/10/17 01:15:19 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -42,11 +42,13 @@
 #include <string.h>
 #endif
 
+#include "alert.h"
+#include "epscat.h"
 
 #define MAXLINELEN 80
 #define FIELDSEP " \t=\n"
 
-int eps_isps(FILE *fp)
+static int eps_isps(FILE *fp)
 {
   char line[MAXLINELEN+1];
   
@@ -54,12 +56,10 @@ int eps_isps(FILE *fp)
    * make sure its postscript 
    */
   if ( fgets(line,MAXLINELEN,fp) == NULL ) {
-    printf("Could not read first line");
     return -1;
   }
 
   if ( strncmp("%!PS",line,4) != 0) {
-    printf("NOT Postscript\n");
     return -1;
   }
   
@@ -69,24 +69,18 @@ int eps_isps(FILE *fp)
   return 0;
 }
 
-int eps_bbox(char *fname,int bbox[])
+static int eps_bbox(FILE *fp,int bbox[])
 {
-  FILE *fp;
   char line[MAXLINELEN+1];
   char *tok;
   char *p;
   int i;
 
-  if ( (fp = fopen(fname,"r")) == NULL){
-    fprintf(stderr,"eps_bbox:  could not open \"%s\"\n",fname);
-    exit(1);
-  }
-  
   /* 
    * make sure its postscript 
    */
   if ( eps_isps(fp) != 0 ) {
-    printf("NOT Postscript\n");
+    alert("epscat.c:eps_bbox():  NOT Postscript\n");
     return -1;
   }
 
@@ -98,46 +92,75 @@ int eps_bbox(char *fname,int bbox[])
     p = fgets(line,MAXLINELEN,fp);
   }
   if ( p == NULL ) {
-    printf("No BoundingBox found (are you sure this is EPS?)\n");
-    fclose(fp);
     return -1;
   }
   tok = strtok(line," \t");
   for (i=0 ; i<4 ; i++) {
     tok = strtok(NULL," \t");
     if (tok == NULL) {
-      printf("Error reading BoundingBox data\n");
-      fclose(fp);
       return -1;
     }
     bbox[i] = atoi(tok);
   }
 
-  fclose(fp);
-
   return 0;
 }
 
-int eps_cat(char *fname)
+/*
+ * open the EPS file in 'fname', wrap it in our EPS wrapper
+ * and print it to 'ofp'
+ */
+
+int eps_cat(char *fname, FILE *ofp)
 {
   FILE *fp;
   char line[MAXLINELEN+1];
   char *p;
   int c;
+  int bbox[4];
 
   if ( (fp = fopen(fname,"r")) == NULL){
-    fprintf(stderr,"eps_cat:  could not open \"%s\"\n",fname);
-    exit(1);
+    alert("Could not open EPS file:\"%s\"\n",fname);
+    return -1;
   }
   
   /* 
    * make sure its postscript 
    */
   if ( eps_isps(fp) != 0 ) {
-    printf("NOT Postscript\n");
+    alert("\"%s\" is NOT a Postscript file!\n",fname);
+    fclose(fp);
     return -1;
   }
 
+  /* 
+   * extract the bounding box
+   */
+  if ( eps_bbox(fp,bbox) != 0 ) {
+    alert("Could not find BoundingBox in \"%s\"\n",fname);
+    fclose(fp);
+    return -1;
+  }
+
+
+  /* 
+   * Print our EPS wrapper header
+   */
+  fprintf(ofp,"%% We are currently where the top center of the figure should be.\n");
+  fprintf(ofp,"%% First figure out where the text will be when we continue\n");
+  fprintf(ofp,"%% after the figure\n");
+  fprintf(ofp,"%%\n");
+  fprintf(ofp,"currentpoint %d %d sub sub\n",bbox[3],bbox[1]);
+  fprintf(ofp,"gsave\n");
+  fprintf(ofp,"currentpoint pop %d %d add 2 div sub\n",bbox[0],bbox[2]);
+
+  fprintf(ofp,"currentpoint exch pop %d sub \n",bbox[3]);
+  fprintf(ofp,"translate\n");
+  fprintf(ofp,"%%\n");
+  fprintf(ofp,"%%include the EPS file\n");
+  fprintf(ofp,"%%\n");
+  fprintf(ofp,"BEGINEPSFILE\n");
+  fprintf(ofp,"\n");
 
   /* 
    * spit out the file eating any
@@ -151,7 +174,7 @@ int eps_cat(char *fname)
       p++;
       *p = '\0';
       if ( strncmp("%%PageBoundingBox:",line,18) != 0){
-	fputs(line,stdout);
+	fputs(line,ofp);
       }
       p = line;
     }
@@ -164,33 +187,18 @@ int eps_cat(char *fname)
   if ( (p > line) &&
        (strncmp("%%PageBoundingBox:",line,18) != 0) ) {
     *p = '\0';
-    fputs(line,stdout);
+    fputs(line,ofp);
   }
+
+  /* 
+   * Print our EPS wrapper footer
+   */
+  fprintf(ofp,"\n");
+  fprintf(ofp,"ENDEPSFILE\n");
+  fprintf(ofp,"grestore\n");
+  fprintf(ofp,"moveto\n");
   
-  return 0;
-}
-
-
-int main(int argc, char **argv)
-{
-  int bbox[4];
-
   
-  if (argc == 1)
-    eps_bbox("microstrip.eps",bbox);
-  else
-    eps_bbox(argv[1],bbox);
-
-  printf("BoundingBox = (%d, %d) (%d, %d)\n",
-	 bbox[0],
-	 bbox[1],
-	 bbox[2],
-	 bbox[3]);
-
-  if (argc == 1)
-    eps_cat("microstrip.eps");
-  else
-    eps_cat(argv[1]);
-
+  fclose(fp);
   return 0;
 }

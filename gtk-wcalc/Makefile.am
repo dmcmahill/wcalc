@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/12 22:36:13 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/17 00:54:07 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -41,6 +41,8 @@ wcalc_SOURCES = \
 	alert.c \
 	air_coil_gui.c \
 	air_coil_gui.h \
+	epscat.c \
+	epscat.h \
 	files.c \
 	files.h \
 	menus.c \
@@ -57,7 +59,7 @@ wcalc_SOURCES = \
 
 EXTRA_DIST=	icon_bitmap
 
-INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
+INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
 
 wcalc_LDADD = ../libwcalc/libwcalc.la
 wcalc_LDFLAGS = @GTK_LIBS@  
