@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.3 2001/10/17 03:41:51 dan Exp $
+## $Id: Makefile.am,v 1.4 2001/10/18 03:23:31 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -42,8 +42,8 @@
 pkgimgdatadir= @HTMLDIR@
 pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
 
-
-SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html
+# the include= is a ':' seperated search path for SSI directives
+SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(srcdir)
 
 SHTML_IN=	\
 	about.shtml \
@@ -72,7 +72,7 @@ PNGS=\
 	screen2.png
 
 BUILT_SOURCES = ${HTML_OUT}
-EXTRA_DIST=	${BUILT_SOURCES} ${INCL_FILES} ${PNGS}
+EXTRA_DIST=	${BUILT_SOURCES} ${SHTML_IN} ${INCL_FILES} ${PNGS}
 
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}

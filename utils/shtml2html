@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# $Id: shtml2html,v 1.2 2001/10/16 04:14:44 dan Exp $
+# $Id: shtml2html,v 1.3 2001/10/16 04:26:35 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -43,8 +43,24 @@
 
 
 BEGIN {
-  
+    start=1;
+# make sure this is open for when we close it in END
+    printf("") > "/dev/stderr";
 } 
+
+# hack becasue command line variable assignments don't show up until
+# _after_ BEGIN
+start==1 {
+    if (include == "") {
+	include = "." ;
+    }
+    else {
+	include=(".:" include);
+    }
+    npaths=split(include,includepath,":");
+    for (i=1; i<= npaths; i=i+1) { printf("includepath[%d] = \"%s\"\n",i,includepath[i]);}
+    start=0;
+}
 
 {
   line=$0;
@@ -63,9 +79,37 @@ BEGIN {
     file = gensub(/(.*)virtual=\"([^\"]*)\"(.*)/,"\\2",1,cmd);
 
     if ( file != cmd) {
-      #printf("[%s]",file) > "/dev/stderr";
-      while ( getline < file ){ print; }
-      close(file);
+# make sure we can read the file
+	fileok=0;
+	for (i=1; i<= npaths; i=i+1) {
+	    if (includepath[i] == "") {
+# this is the case where include=foo::bar (ie a blank entry)
+		filepath =  file;
+	    }
+	    else {
+		filepath = includepath[i] "/" file;
+	    }
+	    if ( (getline < filepath) < 0 ) {
+#		printf("unable to process include of \"%s\": %s\n", \
+#		       filepath,ERRNO) > "/dev/stderr";
+		close(filepath);
+	    }
+	    else {
+		close(filepath);
+		fileok=1;
+		break;
+	    }
+	}
+	if (fileok) {
+#printf("[%s]",file) > "/dev/stderr";
+	    while ( getline < filepath ){ print; }
+	    close(filepath);
+	}
+	else {
+	    printf("unable to process include of \"%s\"\n", \
+		   file) > "/dev/stderr";
+	    exit 1;
+	}
     }
     else {
       printf("ERROR:  could not find the file name in the directive\n") \
