@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/05 00:08:49 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/10 02:31:59 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -40,6 +40,6 @@ libsci_wcalc_la_SOURCES = \
 	libsci_wcalc.c \
 	sci_air_coil.c 
 
-LDADD = ../libwcalc/libwcalc.la
+libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines
