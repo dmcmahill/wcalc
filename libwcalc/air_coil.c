@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.9 2004/08/28 05:24:18 dan Exp $ */
+/* $Id: air_coil.c,v 1.10 2004/08/31 21:38:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -175,7 +175,9 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
     coil->fill = coil->len/INCH2M(lmin);
   }
 
-  if(coil->fill < 1.0){
+
+  /* if the flag is not CALC_ALL, coil->fill will be 1.0 +/- machine precision */
+  if( (flag == CALC_ALL) && (coil->fill < 1.0) ) {
       alert("WARNING:  the specified value of N=%g is\n"
 	    "too high.  You CAN NOT fit the desired\n"
 	    "number of turns into the given length.\n"
