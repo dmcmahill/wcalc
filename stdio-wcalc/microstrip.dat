@@ -1,4 +1,4 @@
-# $Id: microstrip.dat,v 1.1 2004/08/03 02:03:20 dan Exp $
+# $Id: microstrip.dat,v 1.2 2004/08/03 21:10:30 dan Exp $
 #
 # microstrip test data
 #
@@ -11,6 +11,35 @@
 
 * Microstrip calculation
 microstrip_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
+
+*************** Table 6.5 From Rosloniec ************
+*
+*
+* Z0 = 30 Ohms, Keff = 2.228
+microstrip_calc 5.678e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e6
+* Z0 = 30 Ohms, Keff = 2.299
+microstrip_calc 5.558e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e10
+* Z0 = 30 Ohms, Keff = 7.042
+microstrip_calc 2.395e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e6
+* Z0 = 30 Ohms, Keff = 7.772
+microstrip_calc 2.201e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e10
+* Z0 = 50 Ohms, Keff = 2.122
+microstrip_calc 2.762e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e6
+* Z0 = 50 Ohms, Keff = 2.177
+microstrip_calc 2.705e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e10
+* Z0 = 50 Ohms, Keff = 6.448
+microstrip_calc 0.961e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e6
+* Z0 = 50 Ohms, Keff = 6.972
+microstrip_calc 0.877e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e10
+* Z0 = 75 Ohms, Keff = 2.033
+microstrip_calc 1.379e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e6
+* Z0 = 75 Ohms, Keff = 2.073
+microstrip_calc 1.352e-3 1e-3 1.0 3e-5 1.72e-6 0.0 2.55 0.0 1e10
+* Z0 = 75 Ohms, Keff = 6.067
+microstrip_calc 0.339e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e6
+* Z0 = 75 Ohms, Keff = 6.431
+microstrip_calc 0.307e-3 1e-3 1.0 3e-5 1.72e-6 0.0 9.60 0.0 1e10
+
 
 *************** From LineCalc ************
 * w=0.6mm, L=100mm, H=0.6mm, Tmet=0.025mm, rough=25.4e-6mm

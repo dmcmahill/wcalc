@@ -1,4 +1,4 @@
-# $Id: stripline.dat,v 1.1 2004/08/03 02:03:20 dan Exp $
+# $Id: stripline.dat,v 1.2 2004/08/03 21:10:30 dan Exp $
 #
 # stripline test data
 #
@@ -9,6 +9,68 @@
 
 * Stripline calculation
 stripline_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
+
+
+*************** Table 6.3 in Rosloniec ************
+*
+* Table 6.3 in Rosloniec gives results using the exact
+* 0 thickness equation and the aproximate equation that
+* accounts for metal thickness, but still with tmet=0
+*
+* 30.00 Ohms
+stripline_calc 3.049e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 2.55 0.001 1e9
+* 29.89 Ohms
+stripline_calc 3.049e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 2.55 0.001 1e9
+*
+*
+* 30.00 Ohms
+stripline_calc 1.088e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 10.2 0.001 1e9
+* 29.99 Ohms
+stripline_calc 1.088e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 10.2 0.001 1e9
+*
+*
+* 50.00 Ohms
+stripline_calc 1.478e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 2.55 0.001 1e9
+* 49.95 Ohms
+stripline_calc 1.478e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 2.55 0.001 1e9
+*
+*
+* 50.00 Ohms
+stripline_calc 0.357e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 10.2 0.001 1e9
+* 50.03 Ohms
+stripline_calc 0.357e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 10.2 0.001 1e9
+*
+*
+* 75.00 Ohms
+stripline_calc 0.708e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 2.55 0.001 1e9
+* 75.03 Ohms
+stripline_calc 0.708e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 2.55 0.001 1e9
+*
+*
+* 75.00 Ohms
+stripline_calc 0.094e-3 2.0e-3 1.0 0.0  1.72e-8 0.0 10.2 0.001 1e9
+* 75.06 Ohms
+stripline_calc 0.094e-3 2.0e-3 1.0 2e-6 1.72e-8 0.0 10.2 0.001 1e9
+*
+*
+
+
+*************** Table 6.4 in Rosloniec ************
+*
+*
+* 30.00 Ohms
+stripline_calc 2.933e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 2.55  0.001 1e9
+* 30.00 Ohms
+stripline_calc 1.060e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 10.20 0.001 1e9
+* 50.00 Ohms
+stripline_calc 1.397e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 2.55  0.001 1e9
+* 50.00 Ohms
+stripline_calc 0.335e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 10.20 0.001 1e9
+* 75.00 Ohms
+stripline_calc 0.643e-3 2.0e-3 1.0 1e-5 1.72e-8 0.0 2.55  0.001 1e9
+* 75.00 Ohms
+stripline_calc 0.075e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 10.20 0.001 1e9
+
 
 
 *************** From LineCalc ************
