@@ -1,4 +1,4 @@
-<!-- $Id$ -->
+<!-- $Id: ic_microstrip.html,v 1.1 2001/09/12 23:51:49 dan Exp $ -->
 
 <!--
  * Copyright (c) 2001 Dan McMahill
@@ -34,6 +34,8 @@
  -->
 
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
 <HEAD>
 <TITLE>Integrated Circuit Microstrip Analysis</TITLE>
 <!-- Created by: Dan McMahill, 2001/09/08 -->
@@ -61,42 +63,43 @@ integrated circuit microstrip
 <TABLE>
 <TR ALIGN="CENTER">
 <TD><IMG SRC="/cad/ic_microstrip.png" WIDTH=429 HEIGHT=212 
-     ALT="[IC Microstrip Cross-section]">
+     ALT="[IC Microstrip Cross-section]"></TD>
 </TR>
 <TR ALIGN="CENTER">
 <TD><IMG SRC="/cad/ic_microstrip_model.png" WIDTH=313 HEIGHT=141
-     ALT="[IC Microstrip Circuit Model]">
+     ALT="[IC Microstrip Circuit Model]"></TD>
 
 <TR ALIGN="CENTER">
 <TD>
 
 <TABLE>
 <TR>
-<TD>Lmis =
-<TD><@g@Lmis*1e6@>
-<TD>[pH/um]
+<TD>Lmis =</TD>
+<TD><@g@Lmis*1e6@></TD>
+<TD>[pH/um]</TD>
 </TR>
 <TR>
-<TD>Rmis =
-<TD><@g@Rmis*1e-6@>
-<TD>[ohm/um]
+<TD>Rmis =</TD>
+<TD><@g@Rmis*1e-6@></TD>
+<TD>[ohm/um]</TD>
 </TR>
 <TR>
-<TD>Cmis =
-<TD><@g@Cmis*1e9@>
-<TD>[fF/um]
+<TD>Cmis =</TD>
+<TD><@g@Cmis*1e9@></TD>
+<TD>[fF/um]</TD>
 </TR>
 <TR>
-<TD>Gmis =
-<TD><@g@Gmis*1e-6@>
-<TD>[(ohm-cm)^-1]
+<TD>Gmis =</TD>
+<TD><@g@Gmis*1e-6@></TD>
+<TD>[(ohm-cm)^-1]</TD>
 </TR>
 <TR>
-<TD>Z0 =
-<TD><@g@Ro@> + j <@g@Xo@>
-<TD>[ohm]
+<TD>Z0 =</TD>
+<TD><@g@Ro@> + j <@g@Xo@></TD>
+<TD>[ohm]</TD>
 </TR>
 </TABLE>  <!-- end of model parameter table -->
+</TD>
 </TR>
 
 </TABLE>  <!-- end left hand 1/2 of main table -->
@@ -104,64 +107,64 @@ integrated circuit microstrip
 <TD>
 <TABLE>
 <TR>
-<TD>Metal width
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>">
-<TD>[um]
-<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc">
+<TD>Metal width</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
+<TD>[um]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
 </TR>
 
 <TR>
-<TD>Substrate thickness
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>">
-<TD>[um]
-<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc">
+<TD>Substrate thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
+<TD>[um]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
 </TR>
 
 <TR>
-<TD>Substrate relative dielectric constant
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>">
-<TD>
+<TD>Substrate relative dielectric constant</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD></TD>
 </TR>
 
 <TR>
-<TD>Substrate resistivity
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhos" VALUE="<@g@rhos@>">
-<TD>[ohm-cm]
+<TD>Substrate resistivity</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhos" VALUE="<@g@rhos@>"></TD>
+<TD>[ohm-cm]</TD>
 </TR>
 
 <TR>
-<TD>Oxide thickness
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@tox@>">
-<TD>[um]
-<TD><INPUT TYPE="SUBMIT" NAME="synth_tox" VALUE="calc">
+<TD>Oxide thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@tox@>"></TD>
+<TD>[um]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_tox" VALUE="calc"></TD>
 </TR>
 
 <TR>
-<TD>Oxide relative dielectric constant
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@eox@>">
-<TD> 
+<TD>Oxide relative dielectric constant</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@eox@>"></TD>
+<TD> </TD>
 </TR>
 
 <TR>
-<TD>Metal thickness
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>">
-<TD>[um]
+<TD>Metal thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
+<TD>[um]</TD>
 </TR>
 
 <TR>
-<TD>Frequency
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>">
-<TD>[MHz]
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>"></TD>
+<TD>[MHz]</TD>
 </TR>
 
 <TR>
 <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
-<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
 </TR>
 <TR>
-<TD>Characteristic Resistance
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>">
-<TD>[ohms]
+<TD>Characteristic Resistance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"></TD>
+<TD>[ohms]</TD>
 </TABLE>
 
 </TR>
