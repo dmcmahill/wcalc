@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: air_coil.shtml,v 1.4 2002/01/19 02:23:37 dan Exp $ -->
+<!-- $Id: air_coil.shtml,v 1.5 2002/05/10 22:49:34 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -38,10 +38,7 @@ stripline synthesis,
     
     <font face="helvetica, arial">
     <HR>
-    <H2 ALIGN="CENTER">Notes Regarding the Calculations</H1>
-    <P>
-    The primary reference used for these calculations is
-    </P>
+    <H2><A NAME="References">Selected References</A></H2>
     <OL>
     <LI>Geffe, Philip R. "The Design of Single-Layer Solenoids
     for RF Filters," Microwave Journal, Vol 39, No 12,
