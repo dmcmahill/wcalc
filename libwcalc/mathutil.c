@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.2 2001/09/12 03:52:01 dan Exp $ */
+/* $Id: mathutil.c,v 1.1 2001/10/05 00:37:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -320,7 +320,7 @@ complex c_log(complex x)
 }
 
 /*
- * Bessel functions
+ * Bessel functions.  Complex Arguments
  */
 
 
@@ -613,6 +613,296 @@ complex c_bessel_Y1(complex x)
   return (Y1);
 }
 
+
+/*
+ * Bessel functions with real arguments
+ */
+
+/* 
+ * Bessel function of the first kind, order 0, real arguments 
+ *
+ * This function is based on the approximation given in section 9.4.1
+ * and 9.4.3 of Abramowitz and Stegun
+ *
+ */
+double bessel_J0(double x)
+{
+  double x2;
+  double J0;
+  double f0, t0;
+
+  if (fabs(x) <= 3.0){
+    /* find (x/3)^2 */
+    x2 = x/3.0;
+
+    x2 = x2*x2;
+    
+    J0 = 0.0002100;
+    J0 = J0*x2 + -0.0039444;
+    J0 = J0*x2 +  0.0444479;
+    J0 = J0*x2 + -0.3163866;
+    J0 = J0*x2 +  1.2656208;
+    J0 = J0*x2 + -2.2499997;
+    J0 = J0*x2 +  1.0000000;
+  }
+  else{
+    
+    if (x < 0){
+      x = -x;
+    }
+    x2 = 3.0/x;
+
+    f0 = 0.00014476;
+    f0 = f0*x2 + -0.00072805;
+    f0 = f0*x2 +  0.00137237;
+    f0 = f0*x2 + -0.00009512;
+    f0 = f0*x2 + -0.00552740;
+    f0 = f0*x2 + -0.00000077;
+    f0 = f0*x2 +  0.79788456;
+    
+    t0 = 0.00013558;
+    t0 = t0*x2 + -0.00029333;
+    t0 = t0*x2 + -0.00054125;
+    t0 = t0*x2 +  0.00262373;
+    t0 = t0*x2 + -0.00003954;
+    t0 = t0*x2 + -0.04166397;
+    t0 = t0*x2 + -0.78539816;
+
+    t0 = x + t0;
+
+    J0 = f0 * cos(t0);
+    J0 = J0 / sqrt(x);
+
+  }
+  return (J0);
+}
+
+
+/* 
+ * Bessel function of the second kind, order 0, real arguments 
+ *
+ * This function is based on the approximation given in section 9.4.2
+ * and 9.4.3 of Abramowitz and Stegun
+ *
+ */
+double bessel_Y0(double x)
+{
+  double x2;
+  double Y0;
+  double f0, t0;
+
+  if (fabs(x) <= 3.0){
+    /* find (x/3)^2 */
+    x2 = x / 3.0;
+    x2 = x2 * x2;
+    
+    /* the polynomial in (x/3)^2 */
+    Y0 = -0.00024846;
+    Y0 = Y0*x2 +  0.00427916;
+    Y0 = Y0*x2 + -0.04261214;
+    Y0 = Y0*x2 +  0.25300117;
+    Y0 = Y0*x2 + -0.74350384;
+    Y0 = Y0*x2 +  0.60559366;
+    Y0 = Y0*x2 +  0.36746691;
+
+    /* the extra added term in front */
+    x2 = log(0.5*fabs(x));
+    x2 = (2.0/M_PI) * x2;
+    x2 = x2 * bessel_J0(x);
+
+    Y0 = x2 + Y0;
+
+  }
+  else{
+
+    if (x < 0){
+      x = -x;
+    }
+    x2 = 3.0/x;
+
+    f0 = 0.00014476;
+    f0 = f0*x2 + -0.00072805;
+    f0 = f0*x2 +  0.00137237;
+    f0 = f0*x2 + -0.00009512;
+    f0 = f0*x2 + -0.00552740;
+    f0 = f0*x2 + -0.00000077;
+    f0 = f0*x2 +  0.79788456;
+    
+    t0 = 0.00013558;
+    t0 = t0*x2 + -0.00029333;
+    t0 = t0*x2 + -0.00054125;
+    t0 = t0*x2 +  0.00262373;
+    t0 = t0*x2 + -0.00003954;
+    t0 = t0*x2 + -0.04166397;
+    t0 = t0*x2 + -0.78539816;
+
+    t0 = x + t0;
+
+    Y0 = f0 * sin(t0);
+
+    Y0 = Y0 / sqrt(x);
+
+  }
+  return (Y0);
+}
+
+/* 
+ * Bessel function of the first kind, order 1, real arguments 
+ *
+ * This function is based on the approximation given in section 9.4.4
+ * and 9.4.6 of Abramowitz and Stegun
+ *
+ */
+double bessel_J1(double x)
+{
+  double x2;
+  double J1;
+  double f1, t1;
+  int neg=0;
+
+  if (fabs(x) <= 3.0){
+    /* find (x/3)^2 */
+    x2 = x / 3.0;
+    x2 = x2 * x2;
+    
+    J1 = 0.00001109;
+    J1 = J1*x2 + -0.00031761;
+    J1 = J1*x2 +  0.00443319;
+    J1 = J1*x2 + -0.03954289;
+    J1 = J1*x2 +  0.21093573;
+    J1 = J1*x2 + -0.56249985;
+    J1 = J1*x2 +  0.50000000;
+
+    J1 = x*J1;
+  }
+  else{
+
+    if (x < 0){
+      x = -x;
+      neg = 1;
+    }
+
+    x2 = 3.0/x;
+
+    f1 = -0.00020033;
+    f1 = f1*x2 +  0.00113653;
+    f1 = f1*x2 + -0.00249511;
+    f1 = f1*x2 +  0.00017105;
+    f1 = f1*x2 +  0.01659667;
+    f1 = f1*x2 +  0.00000156;
+    f1 = f1*x2 +  0.79788456;
+    
+    t1 = -0.00029166;
+    t1 = t1*x2 +  0.00079824;
+    t1 = t1*x2 +  0.00074348;
+    t1 = t1*x2 + -0.00637879;
+    t1 = t1*x2 +  0.00005650;
+    t1 = t1*x2 +  0.12499612;
+    t1 = t1*x2 + -2.35619449;
+
+    t1 = x + t1;
+
+    J1 = f1 * cos(t1);
+    J1 = J1 / sqrt(x);
+
+    if(neg)
+      J1 = -J1;
+
+  }
+  return (J1);
+}
+
+/* 
+ * Bessel function of the second kind, order 1, real arguments 
+ *
+ * This function is based on the approximation given in section 9.4.5
+ * and 9.4.6 of Abramowitz and Stegun
+ *
+ */
+double bessel_Y1(double x)
+{
+  double x2;
+  double Y1;
+  double f1, t1;
+
+  if (fabs(x) <= 3.0){
+    /* find (x/3)^2 */
+    x2 = x / 3.0;
+    x2 = x2 * x2;
+    
+    /* the polynomial in (x/3)^2 */
+    Y1 = 0.0027873;
+    Y1 = Y1*x2 + -0.0400976;
+    Y1 = Y1*x2 +  0.3123951;
+    Y1 = Y1*x2 + -1.3164827;
+    Y1 = Y1*x2 +  2.1682709;
+    Y1 = Y1*x2 +  0.2212091;
+    Y1 = Y1*x2 + -0.6366198;
+
+    /* the extra added term in front */
+    x2 = (2.0/M_PI)*x;
+    x2 = x2*log(0.5*fabs(x));
+    x2 = x2*bessel_J1(x);
+
+    Y1 = x2 + Y1;
+
+    Y1 = Y1 / x;
+    if (x < 0)
+      Y1 = -Y1;
+
+  }
+  else{
+
+    if (x < 0){
+      x = -x;
+    }
+    x2 = 3.0 / x;
+
+    f1 = -0.00020033;
+    f1 = f1*x2 +  0.00113653;
+    f1 = f1*x2 + -0.00249511;
+    f1 = f1*x2 +  0.00017105;
+    f1 = f1*x2 +  0.01659667;
+    f1 = f1*x2 +  0.00000156;
+    f1 = f1*x2 +  0.79788456;
+    
+    t1 = -0.00029166;
+    t1 = t1*x2 +  0.00079824;
+    t1 = t1*x2 +  0.00074348;
+    t1 = t1*x2 + -0.00637879;
+    t1 = t1*x2 +  0.00005650;
+    t1 = t1*x2 +  0.12499612;
+    t1 = t1*x2 + -2.35619449;
+
+    t1 = x + t1;
+
+    Y1 = f1 * sin(t1);
+
+    Y1 = Y1 / sqrt(x);
+
+  }
+  return (Y1);
+}
+
+/*
+ * derivatives of bessel functions
+ */
+
+double bessel_J1p(double x)
+{
+  double y;
+  y = bessel_J0(x) - bessel_J1(x)/x;
+
+  return y;
+}
+
+double bessel_Y1p(double x)
+{
+  double y;
+  y = bessel_Y0(x) - bessel_Y1(x)/x;
+
+  return y;
+}
 
 /*
  * Hankel functions

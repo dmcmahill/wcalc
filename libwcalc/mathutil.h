@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.4 2001/09/18 20:42:53 dan Exp $ */
+/*      $Id: mathutil.h,v 1.1 2001/10/05 00:37:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -103,11 +103,21 @@ complex c_coth(complex x);
 /* logarithm */
 complex c_log(complex x);
 
-/* Bessel functions */
+/* Bessel functions of complex arguments */
 complex c_bessel_J0(complex x);
 complex c_bessel_J1(complex x);
 complex c_bessel_Y0(complex x);
 complex c_bessel_Y1(complex x);
+
+/* Bessel functions of real arguments */
+double bessel_J0(double x);
+double bessel_J1(double x);
+double bessel_Y0(double x);
+double bessel_Y1(double x);
+
+/* Derivatives of Bessel functions of real arguments */
+double bessel_J1p(double x);
+double bessel_Y1p(double x);
 
 /* Hankel functions */
 complex c_hankel0_1(complex x);
