@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.25 2003/03/03 03:25:20 dan Exp $
+## $Id: Makefile.am,v 1.26 2004/08/11 13:04:39 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -157,7 +157,8 @@ load_wcalc.sce:	load_wcalc.sce.in
 test_wcalc.sce:	load_wcalc.sce.in
 	sed     -e "s;@libpath@;`pwd`/.libs/;g" \
 		-e "s;@demopath@;`pwd`/;g" \
-		-e "s;@manpath@;`pwd`;g" $< > $@
+		-e "s;@manpath@;`pwd`;g" \
+		-e "s;${pkglibexecdir}/load_wcalc.sce;`pwd`/test_wcalc.sce;g" $< > $@
 	@echo "****************************************************"
 	@echo "* To test the scilab interface before installation *"
 	@echo "* execute the file \"test_wcalc.sce\" from within    *"
