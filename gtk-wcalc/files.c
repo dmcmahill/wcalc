@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.4 2001/11/12 04:23:48 dan Exp $ */
+/* $Id: files.c,v 1.5 2001/11/12 12:41:11 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -93,7 +93,7 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
 
   /* actually do the save (model dependent) */
   if (wcalc->save != NULL){
-    wcalc->save(wcalc,fp,fname);
+    wcalc->save(wcalc,fp,wcalc->file_name);
   }
   else{
     g_print("files.c:file_ok_sel():  no ->save function available for"
