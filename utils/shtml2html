@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# $Id: shtml2html,v 1.5 2001/10/23 01:04:43 dan Exp $
+# $Id: shtml2html,v 1.6 2002/05/10 22:53:09 dan Exp $
 #
 # Copyright (c) 2001, 2002 Dan McMahill
 # All rights reserved.
@@ -62,13 +62,14 @@ start==1 {
 }
 
 {
-  line=$0;
   
+  line=$0;
 
   if (line ~ /<\!--\#include.*-->/){
 # print the part of the line before the #include
     pre = gensub(/(.*)<\!--\#include.*-->/,"\\1",1,line);
-    printf("%s",pre);
+    pre = sf(pre);
+    printf("%s", pre);
 
 # pick out just the <!--#include ...... --> part
     cmd = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\2",1,line);
@@ -101,7 +102,7 @@ start==1 {
 	}
 	if (fileok) {
 #printf("[%s]",file) > "/dev/stderr";
-	    while ( getline < filepath ){ print; }
+	    while ( getline < filepath ){ print sf($0); }
 	    close(filepath);
 	}
 	else {
@@ -120,16 +121,31 @@ start==1 {
     #printf("\n") > "/dev/stderr";
 
     post = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\3",1,line);
+    post = sf(post);
     printf("%s\n",post);
 
   }
   else{
-    print;
+    print sf($0);
   }
 }
 
 
 END {
   close("/dev/stderr");
+}
+
+function sf(line) {
+
+# process the <SOURCEFORGE> tags
+  if( sourceforge == 1 ) {
+    gsub(/<SOURCEFORGE>/, "", line);
+    gsub(/<\/SOURCEFORGE>/, "", line);
+  } else {
+    gsub(/<SOURCEFORGE>/, "<!--", line);
+    gsub(/<\/SOURCEFORGE>/, "-->", line);
+  }
+
+  return(line);
 }
 
