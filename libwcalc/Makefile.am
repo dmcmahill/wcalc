@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.2 2001/10/05 01:29:39 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -37,12 +37,21 @@ lib_LTLIBRARIES = libwcalc.la
 
 libwcalc_la_SOURCES = \
 	air_coil.c \
+	air_coil.h \
 	air_coil_loadsave.c \
+	air_coil_loadsave.h \
 	coupled_microstrip.c \
+	coupled_microstrip.h \
 	ic_microstrip.c \
+	ic_microstrip.h \
 	mathutil.c \
+	mathutil.h \
 	microstrip.c \
+	microstrip.h \
 	misc.c \
-	stripline.c
+	misc.h \
+	physconst.h \
+	stripline.c \
+	stripline.h
 
 INCLUDES = -I$(top_srcdir)/include

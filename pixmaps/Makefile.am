@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/05 02:25:58 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -63,7 +63,7 @@ all:	${PNGS} ${XPMS} ${EPSS} ${EPSC} ${OFILES}
 clean:
 	rm -f *.xpm *.xbm *.gif *.png *.eps *~
 
-.SUFFIXES : .obj .xpm .xbm .gif .png .eps .c
+SUFFIXES = .obj .xpm .xbm .gif .png .eps 
 
 .eps.c :
 	$(EPS2C) fname=$*_eps $*.eps > $*.c
