@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.6 2002/01/03 03:54:45 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.7 2002/01/07 01:24:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -104,114 +104,6 @@ int cgiMain(void){
   /* create the air_coil  */
   coil = air_coil_new();
 
-  /*
-   * extract the parameters from the CGI form and use them to populate
-   * the air_coil structure
-   */
-
-
-  /* Number of turns */
-  if(cgiFormDoubleBounded("N",&N,0.0001,1000.0,defN) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* wire size */
-  if(cgiFormDoubleBounded("AWG",&AWG,0.0001,1000.0,defAWG) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Metal resistivity relative to copper */
-  if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* inside diameter */
-  if(cgiFormDoubleBounded("dia",&dia,0.0001,1000.0,defDIA) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* inside diameter units */
-  if (cgiFormRadio("dia_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-  coil->dia_units = length_units[i].name;
-  coil->dia_sf = length_units[i].sf;
-#ifdef DEBUG
-  fprintf(cgiOut,"<pre>CGI:  dia_units = %s</pre>\n",coil->dia_units);
-#endif
-
-  /* Solenoid length  */
-  if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Solenoid length units */
-  if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-  coil->len_units = length_units[i].name;
-  coil->len_sf = length_units[i].sf;
-#ifdef DEBUG
-  fprintf(cgiOut,"<pre>CGI:  len_units = %s</pre>\n",coil->len_units);
-#endif
-
-  /* Solenoid fill  */
-  if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  if (cgiFormRadio("use_fill",fill_choices,2,&coil->use_fill,0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-      
-  if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-     cgiFormSuccess){
-    input_err=1;
-  }  
-
-  /* Frequency of operation  */
-  if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Frequency of operation units */
-  if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-  coil->freq_units = frequency_units[i].name;
-  coil->freq_sf = frequency_units[i].sf;
-#ifdef DEBUG
-  fprintf(cgiOut,"<pre>CGI:  freq_units = %s</pre>\n",coil->freq_units);
-#endif
-
-  /* Inductance units */
-  if (cgiFormRadio("L_units",units_strings_get(inductance_units),units_size(inductance_units),&i,0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-  coil->L_units = inductance_units[i].name;
-  coil->L_sf = inductance_units[i].sf;
-#ifdef DEBUG
-  fprintf(cgiOut,"<pre>CGI:  L_units = %s</pre>\n",coil->L_units);
-#endif
-
-  /* Desired Inductance */
-  if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
@@ -234,16 +126,9 @@ int cgiMain(void){
     action = LOAD;
   }
 
-#ifdef DEBUG
-  fprintf(cgiOut,"<pre>\n");
-  fprintf(cgiOut,"CGI: --------------- Air_Coil  Analysis -----------\n");
-  fprintf(cgiOut,"CGI: action = %d\n",action);
-  fprintf(cgiOut,"CGI: --------------- ------------------ -----------\n");
-  fprintf(cgiOut,"</pre>\n");
-#endif
-
-
-  if ( (action == RESET) || (action == LOAD) ){
+  
+  if ( (action == RESET) || (action == LOAD) ) {
+    /*
     N     = defN;
     AWG   = defAWG;
     rho   = defRHO;
@@ -251,23 +136,138 @@ int cgiMain(void){
     len   = defLEN;
     L     = defIND;
     freq  = defFREQ;
-    coil->fill = defFILL;
+    coil->fill = defFILL; */
   }
 
+  else {
+    /*
+     * extract the parameters from the CGI form and use them to populate
+     * the air_coil structure
+     */
+    
 
-  /* copy data over to the coil structure */
-  coil->Nf   = N;
-  coil->AWGf = AWG;
-  coil->rho  = rho*coil->rho_sf;
-  coil->dia  = dia*coil->dia_sf;
-  coil->len  = len*coil->len_sf;
-  coil->L    = L*coil->L_sf;
-  coil->freq = freq*coil->freq_sf;
+    /* Number of turns */
+    if(cgiFormDoubleBounded("N",&N,0.0001,1000.0,defN) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    
+    /* wire size */
+    if(cgiFormDoubleBounded("AWG",&AWG,0.0001,1000.0,defAWG) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    
+    /* Metal resistivity relative to copper */
+    if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    
+    /* inside diameter */
+    if(cgiFormDoubleBounded("dia",&dia,0.0001,1000.0,defDIA) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    
+    /* inside diameter units */
+    if (cgiFormRadio("dia_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
+	cgiFormSuccess){
+      input_err=1;
+    }
+    coil->dia_units = length_units[i].name;
+    coil->dia_sf = length_units[i].sf;
+#ifdef DEBUG
+    fprintf(cgiOut,"<pre>CGI:  dia_units = %s</pre>\n",coil->dia_units);
+#endif
+    
+    /* Solenoid length  */
+    if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    
+    /* Solenoid length units */
+    if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
+	cgiFormSuccess){
+      input_err=1;
+    }
+    coil->len_units = length_units[i].name;
+    coil->len_sf = length_units[i].sf;
+#ifdef DEBUG
+    fprintf(cgiOut,"<pre>CGI:  len_units = %s</pre>\n",coil->len_units);
+#endif
+
+    /* Solenoid fill  */
+    if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    if (cgiFormRadio("use_fill",fill_choices,2,&coil->use_fill,0) !=
+	cgiFormSuccess){
+      input_err=1;
+    }
+      
+    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
+       cgiFormSuccess){
+      input_err=1;
+    }  
+
+    /* Frequency of operation  */
+    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Frequency of operation units */
+    if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
+	cgiFormSuccess){
+      input_err=1;
+    }
+    coil->freq_units = frequency_units[i].name;
+    coil->freq_sf = frequency_units[i].sf;
+#ifdef DEBUG
+    fprintf(cgiOut,"<pre>CGI:  freq_units = %s</pre>\n",coil->freq_units);
+#endif
+
+    /* Inductance units */
+    if (cgiFormRadio("L_units",units_strings_get(inductance_units),units_size(inductance_units),&i,0) !=
+	cgiFormSuccess){
+      input_err=1;
+    }
+    coil->L_units = inductance_units[i].name;
+    coil->L_sf = inductance_units[i].sf;
+#ifdef DEBUG
+    fprintf(cgiOut,"<pre>CGI:  L_units = %s</pre>\n",coil->L_units);
+#endif
+
+    /* Desired Inductance */
+    if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+
+    /* copy data over to the coil structure */
+    coil->Nf   = N;
+    coil->AWGf = AWG;
+    coil->rho  = rho*coil->rho_sf;
+    coil->dia  = dia*coil->dia_sf;
+    coil->len  = len*coil->len_sf;
+    coil->L    = L*coil->L_sf;
+    coil->freq = freq*coil->freq_sf;
+    
+  } 
+  
+
 
 
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
     fprintf(cgiOut,"CGI: --------------- ----- Air Coil ----- -----------\n");
+    fprintf(cgiOut,"CGI: action = %d\n",action);
+    fprintf(cgiOut,"CGI: --------------- -------------------- -----------\n");
     fprintf(cgiOut,"CGI: Number of turns             = %g \n",coil->Nf);
     fprintf(cgiOut,"CGI: Wire Size                   = %g AWG\n",coil->AWGf);
     fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",coil->rho);
