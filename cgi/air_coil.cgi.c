@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.1 2001/09/14 01:59:06 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.2 2001/09/15 02:57:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -43,6 +43,7 @@
 #include "cgic.h"
 #include "air_coil.h"
 #include "air_coil_id.h"
+#include "physconst.h"
 
 #define ACTION_LEN  20
 
@@ -182,14 +183,14 @@ int cgiMain(void){
   coil->Nf     = N      ;
   coil->AWGf   = AWG    ;
   coil->rho    = rho    ;
-  coil->dia    = dia    ;
-  coil->len    = len    ;
+  coil->dia    = INCH2M(dia)    ;
+  coil->len    = INCH2M(len)    ;
 
   /* nH -> H */
   coil->L      = L*1e-9 ;
 
   /* MHz -> MHz */
-  coil->Qfreq  = freq   ;
+  coil->freq  = freq*1e6   ;
 
   /* convert to Hz from MHz */
   freq_Hz = freq * 1.0e6;
@@ -203,8 +204,8 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: Number of turns             = %g \n",coil->Nf);
     fprintf(cgiOut,"CGI: Wire Size                   = %g AWG\n",coil->AWGf);
     fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",coil->rho);
-    fprintf(cgiOut,"CGI: Inside Diameter             = %g inches\n",coil->dia);
-    fprintf(cgiOut,"CGI: Solenoid length             = %g inches\n",coil->len);
+    fprintf(cgiOut,"CGI: Inside Diameter             = %g inches\n",M2INCH(coil->dia));
+    fprintf(cgiOut,"CGI: Solenoid length             = %g inches\n",M2INCH(coil->len));
     fprintf(cgiOut,"CGI: Frequency                   = %g MHz\n",freq_Hz/1e6); 
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"</pre>\n");
@@ -225,14 +226,14 @@ int cgiMain(void){
     air_coil_syn(coil,freq,AIRCOILSYN_NMIN);
     fprintf(cgiOut,"</pre>\n");
     N = coil->Nf;
-    len = coil->len;
+    len = M2INCH(coil->len);
     break;
 
   case SYNTH_NFIX:
     fprintf(cgiOut,"<pre>");
     air_coil_syn(coil,freq,AIRCOILSYN_NFIX);
     fprintf(cgiOut,"</pre>\n");
-    len = coil->len;
+    len = M2INCH(coil->len);
     break;
 
   case LOAD:
