@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.6 2001/09/17 15:27:28 dan Exp $ */
+/* $Id: microstrip.c,v 1.7 2001/09/17 20:45:16 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -583,16 +583,16 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
   switch(flag){
   case MLISYN_W:
     optpar = &(line->w);
-    varmax = 1000.0;
-    varmin = 1.0;
-    var    = 50.0;
+    varmax = 100.0*line->subs->h;
+    varmin = 0.01*line->subs->h;
+    var    = line->subs->h;
     break;
 
   case MLISYN_H:
     optpar = &(line->subs->h);
-    varmax = 1000.0;
-    varmin = 1.0;
-    var    = 62.0;
+    varmax = 100.0*line->w;
+    varmin = 0.01*line->w;
+    var    = line->w;
     break;
 
   case MLISYN_ES:
