@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.16 2004/11/22 22:36:40 dan Exp $ */
+/* $Id: main.c,v 1.17 2004/12/03 04:58:09 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -614,7 +614,7 @@ static void exec_ic_microstrip_syn(double *args)
 }
 
 /* 
- * [z0,keff,loss,deltal] =
+ * [z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] =
  *   microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
  */
 static void exec_microstrip_calc(double *args)
@@ -641,8 +641,9 @@ static void exec_microstrip_calc(double *args)
   } else { 
   
     /* print the outputs */
-    printf("%g %g %g %g\n", line->z0, line->keff,
-	   line->loss, line->deltal);
+    printf("%g %g %g %g %g %g %g %g %g %g %g %g \n", line->z0, line->keff,
+	   line->len, line->loss, line->Ls, line->Rs, line->Cs, line->Gs,
+      line->alpha_c, line->alpha_d, line->deltal, line->skindepth);
   }
 
   /* clean up */
