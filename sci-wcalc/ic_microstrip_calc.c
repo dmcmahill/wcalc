@@ -1,9 +1,9 @@
-/* $Id: ic_microstrip_calc.c,v 1.3 2002/05/10 22:53:04 dan Exp $ */
+/* $Id: ic_microstrip_calc.c,v 1.4 2002/06/12 11:30:37 dan Exp $ */
 
-static char vcid[] = "$Id: ic_microstrip_calc.c,v 1.3 2002/05/10 22:53:04 dan Exp $";
+static char vcid[] = "$Id: ic_microstrip_calc.c,v 1.4 2002/06/12 11:30:37 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: ic_microstrip_calc.c,v 1.3 2002/05/10 22:53:04 dan Ex
 #endif
 
 /*
- * function [z0,L,R,C,G] = 
+ * function [z0,keff,elen,loss,L,R,C,G] = 
  *       ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
  */
 
@@ -70,11 +70,14 @@ static char vcid[] = "$Id: ic_microstrip_calc.c,v 1.3 2002/05/10 22:53:04 dan Ex
 
 /* Output Arguments */
 
-#define	Z0_OUT plhs[0]
-#define	L_OUT  plhs[1]
-#define	R_OUT  plhs[2]
-#define	C_OUT  plhs[3]
-#define	G_OUT  plhs[4]
+#define	Z0_OUT   plhs[0]
+#define	KEFF_OUT plhs[1]
+#define	ELEN_OUT plhs[2]
+#define	LOSS_OUT plhs[3]
+#define	L_OUT    plhs[4]
+#define	R_OUT    plhs[5]
+#define	C_OUT    plhs[6]
+#define	G_OUT    plhs[7]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -127,7 +130,7 @@ void mexFunction(
   unsigned int *ind_rough,*ind_freq;
 
   /* outputs */
-  double	*Ro,*Xo,*Lmis,*Rmis,*Cmis,*Gmis;
+  double	*Ro, *Xo, *keff, *elen, *loss, *Lmis,*Rmis,*Cmis,*Gmis;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -160,9 +163,9 @@ void mexFunction(
 		 " (needs 11).");
   } 
 
-  if (nlhs > 5) {
+  if (nlhs > 8) {
     mexErrMsgTxt("wrong number of output arguments to IC_MICROSTRIP_CALC"
-		 " (needs <= 4).");
+		 " (needs <= 7).");
   }
   
   
@@ -189,6 +192,9 @@ void mexFunction(
 
   /* Create matrices for the return arguments */
   Z0_OUT     = mxCreateDoubleMatrix(rows, cols, mxCOMPLEX);
+  KEFF_OUT   = mxCreateDoubleMatrix(rows, cols, mxCOMPLEX);
+  ELEN_OUT   = mxCreateDoubleMatrix(rows, cols, mxCOMPLEX);
+  LOSS_OUT   = mxCreateDoubleMatrix(rows, cols, mxCOMPLEX);
   L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   R_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   C_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
@@ -197,6 +203,9 @@ void mexFunction(
   /* output pointers */
   Ro   = mxGetPr(Z0_OUT);
   Xo   = mxGetPi(Z0_OUT);
+  keff = mxGetPr(KEFF_OUT);
+  elen = mxGetPr(ELEN_OUT);
+  loss = mxGetPr(LOSS_OUT);
   Lmis = mxGetPr(L_OUT);
   Rmis = mxGetPr(R_OUT);
   Cmis = mxGetPr(C_OUT);
@@ -230,6 +239,9 @@ void mexFunction(
     /* extract the outputs */
     Ro[ind]   = line->Ro;
     Xo[ind]   = line->Xo;
+    keff[ind] = line->keff;
+    elen[ind] = line->len;
+    loss[ind] = line->loss;
     Lmis[ind] = line->Lmis;
     Rmis[ind] = line->Rmis;
     Cmis[ind] = line->Cmis;

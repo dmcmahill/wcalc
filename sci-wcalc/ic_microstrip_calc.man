@@ -1,6 +1,6 @@
-.\" $Id: ic_microstrip_calc.man,v 1.3 2001/11/03 19:21:48 dan Exp $
+.\" $Id: ic_microstrip_calc.man,v 1.4 2004/11/06 01:52:41 dan Exp $
 .\"
-.\" Copyright (c) 2001 Dan McMahill
+.\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
 .\"
 .\" This code is derived from software written by Dan McMahill
@@ -38,7 +38,7 @@
 ic_microstrip_calc - Integrated circuit microstrip transmission line analysis
 .SH CALLING SEQUENCE
 .nf
-[z0,L,R,C,G] = 
+[z0,keff,elen,loss,L,R,C,G] = 
     ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
 .fi
 .SH PARAMETERS
@@ -82,11 +82,23 @@ z0
 keff
 : calculated effective relative permitivitty
 .TP
+elen
+: calculated electrical length of the line (degrees)
+.TP
 loss
 : calculated loss of the line (dB)
 .TP
-deltal
-: calculated open circuit end correction (meters)
+L
+: calculated inductance per length (Henries/meter)
+.TP
+R
+: calculated resistance per length (Ohms/meter)
+.TP
+C
+: calculated capacitance per length (Farads/meter)
+.TP
+G
+: calculated conductance per length (Siemens/meter)
 .SH DESCRIPTION
 function to analyze the electrical characteristics of a single 
 integrated circuit microstrip transmission line. The physical
@@ -121,8 +133,11 @@ tmet=0.8e-6;       // metal thickenss
 rho=3.0e-8;        // metal resitivity
 rough=0.0;         // metal surface roughness
 f=2.4e9;           // frequency
-[z0,L,R,C,G] = ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
+[z0,keff,elen,loss,L,R,C,G] = ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
 disp(sprintf('z0 = %8.4g + j %8.4g Ohms', real(z0), imag(z0) ));
+disp(sprintf('keff = %8.4g ',keff));
+disp(sprintf('elen = %8.4g degrees',elen));
+disp(sprintf('loss = %8.4g dB',loss));
 disp(sprintf('L  = %8.4g nH/mm', L*1e6));
 disp(sprintf('R  = %8.4g Ohm/mm', R*1e-3));
 disp(sprintf('C  = %8.4g fF/mm', C*1e12));
