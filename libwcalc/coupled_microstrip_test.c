@@ -1,4 +1,4 @@
-/* $Id: microstrip_test.c,v 1.1 2002/08/19 11:30:57 dan Exp $ */
+/* $Id: coupled_microstrip_test.c,v 1.1 2003/01/11 01:01:43 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003 Dan McMahill
@@ -57,8 +57,7 @@ enum {ACTION_NONE, ACTION_CALC, ACTION_SYN} action;
 
 int main(int argc, char **argv)
 {
-  /* inches to meters */
-  double sf=0.0254;
+  double sf;
   int flag;
 
   char rline[MAXLINELEN];
@@ -69,6 +68,7 @@ int main(int argc, char **argv)
   coupled_microstrip_line *line;
 
   line = coupled_microstrip_line_new();
+  sf = 1.0;
 
   if ( argc < 2) {
     printf("No input args \n");
@@ -104,8 +104,9 @@ int main(int argc, char **argv)
 #ifdef DEBUG
 	printf("Reading \"calc\" line\n");
 #endif
-	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
+	if ( (tok = strtok(NULL,FIELDSEP)) != NULL ) {
 	  line->freq = atof(tok);
+	}
 	action=ACTION_CALC;
       }
       else if(strcmp(tok,"comment") == 0) {
@@ -168,7 +169,7 @@ int main(int argc, char **argv)
 	break;
 	
       case ACTION_CALC:
-#ifdef DEBUG
+	/*#ifdef DEBUG*/
 	printf(" --------- Coupled_Microstrip Analysis ----------\n");
 	printf(" Metal width                 = %g mil\n",line->w);
 	printf(" Metal spacing               = %g mil\n",line->s);
@@ -181,7 +182,7 @@ int main(int argc, char **argv)
 	printf(" Substrate loss tangent      = %g \n",line->subs->tand);
 	printf(" Frequency                   = %g MHz\n",line->freq/1e6); 
 	printf(" -------------- ---------------------- ----------\n");
-#endif
+	/*#endif*/
 	printf("-----------------------------------------------------\n");
 	coupled_microstrip_calc(line,line->freq);
 	printf("Z0E= %8.4f Ohms, Z0O= %8.4f Ohms, Z0= %8.4f Ohms, "
