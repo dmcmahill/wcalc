@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/29 02:01:59 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/29 02:44:15 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -80,7 +80,7 @@ SUFFIXES=	.shtml .html .cat
 .cat.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	echo "<pre>" >> $@
-	ul -t dumb $(top_srcdir)/sci-wcalc/$*.cat >> $@
+	ul -t dumb $< >> $@
 	echo "</pre>" >> $@
 	cat $(srcdir)/man_end.incl >> $@
 

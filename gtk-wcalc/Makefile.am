@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/17 12:18:10 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/28 22:56:08 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -67,6 +67,9 @@ wcalc_LDFLAGS = @GTK_LIBS@
 man_MANS=	wcalc.1
 
 all-local: runwcalc
+
+clean-local:
+	-rm runwcalc
 
 runwcalc:	$(srcdir)/runwcalc.in
 	sed "s;@BUILDDIR@;`pwd`;g" $< > $@

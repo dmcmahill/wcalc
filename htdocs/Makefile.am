@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/27 20:14:21 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/10/28 22:51:42 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -77,7 +77,7 @@ PNGS=\
 clean-local:	
 	-rm ${HTML_OUT}
 
-EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS}
+EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} shtml.mk
 
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}
