@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.17 2004/07/25 04:03:29 dan Exp $ */
+/* $Id: gtk-units.c,v 1.18 2004/07/25 04:15:09 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -111,24 +111,38 @@ void wc_units_menu_init2(void * item, void * data)
   GtkWidget *menu_item;
   wc_units_gui *ug;
 
-  ug = (wc_units_gui *) data;
+  assert( item != NULL );
+  assert( data != NULL );
 
+  ug = (wc_units_gui *) data;
 #ifdef DEBUG
   printf("wc_units_menu_init2():  ug = %p\n", ug);
+  printf("wc_units_menu_init2():  item = %p\n", item);
+  printf("wc_units_menu_init2():  data = %p\n", data);
 #endif
+
   w = GTK_WIDGET( item );
+#ifdef DEBUG
+  g_print("wc_units_menu_init2():  w = %p\n", w);
+#endif
 
   /* pick out the menu */
   m = gtk_option_menu_get_menu(GTK_OPTION_MENU(w));
+#ifdef DEBUG
+  g_print("wc_units_menu_init2():  m = %p\n", m);
+#endif
 
   /* figure out which one is active */
   menu_item = gtk_menu_get_active(GTK_MENU( m ));
+#ifdef DEBUG
+  g_print("wc_units_menu_init2():  menu_item = %p\n", menu_item);
+#endif
 
 #ifdef DEBUG
-  printf("wc_units_menu_init2():  Running calback.  "
-	 "item = %p, data = %p, m = %p, "
-	 "menu_item = %p\n",
-	 item, data, m, menu_item);
+  g_print("wc_units_menu_init2():  Running calback.  "
+	  "item = %p, data = %p, m = %p, "
+	  "menu_item = %p\n",
+	  item, data, m, menu_item);
 #endif
 
   /* run the callback */
