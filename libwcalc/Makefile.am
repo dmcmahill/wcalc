@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.22 2004/08/11 13:04:37 dan Exp $
+## $Id: Makefile.am,v 1.23 2004/08/31 21:38:15 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
@@ -80,6 +80,7 @@ BUILT_SOURCES=	defaults.c
 @MAINTAINER_MODE_TRUE@	./make_defaults > $@
 
 LDADD = libwcalc.la
+
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 libwcalc_la_SOURCES = \
