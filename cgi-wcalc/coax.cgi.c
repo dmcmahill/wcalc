@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.10 2004/07/22 20:45:12 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.11 2004/07/22 21:35:08 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -201,133 +201,87 @@ int cgiMain(void){
     cgi_units_menu_read();
 
     /* Center conductor metal resistivity */
-    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1000.0, defRHOB) !=
+    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1000.0e9, defRHOB) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("conductor resistivity out of range");
     }
     
     /* Shield metal resistivity  */
-    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1000.0, defRHOB) !=
+    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1000.0e9, defRHOB) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("shield resistivity out of range");
     }
     
     /* shield thickness */
     if(cgiFormDoubleBounded("tshield", &tshield, 0.0, 1000.0, defTSHIELD) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("shield thickness out of range");
     }
-    /* units */
-    if (cgiFormRadio("tshield_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->tshield_units = length_units[i].name;
-    line->tshield_sf = length_units[i].sf;
-    */
-
-    /* units */
-    if (cgiFormRadio("a_units", units_strings_get(length_units), units_size(length_units), &i, 0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->a_units = length_units[i].name;
-    line->a_sf = length_units[i].sf;
-    */
 
     /* Coax inner conductor radius */
-    if(cgiFormDoubleBounded("a",&a,0.0,1000.0,defA) !=
+    if(cgiFormDoubleBounded("a", &a, 0.0, 1000.0, defA) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("a out of range");
     }
-
-    /* units */
-    if (cgiFormRadio("b_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->b_units = length_units[i].name;
-    line->b_sf = length_units[i].sf;
-    */
 
     /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b",&b,a,1000.0,defB) !=
+    if(cgiFormDoubleBounded("b", &b, a, 1000.0, defB) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("b must be &gt a");
     }
     
-    /* units */
-    if (cgiFormRadio("c_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->c_units = length_units[i].name;
-    line->c_sf = length_units[i].sf;
-    */
 
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c",&c,0.0,b-a,defC) !=
+    if(cgiFormDoubleBounded("c", &c, 0.0, b-a, defC) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("c must be &lt b-a");
     }
 
     /* Coax length */
-    if(cgiFormDoubleBounded("len",&len,0.0,100000.0,defLEN) !=
+    if(cgiFormDoubleBounded("len", &len, 0.0, 100000.0, defLEN) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("length out of range");
     }
-    /* units */
-    if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->len_units = length_units[i].name;
-    line->len_sf = length_units[i].sf;
-    */
 
-    /* Dielectric relative permittivity */
-    if(cgiFormDoubleBounded("er",&er,1.0,1000.0,defER) !=
+    /* Dielectric relative permitivity */
+    if(cgiFormDoubleBounded("er", &er, 1.0, 1000.0, defER) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Permitivity out of range");
     }
     
     /* Dielectric loss tangent */
-    if(cgiFormDoubleBounded("tand",&tand,0.0,1000.0,defTAND) !=
+    if(cgiFormDoubleBounded("tand", &tand, 0.0, 1000.0, defTAND) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("loss tangent out of range");
     }
     
     /* Frequency of operation  */
-    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
+    if(cgiFormDoubleBounded("freq", &freq, 1e-6, 1e6, defFREQ) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("frequency out of range");
     }
-    /* Frequency of operation units */
-    if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    /* XXX
-    line->freq_units = frequency_units[i].name;
-    line->freq_sf = frequency_units[i].sf;
-    */
 
     /* electrical parameters: */
-    if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,defRO) !=
+    if(cgiFormDoubleBounded("Ro", &Ro, 0.0001, 1000.0, defRO) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("input Z0 out of range");
     }
 
-    if(cgiFormDoubleBounded("elen",&elen,0.0001,1000.0,defELEN) !=
+    if(cgiFormDoubleBounded("elen", &elen, 0.0001, 1000.0, defELEN) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("electrical length out of range");
     } 
 
     /* copy data over to the line structure */
