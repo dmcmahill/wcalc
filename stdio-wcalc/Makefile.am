@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.4 2004/08/02 21:11:14 dan Exp $
+## $Id: Makefile.am,v 1.5 2004/08/03 02:03:19 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -42,15 +42,15 @@ man_MANS=	stdio-wcalc.1
 
 DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
 
-LIBS= @LIBINTL@ @LIBS@
+LIBS= @LIBINTL@ @LIBS@ @WCALC_LIBS@
 
 INCLUDES =  -DVER=\"@VERSION@\" \
-	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)/intl \
+	-I$(top_srcdir)/include @WCALC_CFLAGS@ -I$(top_srcdir)/intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
-stdio_wcalc_LDADD = ../libwcalc/libwcalc.la
+stdio_wcalc_LDADD = @WCALC_LDADD@
 
 TEST_INPUTS= \
 	air_coil.dat \

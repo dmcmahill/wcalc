@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.60 2004/08/05 12:10:45 dan Exp $
+dnl $Id: configure.in,v 1.61 2004/08/06 12:24:24 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -62,54 +62,112 @@ fi
 AC_SUBST(TGIF_NO)
 AC_SUBST(TGIF_YES)
 
+
+#
+# ------------- libwcalc tests -------------------
+#
+# here we look to see if there is an installed version
+# of libwcalc that we can use
+PIXMAPS=pixmaps
+LIB_WCALC=
+WCALC_CFLAGS=-I\${top_srcdir}/libwcalc
+WCALC_LDADD=../libwcalc/libwcalc.la
+WCALC_LIBS=
+WCALC_CONFIG=#
+
+AC_PATH_PROG(WCALC_CONFIG, wcalc-config, none)
+if test "X$WCALC_CONFIG" != "Xnone" ; then
+	AC_MSG_CHECKING([installed libwcalc version])
+	WCALC_VER=`$WCALC_CONFIG --version` 
+	AC_MSG_RESULT([$WCALC_VER])
+ 	if test "X$WCALC_VER" != "X0.6" ; then
+		AC_ERROR([This package needs version 0.6 of libwcalc])
+	fi
+
+	AC_MSG_CHECKING([for libwcalc headers])
+	WCALC_CFLAGS=-I`$WCALC_CONFIG --includedir`
+	AC_MSG_RESULT([$WCALC_CFLAGS])
+	
+	AC_MSG_CHECKING([for libwcalc library])
+	WCALC_LIBS=-I`$WCALC_CONFIG --libs`
+	AC_MSG_RESULT([$WCALC_LIBS])
+
+	PIXMAPS=
+	WCALC_LDADD=
+else
+	AC_MSG_RESULT([No installed libwcalc found])
+	LIB_WCALC=libwcalc
+fi
+
+AC_SUBST(LIB_WCALC)
+AC_SUBST(PIXMAPS)
+AC_SUBST(WCALC_CFLAGS)
+AC_SUBST(WCALC_CONFIG)
+AC_SUBST(WCALC_LDADD)
+AC_SUBST(WCALC_LIBS)
+
 #
 # ------------- scilab tests -------------------
 #
-SCI_WCALC=sci-wcalc
+SCI_WCALC=
 
 AC_ARG_WITH([scilab],
-[  --with-scilab=scidir    Use the specified scilab installation.  
-                          The specified directory should be the base of
+[  --with-scilab=[scidir]    Build the scilab frontend.  If scidir is
+                          given then scidir should be the base of
                           your scilab installation.  For example,
-                          /opt/scilab-2.6.  [default = search for
-                          an installed scilab]],
+                          /opt/scilab-2.6.  If scidir is not given
+			  the scilab installation will be searched for.
+			  [default = do not build sci-wcalc]],
 [
 if test "X$with_scilab" = "Xno" ; then
 	SCI_WCALC=""
-else
-	SCI=$with_scilab
-fi
-],
-[
-AC_PATH_PROG(SCILAB,scilab)
-if test "X$SCILAB" != "X" ; then
+elif test "X$with_scilab" = "X" ; then
+	AC_PATH_PROG(SCILAB, scilab, no)
+	if test "X$scilab" = "Xno" ; then
+		AC_ERROR([No scilab installation could be found])
+	fi
+
 	AC_MSG_CHECKING([for the scilab base directory])
 	[SCI=`$AWK  '/^[ \t]*SCI[ \t]*=/ {print;}' $SCILAB | sed -e 's;.*SCI.*=;;g' -e 's;\";;g'`]
 	AC_MSG_RESULT([$SCI])
+
+	if test "X$SCI" = "X" ; then
+		AC_ERROR([Scilab base directory could not be found])
+	fi
+
+	SCI_WCALC=sci-wcalc
 else
-	SCI_WCALC=""
+	SCI=$with_scilab
+	AC_PATH_PROG(SCILAB, scilab, no, [$SCI/bin:$PATH])
+	if test "X$scilab" = "Xno" ; then
+		AC_ERROR([No scilab installation could be found])
+	fi
+
+	SCI_WCALC=sci-wcalc
 fi
 ])
 
 
 if test "X$SCI_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the scilab stack header])
-	if test -f $SCI/routines/stack-c.h ; then
-		AC_MSG_RESULT([yes])
+	SCISTACK="$SCI/routines/stack-c.h"
+	if test -f "$SCISTACK" ; then
+		AC_MSG_RESULT([$SCISTACK])
 	else
 		AC_MSG_RESULT([no])
-		AC_MSG_WARN([The directory $SCI does not appear to be the root
-of a complete (and working) scilab installation.
-The scilab interface will not be built.])
-		SCI_WCALC=""
+		AC_ERROR([The directory $SCI does not appear to be the root
+of a complete (and working) scilab installation.])
 	fi
 fi
 
 if test "X$SCI_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the scilab version])
 	[SCI_VER=`$AWK  '/^[ \t]*VERSION[ \t]*=/ {print;}' $SCILAB | \
-		sed -e 's;.*VERSION.*=;;g' -e 's;\";;g' -e 's;scilab-;;g'`]
+		sed -e 's;.*VERSION.*=;;g' -e 's;\";;g' -e 's;[Ss]cilab-;;g'`]
 	AC_MSG_RESULT([$SCI_VER])
+	if test "X$SCI_VER" = "X" ; then
+		AC_ERROR([Could not extract the scilab version])
+	fi
 else
 	SCI_VER=""
 fi

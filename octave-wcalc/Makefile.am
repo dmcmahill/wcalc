@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.1 2002/06/17 21:19:46 dan Exp $
+## $Id: Makefile.am,v 1.2 2002/12/10 10:42:16 dan Exp $
 ##
 
-## Copyright (c) 2002 Dan McMahill
+## Copyright (c) 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -66,12 +66,13 @@ MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
 
-AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
 # various MEX flags
+# XXX fixme:
 MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \
 		-L.libs -lmex-alert
-MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc 
+MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
 all-local:	${MEX_FILES} runoctave ${MEX_MANS}

@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.20 2004/08/06 12:24:25 dan Exp $
+## $Id: Makefile.am,v 1.21 2004/08/09 12:56:21 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
@@ -55,7 +55,7 @@ pkginclude_DATA =  \
 	stripline.h \
 	stripline_loadsave.h \
 	units.h \
-	wcalc_loadsave.h \
+	wcalc_loadsave.h
 
 pkgconfigdir            = $(libdir)/pkgconfig
 pkgconfig_DATA          = wcalc.pc
@@ -70,7 +70,7 @@ mathutil_test_SOURCES = alert.c mathutil_test.c
 microstrip_test_SOURCES = alert.c microstrip_test.c 
 units_test_SOURCES = alert.c units_test.c
 
-EXTRA_DIST=	coupled_microstrip.data wcalc-config.in wcalc.pc.in
+EXTRA_DIST=	coupled_microstrip.data wcalc-config.in wcalc.pc.in libwcalc.h
 
 LDADD = libwcalc.la
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}

@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.27 2004/07/29 02:38:23 dan Exp $
+## $Id: Makefile.am,v 1.28 2004/07/29 22:38:55 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -100,13 +100,13 @@ LIBS= @LIBINTL@ @LIBS@
 
 INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
 	-DWCALC_DATADIR=\"$(pkgdatadir)\" \
-	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)/intl \
+	-I$(top_srcdir)/include @WCALC_CFLAGS@ -I$(top_srcdir)/intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
-wcalc_LDADD = ../libwcalc/libwcalc.la
-wcalc_LDFLAGS = @GTK_LIBS@  
+wcalc_LDADD = @WCALC_LDADD@
+wcalc_LDFLAGS = @GTK_LIBS@ @WCALC_LIBS@
 
 all-local: runwcalc
 

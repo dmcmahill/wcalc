@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.19 2002/05/10 22:52:24 dan Exp $
+## $Id: Makefile.am,v 1.20 2002/12/10 10:42:13 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -66,11 +66,11 @@ microstrip_cgi_SOURCES = microstrip.cgi.c ${COMMON}
 
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
-INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
+INCLUDES =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
 
-LDADD = ../libwcalc/libwcalc.la
+LDADD = @WCALC_LDADD@
 #AM_LDFLAGS = -all-static
-AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
 HTML_FILES= \
 	air_coil.html \

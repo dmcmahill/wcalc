@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.24 2003/03/01 02:32:11 dan Exp $
+## $Id: Makefile.am,v 1.25 2003/03/03 03:25:20 dan Exp $
 
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -55,15 +55,15 @@ libsci_wcalc_la_SOURCES = \
 	libsci_wcalc.c \
 	${MEX_SRCS}
 
-libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la 
+libsci_wcalc_la_LIBADD = @WCALC_LDADD@
 libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
 
-AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
 # note, we mangle the function name because with matlab, our function will have
 # the same name as the filename, but in Scilab, we need to replace mexFunction with
 # a more unique name
-INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -DmexFunction=mex_$* ${DMALLOC_CFLAGS}
+INCLUDES = -I$(top_srcdir)/include @WCALC_CFLAGS@ -I@SCI@/routines -DmexFunction=mex_$* ${DMALLOC_CFLAGS}
 
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
