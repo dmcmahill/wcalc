@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.13 2001/10/28 22:56:39 dan Exp $
+## $Id: Makefile.am,v 1.14 2001/10/31 04:43:04 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -43,4 +43,5 @@ EXTRA_DIST=	ltcf-c.sh \
 	ps_microstrip.c \
 	AUTHORS \
 	README.newmodel \
-	README.win32
+	README.win32 \
+	TODO
