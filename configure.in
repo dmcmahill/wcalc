@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.31 2001/10/20 12:36:17 dan Exp $
+dnl $Id: configure.in,v 1.32 2001/10/23 00:55:40 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -233,6 +233,11 @@ AC_SUBST(HTMLPATH)
 # ------------- enable/disable Matlab/MEX frontend  -------------------
 
 MATLAB_DIR=""
+
+# because automake insists that .m files are for objective-C
+OBJC="echo"
+AC_SUBST(OBJC)
+
 AC_ARG_WITH([matlab],
 [  --with-matlab=matlabdir Base of matlab installation.
                           [default=do not build matlab interface]],
