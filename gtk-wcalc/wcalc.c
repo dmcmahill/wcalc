@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.16 2004/07/28 03:24:37 dan Exp $ */
+/* $Id: wcalc.c,v 1.17 2004/07/29 00:02:19 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -168,6 +168,9 @@ int main( int   argc,
   textdomain (PACKAGE);
 
   rcdir = getenv("WCALC_RCDIR");
+  if ( rcdir == NULL )
+    rcdir = WCALC_RCDIR;
+
   homedir = getenv("HOME");
 
   gtk_init (&argc, &argv);
