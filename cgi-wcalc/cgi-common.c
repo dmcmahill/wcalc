@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: cgi-common.c,v 1.1 2002/02/20 01:02:16 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -68,7 +68,7 @@ void inputErr(int *input_err)
     
     fprintf(cgiOut,"<DIV ALIGN=\"CENTER\"><P>"
 	    "<EM>*** WARNING ***</EM></P>"
-	    "<P>There are errors in your form entries."
+	    "<P>There are errors in your form entries.  "
 	    "Please fix them and try again.</P></DIV>\n");
     *input_err=1;
   }
