@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.10 2001/09/28 00:26:21 dan Exp $ */
+/* $Id: microstrip.c,v 1.1 2001/10/05 00:37:32 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -842,6 +842,21 @@ microstrip_line *microstrip_line_new()
 
   newline->subs = microstrip_subs_new();
 
+  /* initialize the values to something */
+  newline->l    = 1000.0;
+  newline->w    = 110.0;
+  newline->freq = 1.0e9;
+
+  newline->subs->h     = 62.0;
+  newline->subs->er    = 4.8;
+  newline->subs->tand  = 0.01;
+  newline->subs->tmet  = 1.4;
+  newline->subs->rho   = 1.0;
+  newline->subs->rough = 0.055;
+
+  /* and do a calculation to finish the initialization */
+  microstrip_calc(newline,newline->freq);
+  
   return(newline);
 }
 
