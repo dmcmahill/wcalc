@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.71 2004/11/10 05:22:09 dan Exp $
+dnl $Id: configure.in,v 1.72 2004/11/11 01:32:20 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -66,6 +66,34 @@ AC_PATH_PROG(TBL, tbl)
 AC_PATH_PROG(GROFF, groff)
 AC_PATH_PROG(NEQN, neqn)
 
+AC_LANG_PUSH(C)
+wc_save_LIBS="$LIBS"
+for fl in "-Wl,-rpath=" "-Wl,--rpath=" "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+	LIBS="$wc_save_LIBS ${fl}path"
+	AC_MSG_CHECKING([if $CC accepts ${fl}path for runtime libraries])
+	AC_LINK_IFELSE([
+#include <stdio.h>
+int main(argc, argv)
+int argc;
+char **argv;
+{
+	printf("Hello, world\n");
+	return 0;
+}
+],
+
+	AC_MSG_RESULT([yes])
+	rpath=$fl, 
+	AC_MSG_RESULT([no]))
+
+	test -n "$rpath" && break
+done
+RPATH_FLAG="$rpath"
+LIBS="$wc_save_LIBS"
+# restore the language settings
+AC_LANG_POP(C)
+AC_SUBST(RPATH_FLAG)
+
 #
 # ------------- libwcalc tests -------------------
 #
@@ -121,7 +149,7 @@ if test "X$WCALC_CONFIG" != "Xnone" ; then
 	AC_MSG_RESULT([$WCALC_CFLAGS])
 	
 	AC_MSG_CHECKING([for libwcalc library])
-	WCALC_LIBS=-I`$WCALC_CONFIG --libs`
+	WCALC_LIBS=`$WCALC_CONFIG --libs`
 	AC_MSG_RESULT([$WCALC_LIBS])
 
 	PIXMAPS=
@@ -315,9 +343,10 @@ void mexFunction(
 )
 
 	wc_save_LIBS="$LIBS"
+	rpath=""
 	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
 	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
-	    LIBS="$wd_save_LIBS ${fl}path"
+	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
 	    AC_LINK_IFELSE([
 #include "mex.h"
@@ -362,10 +391,41 @@ if test "X$OCT_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the octave site fcn directory])
 	SITEOCTM=`$OCTAVE_CONFIG --print LOCALVERFCNFILEDIR`
 	AC_MSG_RESULT([$SITEOCTM])
+
+	# if we're building out own libwcalc, then 
+	# we don't have an installed place to link to yet
+	AC_MSG_CHECKING([for the octave mex library arguments])
+	if test "X$WCALC_LIBS" = "X" ; then
+		if test "X$OCTMEX_RPATH" = "X" ; then
+			WCALC_OCTLIBS="-L../libwcalc/.libs -lwcalc -lm"
+		else
+			WCALC_OCTLIBS="-L../libwcalc/.libs ${OCTMEX_RPATH}\${libdir} -lwcalc -lm"
+		fi
+	else
+		for fl in $WCALC_LIBS ; do
+			case $fl in
+			-l* )
+				WCALC_OCTLIBS="$WCALC_OCTLIBS $fl"
+				;;
+			-L*)
+				WCALC_OCTLIBS="$WCALC_OCTLIBS $fl"
+				if test "X$OCTMEX_RPATH" != "X" ; then
+					tmp=`echo $fl | sed 's/^-L//'`
+					WCALC_OCTLIBS="$WCALC_OCTLIBS ${OCTMEX_RPATH}/${tmp}"
+				fi
+				;;
+			*)
+				AC_MSG_WARN([Skipping option $fl])
+				;;
+			esac
+		done
+	fi
+	AC_MSG_RESULT([$WCALC_OCTLIBS])
 else
 	OCT_VER=""
 fi
 
+AC_SUBST(WCALC_OCTLIBS)
 AC_SUBST(OCT_WCALC)
 AC_SUBST(OCTAVE)
 AC_SUBST(OCTAVE_CONFIG)

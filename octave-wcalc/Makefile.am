@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.5 2004/09/09 12:41:36 dan Exp $
+## $Id: Makefile.am,v 1.6 2004/09/09 12:47:07 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -62,7 +62,7 @@ MEX_TMP_OBJ_FILES=	${MEX_TMP_CXX_FILES:.cc=.o}
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
 # various MEX flags
-MEXLDFLAGS=	-L../libwcalc/.libs -lwcalc -lm
+MEXLDFLAGS=	@WCALC_OCTLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
