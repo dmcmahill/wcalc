@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/18 03:23:31 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/20 12:29:49 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -83,11 +83,11 @@ SUFFIXES = .shtml .html
 
 .shtml.html :
 	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml > $*.html
-	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
-	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
-	@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
-	@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
-	@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
-	@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
-	@AWK_GENSUB_NO@ echo "          particular awk program."
+	@@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
+	@@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
+	@@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
+	@@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
+	@@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
+	@@AWK_GENSUB_NO@ echo "          particular awk program."
 
