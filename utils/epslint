@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+# $Id$
+#
+# Copyright 2001, Dan McMahill <mcmahill@alum.mit.edu>
+#
+# scans for prohibited commands in a .eps file
+#
+#  usage;
+#    epsline foo.eps
+
+for fn in grestoreall erasepage nulldevice exitserver initgraphics copypage renderbands setscreen initmatrix banddevice setpageparams settransfer initclip framedevice note
+do
+	grep $fn $1
+done
