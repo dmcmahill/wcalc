@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.14 2002/07/04 03:09:41 dan Exp $ */
+/* $Id: coax_gui.c,v 1.15 2002/07/05 03:22:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -152,6 +152,8 @@ coax_gui *coax_gui_new(void)
 
   /* create the coax line which will be used */
   new_gui->line = coax_new();
+
+  new_gui->freq_units = frequency_units_new();
 
   new_gui->rho_units = resistivity_units_new();
   new_gui->L_units = inc_inductance_units_new();
@@ -449,34 +451,38 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		   7, 8, 2, 3, GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gtk_misc_set_alignment(GTK_MISC(gui->units_fc),0,0);
 
+
+  /* ---------------- Frequency label/entry/units menu -------------- */
   text = gtk_label_new( "Frequency" );
   gtk_table_attach(GTK_TABLE(table), text,
 		   5, 6, 3, 4, 0,0,XPAD,YPAD);
 
+#ifdef notdef
   hbox=gtk_hbox_new(FALSE,0);
   gtk_table_attach(GTK_TABLE(table), hbox,
 		   7, 8, 3, 4, GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gui->menu_freq_units = 
     units_menu_new(frequency_units,0,(gpointer) gui,freq_units_changed);
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_freq_units,FALSE,FALSE,0);
+#endif
+
+  text = wc_composite_units_menu_new(gui->freq_units,WC_WCALC(gui),&ug,
+				     wc_composite_units_menu_changed);
+
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+
+  wc_composite_units_attach_units(ug,
+				  &(gui->line->freq),
+				  &(gui->line->freq_sf),
+				  &(gui->line->freq_units));
+
+  /* ---------------- RHO_a label/entry/units menu -------------- */
 
   text = gtk_label_new( "RHO_a" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-#ifdef notdef
-  hbox=gtk_hbox_new(FALSE,0);
-  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 4, 5,
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gui->menu_rho_units_ohm =
-    units_menu_new(resistance_units,0,(gpointer) gui,rho_units_ohm_changed);
-  gtk_box_pack_start (GTK_BOX (hbox),gui->menu_rho_units_ohm,FALSE,FALSE,0);
-  text = gtk_label_new( "-" );
-  gtk_box_pack_start (GTK_BOX (hbox),text,FALSE,FALSE,0);
-  gui->menu_rho_units_m =
-    units_menu_new(length_units,0,(gpointer) gui,rho_units_m_changed);
-  gtk_box_pack_start (GTK_BOX (hbox),gui->menu_rho_units_m,FALSE,FALSE,0);
-#endif
 
   text = wc_composite_units_menu_new(gui->rho_units,WC_WCALC(gui),&ug,
 				     wc_composite_units_menu_changed);
@@ -1046,19 +1052,28 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) ); 
   gui->line->b=atof(vstr)*gui->line->b_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  b = %g\n",gui->line->b);
+  g_print("coax_gui.c:calculate():  b = %g m (%g %s)\n",
+	  gui->line->b,
+	  gui->line->b/gui->line->b_sf,
+	  gui->line->b_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_c) ); 
   gui->line->c=atof(vstr)*gui->line->c_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  c = %g\n",gui->line->c);
+  g_print("coax_gui.c:calculate():  c = %g m (%g %s)\n",
+	  gui->line->c,
+	  gui->line->c/gui->line->c_sf,
+	  gui->line->c_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_len) ); 
   gui->line->len=atof(vstr)*gui->line->len_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  len = %g\n",gui->line->len);
+  g_print("coax_gui.c:calculate():  len = %g m (%g %s)\n",
+	  gui->line->len,
+	  gui->line->len/gui->line->len_sf,
+	  gui->line->len_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
@@ -1076,31 +1091,40 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_emax) ); 
   gui->line->emax=atof(vstr)*gui->line->emax_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  emax = %g\n",gui->line->emax);
+  g_print("coax_gui.c:calculate():  emax = %g V/m (%g %s)\n",
+	  gui->line->emax,
+	  gui->line->emax/gui->line->emax_sf,
+	  gui->line->emax_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tshield) ); 
   gui->line->tshield=atof(vstr)*gui->line->tshield_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  tshield = %g\n",gui->line->tshield);
+  g_print("coax_gui.c:calculate():  tshield = %g m (%g %s)\n",
+	  gui->line->tshield,
+	  gui->line->tshield/gui->line->tshield_sf,
+	  gui->line->tshield_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
   gui->line->z0=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  z0 = %g\n",gui->line->z0);
+  g_print("coax_gui.c:calculate():  z0 = %g Ohms\n",gui->line->z0);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
   gui->line->elen=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  elen = %g\n",gui->line->elen);
+  g_print("coax_gui.c:calculate():  elen = %g Degrees\n",gui->line->elen);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
   gui->line->freq=atof(vstr)*gui->line->freq_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  freq = %g\n",gui->line->freq);
+  g_print("coax_gui.c:calculate():  freq = %g Hz (%g %s)\n",
+	  gui->line->freq,
+	  gui->line->freq/gui->line->freq_sf,
+	  gui->line->freq_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fc) ); 
@@ -1112,7 +1136,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_a) ); 
   gui->line->rho_a=atof(vstr)*gui->line->rho_a_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  rho_a = %g ohm-m (%g %s)\n",
+  g_print("coax_gui.c:calculate():  rho_a = %g Ohm-m (%g %s)\n",
 	  gui->line->rho_a,
 	  gui->line->rho_a/gui->line->rho_a_sf,
 	  gui->line->rho_a_units);
@@ -1121,7 +1145,10 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_b) ); 
   gui->line->rho_b=atof(vstr)*gui->line->rho_b_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  rho_b = %g\n",gui->line->rho_b);
+  g_print("coax_gui.c:calculate():  rho_b = %g Ohm-m (%g %s)\n",
+	  gui->line->rho_b,
+	  gui->line->rho_b/gui->line->rho_b_sf,
+	  gui->line->rho_b_units);
 #endif
 
 
@@ -1223,7 +1250,7 @@ static void update_display(coax_gui *gui)
 
 
   i = units_get_index(frequency_units,gui->line->freq_sf);
-  freq_units_update(gui,i);
+  // XXX freq_units_update(gui,i);
 
   sprintf(str,"%.4g",gui->line->freq/gui->line->freq_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
