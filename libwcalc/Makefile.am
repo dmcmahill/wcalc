@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2002/05/09 23:49:54 dan Exp $
+## $Id: Makefile.am,v 1.12 2002/05/10 22:50:41 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -35,17 +35,15 @@
 
 lib_LTLIBRARIES = libwcalc.la
 
-noinst_PROGRAMS = coax_test ic_microstrip_test mathutil_test
+noinst_PROGRAMS = coax_test ic_microstrip_test mathutil_test \
+	microstrip_test
 
 coax_test_SOURCES = alert.c coax_test.c 
-
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
-
 mathutil_test_SOURCES = alert.c mathutil_test.c 
+microstrip_test_SOURCES = alert.c microstrip_test.c 
 
 LDADD = libwcalc.la
-# uncomment with gcc on sparc to make ic_microstrip not crash:
-#LDFLAGS = -all-static
 LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 libwcalc_la_SOURCES = \
