@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.67 2004/09/09 22:04:46 dan Exp $
+dnl $Id: configure.in,v 1.68 2004/09/13 21:46:22 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -62,6 +62,9 @@ fi
 AC_SUBST(TGIF_NO)
 AC_SUBST(TGIF_YES)
 
+AC_PATH_PROG(TBL, tbl)
+AC_PATH_PROG(GROFF, groff)
+AC_PATH_PROG(NEQN, neqn)
 
 #
 # ------------- libwcalc tests -------------------
