@@ -1,4 +1,4 @@
-/* $Id: air_coil_calc.c,v 1.2 2001/10/22 02:29:35 dan Exp $ */
+;/* $Id: air_coil_calc.c,v 1.3 2001/10/23 00:51:46 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -82,6 +82,7 @@ if (vector && (m>1 || n>1) &&                                         \
     ( (m != rows) || (n != cols) ) ){                                 \
     mexErrMsgTxt(#y ": all vector/matrix inputs must have the same"   \
                     " dimensions in AIR_COIL_CALC.");                 \
+    (z) = NULL;                                                       \
 }                                                                     \
 else if(m*n > 1) {                                                    \
  vector=1;                                                            \
