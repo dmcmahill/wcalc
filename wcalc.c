@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.19 2001/09/23 17:38:09 dan Exp $ */
+/* $Id: wcalc.c,v 1.20 2001/09/27 02:01:52 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -46,6 +46,7 @@
 #endif
 
 #include "icon_bitmap"
+#include "alert.h"
 #include "menus.h"
 
 /* the individual models */
