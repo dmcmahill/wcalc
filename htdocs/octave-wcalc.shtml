@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: octave-wcalc.shtml,v 1.1 2002/06/18 01:24:47 dan Exp $ -->
+<!-- $Id: octave-wcalc.shtml,v 1.2 2004/07/28 11:49:07 dan Exp $ -->
 <!-- Copyright (c) 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -59,10 +59,7 @@ stripline synthesis,
     To compile and use Octave-Wcalc you must install the Octave mex
     package which is part of the <a
     href="http://octave.sourceforge.net">Octave-Forge</a> package for
-    Octave.  <EM>NOTE:</EM>  I currently do not have an installed
-    octave that I test with.  This means Octave-Wcalc may not even
-    build.  I plan on fixing this situation, but if anyone wants to
-    help, I could use it.
+    Octave.
 
     <H2>Using Octave-Wcalc</H2>
 
@@ -70,13 +67,14 @@ stripline synthesis,
     <p>
     To use 
     the <a href="http://www.octave.org">Octave</a> interface,
-    the interface must be loaded into your running Octave session.
+    the octave-wcalc files must be in your octave search path.
 
     <H3>Loading Octave-Wcalc (Before Installation)</H3>
     <p>
     If you want to try out Octave-Wcalc before it is installed in its
     final location, use the <code>runoctave</code> script
-    instead.
+    which ensures that octave can find the shared libraries required
+    by wcalc.
 
     <H3>Running the Octave-Wcalc Functions</H3>
     <p>
