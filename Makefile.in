@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.9 2001/09/12 03:47:02 dan Exp $
+# $Id: Makefile.in,v 1.10 2001/09/13 18:10:28 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -83,7 +83,7 @@ all:: $(PROG)
 $(PROG):  $(OFILES) $(EXTRA_DEPENDS)
 	$(CC) $(CFLAGS) -o $@ $(OFILES) $(LDFLAGS) $(LIBS)
 
-clean:
+clean::
 	-rm *.o *.mat *~ $(PROG)
 
 distclean: clean
@@ -99,6 +99,10 @@ dir-pixmaps:
 	@echo "Making all in $(srcdir)/pixmaps"
 	cd $(srcdir)/pixmaps && ${MAKE} all
 
+clean::
+	@echo "Cleaning in $(srcdir)/pixmaps"
+	cd $(srcdir)/pixmaps && ${MAKE} clean
+
 wcalc.c:: dir-pixmaps
 #
 ###########################################
@@ -107,6 +111,10 @@ wcalc.c:: dir-pixmaps
 # the CGI frontends
 #
 all:: dir-cgi
+
+clean::
+	@echo "Cleaning in $(srcdir)/cgi"
+	cd $(srcdir)/cgi && ${MAKE} clean
 
 dir-cgi: dir-pixmaps $(PROG)
 	@echo "Making all in $(srcdir)/cgi"
