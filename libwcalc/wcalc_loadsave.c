@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.c,v 1.16 2002/05/09 23:50:04 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.17 2002/06/12 11:30:33 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG */
+#define DEBUG
 
 #include "config.h"
 
@@ -48,6 +48,7 @@
 #include <time.h>
  
 #include "alert.h"
+#include "units.h"
 #include "wcalc_loadsave.h"
 
 #ifdef DMALLOC
@@ -346,7 +347,7 @@ fspec * fspec_add_comment(fspec *list,char *comment)
   sprintf(new->comment,"%s",comment);
 
   new->spec_type=SPEC_COMMENT;
-  new->key=NULL;
+  new->key="[comment key]";
   new->type='X';
   new->ofs=0;
   new->next = NULL;
@@ -379,6 +380,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
 {
   fspec *cur;
   void *addr;
+  char *tmps;
 
   assert(list != NULL);
 
@@ -412,6 +414,19 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
 	  fprintf(fp,"%s",(char *) cur->ofs);
 	  break;
 
+	case 'u':
+	  /* now write out the savestring for the units */
+	  tmps = wc_units_to_savestr( *((wc_units **) addr));
+	  printf("fspec_write_file():  saving units string \"%s\"\n", tmps);
+	  fprintf(fp, "%s", tmps);
+	  free(tmps);
+
+	  /* write out a comment showing what the units are */
+	  tmps = wc_units_to_str( *((wc_units **) addr));
+	  fprintf(fp, "\n# [%s]", tmps);
+	  free(tmps);
+	  break;
+
 	default:
 	  fprintf(stderr,"fspec_write_file():  Invalid type, '%c' in fspec\n",cur->type);
 	  exit(1);
@@ -442,7 +457,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
 }
 
 
-int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
+int fspec_read_file(fspec *list, FILE *fp, unsigned long base)
 {
   fspec *cur;
   void *addr=NULL;
@@ -481,6 +496,9 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 
   
   while( fgets(line,MAXLINELEN,fp) != NULL ){
+#ifdef DEBUG
+    printf("fspec_read_file():  read line \"%s\"\n", line);
+#endif
     tok = strtok(line,FIELDSEP);
     if (tok != NULL){
       /*
@@ -516,7 +534,7 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 	     * now figure out what to do with this key/value pair
 	     * we've read 
 	     */
-	    whichval=0;
+	    whichval = 0;
 
 	    /* 
 	     * search until we find the correct section. 
@@ -546,33 +564,40 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 	     */
 	    found_key = 0;
 	    while ( (cur != NULL) && 
-		    (cur->spec_type!= SPEC_SECTION) && 
+		    (cur->spec_type != SPEC_SECTION) && 
 		    !found_key) {
 #ifdef DEBUG
 	      printf("fspec_read_file():          is read key \"%s\" == "
-		     "fspec key \"%s\"? ",tok,cur->key);
+		     "fspec key \"%s\"? ", tok, cur->key);
 #endif
-	      if ( (cur->spec_type == SPEC_KEY) && strcmp(tok,cur->key) == 0) {
+	      if ( ( cur->spec_type == SPEC_KEY ) && (strcmp(tok, cur->key) == 0) ) {
 		found_key = 1;
 #ifdef DEBUG
 		printf("yes, value #%d\n",whichval);
+#endif
 		assert(whichval < nvals);
-		gotval[whichval]=1;
-#endif
-	      }
-	      else {
+		gotval[whichval] = 1;
+	      } else if ( (cur->spec_type == SPEC_FIXED) &&
+			  strcmp(tok, cur->key) == 0) {
 #ifdef DEBUG
-		if ( (cur->spec_type == SPEC_FIXED) &&
-		     strcmp(tok,cur->key) == 0) {
-		  printf("yes.  skipping fixed key\n");
-		}
-		else
-		  printf("no\n");
+		printf("yes.  skipping fixed key\n");
 #endif
+		found_key = 1;
+	      } else {
+		
+#ifdef DEBUG
+		printf("no\n");
+
+		if ( cur->spec_type == SPEC_COMMENT )
+		  printf("skipping comment\n");
+#endif
+
 		if (cur->spec_type == SPEC_KEY)
 		  whichval++;
-		cur=cur->next;
+
+		cur = cur->next;
 	      }
+
 	    }
 
 	    if (! found_key) {
@@ -584,10 +609,15 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 	      break;
 	    }
 
+	    printf("checking for NULL cur (%p) \n", cur);
 	    if (cur != NULL){
 	      addr = (void *) (base + cur->ofs);
 	    }
-	    
+
+#ifdef DEBUG
+	    printf("fspec_read_file():  Processing key of type \'%c\'\n", cur->type);
+#endif
+
 	    switch (cur->type){
 	      
 	    case 'd':
@@ -613,7 +643,14 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 	  
 	    case 'f':
 #ifdef DEBUG
-	      printf("fspec_read_file():  Just read (fixed) %s=%s\n",tok,val);
+	      printf("fspec_read_file():  Just read (fixed) %s=%s\n", tok, val);
+#endif
+	      break;
+
+	    case 'u':
+	      wc_savestr_to_units(val, *((wc_units **)addr));
+#ifdef DEBUG
+	      printf("fspec_read_file():  Just read (units save-string) %s\n", tok);
 #endif
 	      break;
 
@@ -666,6 +703,7 @@ char * fspec_write_string(fspec *list, unsigned long base)
   char *str=NULL;
   /* XXX fixme (no overflow) */
   char tmps[80];
+  char *tmps2;
 
   assert(list != NULL);
 
@@ -702,6 +740,12 @@ char * fspec_write_string(fspec *list, unsigned long base)
 	    sprintf(tmps,"%s",(char *) cur->ofs);
 	    break;
 	    
+	  case 'u':
+	    tmps2 = wc_units_to_savestr( *((wc_units **) addr));
+	    sprintf(tmps, "%s", tmps2);
+	    free(tmps2);
+	    break;
+
 	  default:
 	    fprintf(stderr,"fspec_write_string():  Invalid type, '%c' in fspec\n",cur->type);
 	    exit(1);
@@ -804,6 +848,13 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
 #endif
 	  break;
 	  
+	case 'u':
+	  wc_savestr_to_units( tok, *((wc_units **)addr));
+#ifdef DEBUG
+	  printf("fspec_read_string():  read units save string string from \"%s\" (%s)\n",
+		 tok, cur->comment);
+#endif
+	  break;
 	default:
 	  fprintf(stderr,"fspec_read_string():  Invalid type, '%c' in fspec\n",cur->type);
 	  exit(1);

@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.h,v 1.7 2002/01/18 03:04:57 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.8 2002/06/12 11:30:33 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -65,6 +65,8 @@ typedef struct FSPEC {
    *  'd' = double
    *  'i' = int
    *  's' = char *   (i.e. a string)
+   *  'u' = char *, but it is a units string (i.e. wc_units_to_savestr()
+   *        output)
    */
   char type;
 
