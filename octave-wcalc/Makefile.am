@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.3 2004/08/11 13:04:38 dan Exp $
+## $Id: Makefile.am,v 1.4 2004/09/08 22:48:53 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -42,18 +42,10 @@ vpath %.man $(top_srcdir)/sci-wcalc
 include $(top_srcdir)/sci-wcalc/mex.mk
 
 # the 'mex' command to compile the mex files
-#MEX=	@MEX@
-#MEX=	/usr/pack/octave-2.1.35-jp/sun4u-SunOS-5.6/bin/mex
-#MEX=	$(srcdir)/mex
 MEX=	@OCTMEX@
 
 # the suffix for the compiled mex file
-#MEXSFX=	@MEXSFX@
 MEXSFX=	oct
-
-# base directory for octave installation
-#OCTAVE_DIR=	@OCTAVE_DIR@
-#OCTAVE_DIR=	/usr/pack/octave-2.1.35-jp/sun4u-SunOS-5.6/libexec/octave/2.1.35/site/oct/sparc-sun-solaris2.6/octave-forge
 
 octfiledir=	@SITEOCT@/${PACKAGE}
 fcnfiledir=	@SITEOCTM@/${PACKAGE}
@@ -62,10 +54,6 @@ fcnfile_DATA=	${MEX_MANS}
 
 noinst_SCRIPTS=		runoctave
 
-lib_LTLIBRARIES=	libmex-alert.la
-libmex_alert_la_SOURCES=	alert.c
-INCLUDES = -I$(top_srcdir)/include -I${OCTAVE_DIR} ${DMALLOC_CFLAGS}
-
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
@@ -73,9 +61,7 @@ MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
 # various MEX flags
-# XXX fixme:
-MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \
-		-L.libs -lmex-alert
+MEXLDFLAGS=	-L../libwcalc/.libs -lwcalc -lm
 MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
@@ -89,13 +75,13 @@ runoctave:	$(srcdir)/runoctave.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runoctave.in copyright.m mex mkcotfile
+EXTRA_DIST=	runoctave.in copyright.m
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man
 
 .c.${MEXSFX} :
-	$(MEX) $(MEXINCLUDES) $< $(MEXLDFLAGS)
+	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 .cat.m :
 	@echo "****************************************************"
