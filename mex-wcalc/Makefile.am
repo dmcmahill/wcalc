@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2001/10/23 03:34:57 dan Exp $
+## $Id: Makefile.am,v 1.6 2001/10/24 01:23:36 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -78,13 +78,14 @@ air_coil_syn.man: $(top_srcdir)/sci-wcalc/air_coil_syn.man
 	cp -f $< $@
 
 runmatlab:	$(srcdir)/runmatlab.in
-	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > runmatlab
+	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > $@
+	chmod 755 $@
 
 
 EXTRA_DIST=	runmatlab.in copyright.m
 
 # All the new suffix rules
-SUFFIXES = .c .${MEXSFX} .m .cat
+SUFFIXES= .c .${MEXSFX} .m .cat .man
 
 .c.${MEXSFX} :
 	$(MEX) $(MEXINCLUDES) $*.c $(MEXLDFLAGS)
@@ -114,3 +115,4 @@ SUFFIXES = .c .${MEXSFX} .m .cat
 	cat $(srcdir)/copyright.m >> $@
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
+
