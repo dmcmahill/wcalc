@@ -1,0 +1,234 @@
+<!-- $Id$ -->
+<!--
+ * Copyright (c) 2001 Dan McMahill
+ * All rights reserved.
+ *
+ * This code is derived from software written by Dan McMahill
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *        This product includes software developed Dan McMahill
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ -->
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Stripline Analysis/Synthesis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
+<LINK REV="made" HREF="mailto:mcmahill@mtl.mit.edu">
+
+<meta name="description" content="Stripline Analysis/Synthesis">
+<meta name="keywords" content="
+stripline
+">
+
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<H1 ALIGN="CENTER">Stripline Analysis/Synthesis Calculator</H1>
+
+<P>
+
+
+<FORM METHOD=GET ACTION="/cgi-bin/cad/stripline.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/stripline.png"  
+     ALT="[Stripline Cross-section]"></TD>
+</TR>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/stripline_model.png" 
+     ALT="[Stripline Circuit Model]"></TD>
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+<!--
+<TR>
+<TD>Ls =</TD>
+<TD><@g@Ls*1e9@></TD>
+<TD>[nH/mil]</TD>
+</TR>
+
+<TR>
+<TD>Rs =</TD>
+<TD><@g@Rs@></TD>
+<TD>[ohm/mil]</TD>
+</TR>
+
+<TR>
+<TD>Cs =</TD>
+<TD><@g@Cs*1e12@></TD>
+<TD>[pF/mil]</TD>
+</TR>
+
+<TR>
+<TD>Gs =</TD>
+<TD><@g@Gs@></TD>
+<TD>[(ohm-mil)^-1]</TD>
+</TR>
+-->
+
+<TR>
+<TD>Z0 =</TD>
+<TD><@g@Ro@> + j <@g@Xo@></TD>
+<TD>[ohm]</TD>
+</TR>
+
+<TR>
+<TD>Loss =</TD>
+<TD><@g@line->loss@></TD>
+<TD>[dB]</TD>
+</TR>
+
+<TR>
+<TD>Loss/len =</TD>
+<TD><@g@line->losslen@></TD>
+<TD>[dB/mil]</TD>
+</TR>
+
+<TR>
+<TD>Skin depth =</TD>
+<TD><@g@line->skindepth@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Delay =</TD>
+<TD><@g@delay@></TD>
+<TD>[ns]</TD>
+</TR>
+
+<TR>
+<TD>End correction =</TD>
+<TD><@g@line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Corrected length =</TD>
+<TD><@g@l-line->deltal@></TD>
+<TD>[mil]</TD>
+</TR>
+
+</TABLE>  <!-- end of model parameter table -->
+</TD>
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+
+<TR>
+<TD>Metal width</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
+<TD>[mil]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Trace length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>"></TD>
+<TD>[mil]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
+<TD>[mil]</TD>
+</TR>
+
+<TR>
+<TD>Metal resistivity</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@rho@>"></TD>
+<TD>[relative to Cu]</TD>
+</TR>
+
+<TR>
+<TD>Metal surface roughness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@rough@>"></TD>
+<TD>[mil-rms]</TD>
+</TR>
+
+<TR>
+<TD>Substrate thickness</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
+<TD>[mil]</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Substrate relative dielectric constant</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD></TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Substrate loss tangent</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@tand@>"></TD>
+<TD></TD>
+</TR>
+
+
+<TR>
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>"></TD>
+<TD>[MHz]</TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+</TR>
+
+<TR>
+<TD>Characteristic Impedance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"></TD>
+<TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Electrical Length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"></TD>
+<TD>[degrees]</TD>
+</TR>
+
+</TABLE>
+
+</TR>
+</TABLE>
+
+</FORM>
+

@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.3 2001/09/12 23:55:38 dan Exp $ */
+/* $Id: microstrip.c,v 1.4 2001/09/13 17:52:51 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -44,6 +44,7 @@
 #include "physconst.h"
 #include "microstrip.h"
 
+/* flags for microstrip_calc_int() */
 #define NOLOSS   0
 #define WITHLOSS 1
 
