@@ -19,7 +19,6 @@ files.c
 files.h
 icon_bitmap
 install-sh
-main.c
 mathutil.c
 mathutil.h
 menus.c

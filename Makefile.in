@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2001/02/12 14:07:26 dan Exp $
+# $Id: Makefile.in,v 1.5 2001/02/12 18:00:43 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -66,11 +66,11 @@ CFILES = \
         about.c \
         coupled_microstrip.c \
         files.c \
-        main.c \
         mathutil.c \
         menus.c \
         microstrip.c \
         stripline.c \
+        version.c \
         wcalc.c
 
 OFILES = $(CFILES:.c=.o)
