@@ -1,4 +1,4 @@
-/* $Id: microstrip.cgi.c,v 1.5 2003/01/24 11:05:10 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.6 2004/07/27 21:01:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -39,12 +39,28 @@
 
 /* #define DEBUG */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <math.h>
 #include <stdio.h>
+
+/* CGI specific */
 #include "cgic.h"
+#include "cgi-common.h"
 #include "cgi-units.h"
+#include "cookie.h"
+
+/* libwcalc */
 #include "microstrip.h"
-#include "microstrip_id.h"
+#include "microstrip_loadsave.h"
+#include "misc.h"
+#include "physconst.h"
 #include "units.h"
+
+/* ID's for this module */
+#include "microstrip_id.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -97,6 +113,10 @@ int cgiMain(void){
   double rho,rough,tmet,w,l,h,es,tand;
   double Ro=0.0;
   double elen;
+
+  char *cookie_str;
+  char cookie_load_str[COOKIE_MAX+1];
+  cgiCookieType *cookie;
 
   cgi_units_menu *menu_lwht;
   cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
@@ -255,6 +275,37 @@ int cgiMain(void){
     line->len = elen;
     
   } /* if ( (action != RESET) && (action != LOAD) ) */
+  else {
+
+#ifdef DEBUG
+    printf("microstrip.cgi:  checking for a cookie to load\n");
+#endif
+    /* load a stored cookie if it exists */
+    if(cgiCookieStringNoNewlines(name_string, cookie_load_str, COOKIE_MAX) ==
+       cgiCookieSuccess) {
+#ifdef DEBUG
+    printf("microstrip.cgi:  loading cookie \"%s\"\n", cookie_load_str);
+#endif
+      microstrip_load_string(line, cookie_load_str);
+#ifdef DEBUG
+    printf("microstrip.cgi:  finished loading cookie\n");
+#endif
+    }
+    
+  }
+  
+  if (!input_err){
+    cookie_str = microstrip_save_string(line);
+    cookie = cgiCookie_new(name_string, cookie_str);
+    cgiCookie_MaxAge_set(cookie, COOKIE_AGE);
+    cgiHeaderSetCookie(cookie);
+    
+    /* Put out the CGI header */
+    cgiHeaderContentType("text/html");  
+  }
+  else {
+    fixInputMsg();
+  }
 
 
   

@@ -1,7 +1,7 @@
-/* $Id: cookie.cgi.c,v 1.3 2002/05/10 22:52:30 dan Exp $ */
+/* $Id: cookie.cgi.c,v 1.4 2002/06/12 11:30:04 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -54,12 +54,9 @@
 #define ACTION_LEN 20
 #define VAL_LEN 20
 
-static const char *name_string="cookie.cgi";
-
 int cgiMain(void){
 
   /* CGI variables */
-  int input_err = 0;
   char str_action[ACTION_LEN];
   char val[VAL_LEN];
   char nm[VAL_LEN];
@@ -73,7 +70,7 @@ int cgiMain(void){
   /*cgiReadEnvironment("/tmp/capcgi.dat"); */
   
   /* create and set a fixed value cookie */
-  cookie = cgiCookie_new("visited","yes i have");
+  cookie = cgiCookie_new("visited", "yes i have");
   cgiCookie_MaxAge_set(cookie,60*60*24);
   cgiHeaderSetCookie(cookie);
 

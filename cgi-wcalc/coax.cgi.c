@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.13 2004/07/23 22:11:52 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.14 2004/07/28 04:20:28 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -39,8 +39,11 @@
 
 /* #define DEBUG */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
+#include <math.h>
 #include <stdio.h>
 
 /* CGI specific */
@@ -113,6 +116,7 @@ int cgiMain(void){
   double rhoa, rhob, er, tand;
   double Ro=0.0;
   double elen;
+
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
   cgiCookieType *cookie;

@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.5 2003/01/10 03:12:36 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.6 2004/07/27 21:01:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -39,13 +39,28 @@
 
 /* #define DEBUG */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <math.h>
 #include <stdio.h>
+
+/* CGI specific */
 #include "cgic.h"
+#include "cgi-common.h"
 #include "cgi-units.h"
+#include "cookie.h"
+
+/* libwcalc */
 #include "coupled_microstrip.h"
-#include "coupled_microstrip_id.h"
+#include "coupled_microstrip_loadsave.h"
+#include "misc.h"
+#include "physconst.h"
 #include "units.h"
+
+/* ID's for this module */
+#include "coupled_microstrip_id.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -119,6 +134,10 @@ int cgiMain(void){
   /* these are either "" or "checked\0" */
   char zkchecked[8];
   char evodchecked[8];
+
+  char *cookie_str;
+  char cookie_load_str[COOKIE_MAX+1];
+  cgiCookieType *cookie;
 
   cgi_units_menu *menu_lwst;
   cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
@@ -316,6 +335,37 @@ int cgiMain(void){
   line->z0o = zodd;
   
   } /* if ( (action != RESET) && (action != LOAD) ) */
+  else {
+
+#ifdef DEBUG
+    printf("coupled_microstrip.cgi:  checking for a cookie to load\n");
+#endif
+    /* load a stored cookie if it exists */
+    if(cgiCookieStringNoNewlines(name_string, cookie_load_str, COOKIE_MAX) ==
+       cgiCookieSuccess) {
+#ifdef DEBUG
+    printf("coupled_microstrip.cgi:  loading cookie \"%s\"\n", cookie_load_str);
+#endif
+      coupled_microstrip_load_string(line, cookie_load_str);
+#ifdef DEBUG
+    printf("coupled_microstrip.cgi:  finished loading cookie\n");
+#endif
+    }
+    
+  }
+  
+  if (!input_err){
+    cookie_str = coupled_microstrip_save_string(line);
+    cookie = cgiCookie_new(name_string, cookie_str);
+    cgiCookie_MaxAge_set(cookie, COOKIE_AGE);
+    cgiHeaderSetCookie(cookie);
+    
+    /* Put out the CGI header */
+    cgiHeaderContentType("text/html");  
+  }
+  else {
+    fixInputMsg();
+  }
   
   switch (stype){
     case 0:

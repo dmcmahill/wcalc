@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.15 2004/07/27 02:10:09 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.16 2004/07/28 04:46:53 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -39,8 +39,11 @@
 
 /* #define DEBUG */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
+#include <math.h>
 #include <stdio.h>
 
 /* CGI specific */
@@ -55,7 +58,6 @@
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
-#include "wcalc_loadsave.h"
 
 /* ID's for this module */
 #include "air_coil_id.h"

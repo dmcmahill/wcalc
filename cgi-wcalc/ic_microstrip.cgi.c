@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.3 2002/06/12 11:30:06 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.4 2004/07/27 21:01:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -37,12 +37,28 @@
  * a cgi interface to the ic_microstrip calculator
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <math.h>
 #include <stdio.h>
+
+/* CGI specific */
 #include "cgic.h"
+#include "cgi-common.h"
 #include "cgi-units.h"
+#include "cookie.h"
+
+/* libwcalc */
 #include "ic_microstrip.h"
-#include "ic_microstrip_id.h"
+#include "ic_microstrip_loadsave.h"
+#include "misc.h"
+#include "physconst.h"
 #include "units.h"
+
+/* ID's for this module */
+#include "ic_microstrip_id.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -92,6 +108,10 @@ int cgiMain(void){
 
   double rho, rough, tmet, w, l, tox, eox, h, es, sigmas;
   double Ro=0.0;
+
+  char *cookie_str;
+  char cookie_load_str[COOKIE_MAX+1];
+  cgiCookieType *cookie;
 
   cgi_units_menu *menu_lwht;
   cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
@@ -254,6 +274,37 @@ int cgiMain(void){
     line->Xo = 0.0;
 
   } /* if ( (action != RESET) && (action != LOAD) ) */
+  else {
+
+#ifdef DEBUG
+    printf("ic_microstrip.cgi:  checking for a cookie to load\n");
+#endif
+    /* load a stored cookie if it exists */
+    if(cgiCookieStringNoNewlines(name_string, cookie_load_str, COOKIE_MAX) ==
+       cgiCookieSuccess) {
+#ifdef DEBUG
+    printf("ic_microstrip.cgi:  loading cookie \"%s\"\n", cookie_load_str);
+#endif
+      ic_microstrip_load_string(line, cookie_load_str);
+#ifdef DEBUG
+    printf("ic_microstrip.cgi:  finished loading cookie\n");
+#endif
+    }
+    
+  }
+  
+  if (!input_err){
+    cookie_str = ic_microstrip_save_string(line);
+    cookie = cgiCookie_new(name_string, cookie_str);
+    cgiCookie_MaxAge_set(cookie, COOKIE_AGE);
+    cgiHeaderSetCookie(cookie);
+    
+    /* Put out the CGI header */
+    cgiHeaderContentType("text/html");  
+  }
+  else {
+    fixInputMsg();
+  }
 
 #ifdef DEBUG
   fprintf(cgiOut,"<pre>\n");
