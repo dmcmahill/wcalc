@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.10 2004/03/14 13:33:42 dan Exp $ */
+/* $Id: start.c,v 1.11 2004/07/28 02:01:45 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -91,7 +91,7 @@ static void new_pressed (GtkWidget *w, GtkWidget *window)
 {
   guint ind;
   guint len;
-  char *name;
+  const char *name;
   int foundit=0;
   void *new_cmd;
 
@@ -191,7 +191,9 @@ void start_popup(void)
   GtkStyle *style;    
  
   /* create the initial window */
-  window = gtk_window_new(GTK_WINDOW_DIALOG);
+  // XXX this was for gtk-1.2
+  //window = gtk_window_new(GTK_WINDOW_DIALOG);
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   
   /* made it modal */
   gtk_grab_add(window);

@@ -1,7 +1,7 @@
-/* $Id: menus.c,v 1.7 2002/12/17 15:29:35 dan Exp $ */
+/* $Id: menus.c,v 1.8 2003/01/02 06:40:10 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -179,7 +179,9 @@ void get_main_menu( Wcalc *wcalc,
   gtk_item_factory_create_items (item_factory, nmenu_items, menu_items, wcalc);
 
   /* Attach the new accelerator group to the window. */
-  gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+  // XXX gtk-2.2
+  //gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+  _gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
 
   if (menubar){
     /* Finally, return the actual menu bar created by the item factory. */ 
