@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.4 2001/09/23 17:38:05 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.5 2001/09/27 02:01:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -905,9 +905,8 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_Nf, "Number of turns", NULL);
   gtk_tooltips_set_tip(tips, gui->text_dia, "Inside diameter of the coil", NULL);
   gtk_tooltips_set_tip(tips, gui->text_len, "Length of the coil", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_fill, "Ratio of the Length of the coil\n"
-		       "to the length of a closewound\n"
-		       "coil", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_fill, "Ratio of the length of the coil"
+		       " to the length of a closewound coil",NULL);
   gtk_tooltips_set_tip(tips, gui->text_AWGf, "Wire diameter", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_rho, "Resistivity of the wire", NULL);
