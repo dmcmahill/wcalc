@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.19 2001/10/13 02:09:28 dan Exp $
+dnl $Id: configure.in,v 1.20 2001/10/13 03:21:12 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -239,6 +239,7 @@ AC_OUTPUT(
 	libwcalc/Makefile
 	cgi-wcalc/Makefile
 	gtk-wcalc/Makefile
+	htdocs/Makefile
 	sci-wcalc/Makefile
 	pixmaps/Makefile
 )
