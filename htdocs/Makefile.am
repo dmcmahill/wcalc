@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.17 2002/05/14 00:43:02 dan Exp $
+## $Id: Makefile.am,v 1.18 2002/05/15 11:20:44 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -92,6 +92,9 @@ PNGS=\
 
 clean-local:	
 	-rm ${HTML_OUT}
+
+distclean-local:
+	-rm AWG.incl
 
 BUILT_SOURCES=	${BUILT_INCL_FILES}
 EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} shtml.mk
