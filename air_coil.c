@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.8 2001/09/27 23:15:15 dan Exp $ */
+/* $Id: air_coil.c,v 1.9 2001/09/27 23:19:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -142,11 +142,23 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
    * are we using the given length directly or calculating it based on
    * fill?
    */
+  lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
   if (coil->use_fill){
-    lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
     coil->len = INCH2M(lmin)*coil->fill;
   }
+  else{
+    coil->fill = coil->len/INCH2M(lmin);
+  }
 
+  if(coil->fill < 1.0){
+      alert("WARNING:  the specified value of N=%g is\n"
+	    "too high.  You CAN NOT fit the desired\n"
+	    "number of turns into the given length.\n"
+	    "The maximum number of turns that can\n"
+	    "fit in the given length is %g",
+	    coil->Nf,
+	    floor(coil->Nf*coil->fill));
+  }
   pitch = M2INCH(coil->len) / coil->Nf;
 
   wirediam = awg2dia(coil->AWGf);
@@ -173,7 +185,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
    */
   if ( (x>5.0) || (x <= 0.1) ){
     alert("The length/diameter ratio, x, = %g\n"
-	  "is outside the range 0.1 <= x <= 5\n"
+	  "which is outside the range 0.1 <= x <= 5\n"
 	  "over which the analysis is accurate",x);
     return -1;
   }
@@ -247,7 +259,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   }
   else{
     alert("The length/diameter ratio, x, = %g\n"
-	  "is outside the range 0.1 <= x <= 5\n"
+	  "which is outside the range 0.1 <= x <= 5\n"
 	  "over which the analysis is accurate",x);
     return -1;
   }
@@ -403,7 +415,7 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
   printf("air_coil_syn():  Nmin = %g\n",N);
   printf("air_coil_syn():  ----------------------\n");
 #endif
-  }
+  } /* flag == AIRCOILSYN_NMIN */
   else{
     /* we're supposed to use the user supplied N */
     N = coil->Nf;
@@ -454,7 +466,7 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
 
   if (flag == AIRCOILSYN_NFIX){
     if (len < N*lenPerTurn){
-      alert("WARNING:  the specified value of N=%g is\n",
+      alert("WARNING:  the specified value of N=%g is\n"
 	    "too low.  You CAN NOT fit the desired\n"
 	    "number of turns into the required length\n",N);
       return -1;
