@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: permeability.shtml,v 1.2 2002/01/19 02:23:40 dan Exp $ -->
+<!-- Copyright (c) 2002
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Permeabilities of Common Materials</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  Permeabilities of common materials">
+<meta name="KEYWORDS" content="
+magnetic material,
+permeability,
+relative permeability,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Permitivities of Common Materials
+    </font>
+    <br>
+    <br>
+
+    <table border=2>
+    <!--#include virtual="permeability.incl"-->
+    </table>
+
+    <!--#include virtual="disclaimer_properties.incl"-->
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

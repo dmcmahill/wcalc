@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.15 2002/01/11 15:32:47 dan Exp $
+## $Id: Makefile.am,v 1.16 2002/05/10 22:49:33 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -52,6 +52,7 @@ SHTML_INCLUDE_PATH= $(srcdir)
 SHTML_IN=	\
 	about.shtml \
 	air_coil.shtml \
+	AWG.shtml \
 	cgi-wcalc.shtml \
 	coax.shtml \
 	coupled_microstrip.shtml \
@@ -62,6 +63,7 @@ SHTML_IN=	\
 	mex-wcalc.shtml \
 	microstrip.shtml \
 	obtaining.shtml \
+	permeability.shtml \
 	permitivity.shtml \
 	projects.shtml \
 	resistivity.shtml \
@@ -70,12 +72,15 @@ SHTML_IN=	\
 	stripline.shtml
 
 INCL_FILES=\
+	disclaimer_properties.incl \
 	left_column.incl \
 	main_footer.incl \
 	page_start.incl \
 	${BUILT_INCL_FILES}
 
 BUILT_INCL_FILES=\
+	AWG.incl \
+	permeability.incl \
 	permitivity.incl \
 	resistivity.incl
 
