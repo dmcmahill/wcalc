@@ -1,4 +1,4 @@
-<!-- $Id: coupled_microstrip.html,v 1.9 2004/07/27 21:01:41 dan Exp $ -->
+<!-- $Id: coupled_microstrip.html,v 1.10 2004/07/28 11:35:28 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
@@ -212,6 +212,8 @@ coupled microstrip
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@line->subs->rho/line->units_rho->sf@>"
            onChange="valsChanged()"></TD>
 <TD>
+<!-- Rho units menu -->
+<@s@cgi_units_menu_display(menu_rho)@>
 </TD>
 </TR>
 
