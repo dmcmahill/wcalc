@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil_calc.c,v 1.1 2001/10/22 01:03:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -32,6 +32,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#include "config.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "air_coil.h"
 #include "physconst.h"
