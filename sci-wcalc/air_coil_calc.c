@@ -1,6 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.8 2002/06/12 11:30:34 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.9 2004/08/04 23:49:44 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.8 2002/06/12 11:30:34 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.9 2004/08/04 23:49:44 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -35,7 +35,9 @@ static char vcid[] = "$Id: air_coil_calc.c,v 1.8 2002/06/12 11:30:34 dan Exp $";
  * SUCH DAMAGE.
  */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,7 +103,6 @@ else {                                                                \
  (z) = &fixed;                                                        \
 }                                                                     \
 (v) = mxGetPr(x);                                                     \
-
 
 /*
  * Note that the V4_COMPAT is for compiling with Matlab.
@@ -171,7 +172,6 @@ void mexFunction(
       mexErrMsgTxt("wrong number of output arguments to AIR_COIL_CALC"
 		   " (needs <= 5).");
     }
-  
   
   /* 
    * Check the dimensions of the inputs and assign pointers to 
