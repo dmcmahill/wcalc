@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.7 2004/08/05 21:42:51 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.8 2004/08/13 04:43:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -147,9 +147,6 @@ int cgiMain(void){
   cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
-
-  /* Put out the CGI header */
-  cgiHeaderContentType("text/html");  
 
   /* create the coupled_microstrip line */
   fprintf(cgiOut,"<pre>");

@@ -1,4 +1,4 @@
-/* $Id: microstrip.cgi.c,v 1.6 2004/07/27 21:01:42 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.7 2004/08/05 21:42:52 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -124,10 +124,8 @@ int cgiMain(void){
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
 
-/* Put out the CGI header */
-  cgiHeaderContentType("text/html");  
 
-  /* create the IC microstrip line */
+  /* create the microstrip line */
   line = microstrip_line_new();
 
   menu_lwht = cgi_units_menu_new(line->units_lwht);

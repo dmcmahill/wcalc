@@ -1,4 +1,4 @@
-/* $Id: stripline.cgi.c,v 1.6 2004/07/27 21:01:43 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.7 2004/08/05 21:42:52 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -132,9 +132,6 @@ int cgiMain(void){
    */
   /* cgiReadEnvironment("/tmp/capcgi.dat"); */
   
-  /* Put out the CGI header */
-  cgiHeaderContentType("text/html");  
-
   /* create the stripline line */
   fprintf(cgiOut,"<pre>");
   line = stripline_line_new();
