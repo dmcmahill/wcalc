@@ -1,7 +1,7 @@
-/* $Id: stripline_gui.c,v 1.5 2002/05/10 22:52:46 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.6 2002/06/12 11:30:18 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -54,7 +54,9 @@
 #include "stripline_gui.h"
 #include "stripline_loadsave.h"
 #include "physconst.h"
+#include "units.h"
 
+#include "gtk-units.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -62,13 +64,6 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
-
-static void dia_units_changed(GtkWidget *w, gpointer data );
-static void len_units_changed(GtkWidget *widget, gpointer data );
-static void use_len_pressed(GtkWidget *widget, gpointer data );
-static void use_fill_pressed(GtkWidget *widget, gpointer data );
-static void L_units_changed(GtkWidget *widget, gpointer data );
-static void freq_units_changed(GtkWidget *widget, gpointer data );
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
@@ -137,6 +132,7 @@ stripline_gui *stripline_gui_new(void)
 
   wcalc->window_title=NULL;
   wcalc->save_needed=NULL;
+  wcalc->units_menu_list = NULL;
 
   /*
    * Initialize the model dependent portions
@@ -316,29 +312,6 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  /*
-  combo =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(combo), PhysUnits);
-  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
-  gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 1, 2, 0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
-  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
-		     gui->line->dia_units);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
-		      (gpointer) gui);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (dia_units_changed), 
-		      (gpointer) gui);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), 
-		      (gpointer) gui);
-  gtk_widget_show(combo);
-  */
 
   /* Height */
   text = gtk_label_new( "Height (H)" );
@@ -497,6 +470,9 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
+  wc_units_gui *ug;
+
+#define OUTPUT_TEXT "     "
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -529,22 +505,73 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  /* ---------------- L -------------- */
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  gui->label_Ls = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
+		    5, 6, 0, 1, 0, 0, XPAD, YPAD);
+  gtk_widget_show(gui->label_Ls);
+
+  text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_Ls, &(gui->line->Ls), 
+			NULL, NULL, "%8.4g", 1);
+
+  /* ---------------- R -------------- */
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  gui->label_Rs = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
+		    5, 6, 1, 2, 0, 0, XPAD, YPAD);
+  gtk_widget_show(gui->label_Rs);
+
+  text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
+			NULL, NULL, "%8.4g", 1);
+
+  /* ---------------- C -------------- */
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  gui->label_Cp = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
+		    5, 6, 2, 3, 0, 0, XPAD, YPAD);
+  gtk_widget_show(gui->label_Cp);
+
+  text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
+			NULL, NULL, "%8.4g", 1);
+
+  /* ---------------- G -------------- */
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  gui->label_Gp = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
+		    5, 6, 3, 4, 0, 0, XPAD, YPAD);
+  gtk_widget_show(gui->label_Gp);
+
+  text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
+			NULL, NULL, "%8.4g", 1);
 
   /* spacer */
 
@@ -556,7 +583,6 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
 
 
 
-#define OUTPUT_TEXT "     "
   gui->label_delay = gtk_label_new( OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
 		    1,2,0,1, 0,0,XPAD,YPAD);
@@ -582,25 +608,6 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
 		    1,2,4,5, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_deltal);
 
-  gui->label_Ls = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
-		    5,6,0,1, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_Ls);
-
-  gui->label_Rs = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
-		    5,6,1,2, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_Rs);
-
-  gui->label_Cp = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
-		    5,6,2,3, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_Cp);
-
-  gui->label_Gp = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
-		    5,6,3,4, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_Gp);
 
 #undef OUTPUT_TEXT
 
@@ -689,19 +696,19 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 
-  gui->line->w=atof(vstr)*gui->line->w_sf;
+  gui->line->w=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  w = %g\n",gui->line->w);
+  g_print("stripline_gui.c:calculate():  w = %g\n", gui->line->w);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
-  gui->line->l=atof(vstr)*gui->line->l_sf;
+  gui->line->l=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
   g_print("stripline_gui.c:calculate():  l = %g\n",gui->line->l);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) ); 
-  gui->line->subs->h=atof(vstr)*gui->line->subs->h_sf;
+  gui->line->subs->h=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
   g_print("stripline_gui.c:calculate():  h = %g\n",gui->line->subs->h);
 #endif
@@ -731,30 +738,32 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) ); 
-  gui->line->subs->tmet=atof(vstr)*gui->line->subs->tmet_sf;
+  gui->line->subs->tmet=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
   g_print("stripline_gui.c:calculate():  tmet = %g\n",gui->line->subs->tmet);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
-  gui->line->subs->rho=atof(vstr)*gui->line->subs->rho_sf;
+  gui->line->subs->rho=atof(vstr)*gui->line->units_rho->sf;
 #ifdef DEBUG
   g_print("stripline_gui.c:calculate():  rho = %g\n",gui->line->subs->rho);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
-  gui->line->subs->rough=atof(vstr)*gui->line->subs->rough_sf;
+  gui->line->subs->rough=atof(vstr)*gui->line->units_rough->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  rough = %g\n",gui->line->subs->rough);
+  g_print("stripline_gui.c:calculate():  rough = %g\n",
+	  gui->line->subs->rough);
 #endif
 
 
   /* get the frequency */
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
-  gui->line->freq=atof(vstr)*gui->line->freq_sf;
+  gui->line->freq=atof(vstr)*gui->line->units_freq->sf;
 
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  freq = %g\n",gui->line->freq);
+  g_print("stripline_gui.c:calculate():  freq = %g\n",
+	  gui->line->freq);
 #endif
 
 #ifdef DEBUG
@@ -809,13 +818,13 @@ static void update_display(stripline_gui *gui)
 
   /* the entries */
 
-  sprintf(str,"%.4g",gui->line->w/gui->line->w_sf);
+  sprintf(str,"%.4g",gui->line->w/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_w), str );
 
-  sprintf(str,"%.4g",gui->line->l/gui->line->l_sf);
+  sprintf(str,"%.4g",gui->line->l/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_l), str );
 
-  sprintf(str,"%.4g",gui->line->subs->h/gui->line->subs->h_sf);
+  sprintf(str,"%.4g",gui->line->subs->h/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_h), str );
 
   sprintf(str,"%.4g",gui->line->subs->er);
@@ -830,16 +839,16 @@ static void update_display(stripline_gui *gui)
   sprintf(str,"%.4g",gui->line->len);
   gtk_entry_set_text( GTK_ENTRY(gui->text_elen), str );
 
-  sprintf(str,"%.4g",gui->line->subs->tmet/gui->line->subs->tmet_sf);
+  sprintf(str,"%.4g",gui->line->subs->tmet/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tmet), str );
   
-  sprintf(str,"%.4g",gui->line->subs->rho);
+  sprintf(str,"%.4g",gui->line->subs->rho/gui->line->units_rho->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
   
-  sprintf(str,"%.4g",gui->line->subs->rough/gui->line->subs->rough_sf);
+  sprintf(str,"%.4g",gui->line->subs->rough/gui->line->units_rough->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rough), str );
   
-  sprintf(str,"%.4g",gui->line->freq/gui->line->freq_sf);
+  sprintf(str,"%.4g",gui->line->freq/gui->line->units_freq->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
   
 
@@ -908,39 +917,6 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
 }
 
-/*
-static void len_units_changed(GtkWidget *widget, gpointer data )
-{
-  stripline_gui *gui;
-  char *vstr;
-
-  gui = WC_STRIPLINE_GUI(data);
-
-  if(WC_WCALC(data)->init_done){
-    vstr = gtk_entry_get_text( GTK_ENTRY(widget) ); 
-    gui->line->len_units = vstr;
-    gui->line->len_sf = phys_units_get_sf(vstr);
-#ifdef DEBUG
-    g_print("stripline_gui.c:len_units_changed:  units=\"%s\", sf=%g\n",
-	    gui->line->len_units, gui->line->len_sf);
-#endif
-  }
-}
-*/
-
-static void freq_units_changed(GtkWidget *widget, gpointer data )
-{
-  stripline_gui *gui;
-  char *vstr;
-
-  gui = WC_STRIPLINE_GUI(data);
-
-  if(WC_WCALC(data)->init_done){
-    vstr = gtk_entry_get_text( GTK_ENTRY(widget) ); 
-    gui->line->freq_units = vstr;
-    gui->line->freq_sf = freq_units_get_sf(vstr);
-  }
-}
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
@@ -982,18 +958,18 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
 
   fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->w,gui->line->w_units);
+	  gui->line->w,gui->line->units_lwht->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->h,gui->line->subs->h_units);
+	  gui->line->subs->h,gui->line->units_lwht->name);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->l,gui->line->l_units);
+	  gui->line->l,gui->line->units_lwht->name);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->tmet,gui->line->subs->tmet_units);
+	  gui->line->subs->tmet,gui->line->units_lwht->name);
   fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->rho,gui->line->subs->rho_units);
+	  gui->line->subs->rho,gui->line->units_rho->name);
   fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
-	  gui->line->subs->rough,gui->line->subs->rough_units);
+	  gui->line->subs->rough,gui->line->units_rough->name);
   fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->subs->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
