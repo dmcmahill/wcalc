@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.15 2004/07/31 03:57:50 dan Exp $ */
+/* $Id: microstrip.c,v 1.16 2004/08/03 02:15:37 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -179,6 +179,8 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
   double sigma;
 
+  double L, R, C, G;
+  double delay;
 
   w = line->w;
 
@@ -382,7 +384,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    /*
     * delay on line 
     */
-   line->delay = line->l / v;
+   delay = line->l / v;
 
    /*
     * End correction
@@ -399,7 +401,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
    deltal = h * z1 * z3 * z5 / z4;
 
-   line->deltal = deltal;
 
    /* find the incremental circuit model */
    /*
@@ -409,12 +410,12 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
     * 
     * this gives the result below
     */
-   line->Ls = z0/v;
-   line->Cs = 1.0/(z0*v);
-   
+   L = z0/v;
+   C = 1.0/(z0*v);
+  
    /* resistance will be updated below */
-   line->Rs = 0.0;
-   line->Gs = 2*M_PI*f*line->Cs*line->subs->tand;
+   R = 0.0;
+   G = 2*M_PI*f*line->Cs*line->subs->tand;
 
    if(flag == WITHLOSS)
      {
@@ -480,7 +481,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
        /* warn the user if the loss calc is suspect. */
        if(t < 3.0*depth)
 	 {
-	   printf("depth = %g, t = %g\n", depth, t);
 	   alert("Warning:  The metal thickness is less than\n"
 		 "three skin depths.  Use the loss results with\n"
 		 "caution.\n");
@@ -523,14 +523,14 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   /* conduction losses, nepers per meter */
 	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
 
-	   line->Rs = lc*2*line->z0;
+	   R = lc*2*line->z0;
 	 }
 
 	   /* "dc" case  */
        else if(t > 0.0)
 	 {
 	   /* resistance per meter = 1/(Area*conductivity) */
-	   line->Rs = 1/(line->w*line->subs->tmet*sigma);  
+	   R = 1/(line->w*line->subs->tmet*sigma);  
 
 	   /* resistance per meter = 1/(Area*conductivity) */
 	   Res = 1/(w*t*sigma);  
@@ -587,6 +587,15 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    line->loss = loss;
    line->losslen = loss/line->l;
    line->skindepth = depth;
+
+   line->deltal = deltal;
+   line->delay = delay;
+
+   line->Ls = L;
+	line->Rs = R; 
+	line->Cs = C;
+	line->Gs = G;
+
 
    return (rslt);
 }
