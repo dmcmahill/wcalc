@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.18 2004/07/25 04:15:09 dan Exp $ */
+/* $Id: gtk-units.c,v 1.19 2004/07/26 01:07:05 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -437,35 +437,6 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
   gtk_widget_show_all(opt_menu);
   
   return opt_menu;
-}
-
-void  set_sf_menu(GtkWidget *menu, const units_data units[],double sf)
-{
-  int i;
-  int found_sf=0;
-
-  i=0;
-  while (units[i].name != NULL){
-    if (units[i].sf == sf) {
-      found_sf=1;
-      break;
-    }
-    i++;
-  }  
-
-  if (!found_sf) {
-    fprintf(stderr,"set_sf_menu():  error.  could not locate sf=%g\n",sf);
-    exit(1);
-  }
-
-  /* set the menu */
-#ifdef DEBUG
-  g_print("set_sf_menu():  set menu (%p) to option %d (sf=%g)\n",
-	  (void *) menu,i,sf);
-#endif
-
-  gtk_option_menu_set_history(GTK_OPTION_MENU(menu), i);
-  
 }
 
 /*

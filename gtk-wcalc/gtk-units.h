@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.13 2004/07/21 04:32:29 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.14 2004/07/23 22:11:56 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -125,10 +125,6 @@ typedef struct _WC_UNITS_UPDATE_ITEM
   int update;
 
 } wc_units_update_item;
-
-void  set_sf_menu(GtkWidget *menu,
-		  const units_data units[],
-		  double sf);
 
 GtkWidget *wc_units_menu_new(const wc_units *units, 
 			     Wcalc *gui,

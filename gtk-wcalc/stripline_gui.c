@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.13 2004/07/29 02:37:59 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.14 2004/07/30 04:37:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -67,7 +67,6 @@ static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
-static void synthesize_l( GtkWidget *w, gpointer data );
 static void synthesize_h( GtkWidget *w, gpointer data );
 static void synthesize_er( GtkWidget *w, gpointer data );
 static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data );
@@ -737,11 +736,6 @@ static void synthesize_w( GtkWidget *w, gpointer data )
   calculate(WC_STRIPLINE_GUI(data), w, "synthesize_w");
 }
 
-static void synthesize_l( GtkWidget *w, gpointer data )
-{
-  calculate(WC_STRIPLINE_GUI(data), w, "synthesize_l");
-}
-
 static void synthesize_h( GtkWidget *w, gpointer data )
 {
   calculate(WC_STRIPLINE_GUI(data), w, "synthesize_h");
@@ -840,9 +834,6 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
   }
   else if( strcmp(data,"synthesize_w")==0) {
     rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_W);
-  }
-  else if( strcmp(data,"synthesize_l")==0) {
-    rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_L);
   }
   else if( strcmp(data,"synthesize_h")==0) {
     rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_H);

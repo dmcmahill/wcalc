@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.12 2004/07/29 12:36:13 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.13 2004/07/30 04:37:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -67,7 +67,6 @@ static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
-static void synthesize_l( GtkWidget *w, gpointer data );
 static void synthesize_h( GtkWidget *w, gpointer data );
 static void synthesize_er( GtkWidget *w, gpointer data );
 static void calculate( microstrip_gui *gui, GtkWidget *w, gpointer data );
@@ -748,11 +747,6 @@ static void synthesize_w( GtkWidget *w, gpointer data )
   calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_w");
 }
 
-static void synthesize_l( GtkWidget *w, gpointer data )
-{
-  calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_l");
-}
-
 static void synthesize_h( GtkWidget *w, gpointer data )
 {
   calculate(WC_MICROSTRIP_GUI(data), w, "synthesize_h");
@@ -851,9 +845,6 @@ static void calculate( microstrip_gui *gui, GtkWidget *w, gpointer data )
   }
   else if( strcmp(data,"synthesize_w")==0) {
     rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_W);
-  }
-  else if( strcmp(data,"synthesize_l")==0) {
-    rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_L);
   }
   else if( strcmp(data,"synthesize_h")==0) {
     rslt=microstrip_syn(gui->line, gui->line->freq, MLISYN_H);
