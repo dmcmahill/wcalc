@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/06 01:42:56 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/06 23:51:41 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -69,6 +69,8 @@ BUILT_SOURCES = \
 	microstrip_id.h \
 	stripline_html.c \
 	stripline_id.h 
+
+EXTRA_DIST=	${BUILT_SOURCES}
 
 HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut 
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
