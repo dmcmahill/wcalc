@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/05 01:29:38 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/12 22:36:13 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -58,6 +58,11 @@ wcalc_SOURCES = \
 EXTRA_DIST=	icon_bitmap
 
 INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
+
 wcalc_LDADD = ../libwcalc/libwcalc.la
 wcalc_LDFLAGS = @GTK_LIBS@  
 
+man_MANS=	wcalc.1
+
+TESTS= wcalc
+TESTS_ENVIRONMENT=	"FOO=bar"
