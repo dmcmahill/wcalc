@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.2 2001/10/30 23:54:54 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.3 2001/11/07 04:55:34 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -222,14 +222,14 @@ int cgiMain(void){
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    air_coil_calc(coil,freq);
+    air_coil_calc(coil,coil->freq);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_NMIN:
     fprintf(cgiOut,"<pre>");
-    air_coil_syn(coil,freq,AIRCOILSYN_NMIN);
+    air_coil_syn(coil,coil->freq,AIRCOILSYN_NMIN);
     fprintf(cgiOut,"</pre>\n");
     N = coil->Nf;
     len = M2INCH(coil->len);
@@ -237,7 +237,7 @@ int cgiMain(void){
 
   case SYNTH_NFIX:
     fprintf(cgiOut,"<pre>");
-    air_coil_syn(coil,freq,AIRCOILSYN_NFIX);
+    air_coil_syn(coil,coil->freq,AIRCOILSYN_NFIX);
     fprintf(cgiOut,"</pre>\n");
     len = M2INCH(coil->len);
     break;
