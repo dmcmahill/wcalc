@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/19 01:42:48 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,22 +33,32 @@
 ##  SUCH DAMAGE.
 ##
 
-# pull in the list of mex files
-include $top_srcdir)/sci-wcalc/mex.mk
 
 # the 'mex' command to compile the mex files
 MEX=	@MEX@
 
-# the binary mex files
-MATMEX=	${MEX_FILES:.c=.@MEXSFX@}
+# the suffix for the compiled mex file
+MEXSFX=	@MEXSFX@
 
-EXTRA_DIST= \
-	air_coil_calc.m
+pkglibexecdir=	${libexecdir}/${packages}
+pkglibexec_PROGRAMS=	pipestage.${MEXSFX}
+pkglibexec_DATA= 
+
+
+# list the dependencies
+pipestage.${MEXSFX}:	pipestage.c
+
+# copy over the source files
+pipestage.c: $(top_srcdir)/sci-wcalc/pipestage.c
+	cp -f $(top_srcdir)/sci-wcalc/pipestage.c pipestage.c
+
+
+BUILT_SOURCES=	pipestage.c
 
 # All the new suffix rules
 
-SUFFIXES = .c .@MEXSFX@
+SUFFIXES = .c .${MEXSFX}
 
-.c.@MEXSFX@ :
-        $(MEX) $*.c
+.c.${MEXSFX} :
+	$(MEX) $*.c
 

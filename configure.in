@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.28 2001/10/19 01:50:25 dan Exp $
+dnl $Id: configure.in,v 1.29 2001/10/19 02:00:49 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -230,7 +230,25 @@ AC_SUBST(HTMLPATH)
 
 # ------------- done with path tests -------------------
 
-# ------------- matlab mex -------------------
+# ------------- enable/disable Matlab/MEX frontend  -------------------
+
+AC_ARG_ENABLE([matlab],
+[  --enable-matlab         Causes the matlab frontend to be built [default=no]],
+[
+if test "X$enable_matlab" = "Xno" ; then
+	MEX_WCALC=""
+else
+	MEX_WCALC="mex-wcalc"
+fi
+],
+[
+enable_matlab=no
+MEX_WCALC=""
+])
+AC_SUBST(MEX_WCALC)
+
+# ------------- done with --enable-matlab -------------------
+
 # mex -h (from matlab 6 release 12.1) says:
 #   sol2, SunOS 5.x - .mexsol
 #	hpux            - .mexhpux
@@ -241,8 +259,9 @@ AC_SUBST(HTMLPATH)
 #	glnx86          - .mexglx
 #	Windows         - .dll
 
-AC_PATH_PROG(MEX, mex)
+if test ! "X$enable_matlab" = "Xno" ; then
 
+AC_PATH_PROG(MEX, mex)
 AC_MSG_CHECKING([for matlab mex suffix])
 case $host in
 	rs6000-*-aix* )
@@ -312,6 +331,8 @@ case $host in
 
 esac
 AC_MSG_RESULT([$MEXSFX])
+fi
+
 AC_SUBST(MEXSFX)
 
 # ------------- end of matlab mex -------------------
