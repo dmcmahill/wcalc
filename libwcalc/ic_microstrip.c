@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.3 2001/11/12 04:02:49 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.4 2001/11/12 12:42:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -401,6 +401,12 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* XXX I probably should avoid 'keff' unless I can show 'mueff' = 1
    */
   line->keff = slowwave;
+
+
+  /* XXX fix these */
+  line->losslen=0;
+  line->met_skindepth=0;
+  line->subs_skindepth=0;
 
   /* electrical length */
   line->len  = 360*line->l/lambda_mis;

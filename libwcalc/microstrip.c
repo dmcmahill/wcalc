@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.1 2001/10/05 00:37:32 dan Exp $ */
+/* $Id: microstrip.c,v 1.2 2001/10/20 18:06:32 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -847,12 +847,29 @@ microstrip_line *microstrip_line_new()
   newline->w    = 110.0;
   newline->freq = 1.0e9;
 
+  /* XXX these should be initialized to real values */
+  newline->l_sf    = 1.0;
+  newline->l_units = "m";
+  newline->w_sf    = 1.0;
+  newline->w_units = "m";
+  newline->freq_sf    = 1.0;
+  newline->freq_units = "Hz";
+
   newline->subs->h     = 62.0;
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
   newline->subs->tmet  = 1.4;
   newline->subs->rho   = 1.0;
   newline->subs->rough = 0.055;
+
+  newline->subs->h_sf    = 1.0;
+  newline->subs->h_units = "m";
+  newline->subs->tmet_sf    = 1.0;
+  newline->subs->tmet_units = "m";
+  newline->subs->rho_sf    = 1.0;
+  newline->subs->rho_units = "ohm-m";
+  newline->subs->rough_sf    = 1.0;
+  newline->subs->rough_units = "m";
 
   /* and do a calculation to finish the initialization */
   microstrip_calc(newline,newline->freq);
