@@ -1,4 +1,4 @@
-/*      $Id$ */
+/*      $Id: mathutil.h,v 1.1 2001/02/11 19:26:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -37,5 +37,70 @@
 #define __MATHUTIL_H__
 
 double coth(double x);
+
+
+typedef struct COMPLEX
+{
+  double re,im;
+} complex;
+
+#define REAL(x)     ((x).re)
+#define IMAG(x)     ((x).im)
+
+/* addition (a+b) */
+complex c_add(complex a, complex b);
+
+/* subtraction (a-b) */
+complex c_sub(complex a, complex b);
+
+/* multiplication (a*b) */
+complex c_mul(complex a, complex b);
+
+/* multiplication by a real number (x*a)*/
+complex c_rmul(double x, complex a);
+
+/* division (x/y) */
+complex c_div(complex x, complex y);
+
+/* complex conjugate (a*) */
+complex c_conj(complex a);
+
+/* magnitude (|z|) */
+double  c_abs(complex a);
+
+/* angle */
+double c_arg(complex x);
+
+/* create complex number from its real and imaginary parts */
+complex c_complex(double real, double imag);
+
+/* square-root */
+complex c_sqrt(complex x);
+
+/* complex trig functions */
+complex c_cos(complex x);
+complex c_cosh(complex x);
+complex c_sin(complex x);
+complex c_sinh(complex x);
+complex c_tan(complex x);
+complex c_cot(complex x);
+complex c_tanh(complex x);
+complex c_coth(complex x);
+
+/* logarithm */
+complex c_log(complex x);
+
+/* Bessel functions */
+complex c_bessel_J0(complex x);
+complex c_bessel_J1(complex x);
+complex c_bessel_Y0(complex x);
+complex c_bessel_Y1(complex x);
+
+/* Hankel functions */
+complex c_hankel0_1(complex x);
+complex c_hankel0_2(complex x);
+complex c_hankel1_1(complex x);
+complex c_hankel1_2(complex x);
+
 
 #endif /*__MATHUTIL_H__*/
