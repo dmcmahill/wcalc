@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.14 2004/07/21 04:32:28 dan Exp $ */
+/* $Id: gtk-units.c,v 1.15 2004/07/21 22:32:03 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -308,7 +308,7 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
       g_print("wc_units_menu_changed():    Updating widget\n");
 #endif
       if(up_item->fmt_string != NULL) {
-	sprintf(str,up_item->fmt_string,(*(up_item->mks_val))/(*(up_item->sf)));
+	sprintf(str, up_item->fmt_string, (*(up_item->mks_val))/sf);
       }
       else {
 	sprintf(str,"--ERR--");
