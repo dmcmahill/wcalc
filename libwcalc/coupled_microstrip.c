@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.18 2004/07/30 22:33:49 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.19 2004/07/31 03:39:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG_SYN   /* debug coupled_microstrip_syn()  */
+/* #define DEBUG_SYN  */ /* debug coupled_microstrip_syn()  */
 /* #define DEBUG_CALC */ /* debug coupled_microstrip_calc() */
 
 #include <math.h>
@@ -135,10 +135,10 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 {
 
   /* input physical dimensions */
-  double wmil,w,lmil,l,s,smil;
+  double w, l, s;
 
   /* substrate parameters */
-  double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
+  double h, er, rho, tand, t, rough;
 
   double u,g,deltau,deltau1,deltaur,T,V,EFE0,EF,AO,BO,CO,DO;
   double EFO0,fn;
@@ -172,6 +172,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
 
 #ifdef DEBUG_CALC
+// XXX fix units here
   printf("coupled_microstrip_calc(): --------- Coupled_Microstrip Analysis ----------\n");
   printf("coupled_microstrip_calc(): Metal width                 = %g mil\n",line->w);
   printf("coupled_microstrip_calc(): Metal spacing               = %g mil\n",line->s);
@@ -187,31 +188,27 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
 
 
-  wmil = line->w;
-  w = MIL2M(wmil);
+  w = line->w;
+  l = line->l;
+  s = line->s;
 
-  lmil = line->l;
-  l = MIL2M(lmil);
-
-  smil = line->s;
-  s = MIL2M(smil);
-
-  /* Substrate dielectric thickness (mils) */
-  hmil = line->subs->h;
-  h = MIL2M(hmil);
+  /* Substrate dielectric thickness */
+  h = line->subs->h;
 
   /* Substrate relative permittivity */
   er = line->subs->er;
+
   /* Metal resistivity */
   rho = line->subs->rho;
+
   /* Loss tangent of the dielectric material */
   tand = line->subs->tand;
-  /* Metal thickness (mils) */
-  tmil = line->subs->tmet;
-  t = MIL2M(tmil);
+
+  /* Metal thickness */
+  t = line->subs->tmet;
+
   /*   subs(6) = Metalization roughness */
-  roughmil = line->subs->rough;
-  rough = MIL2M(roughmil);
+  rough = line->subs->rough;
 
 
 
@@ -737,7 +734,8 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    * the correct equation is penciled in my copy and was 
    * found in Hammerstad and Bekkadal as well as Hammerstad and Jensen 
    */
-  lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((roughmil/delta),2.0)));
+   /* XXX this was roughmil/delta double check it */
+  lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((rough/delta),2.0)));
   
 #endif
 
@@ -781,6 +779,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
     + (1.025*er/(0.687+er))*(pow(g,(0.958*er/(0.706+er))));
 
   /* make it print in mils for now. */
+  /* XXX MKS police! */
   sf=1/25.4e-6;
   deltale =sf*( (d2 - d1 + 0.0198*h*pow(g,R1))*exp(-0.328*pow(g,2.244)) +d1 );
   deltalo =sf*( (d1 - h*R3)*(1.0 - exp(-R4)) + h*R3 );
@@ -918,8 +917,8 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 
   if( line->use_z0k ) {
     /* use z0 and k to calculate z0e and z0o */
-    z0o = z0*z0*sqrt((1.0 - k) / (1.0 + k));
-    z0e = z0*z0*sqrt((1.0 + k) / (1.0 - k));
+    z0o = z0*sqrt((1.0 - k) / (1.0 + k));
+    z0e = z0*sqrt((1.0 + k) / (1.0 - k));
   } else {
     /* use z0e and z0o to calculate z0 and k */
     z0 = sqrt(z0e*z0o);
@@ -958,13 +957,13 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   F2 = 0;
   for (i=0; i<=5 ; i++)
     {
-      F2 = F2 + ai[i] * pow(k,(i-1.0));
+      F2 = F2 + ai[i] * pow(k,i);
     }
 
   F3 = 0;
   for (i=0 ; i<=5 ; i++)
     {
-      F3 = F3 + (bi[i] - ci[i]*(9.6 - er))*pow((0.6 - k),(double)(i-1));
+      F3 = F3 + (bi[i] - ci[i]*(9.6 - er))*pow((0.6 - k),(double)(i));
     }
 
   w = h*fabs(F1*F2);
@@ -972,7 +971,10 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 
 
 #ifdef DEBUG_SYN
-      printf("coupled_microstrip_syn():  Initial estimate:\n"
+  printf("coupled_microstrip_syn():  AW=%g, F1=%g, F2=%g, F3=%g\n",
+	 AW, F1, F2, F3);
+  
+  printf("coupled_microstrip_syn():  Initial estimate:\n"
 	     "                w = %g %s, s = %g %s\n", 
 	     w/line->units_lwst->sf, line->units_lwst->name,
 	     s/line->units_lwst->sf, line->units_lwst->name);
@@ -991,6 +993,8 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   else
     delta = 1e-3*s;
   
+  delta = MIL2M(1e-5);
+
   cval = 1e-12*z0e*z0o;
 
   /* 
@@ -1001,7 +1005,6 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   while( (!done) && (iters < maxiters) )
     {
       iters++;
-   
       line->w = w;
       line->s = s;
       coupled_microstrip_calc(line, line->freq);
@@ -1044,19 +1047,9 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 	
 	/* estimate the new solution */
 	dw = -1.0 *  ((ze0-z0e)*dods - (zo0-z0o)*deds)/d;
-	if (dw > 0.1*w )
-	  dw = 0.1*w;
-	else if (dw < -0.1*w)
-	  dw = -0.1*w;
-
 	w = fabs(w + dw);
 
 	ds =         ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d;
-	if (ds > 0.1*s )
-	  ds = 0.1*s;
-	else if (ds < -0.1*s)
-	  ds = -0.1*s;
-
 	s = fabs(s + ds);
 
 #ifdef DEBUG_SYN
@@ -1067,8 +1060,12 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 	       zo0, zo1, zo2);
 	printf("coupled_microstrip_syn(): dedw = %16.8g, dodw = %16.8g\n",
 	       dedw, dodw);
+	printf("coupled_microstrip_syn(): ze1-ze0 = %16.8g, ze2-ze0 = %16.8g\n",
+	       ze1-ze0, ze2-ze0);
 	printf("coupled_microstrip_syn(): deds = %16.8g, dods = %16.8g\n",
 	       deds, dods);
+	printf("coupled_microstrip_syn(): zo1-zo0 = %16.8g, zo2-zo0 = %16.8g\n",
+	       zo1-zo0, zo2-zo0);
 	printf("coupled_microstrip_syn(): dw = %g %s, ds = %g %s\n",
 	       dw/line->units_lwst->sf, line->units_lwst->name,
 	       ds/line->units_lwst->sf, line->units_lwst->name);
