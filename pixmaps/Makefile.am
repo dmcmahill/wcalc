@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/12 22:36:14 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/13 02:09:28 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,7 @@
 ##  SUCH DAMAGE.
 ##
 
+pkgdata_DATA=	${PNGS} ${EPSS}
 
 EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
 
