@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.9 2004/07/22 01:32:26 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.10 2004/07/22 20:45:12 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -156,31 +156,31 @@ int cgiMain(void){
 #endif
 
   /* flags to the program: */
-  if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
+  if(cgiFormStringNoNewlines("analyze", str_action, ACTION_LEN) ==
      cgiFormSuccess){
     action = ANALYZE;
   }
-  else if(cgiFormStringNoNewlines("synth_a",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_a", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_A;
   }
-  else if(cgiFormStringNoNewlines("synth_b",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_b", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_B;
   }
-  else if(cgiFormStringNoNewlines("synth_c",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_c", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_C;
   }
-  else if(cgiFormStringNoNewlines("synth_er",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_er", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_ER;
   }
-  else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_l", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = SYNTH_L;
   }
-  else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("reset", str_action, ACTION_LEN) ==
 	  cgiFormSuccess){
     action = LOAD;
   }
@@ -198,20 +198,22 @@ int cgiMain(void){
     printf("coax.cgi:  reading form values\n");
 #endif
     
-    /* Metal resistivity relative to copper */
-    if(cgiFormDoubleBounded("rhoa",&rhoa,0.0,1000.0,defRHOB) !=
+    cgi_units_menu_read();
+
+    /* Center conductor metal resistivity */
+    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1000.0, defRHOB) !=
        cgiFormSuccess){
       inputErr(&input_err);
     }
     
-    /* Metal resistivity relative to copper */
-    if(cgiFormDoubleBounded("rhob",&rhob,0.0,1000.0,defRHOB) !=
+    /* Shield metal resistivity  */
+    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1000.0, defRHOB) !=
        cgiFormSuccess){
       inputErr(&input_err);
     }
     
-    /* shield thickness (m) */
-    if(cgiFormDoubleBounded("tshield",&tshield,0.0,1000.0,defTSHIELD) !=
+    /* shield thickness */
+    if(cgiFormDoubleBounded("tshield", &tshield, 0.0, 1000.0, defTSHIELD) !=
        cgiFormSuccess){
       inputErr(&input_err);
     }
@@ -226,7 +228,7 @@ int cgiMain(void){
     */
 
     /* units */
-    if (cgiFormRadio("a_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
+    if (cgiFormRadio("a_units", units_strings_get(length_units), units_size(length_units), &i, 0) !=
 	cgiFormSuccess){
       inputErr(&input_err);
     }

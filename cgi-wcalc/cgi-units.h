@@ -1,4 +1,4 @@
-/* $Id: cgi-units.h,v 1.4 2004/07/22 13:06:23 dan Exp $ */
+/* $Id: cgi-units.h,v 1.5 2004/07/22 20:45:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -79,5 +79,7 @@ char * cgi_units_menu_display(cgi_units_menu *menu);
 cgi_units_menu * cgi_units_menu_new(wc_units *units);
 void cgi_units_attach_entry(cgi_units_menu *menu, char *name);
 char * cgi_units_menu_init();
+
+void cgi_units_menu_read(void);
 
 #endif /* __CGI_UNITS_H__ */

@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.5 2004/07/22 13:06:22 dan Exp $ */
+/* $Id: cgi-units.c,v 1.6 2004/07/22 20:45:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -50,6 +50,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "cgi-common.h"
 #include "cgi-units.h"
 
 #ifdef DMALLOC
@@ -344,4 +345,57 @@ char * cgi_units_menu_init()
   fprintf(cgiOut, "-->\n</SCRIPT>\n");
 
   return "";
+}
+
+/* 
+ * cgi_units_menu_read()
+ *
+ * Read in the units menus on the form all at once.
+ *
+ * This should be used at the beginning of the cgi program so units
+ * are available for loading in the numeric values
+ */
+void cgi_units_menu_read(void)
+{
+  cgi_menu_list *ml=all_menus;
+  wc_units * units;
+  int i,j;
+  /* XXX */
+  char tmps[80];
+  int input_err;
+  
+  while( ml != NULL ) {
+    units = ml->menu->units;
+
+    j = 0;
+    /* Read the numerator terms */
+    for ( i = 0; i < units->nnum; i++) {
+      sprintf(tmps, "%s_%d", ml->menu->name, j++);
+
+      /* read in the cgi form */
+      if (cgiFormSelectSingle(tmps, 
+		       units_strings_get(units->num[i]),
+		       units_size(units->num[i]),
+		       &units->numi[i], 0) != cgiFormSuccess){
+	inputErr(&input_err);
+      }  
+    }
+      
+    
+    /* Read the denominator terms */
+    for ( i = 0; i < units->nden; i++) {
+      sprintf(tmps, "%s_%d", ml->menu->name, j++);
+
+      /* read in the cgi form */
+      if (cgiFormSelectSingle(tmps, 
+		       units_strings_get(units->den[i]),
+		       units_size(units->den[i]),
+		       &units->deni[i], 0) != cgiFormSuccess){
+	inputErr(&input_err);
+      }  
+    }
+
+    ml = ml->next;
+  }
+
 }
