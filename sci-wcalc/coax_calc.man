@@ -1,4 +1,4 @@
-.\" $Id: coax_calc.man,v 1.1 2001/12/09 15:14:41 dan Exp $
+.\" $Id: coax_calc.man,v 1.2 2001/12/09 20:54:58 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -69,7 +69,7 @@ tand
 len
 : physical length of line (meters)
 .TP
-freq
+f
 : analysis frequency (Hertz)
 .TP
 L
@@ -101,9 +101,9 @@ rho_a=3.5e-8;     // resistivity of inner conductor
 rho_b=rho_a;      // resistivity of outer conductor
 er=9.5;           // relative permitivitty of dielectric
 tand=0.01;        // dielectric loss tangent
-len=100*sf;       // length of line
+len=1.0;          // length of line
 f=100e6;          // 100 MHz operation
-[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,freq);
+[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,f);
 disp(sprintf('z0   = %g Ohms',z0));
 disp(sprintf('elen = %g degrees',elen));
 disp(sprintf('loss = %g dB',loss));
