@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/12 00:17:05 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/13 01:09:38 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -32,6 +32,10 @@
 ##  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ##  SUCH DAMAGE.
 ##
+
+pkgdata_DATA = \
+	copying.html \
+	index.html
 
 cgibinexecdir = $(libexecdir)/cgi-bin
 
