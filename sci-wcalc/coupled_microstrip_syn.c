@@ -1,4 +1,4 @@
-/* $Id: microstrip_syn.c,v 1.2 2001/11/02 01:23:27 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.1 2001/11/04 19:23:10 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -121,8 +121,8 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *z0,*k,*elen,*w,*h,*l,*tmet,*rho,*rough,*er,*tand,*freq,*flag;
-  unsigned int *ind_z0,*ind_k,*ind_elen,*ind_w,*ind_h,*ind_l;
+  double *z0,*k,*elen,*w,*s,*h,*l,*tmet,*rho,*rough,*er,*tand,*freq,*flag;
+  unsigned int *ind_z0,*ind_k,*ind_elen,*ind_w,*ind_s,*ind_h,*ind_l;
   unsigned int *ind_tmet,*ind_rho;
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq,*ind_flag;
 
@@ -200,9 +200,8 @@ void mexFunction(
   l_out  = mxGetPr(L_OUT);
   h_out  = mxGetPr(H_OUT);
   er_out = mxGetPr(ER_OUT);
-  keff   = mxGetPr(KEFF_OUT);
-  loss   = mxGetPr(LOSS_OUT);
-  deltal = mxGetPr(DELTAL_OUT);
+  kev    = mxGetPr(KEV_OUT);
+  kodd   = mxGetPr(KODD_OUT);
 
   /* the actual computation */
   line = coupled_microstrip_line_new();

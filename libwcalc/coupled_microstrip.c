@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.4 2001/09/17 15:27:27 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.1 2001/10/05 00:37:32 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -539,7 +539,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
  *
  */
 
-int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
+int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
 {
 
   double h,er,l,lmil,wmin,wmax,abstol,reltol;

@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.4 2001/09/15 02:43:05 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.1 2001/10/05 00:37:32 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -66,13 +66,16 @@ typedef struct COUPLED_MICROSTRIP_LINE
 
   double loss,losslen,skindepth;
 
+  /* analysis frequency */
+  double freq;
+
   microstrip_subs *subs;
 
 } coupled_microstrip_line;
 
 
 double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
-int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
+int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag);
 
 void coupled_microstrip_line_free(coupled_microstrip_line * line);
 coupled_microstrip_line *coupled_microstrip_line_new(void);
