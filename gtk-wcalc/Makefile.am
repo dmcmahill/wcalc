@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.16 2002/05/10 22:52:34 dan Exp $
+## $Id: Makefile.am,v 1.17 2002/05/14 00:39:21 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -98,7 +98,9 @@ runwcalc:	$(srcdir)/runwcalc.in
 	sed "s;@BUILDDIR@;`pwd`;g" $< > $@
 	chmod 755 $@
 
-AWG.asciitab:	$(srcdir)/Makefile
+AWG.c: AWG.asciitab
+
+AWG.asciitab: Makefile
 	${AWK}  'BEGIN{ \
 				printf("Wire Size (AWG)|Diameter (mil)|Diameter (mm)\n\n"); \
 				for(awg=8;awg<=42;awg++){ \
@@ -110,5 +112,5 @@ AWG.asciitab:	$(srcdir)/Makefile
 SUFFIXES= .asciitab
 
 .asciitab.c :
-	$(FORMAT_TAB) gtk_fname=$*_table $(srcdir)/$< > $(srcdir)/$@
+	$(FORMAT_TAB) gtk_fname=`basename $*_table` $< > $@
 

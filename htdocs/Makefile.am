@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.16 2002/05/10 22:49:33 dan Exp $
+## $Id: Makefile.am,v 1.17 2002/05/14 00:43:02 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -34,7 +34,7 @@
 ##
 
 # search for the .asciitab files (for the resistivity table, etc)
-vpath %.asciitab $(top_srcdir)/gtk-wcalc
+vpath %.asciitab ../gtk-wcalc:$(top_srcdir)/gtk-wcalc
 
 SUBDIRS=	sci-man  mex-man
 
@@ -107,6 +107,6 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=html html_no_table=y
 SUFFIXES=	.asciitab
 
 .asciitab.incl:
-	${FORMAT_TAB} $(srcdir)/$< > $@
+	${FORMAT_TAB} $< > $@
 
 include $(srcdir)/shtml.mk
