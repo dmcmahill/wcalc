@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/30 23:50:22 dan Exp $
+## $Id: Makefile.am,v 1.9 2002/05/10 22:52:57 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -56,7 +56,7 @@ noinst_SCRIPTS=		runmatlab
 
 lib_LTLIBRARIES=	libmex-alert.la
 libmex_alert_la_SOURCES=	alert.c
-INCLUDES = -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
+INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
@@ -64,9 +64,9 @@ MEX_MANS=	${MEX_SRCS:.c=.m}
 LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 # various MEX flags
-MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \
+MEXLDFLAGS=	-L../libwcalc/.libs -lwcalc \
 		-L.libs -lmex-alert
-MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc 
+MEXINCLUDES=	-I.. -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc 
 
 
 all-local:	${MEX_FILES} runmatlab ${MEX_MANS}
