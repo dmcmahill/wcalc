@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.3 2001/10/29 02:44:15 dan Exp $
+## $Id: Makefile.am,v 1.4 2001/10/29 11:57:38 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -49,15 +49,22 @@ SCIMANHTML=	${MEX_SRCS:.c=.html}
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 
-
 all-local:	whatis.incl
 
 clean-local:	
 	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl
 
 
-#BUILT_SOURCES= ${SCIMANHTML} ${SCIMANSHTML}
+BUILT_SOURCES= left_column.incl main_footer.incl
 EXTRA_DIST=	man_start.incl man_end.incl
+
+CP_INCL=	sed 's;a href=";a href="../;g' 
+
+left_column.incl: $(srcdir)/../left_column.incl
+	$(CP_INCL) $< > $@
+
+main_footer.incl: $(srcdir)/../main_footer.incl
+	$(CP_INCL) $< > $@
 
 whatis.incl: ${SCIMANS} Makefile
 	@echo "****************************************************"
@@ -80,7 +87,10 @@ SUFFIXES=	.shtml .html .cat
 .cat.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	echo "<pre>" >> $@
-	ul -t dumb $< >> $@
+	cat $< | col -b | \
+		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
+			cnt==0{print  $$0} \
+			cnt > 0{cnt--}' >> $@
 	echo "</pre>" >> $@
 	cat $(srcdir)/man_end.incl >> $@
 

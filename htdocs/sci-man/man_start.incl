@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: man_start.incl,v 1.1 2001/10/28 22:50:26 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -32,4 +32,6 @@ stripline synthesis,
     <br>
     <br>
     </center>
+
+    <font face="courier, helvetica, arial" size="-1">
     
