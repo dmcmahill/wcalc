@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.5 2002/05/09 23:50:00 dan Exp $ */
+/* $Id: microstrip.c,v 1.6 2002/06/12 11:30:29 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Dan McMahill
@@ -57,6 +57,12 @@
 
 
 static int microstrip_calc_int(microstrip_line *line, double f, int flag);
+
+/* Hammerstad and Jensen effective dielectric constant */
+static double ee_HandJ(double u, double er);
+
+/* Hammerstad and Jensen characteristic impedance */
+static double z0_HandJ(double u);
 
 /* 
  *
@@ -151,19 +157,21 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
   double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
 
+  double T;
   double u,deltau;
+  double u1, ur, deltau1, deltaur;
 
-  double A,B,E0;
+  double E0,EFF0;
 
   double fn;
   double P1,P2,P3,P4,P,EF;
 
-  double F,z0;
+  double z0;
 
 
   double R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15,R16,R17;
 
-  double c,v;
+  double v;
 
   double z1,z2,z3,z4,z5,deltal,len;
 
@@ -215,7 +223,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   printf("L = %g mils\n",lmil);
   printf("W = %g mils\n",wmil);
   printf("Tmet = %g mils\n",M2MIL(t));
-
+  printf("er = %g\n",er);
   printf("\n");
 
 #endif
@@ -227,16 +235,31 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
   /* Find u and correction factor for nonzero metal thickness */
   u = w/h;
-  deltau = (t/(2*M_PI*h));
 
-  if(t>0.0)
-    {
-      deltau = deltau
-	*log(1.0 + 4.0*exp(1.0)*h/(t*pow(coth(sqrt(6.517*u)),2.0)))
-	*(1.0 + 1.0/cosh(sqrt(er-1.0)));
-    }
-  u = u + deltau;
+  if(t>0.0) {
+    /* find normalized metal thickness */
+    T = t/h;
 
+    /* (6) from Hammerstad and Jensen */
+    deltau1 = (T/M_PI)
+      *log(1.0 + 4.0*exp(1.0)/(T*pow(coth(sqrt(6.517*u)),2.0)));
+    
+    /* (7) from Hammerstad and Jensen */
+    deltaur = 0.5*(1.0 + 1.0/cosh(sqrt(er-1.0)))*deltau1;
+
+    deltau = deltaur;
+
+#ifdef DEBUG_CALC
+  printf("microstrip.c: microstrip_calc():  deltau1 = %g \n",deltau1);
+  printf("                                  deltaur = %g \n",deltaur);
+  printf("                                  t/h     = %g \n",T);
+#endif
+  }
+  else {
+    deltau = 0.0;
+    deltau1 = 0.0;
+    deltaur = 0.0;
+  }
   
 
   /*
@@ -253,39 +276,65 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    * relative permittivity at f=0
    *  (Hammerstad and Jensen)
    */
-   A = 1.0 + (1.0/49.0)
-     *log((pow(u,4.0) + pow((u/52.0),2.0))/(pow(u,4.0) + 0.432)) 
-     + (1.0/18.7)*log(1.0 + pow((u/18.1),3.0));
-   B = 0.564*pow(((er-0.9)/(er+3.0)),0.053);
-   E0 = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/u),(-A*B));
 
+  u1 = u + deltau1;
+  ur = u + deltaur;
 
-   /*
-    * relative permittivity including dispersion
-    *  (Kirschning and Jansen)
-    */
+#ifdef DEBUG_CALC
+  printf("microstrip.c: microstrip_calc():  u  = %g \n",u);
+  printf("                                  u1 = %g \n",u1);
+  printf("                                  ur = %g \n",ur);
+#endif
+  
 
-    /* normalized frequency (GHz-cm)*/
-   fn = 1e-7 * f * h;
+  E0 = ee_HandJ(ur,er);
+#ifdef DEBUG_CALC
+  printf("microstrip.c: microstrip_calc():  E0 = %g \n",E0);
+  printf("    This is (3) from Hammerstad & Jensen and Y from\n");
+  printf("    the Rogers Corp. paper\n");
+#endif
 
-   P1 = 0.27488 + 
-     (0.6315 + (0.525 / (pow((1.0 + 0.157*fn),20.0))) )*u 
-     - 0.065683*exp(-8.7513*u);
-   P2 = 0.33622*(1.0 - exp(-0.03442*er));
-   P3 = 0.0363*exp(-4.6*u)*(1.0 - exp(-pow((fn/3.87),4.97)));
-   P4 = 1.0 + 2.751*( 1.0 -  exp(-pow((er/15.916),8.0)));
-   P = P1*P2*pow(((0.1844 + P3*P4)*10.0*fn),1.5763);
-   
-   EF = (E0 + er*P)/(1.0 + P);
+  /*
+   * zero frequency characteristic impedance
+   * (8) from Hammerstad and Jensen
+   */
+  z0 = z0_HandJ(ur)/sqrt(E0);
 
+#ifdef DEBUG_CALC
+  printf("microstrip.c: microstrip_calc():  z0(0) = %g \n",z0);
+  printf("              This is (8) from Hammerstad & Jensen\n");
+#endif
+    
+  /* 
+   * zero frequency effective permitivity.
+   * (9) from Hammerstad and Jensen
+   */
+  EFF0 = E0*pow(z0_HandJ(u1)/z0_HandJ(ur),2.0);
 
-   /*
-    * Characteristic Impedance
-    *  (Hammerstad and Jensen)
-    */
-   F = 6.0 + (2.0*M_PI - 6.0)*exp(-pow((30.666/u),0.7528));
-   z0 = (60.0/sqrt(EF)) * log(F/u + sqrt(1.0 + pow((2/u),2.0)));
+#ifdef DEBUG_CALC
+  printf("microstrip.c: microstrip_calc():  EFF0 = %g \n",EFF0);
+  printf("              This is (9) from Hammerstad & Jensen\n");
+#endif
+	 
+  /*
+   * relative permittivity including dispersion
+   *  (Kirschning and Jansen)
+   */
+  
+  /* normalized frequency (GHz-cm)*/
+  fn = 1e-7 * f * h;
+  
+  /* (2) from Kirschning and Jansen */
+  P1 = 0.27488 + 
+    (0.6315 + (0.525 / (pow((1.0 + 0.157*fn),20.0))) )*u 
+    - 0.065683*exp(-8.7513*u);
+  P2 = 0.33622*(1.0 - exp(-0.03442*er));
+  P3 = 0.0363*exp(-4.6*u)*(1.0 - exp(-pow((fn/3.87),4.97)));
+  P4 = 1.0 + 2.751*( 1.0 -  exp(-pow((er/15.916),8.0)));
+  P = P1*P2*pow(((0.1844 + P3*P4)*10.0*fn),1.5763);
 
+  /* (1) from Kirschning and Jansen */
+  EF = (EFF0 + er*P)/(1.0 + P);
 
 
    /*
@@ -297,33 +346,42 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    fn = 1.0e-6 * f * h;
 
 
+   /* (1) from Jansen and Kirschning */
    R1 = 0.03891*pow(er,1.4);
    R2 = 0.267*pow(u,7.0);
    R3 = 4.766*exp(-3.228*pow(u,0.641));
    R4 = 0.016 + pow((0.0514*er),4.524);
    R5 = pow((fn/28.843),12.0);
    R6 = 22.20*pow(u,1.92);
+
+   /* (2) from Jansen and Kirschning */
    R7 = 1.206 - 0.3144*exp(-R1)*(1.0 - exp(-R2));
-   R8 = 1.0 + 1.275*(1.0 - exp(-0.004625*R3*pow(er,1.674)));
+   R8 = 1.0 + 1.275*(1.0 - 
+		     exp(-0.004625*R3*
+			 pow(er,1.674)*
+			 pow(fn/18.365,2.745)));
    R9 = (5.086*R4*R5/(0.3838 + 0.386*R4))*(exp(-R6)/(1.0 + 1.2992*R5));
    R9 = R9 * pow((er-1.0),6.0)/(1.0 + 10.0*pow((er-1),6.0));
+
+   /* (3) from Jansen and Kirschning */
    R10 = 0.00044*pow(er,2.136) + 0.0184;
    R11 = pow((fn/19.47),6.0)/(1.0 + 0.0962*pow((fn/19.47),6.0));
    R12 = 1.0 / (1.0 + 0.00245*u*u);
+
+   /* (4) from Jansen and Kirschning */
    R13 = 0.9408*pow(EF,R8) - 0.9603;
-   R14 = (0.9408 - R9)*pow(E0,R8)-0.9603;
+   R14 = (0.9408 - R9)*pow(EFF0,R8)-0.9603;
    R15 = 0.707*R10*pow((fn/12.3),1.097);
    R16 = 1.0 + 0.0503*er*er*R11*(1.0 - exp(-pow((u/15),6.0)));
    R17 = R7*(1.0 - 1.1241*(R12/R16)*exp(-0.026*pow(fn,1.15656)-R15));
 
-   z0 = (60.0/sqrt(E0)) 
-     * log(F/u + sqrt(1.0 + pow((2.0/u),2.0)))*pow((R13/R14),R17);
+   /* (5) from Jansen and Kirschning */
+   z0 = z0*pow((R13/R14),R17);
 
    /*
     * propagation velocity (meters/sec)
     */
-   c = 2.997925e8;
-   v = c / sqrt(EF);
+   v = LIGHTSPEED / sqrt(EF);
 
 
 
@@ -372,8 +430,14 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	*/
    
        /* loss in nepers/meter */
-       ld=(M_PI*f/v)*(er/EF)*((EF-1.0)/(er-1.0))*tand;
-   
+       if (er > 1.0) {
+	 ld=(M_PI*f/v)*(er/EF)*((EF-1.0)/(er-1.0))*tand;
+       }
+       else {
+	 /* XXX verify this one */
+	 ld = 0.0;
+       }
+
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
    
@@ -444,7 +508,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   line->w = wmil;
 
 	   /* conduction losses, nepers per meter */
-	   lc = (M_PI*f/c)*(z1 - z2)/z0;
+	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
 	 }
 
 	   /* "dc" case  */
@@ -825,6 +889,52 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
   return(0);
 }
 
+/*
+ * Effective dielectric constant from Hammerstad and Jensen
+ */
+static double ee_HandJ(double u, double er)
+{
+  double A,B,E0;
+
+  /* (4) from Hammerstad and Jensen */
+  A = 1.0 + (1.0/49.0)
+    *log((pow(u,4.0) + pow((u/52.0),2.0))/(pow(u,4.0) + 0.432)) 
+    + (1.0/18.7)*log(1.0 + pow((u/18.1),3.0));
+  
+  /* (5) from Hammerstad and Jensen */
+  B = 0.564*pow(((er-0.9)/(er+3.0)),0.053);
+
+  
+  /* 
+   * zero frequency effective permitivity.  (3) from Hammerstad and
+   * Jensen.  This is ee(ur,er) thats used by (9) in Hammerstad and
+   * Jensen.
+   */
+  E0 = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/u),(-A*B));
+
+  return E0;
+}
+
+/* 
+ * Characteristic impedance from (1) and (2) in Hammerstad and Jensen 
+ */
+static double z0_HandJ(double u)
+{
+  double F,z01;
+  
+  /* (2) from Hammerstad and Jensen.  'u' is the normalized width */
+  F = 6.0 + (2.0*M_PI - 6.0)*exp(-pow((30.666/u),0.7528));
+
+  /* (1) from Hammerstad and Jensen */
+  z01 = (FREESPACEZ0/(2*M_PI)) * log(F/u + sqrt(1.0 + pow((2/u),2.0)));
+
+#ifdef DEBUG_CALC
+  printf("microstrip.c: z0_HandJ(%g) = %g Ohms. FREESPACEZ0=%g Ohms\n",
+	 u,z01,FREESPACEZ0);
+#endif
+
+  return z01;
+}
 
 void microstrip_line_free(microstrip_line * line)
 {
