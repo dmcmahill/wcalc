@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/27 20:14:21 dan Exp $
+## $Id$
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,57 +33,20 @@
 ##  SUCH DAMAGE.
 ##
 
-# Note, we let the user pick some arbitrary directory for the PNG files
-# because we simply don't know how the user will organize their web server.
-# For example, someone might install this in their personal public_html
-# directory and need to look for images in ~randomuser/images, or perhaps
-# this is installed by the webadmin under /wcalc.
-
-SUBDIRS=	sci-man 
-
-pkgimgdatadir= @HTMLDIR@
-pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
-
 # the include= is a ':' seperated search path for SSI directives
-SHTML_INCLUDE_PATH= $(srcdir)
+SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_PATH)
 
-SHTML_IN=	\
-	about.shtml \
-	air_coil.shtml \
-	cgi-wcalc.shtml \
-	coupled_microstrip.shtml \
-	gtk-wcalc.shtml \
-	ic_microstrip.shtml \
-	index.shtml \
-	mex-wcalc.shtml \
-	microstrip.shtml \
-	obtaining.shtml \
-	projects.shtml \
-	sci-wcalc.shtml \
-	screenshots.shtml \
-	stripline.shtml
+# All the new suffix rules
 
-INCL_FILES=\
-	left_column.incl \
-	main_footer.incl \
-	page_start.incl
+SUFFIXES+= .shtml .html
 
-HTML_OUT=	${SHTML_IN:.shtml=.html}
-
-PNGS=\
-	screen1.png \
-	screen2.png
-
-clean-local:	
-	-rm ${HTML_OUT}
-
-EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS}
-
-# add the dependency on the .incl files
-${HTML_OUT} : ${INCL_FILES}
-
-CGIPATH=	@CGIPATH@
-
-SUFFIXES= 
-include $(srcdir)/shtml.mk
+.shtml.html :
+	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml | sed 's;/cgi-bin/;/${CGIPATH}/;g' > $*.html
+	@@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
+	@@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
+	@@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
+	@@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
+	@@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
+	@@AWK_GENSUB_NO@ echo "          particular awk program."
 
