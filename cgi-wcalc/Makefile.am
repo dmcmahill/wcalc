@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.10 2001/10/17 03:56:18 dan Exp $
+## $Id: Makefile.am,v 1.11 2001/10/18 03:23:53 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -60,20 +60,20 @@ INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLP
 LDADD = ../libwcalc/libwcalc.la
 LDFLAGS = -all-static
 
-BUILT_SOURCES = \
-	air_coil_html.c \
-	air_coil_id.h \
-	coupled_microstrip_html.c \
-	coupled_microstrip_id.h \
-	footer_html.c \
-	ic_microstrip_html.c \
-	ic_microstrip_id.h \
-	microstrip_html.c \
-	microstrip_id.h \
-	stripline_html.c \
-	stripline_id.h 
+HTML_FILES= \
+	air_coil.html \
+	coupled_microstrip.html \
+	footer.html \
+	ic_microstrip.html \
+	microstrip.html \
+	stripline.html 
 
-EXTRA_DIST=	${BUILT_SOURCES}
+ID_FILES=	${HTML_FILES:.html=_id.h}
+CHTML_FILES=	${HTML_FILES:.html=_html.c}
+
+BUILT_SOURCES = ${ID_FILES} ${CHTML_FILES}
+
+EXTRA_DIST=	${BUILT_SOURCES} ${HTML_FILES} 
 
 HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut 
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'

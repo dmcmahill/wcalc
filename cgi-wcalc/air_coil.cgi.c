@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.4 2001/09/23 01:44:45 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.1 2001/10/05 01:28:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -111,6 +111,7 @@ int cgiMain(void){
     input_err=1;
   }
 
+  /* inside diameter units */
 
   /* inside diameter */
   if(cgiFormDoubleBounded("dia",&dia,0.0001,1000.0,defDIA) !=
@@ -118,20 +119,25 @@ int cgiMain(void){
     input_err=1;
   }
 
-  /* Solenoid length (inches) */
+  /* Solenoid length units */
+
+  /* Solenoid length  */
   if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
      cgiFormSuccess){
     input_err=1;
   }
 
-  /* Frequency of operation (MHz) */
+  /* Frequency of operation units */
+
+  /* Frequency of operation  */
   if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
      cgiFormSuccess){
     input_err=1;
   }
 
+  /* Inductance units */
 
-  /* Desired Inductance (nH) */
+  /* Desired Inductance */
   if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
      cgiFormSuccess){
     input_err=1;
