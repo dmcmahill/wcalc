@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.7 2003/01/10 02:49:02 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.8 2003/01/10 03:09:00 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
@@ -321,6 +321,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   P14 = 0.8928 + 0.1072*(1.0 - exp(-0.42*pow((fn/20.0),3.215)));
   P15 = fabs(1.0 - 0.8928*(1.0 + P11)*P12*exp(-P13*(pow(g,1.092)))/P14);
   FOF = P1*P2*pow(((P3*P4 + 0.1844)*fn*P15),1.5763);
+
   
   /*
    * relative permittivities including dispersion via generalization
@@ -330,6 +331,10 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   EFEF = er - (er - EFE0)/(1.0 + FEF);
   EFOF = er - (er - EFO0)/(1.0 + FOF);
 
+#ifdef DEBUG_CALC
+  printf("EFE0=%g, FEF=%g, EFEF=%g\n",EFE0,FEF,EFEF);
+  printf("EFO0=%g, FOF=%g, EFOF=%g\n",EFO0,FOF,EFOF);
+#endif 
 
   /*
    * static single strip, T=0, characteristic impedance (f=0)
