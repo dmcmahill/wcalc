@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2001/10/30 03:46:41 dan Exp $
+## $Id: Makefile.am,v 1.12 2001/11/04 18:05:45 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -51,6 +51,7 @@ SHTML_IN=	\
 	about.shtml \
 	air_coil.shtml \
 	cgi-wcalc.shtml \
+	coax.shtml \
 	coupled_microstrip.shtml \
 	faq.shtml \
 	gtk-wcalc.shtml \
