@@ -1,8 +1,8 @@
-dnl $Id: configure.in,v 1.6 2001/09/12 03:11:38 dan Exp $
+dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
-dnl Copyright (c) 1999, 2000, 2001 Dan McMahill
+dnl Copyright (c) 2001 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -34,7 +34,7 @@ dnl OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 dnl SUCH DAMAGE.
 dnl
 
-AC_INIT(wcalc.c)
+AC_INIT(cgic.c)
 AC_CONFIG_HEADER(config.h)
 
 dnl determine host type
@@ -51,28 +51,6 @@ AC_PROG_INSTALL
 dnl check for headers
 AC_HEADER_STDC
 
-dnl GTK checks
-AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
-if test "x$GTK_CONFIG" = "xnone"; then
-	AC_MSG_ERROR("You must have gtk installed on your system")
-else
-	AC_MSG_CHECKING("if gtk is version 1.2 or later")
-	GTK_VER=`$GTK_CONFIG --version`
-
-	case $GTK_VER in
-	0.* )
-		AC_MSG_ERROR("you need at least version 1.2 of gtk")
-		;;
-	1.1* )
-		AC_MSG_ERROR("you need at least version 1.2 of gtk")
-		;;
-	* )
-		AC_MSG_RESULT("$GTK_VER")
-		GTK_CFLAGS=`$GTK_CONFIG --cflags`
-		GTK_LIBS=`$GTK_CONFIG --libs`
-		;;
-	esac	
-fi
 	
 dnl Only use -Wall if we have gcc
 if test "x$GCC" = "xyes"; then
@@ -81,8 +59,5 @@ if test "x$GCC" = "xyes"; then
 	fi
 fi
 
-CFLAGS="$CFLAGS $GTK_CFLAGS"
-LIBS="$LIBS $GTK_LIBS"
 
-AC_CONFIG_SUBDIRS(cgi)
 AC_OUTPUT(Makefile)
