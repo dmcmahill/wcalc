@@ -1,4 +1,4 @@
-.\" $Id: microstrip_calc.man,v 1.4 2001/11/03 19:21:49 dan Exp $
+.\" $Id: microstrip_calc.man,v 1.5 2004/09/08 22:39:48 dan Exp $
 .\"
 .\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
@@ -128,6 +128,16 @@ velocity).
 .fi
 .SH EXAMPLE
 .nf
+sf=25.4e-6;       // mils to meters conversion factor
+w=20*sf;          // width 
+h=15*sf;          // height
+l=1100*sf;        // length
+tmet=1.4*sf;      // metal thickness
+rho=1.72e-8;      // resitivity
+rough=0.05*sf;    // metal surface roughness
+er=4.5;           // relative dielectric constant
+tand=0.01;        // loss tangent
+f=2.4e9;          // frequency
 [z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
 disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('keff = %8.4g ',keff));
