@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.5 2001/12/21 03:09:42 dan Exp $ */
+/* $Id: coax_gui.c,v 1.6 2002/01/03 03:54:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -48,6 +48,8 @@
 #include "alert.h"
 #include "epscat.h"
 #include "menus.h"
+#include "gtk-units.h"
+
 #include "misc.h"
 
 #include "coax.h"
@@ -148,6 +150,10 @@ coax_gui *coax_gui_new(void)
   new_gui->line = coax_new();
 
   new_gui->rho_units = resistivity_units_new();
+  new_gui->L_units = inc_inductance_units_new();
+  new_gui->R_units = inc_resistance_units_new();
+  new_gui->C_units = inc_capacitance_units_new();
+  new_gui->G_units = inc_conductance_units_new();
 
   return new_gui;
 }

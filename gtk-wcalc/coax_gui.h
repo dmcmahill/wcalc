@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.3 2001/12/15 23:16:44 dan Exp $ */
+/* $Id: coax_gui.h,v 1.4 2002/01/03 03:54:49 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -106,6 +106,11 @@ typedef struct COAX_GUI
    * units for resistivities
    */
   composite_units_data *rho_units;
+
+  /*
+   * units for the incremental model
+   */
+  composite_units_data *L_units, *R_units, *C_units, *G_units;
 
 } coax_gui;
 
