@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.4 2002/06/12 11:30:13 dan Exp $ */
+/* $Id: gtk-units.c,v 1.5 2002/06/25 21:19:27 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -65,12 +65,13 @@ static wc_units_menu_data *units_menu_data_new(int ind);
 
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
-				       void (*callback)(GtkWidget *, gpointer))
+				       wc_units_gui *ug,
+				       void (*callback)(GtkWidget *,gpointer)
+				       )
 {
   GtkWidget *hbox;
   GtkWidget *item;
   int i;
-  wc_units_gui *ug;
 
 
   if ( (ug = malloc(sizeof(wc_units_gui))) == NULL ) {
@@ -100,9 +101,10 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
       /* add to our list of numerator menus */
-      g_list_append(ug->menu_num,item);
+      ug->menu_num = g_list_append(ug->menu_num,item);
 #ifdef DEBUG
       g_print("wc_composite_units_menu_new():  added numerator item[%d] = %p\n",i,item);
+      g_print("wc_composite_units_menu_new():        numerator list     = %p\n",ug->menu_num);
 #endif
       
       if (i < (units->nnum - 1)) {
@@ -121,9 +123,10 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
 	item = units_menu_new(units->den[i],0,ug,callback);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 	/* add to our list of denominator menus */
-	g_list_append(ug->menu_den,item);
+	ug->menu_den = g_list_append(ug->menu_den,item);
 #ifdef DEBUG
 	g_print("wc_composite_units_menu_new():  added denominator item[%d] = %p\n",i,item);
+	g_print("wc_composite_units_menu_new():        denominator list     = %p\n",ug->menu_den);
 #endif
 	if (i < (units->nden - 1)) {
 	  item = gtk_label_new("-");
@@ -140,8 +143,9 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
 
 void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
 {
-  int which;
+  int which,ind;
   wc_units_gui *ug;
+  wc_units_menu_data *menu_data;
 
 #ifdef DEBUG
   char *ustr;
@@ -151,14 +155,37 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
   ug = (wc_units_gui *) data;
   /* gui = WC_COAX_GUI(data);
      g_list_nth_data(ug->menu_num,action); */
-
-  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
+  menu_data = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = menu_data->ind;
+  
+  
+  if ( (ind = g_list_index(ug->menu_num,menu_data->opt_menu)) != -1) {
 #ifdef DEBUG
-  g_print("wc_composite_units_menu_changed():  ug->units      = %p\n",ug->units);
+    g_print("wc_composite_units_menu_changed():  changed numerator[%d] units\n", ind);
+#endif
+    ug->units->numi[ind] = which;
+  }
+  else if ( (ind = g_list_index(ug->menu_den,menu_data->opt_menu)) != -1) {
+#ifdef DEBUG
+    g_print("wc_composite_units_menu_changed():  changed denominator[%d] units\n", ind);
+#endif
+    ug->units->deni[ind] = which;
+  }
+  else {
+    fprintf(stderr,"wc_composite_units_menu_changed():  Could not locate menu\n");
+    exit(1);
+  }
+
+#ifdef DEBUG
   units_update(ug->units,&sf,&ustr);
   g_print("wc_composite_units_menu_changed():      units string = \"%s\", scale factor = %g\n",
 	  ustr,sf);
 #endif
+
+  /*
+   * Now update all the labels and text entries which may be tied to
+   * these units 
+   */
 
 }
 
@@ -227,6 +254,7 @@ GtkWidget *units_menu_new(const units_data *units,
 		       GTK_SIGNAL_FUNC(callback), 
 		       (gpointer) gui);
     data = wc_units_menu_data_new(i);
+    data->opt_menu = opt_menu;
     gtk_object_set_user_data(GTK_OBJECT(item),(gpointer *) data);
     /* `menu' becomes the parent of each `item' */
     gtk_menu_append(GTK_MENU(menu), item);

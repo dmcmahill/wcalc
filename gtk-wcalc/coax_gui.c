@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.10 2002/06/12 11:30:10 dan Exp $ */
+/* $Id: coax_gui.c,v 1.11 2002/06/25 21:19:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -632,6 +632,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
+  wc_units_gui *ug;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -679,15 +680,24 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
 
-  text = wc_composite_units_menu_new(gui->L_units,WC_WCALC(gui),
+  text = wc_composite_units_menu_new(gui->L_units,WC_WCALC(gui),ug,
 				     wc_composite_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
+#define OUTPUT_TEXT "     "
+
+  gui->label_L = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_L, 5,6,0,1, 0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_L);
+
+  /* XXX
+     wc_composite_units_label_attach(ug,gui->label_L,gui->line->L); */
+
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
 
-  text = wc_composite_units_menu_new(gui->R_units,WC_WCALC(gui),
+  text = wc_composite_units_menu_new(gui->R_units,WC_WCALC(gui),ug,
 				     R_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
@@ -695,7 +705,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
 
-  text = wc_composite_units_menu_new(gui->C_units,WC_WCALC(gui),
+  text = wc_composite_units_menu_new(gui->C_units,WC_WCALC(gui),ug,
 				     C_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
@@ -703,7 +713,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
 
-  text = wc_composite_units_menu_new(gui->G_units,WC_WCALC(gui),
+  text = wc_composite_units_menu_new(gui->G_units,WC_WCALC(gui),ug,
 				     G_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
@@ -718,7 +728,6 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 
 
 
-#define OUTPUT_TEXT "     "
   gui->label_delay = gtk_label_new( OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_delay,
 		    1,2,0,1, 0,0,XPAD,YPAD);
@@ -744,10 +753,6 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 		    1,2,4,5, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_dloss);
 
-
-  gui->label_L = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_L, 5,6,0,1, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_L);
 
   gui->label_R = gtk_label_new( OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_R, 5,6,1,2, 0,0,XPAD,YPAD);

@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.3 2002/06/12 11:30:13 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.4 2002/06/25 21:19:27 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -93,7 +93,11 @@ typedef struct _WC_UNITS_MENU_DATA
    */
   int ind;
 
+  /* The options menu that this is part of */
+  GtkWidget *opt_menu;
+
 } wc_units_menu_data;
+
 #define WC_UNITS_MENU_DATA(x)      ((wc_units_menu_data *) (x))
 
 GtkWidget *units_menu_new(const units_data *units, 
@@ -107,6 +111,7 @@ void  set_sf_menu(GtkWidget *menu,
 
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
+				       wc_units_gui *ug,
 				       void (*callback)(GtkWidget *, gpointer));
 
 wc_label_units *wc_label_units_new(const composite_units_data *units, 
