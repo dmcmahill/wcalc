@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.10 2004/03/09 00:12:09 dan Exp $ */
+/* $Id: main.c,v 1.11 2004/08/03 02:07:33 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
 }
 
 /*
- *  [L,Q,SRF,len_out,fill_out] = 
+ *  [L, Q, SRF, len_out, fill_out, Lmax] = 
  *    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
  */
 static void exec_air_coil_calc(double *args)
@@ -220,9 +220,9 @@ static void exec_air_coil_calc(double *args)
   air_coil_calc(line, line->freq);
   
   /* print the outputs */
-  printf("%g %g %g %g %g\n", 
+  printf("%g %g %g %g %g %g\n", 
 	 line->L, line->Q, line->SRF,
-	 line->len, line->fill);
+	 line->len, line->fill, line->Lmax);
 
   /* clean up */
   air_coil_free(line);

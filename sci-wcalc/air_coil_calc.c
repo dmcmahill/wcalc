@@ -1,9 +1,9 @@
-/* $Id: air_coil_calc.c,v 1.7 2002/05/10 22:52:59 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.8 2002/06/12 11:30:34 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.7 2002/05/10 22:52:59 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.8 2002/06/12 11:30:34 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,28 +50,29 @@ static char vcid[] = "$Id: air_coil_calc.c,v 1.7 2002/05/10 22:52:59 dan Exp $";
 #endif
 
 /*
- * function [L,Q,SRF,len,fill] =
+ * function [L, Q, SRF, len, fill, Lmax] =
  *       air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag) 
  */
 
 /* Input Arguments */
 
-#define	N_IN	  prhs[0]
-#define	LEN_IN	  prhs[1]
-#define	FILL_IN	  prhs[2]
+#define	N_IN      prhs[0]
+#define	LEN_IN    prhs[1]
+#define	FILL_IN   prhs[2]
 #define	AWG_IN    prhs[3]
 #define	RHO_IN    prhs[4]
-#define	DIA_IN	  prhs[5]
-#define	FREQ_IN	  prhs[6]
-#define	FLAG_IN	  prhs[7]
+#define	DIA_IN    prhs[5]
+#define	FREQ_IN   prhs[6]
+#define	FLAG_IN   prhs[7]
 
 /* Output Arguments */
 
-#define	L_OUT	  plhs[0]
+#define	L_OUT     plhs[0]
 #define	Q_OUT     plhs[1]
 #define	SRF_OUT   plhs[2]
 #define	LEN_OUT   plhs[3]
 #define	FILL_OUT  plhs[4]
+#define	LMAX_OUT  plhs[5]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -124,7 +125,7 @@ void mexFunction(
   unsigned int *ind_freq,*ind_fill,*ind_flag;
 
   /* outputs */
-  double	*L,*Q,*SRF,*len_out,*fill_out;
+  double	*L, *Q, *SRF, *len_out, *fill_out, *lmax_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -207,6 +208,7 @@ void mexFunction(
   SRF_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LEN_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   FILL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LMAX_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   L        = mxGetPr(L_OUT);
@@ -214,6 +216,7 @@ void mexFunction(
   SRF      = mxGetPr(SRF_OUT);
   len_out  = mxGetPr(LEN_OUT);
   fill_out = mxGetPr(FILL_OUT);
+  lmax_out = mxGetPr(LMAX_OUT);
 
   /* the actual computation */
   coil = air_coil_new();
@@ -246,6 +249,7 @@ void mexFunction(
     SRF[ind]      = coil->SRF;
     len_out[ind]  = coil->len;
     fill_out[ind] = coil->fill;
+    lmax_out[ind] = coil->Lmax;
   }
 
   /* clean up */
