@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.49 2002/06/27 23:42:59 dan Exp $
+dnl $Id: configure.in,v 1.50 2002/12/11 03:07:43 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -37,10 +37,9 @@ dnl
 AC_INIT(gtk-wcalc/wcalc.c)
 AM_INIT_AUTOMAKE(wcalc, 0.3)
 AM_CONFIG_HEADER(config.h)
-AM_GNU_GETTEXT
 
 dnl determine host type
-AC_CANONICAL_HOST
+dnl AC_CANONICAL_HOST
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -472,6 +471,11 @@ dnl check for math functions
 AC_CHECK_LIB(m,sin)
 AC_CHECK_FUNCS(rint)
 
+
+dnl gettext
+ALL_LINGUAS="es"
+AM_GNU_GETTEXT
+
 # ------------- GTK -------------------
 dnl GTK checks
 AC_MSG_CHECKING([if gtk-wcalc should be built])
@@ -603,7 +607,8 @@ AC_OUTPUT(
 	doc/Makefile
 	include/Makefile
 	intl/Makefile
-	po/Makefile
+	m4/Makefile
+	po/Makefile.in
 	libwcalc/Makefile
 	cgi-wcalc/Makefile
 	gtk-wcalc/Makefile

@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.7 2002/05/14 00:37:32 dan Exp $ */
+/* $Id: start.c,v 1.8 2002/06/12 11:30:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -238,7 +238,7 @@ void start_popup(void)
   gtk_widget_show (separator);
 
   /* Add the "Open..." button and set its action */
-  button = gtk_button_new_with_label ("Open...");
+  button = gtk_button_new_with_label (_("Open..."));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(open_pressed),
 		     GTK_OBJECT(window));
@@ -248,7 +248,7 @@ void start_popup(void)
   gtk_widget_show (button);
 
   /* Add the "New" button and set its action */
-  button = gtk_button_new_with_label ("New");
+  button = gtk_button_new_with_label (_("New"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(new_pressed),
 		     GTK_OBJECT(window));
@@ -267,7 +267,7 @@ void start_popup(void)
   gtk_widget_show( combo_model );
 
   /* Add the "Quit" button and set its action */
-  button = gtk_button_new_with_label ("Quit");
+  button = gtk_button_new_with_label (_("Quit"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(quit_pressed),
 		     GTK_OBJECT(window));
@@ -285,7 +285,7 @@ void start_popup(void)
   /*  my_vbox = gtk_vbox_new (FALSE, 1); */
   /*  gtk_box_pack_start (GTK_BOX (main_vbox), my_vbox, FALSE, TRUE, 0); */
 
-  label = gtk_label_new ("**** WARNING ****\nThis is a development snapshot\nand it may crash and/or give totally wrong results.\nUnless you're a developer you should not be using\nthis.");
+  label = gtk_label_new (_("**** WARNING ****\nThis is a development snapshot\nand it may crash and/or give totally wrong results.\nUnless you're a developer you should not be using\nthis."));
   gtk_box_pack_start (GTK_BOX (main_vbox),
 		      label, TRUE, TRUE, 0);
   gtk_widget_show (label);

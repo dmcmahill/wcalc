@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.21 2002/06/25 21:30:20 dan Exp $
+## $Id: Makefile.am,v 1.22 2002/12/10 10:42:14 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -83,9 +83,13 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
 EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS}
 
+DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
+
+LIBS= @LIBINTL@ @LIBS@
+
 INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
 	-DWCALC_DATADIR=\"$(pkgdatadir)\" \
-	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc \
+	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)/intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}

@@ -1,0 +1,7 @@
+# $Id$
+#
+
+# gtk-wcalc files
+gtk-wcalc/menus.c
+gtk-wcalc/start.c
+

@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.11 2002/06/12 11:30:20 dan Exp $ */
+/* $Id: wcalc.c,v 1.12 2002/06/25 20:51:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -154,6 +154,11 @@ static void wcalc_destroy_sig( GtkWidget *widget,
 int main( int   argc,
           char *argv[] )
 {
+  setlocale (LC_ALL, "");
+  /* XXX add a check for WCALC_LOCALEDIR env variable for pre-install testing */
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   gtk_init (&argc, &argv);
 
   /* set up the list of available models for the program */

@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-12-13 22:36-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gtk-wcalc/start.c:55
+msgid ""
+"WaveCalc\n"
+"\n"
+"Version "
+msgstr ""
+
+#: gtk-wcalc/start.c:59
+msgid ""
+"\n"
+"A transmission line calculator.\n"
+"\n"
+"Written by,\n"
+"Dan McMahill, <mcmahill@alum.mit.edu>\n"
+"\n"
+"WaveCalc is copyright (C) 1999, 2000, 2001, 2002\n"
+"Dan McMahill."
+msgstr ""
+
+#: gtk-wcalc/start.c:108
+#, c-format
+msgid "new_pressed():  Found entry at index %d\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:116
+#, c-format
+msgid "start.c:new_pressed():  could not find \"%s\" in the model list\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:121
+#, c-format
+msgid "start.c:new_pressed():  length of global_model_names is %d\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:123
+#, c-format
+msgid "start.c:new_pressed():  Model \"Microstrip\" is entry # %d\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:124
+msgid "Microstrip"
+msgstr ""
+
+#: gtk-wcalc/start.c:125
+#, c-format
+msgid "start.c:new_pressed():  Model \"%s\" is entry # %d\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:133
+#, c-format
+msgid "start.c:new_pressed():  Sorry, I don't know how to create \"%s\"\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:152
+msgid "start.c:open_pressed():\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:169
+msgid "start.c:quit_pressed():\n"
+msgstr ""
+
+#: gtk-wcalc/start.c:205
+msgid "WaveCalc"
+msgstr ""
+
+#: gtk-wcalc/start.c:209
+msgid "delete_event"
+msgstr ""
+
+#: gtk-wcalc/start.c:214
+msgid "destroy_event"
+msgstr ""
+
+#: gtk-wcalc/start.c:241
+msgid "Open..."
+msgstr ""
+
+#: gtk-wcalc/start.c:242 gtk-wcalc/start.c:252 gtk-wcalc/start.c:271
+msgid "clicked"
+msgstr ""
+
+#: gtk-wcalc/start.c:251
+msgid "New"
+msgstr ""
+
+#: gtk-wcalc/start.c:270
+msgid "Quit"
+msgstr ""
+
+#: gtk-wcalc/start.c:288
+msgid ""
+"**** WARNING ****\n"
+"This is a development snapshot\n"
+"and it may crash and/or give totally wrong results.\n"
+"Unless you're a developer you should not be using\n"
+"this."
+msgstr ""
