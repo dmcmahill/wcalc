@@ -1,4 +1,4 @@
-# $Id$
+# $Id: README.units,v 1.1 2001/10/25 00:49:52 dan Exp $
 ######################################################################
 
 ------------------------------------------------------------
@@ -79,6 +79,8 @@ like UNITS_INDUCTANCE_NH "nH" all over the place.
 2) very clumsy for composite units like nH/mil or ohm-cm.
 
 3) poor compatibility with i18n via gettext.
+
+4) messy interface when saving to files
 
 ------------------------------------------------------------
 Possible approaches
