@@ -1,7 +1,7 @@
-/* $Id: stripline.cgi.c,v 1.4 2002/05/10 22:52:33 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.5 2002/06/12 11:30:07 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,7 @@
 #include "stripline.h"
 #include "misc.h"
 #include "physconst.h"
+#include "units.h"
 
 /* ID's for this module */
 #include "stripline_id.h"
@@ -106,7 +107,12 @@ int cgiMain(void){
   double rho,rough,tmet,w,l,h,es,tand;
   double Ro=0.0;
   double elen;
-  int i;
+
+  cgi_units_menu *menu_lwht;
+  cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
+  cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
+  cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
+  cgi_units_menu *menu_deltal;
 
 
   /* 
@@ -123,6 +129,28 @@ int cgiMain(void){
   fprintf(cgiOut,"<pre>");
   line = stripline_line_new();
   fprintf(cgiOut,"</pre>");
+
+  menu_lwht = cgi_units_menu_new(line->units_lwht);
+  menu_L = cgi_units_menu_new(line->units_L);
+  menu_R = cgi_units_menu_new(line->units_R);
+  menu_C = cgi_units_menu_new(line->units_C);
+  menu_G = cgi_units_menu_new(line->units_G);
+  menu_len = cgi_units_menu_new(line->units_len);
+  menu_freq = cgi_units_menu_new(line->units_freq);
+  menu_loss = cgi_units_menu_new(line->units_loss);
+  menu_losslen = cgi_units_menu_new(line->units_losslen);
+  menu_rho = cgi_units_menu_new(line->units_rho);
+  menu_rough = cgi_units_menu_new(line->units_rough);
+  menu_delay = cgi_units_menu_new(line->units_delay);
+  menu_depth = cgi_units_menu_new(line->units_depth);
+  menu_deltal = cgi_units_menu_new(line->units_deltal);
+
+  cgi_units_attach_entry(menu_lwht, "entry_len2");
+  cgi_units_attach_entry(menu_lwht, "entry_l");
+  cgi_units_attach_entry(menu_lwht, "entry_t");
+  cgi_units_attach_entry(menu_lwht, "entry_h");
+
+
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
@@ -159,6 +187,9 @@ int cgiMain(void){
    */
 
   if ( (action != RESET) && (action != LOAD) ) {
+
+    cgi_units_menu_read();
+
     /* Metal resistivity relative to copper */
     if(cgiFormDoubleBounded("rho",&rho,0.0,1000.0,defRHO) !=
        cgiFormSuccess){
@@ -170,68 +201,30 @@ int cgiMain(void){
        cgiFormSuccess){
       input_err=1;
     }
-    /* units */
-    if (cgiFormRadio("tmet_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->subs->tmet_units = length_units[i].name;
-    line->subs->tmet_sf = length_units[i].sf;
 
     /* Metalization roughness */
     if(cgiFormDoubleBounded("rough",&rough,0.0,1000.0,defRGH) !=
        cgiFormSuccess){
       input_err=1;
     }
-    /* units */
-    if (cgiFormRadio("rough_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->subs->rough_units = length_units[i].name;
-    line->subs->rough_sf = length_units[i].sf;
-
 
     /* Stripline width */
     if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
        cgiFormSuccess){
       input_err=1;
     }
-    /* units */
-    if (cgiFormRadio("w_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->w_units = length_units[i].name;
-    line->w_sf = length_units[i].sf;
 
     /* Stripline length */
     if(cgiFormDoubleBounded("l",&l,1.0,100000.0,defL) !=
        cgiFormSuccess){
       input_err=1;
     }
-    /* units */
-    if (cgiFormRadio("l_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->l_units = length_units[i].name;
-    line->l_sf = length_units[i].sf;
-
 
     /* Substrate dielectric thickness */
     if(cgiFormDoubleBounded("h",&h,0.0001,1000.0,defH) !=
        cgiFormSuccess){
       input_err=1;
     }
-    /* units */
-    if (cgiFormRadio("h_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->subs->h_units = length_units[i].name;
-    line->subs->h_sf = length_units[i].sf;
-
 
     /* Substrate relative permittivity */
     if(cgiFormDoubleBounded("es",&es,0.0001,1000.0,defES) !=
@@ -245,19 +238,11 @@ int cgiMain(void){
       input_err=1;
     }
 
-    /* Frequency of operation (MHz) */
+    /* Frequency of operation  */
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
       input_err=1;
     }
-    /* Frequency of operation units */
-    if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
-	cgiFormSuccess){
-      input_err=1;
-    }
-    line->freq_units = frequency_units[i].name;
-    line->freq_sf = frequency_units[i].sf;
-
 
     /* electrical parameters: */
     if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,defRO) !=
@@ -271,19 +256,19 @@ int cgiMain(void){
     } 
 
   /* copy data over to the line structure */
-  line->w           = w*line->w_sf;
-  line->l           = l*line->l_sf;
-  line->subs->h     = h*line->subs->h_sf;
-  line->subs->tmet  = tmet*line->subs->tmet_sf;
-  line->subs->rough = rough*line->subs->rough_sf;
+  line->w           = w*line->units_lwht->sf;
+  line->l           = l*line->units_lwht->sf;
+  line->subs->h     = h*line->units_lwht->sf;
+  line->subs->tmet  = tmet*line->units_lwht->sf;
+  line->subs->rough = rough*line->units_rough->sf;
 
-  /* convert to Hz from MHz */
-  line->freq = freq * line->freq_sf;
+
+  line->freq = freq * line->units_freq->sf;
   
   /* copy over the other parameters */
   line->subs->tand  = tand;
   line->subs->er    = es;
-  line->subs->rho   = rho;
+  line->subs->rho   = rho*line->units_rho->sf;
 
   line->z0 = Ro;
   line->Ro = Ro;
@@ -299,20 +284,21 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: Action                      = %d\n",action);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"CGI: Metal width                 = %g %s\n",
-	    line->w/line->w_sf,line->w_units);
+	    line->w/line->units_lwht->sf, line->units_lwht->name);
     fprintf(cgiOut,"CGI: Metal length                = %g %s\n",
-	    line->l/line->l_sf,line->l_units);
+	    line->l/line->units_lwht->sf, line->units_lwht->name);
     fprintf(cgiOut,"CGI: Metal thickness             = %g %s\n",
-	    line->subs->tmet/line->subs->tmet_sf,line->subs->tmet_units);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->subs->rho);
+	    line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
+    fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",
+	    line->subs->rho/line->units_rho->sf, line->units_rho->name);
     fprintf(cgiOut,"CGI: Metal surface roughness     = %g %s-rms\n",
-	    line->subs->rough/line->subs->rough_sf,line->subs->rough_units);
+	    line->subs->rough/line->units_rough->sf, line->units_rough->name);
     fprintf(cgiOut,"CGI: Substrate thickness         = %g %s\n",
-	    line->subs->h/line->subs->h_sf, line->subs->h_units);
-    fprintf(cgiOut,"CGI: Substrate dielectric const. = %g \n",line->subs->er);
-    fprintf(cgiOut,"CGI: Substrate loss tangent      = %g \n",line->subs->tand);
+	    line->subs->h/line->units_lwht->sf, line->units_lwht->name);
+    fprintf(cgiOut,"CGI: Substrate dielectric const. = %g \n", line->subs->er);
+    fprintf(cgiOut,"CGI: Substrate loss tangent      = %g \n", line->subs->tand);
     fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
-	    line->freq/line->freq_sf, line->freq_units); 
+	    line->freq/line->units_freq->sf, line->units_freq->name); 
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"</pre>\n");
 #endif
@@ -325,32 +311,32 @@ int cgiMain(void){
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    stripline_calc(line,line->freq);
+    stripline_calc(line, line->freq);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,line->freq,SLISYN_H);
+    stripline_syn(line, line->freq, SLISYN_H);
     fprintf(cgiOut,"</pre>\n");
     break;
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,line->freq,SLISYN_W);
+    stripline_syn(line, line->freq, SLISYN_W);
     fprintf(cgiOut,"</pre>\n");
     break;
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,line->freq,SLISYN_ER);
+    stripline_syn(line, line->freq, SLISYN_ER);
     fprintf(cgiOut,"</pre>\n");
     break;
 
   case SYNTH_L:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,line->freq,SLISYN_L);
+    stripline_syn(line, line->freq, SLISYN_L);
     fprintf(cgiOut,"</pre>\n");
     break;
 
@@ -358,7 +344,7 @@ int cgiMain(void){
 
 
   /* autoscale the delay output */
-  units_autoscale(time_units,&line->delay_sf,&line->delay_units,line->delay);
+  /* XXX */
 
   /* include the HTML output */
 #include "header_html.c"

@@ -1,6 +1,6 @@
-<!-- $Id: ic_microstrip.html,v 1.4 2002/01/18 13:45:42 dan Exp $ -->
+<!-- $Id: ic_microstrip.html,v 1.5 2002/06/12 11:30:06 dan Exp $ -->
 <!--
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,17 +45,17 @@
 <meta name="keywords" content="
 integrated circuit microstrip
 ">
-
+<@s@cgi_units_menu_init()@>
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000">
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
 
 <H1 ALIGN="CENTER">Integrated Circuit Microstrip Analysis Calculator</H1>
 
 <P>
 
 
-<FORM METHOD=GET ACTION="ic_microstrip.cgi">
+<FORM NAME="wcalc" METHOD=GET ACTION="ic_microstrip.cgi">
 <TABLE>
 <TR>
 <TD>
@@ -68,6 +68,11 @@ integrated circuit microstrip
 <TR ALIGN="CENTER">
 <TD><IMG SRC="<@s@HTMLPATH@>ic_microstrip_model.png" WIDTH=313 HEIGHT=141
      ALT="[IC Microstrip Circuit Model]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE="JUST LOADED"></TD>
+</TR>
 
 <TR ALIGN="CENTER">
 <TD>
@@ -75,27 +80,39 @@ integrated circuit microstrip
 <TABLE>
 <TR>
 <TD>Lmis =</TD>
-<TD><@g@Lmis*1e6@></TD>
-<TD>[pH/um]</TD>
+<TD><@g@line->Lmis/line->units_L->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_L)@>
+</TD>
 </TR>
+
 <TR>
 <TD>Rmis =</TD>
-<TD><@g@Rmis*1e-6@></TD>
-<TD>[ohm/um]</TD>
+<TD><@g@line->Rmis/line->units_R->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_R)@>
+</TD>
 </TR>
+
 <TR>
 <TD>Cmis =</TD>
-<TD><@g@Cmis*1e9@></TD>
-<TD>[fF/um]</TD>
+<TD><@g@line->Cmis/line->units_C->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_C)@>
+</TD>
 </TR>
+
 <TR>
 <TD>Gmis =</TD>
-<TD><@g@Gmis*1e-6@></TD>
-<TD>[(ohm-cm)^-1]</TD>
+<TD><@g@line->Gmis/line->units_G->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_G)@>
+</TD>
 </TR>
+
 <TR>
 <TD>Z0 =</TD>
-<TD><@g@Ro@> + j <@g@Xo@></TD>
+<TD><@g@line->Ro@> + j <@g@line->Xo@></TD>
 <TD>[ohm]</TD>
 </TR>
 </TABLE>  <!-- end of model parameter table -->
@@ -108,53 +125,91 @@ integrated circuit microstrip
 <TABLE>
 <TR>
 <TD>Metal width (W)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
-<TD>[um]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@line->w/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- width units menu -->
+<@s@cgi_units_menu_display(menu_lwht)@>
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal length (L)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- length units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Substrate thickness (H)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
-<TD>[um]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@line->subs->h/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- substrate thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_h">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate relative dielectric constant (Es)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->es@>"
+           onChange="valsChanged()"></TD>
 <TD></TD>
 </TR>
 
 <TR>
-<TD>Substrate resistivity (rhos)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhos" VALUE="<@g@rhos@>"></TD>
-<TD>[ohm-cm]</TD>
+<TD>Substrate conductivity (sigmas)</TD>
+<!-- XXX -->
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="sigmas" VALUE="<@g@line->subs->sigmas/line->units_sigmas->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- substrate resistivity units menu -->
+<@s@cgi_units_menu_display(menu_sigmas)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Oxide thickness (Tox)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@tox@>"></TD>
-<TD>[um]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@line->subs->tox/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- oxide thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_tox">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_tox" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Oxide relative dielectric constant (Eox)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@eox@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@line->subs->eox@>"
+           onChange="valsChanged()"></TD>
 <TD> </TD>
 </TR>
 
 <TR>
 <TD>Metal thickness (Tmet)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
-<TD>[um]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- metal thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_tmet">
+</TD>
 </TR>
 
 <TR>
 <TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>"></TD>
-<TD>[MHz]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- freq units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
 </TR>
 
 <TR>
@@ -163,7 +218,8 @@ integrated circuit microstrip
 </TR>
 <TR>
 <TD>Characteristic Resistance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"
+           onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TABLE>
 

@@ -1,6 +1,6 @@
-<!-- $Id: coupled_microstrip.html,v 1.7 2003/01/10 03:12:36 dan Exp $ -->
+<!-- $Id: coupled_microstrip.html,v 1.8 2003/01/19 05:07:41 dan Exp $ -->
 <!--
- * Copyright (c) 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,17 +45,17 @@
 <meta name="keywords" content="
 coupled microstrip
 ">
-
+<@s@cgi_units_menu_init()@>
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000">
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
 
 <H1 ALIGN="CENTER">Coupled Microstrip Analysis/Synthesis Calculator</H1>
 
 <P>
 
 
-<FORM METHOD=GET ACTION="coupled_microstrip.cgi">
+<FORM NAME="wcalc" METHOD=GET ACTION="coupled_microstrip.cgi">
 <TABLE>
 <TR>
 <TD>
@@ -64,6 +64,10 @@ coupled microstrip
 <TR ALIGN="CENTER">
 <TD><IMG SRC="<@s@HTMLPATH@>coupled_microstrip.png" WIDTH=376 HEIGHT=194 
      ALT="[Coupled Microstrip Cross-section]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE="JUST LOADED"></TD>
 </TR>
 
 <TR ALIGN="CENTER">
@@ -162,105 +166,144 @@ coupled microstrip
 
 <TR>
 <TD>Metal width (W)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@line->w/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_lwst)@>
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Trace spacing (S)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="s" VALUE="<@g@s@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="s" VALUE="<@g@line->s/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- spacing units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_s">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_s" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Trace length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- length units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Metal thickness (<A HREF="/cad/mcalc/tmetinfo.html">Tmet</A>)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- Tmet units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_tmet">
+</TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (Rho)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@rho@>"></TD>
-<TD>[relative to Cu]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@line->subs->rho/line->units_rho->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+</TD>
 </TR>
 
 <TR>
 <TD>Metal surface roughness (<A HREF="/cad/mcalc/rghinfo.html">Rgh</A>)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@rough@>"></TD>
-<TD>[mil-rms]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@line->subs->rough/line->units_rough->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- surface roughness units menu -->
+<@s@cgi_units_menu_display(menu_rough)@>
+-RMS
+</TD>
 </TR>
 
 <TR>
 <TD>Substrate thickness (H)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@line->subs->h/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- substrate thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_h">
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate relative dielectric constant (er)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->er@>"
+           onChange="valsChanged()"></TD>
 <TD></TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate loss tangent (tand)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@tand@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->subs->tand@>"
+           onChange="valsChanged()"></TD>
 <TD></TD>
 </TR>
 
 
 <TR>
 <TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>"></TD>
-<TD>[MHz]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- frequency units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
 </TR>
 
 <TR>
 <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
 <INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
-<TD>Z0/k<INPUT TYPE="RADIO" NAME="stype" VALUE="zk" <@s@zkchecked@>></TD>
-<TD>even/odd<INPUT TYPE="RADIO" NAME="stype" VALUE="evod" <@s@evodchecked@>></TD>
+<TD>Z0/k<INPUT TYPE="RADIO" NAME="stype" VALUE="zk" <@s@zkchecked@>
+           onChange="valsChanged()"></TD>
+<TD>even/odd<INPUT TYPE="RADIO" NAME="stype" VALUE="evod" <@s@evodchecked@>
+           onChange="valsChanged()"></TD>
 </TR>
 
 <TR>
 <TD>Characteristic Impedance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->z0@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->z0@>"
+           onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TR>
 
 <TR>
 <TD>Coupling Coefficient</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="k" VALUE="<@g@line->k@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="k" VALUE="<@g@line->k@>"
+           onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TR>
 
 <TR>
 <TD>Even Mode Impedance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zeven" VALUE="<@g@line->z0e@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zeven" VALUE="<@g@line->z0e@>"
+           onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TR>
 
 <TR>
 <TD>Odd Mode Impedance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zodd" VALUE="<@g@line->z0o@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zodd" VALUE="<@g@line->z0o@>"
+           onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TR>
 
-
+<!-- XXX -->
 <TR>
 <TD>Electrical Length</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"
+           onChange="valsChanged()"></TD>
 <TD>[degrees]</TD>
 </TR>
 

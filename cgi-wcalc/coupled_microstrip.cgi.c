@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.4 2002/06/12 11:30:05 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.5 2003/01/10 03:12:36 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -42,8 +42,10 @@
 #include <math.h>
 #include <stdio.h>
 #include "cgic.h"
+#include "cgi-units.h"
 #include "coupled_microstrip.h"
 #include "coupled_microstrip_id.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -104,7 +106,7 @@ int cgiMain(void){
 
   /* coupled_microstrip variables */
   coupled_microstrip_line *line;
-  double freq, freq_Hz;
+  double freq;
 
   double rho,rough,tmet,w,s,l,h,es,tand;
   double zeven,zodd,k;
@@ -118,17 +120,81 @@ int cgiMain(void){
   char zkchecked[8];
   char evodchecked[8];
 
-/* Put out the CGI header */
+  cgi_units_menu *menu_lwst;
+  cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
+  cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
+  cgi_units_menu *menu_deltal;
+
+  /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
 
   /* create the coupled_microstrip line */
+  fprintf(cgiOut,"<pre>");
   line = coupled_microstrip_line_new();
+  fprintf(cgiOut,"</pre>");
+
+
+  menu_lwst = cgi_units_menu_new(line->units_lwst);
+  menu_len = cgi_units_menu_new(line->units_len);
+  menu_freq = cgi_units_menu_new(line->units_freq);
+  menu_loss = cgi_units_menu_new(line->units_loss);
+  menu_losslen = cgi_units_menu_new(line->units_losslen);
+  menu_rho = cgi_units_menu_new(line->units_rho);
+  menu_rough = cgi_units_menu_new(line->units_rough);
+  menu_delay = cgi_units_menu_new(line->units_delay);
+  menu_depth = cgi_units_menu_new(line->units_depth);
+  menu_deltal = cgi_units_menu_new(line->units_deltal);
+
+  cgi_units_attach_entry(menu_lwst, "entry_s");
+  cgi_units_attach_entry(menu_lwst, "entry_l");
+  cgi_units_attach_entry(menu_lwst, "entry_tmet");
+  cgi_units_attach_entry(menu_lwst, "entry_h");
+
+
+  /* flags to the program: */
+  if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = ANALYZE;
+  }
+  else if(cgiFormStringNoNewlines("synth_w",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = SYNTH_W;
+  }
+  else if(cgiFormStringNoNewlines("synth_s",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = SYNTH_S;
+  }
+  else if(cgiFormStringNoNewlines("synth_h",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = SYNTH_H;
+  }
+  else if(cgiFormStringNoNewlines("synth_es",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = SYNTH_ES;
+  }
+  else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = SYNTH_L;
+  }
+  else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
+     cgiFormSuccess){
+    action = RESET;
+  }
+  else{
+    action = LOAD;
+  }
+
+  /* check out the checkbox */
+  cgiFormRadio("stype",stypeStrings,NSTYPE,&stype,defSTYPE);
 
   /*
    * extract the parameters from the CGI form and use them to populate
    * the coupled_microstrip structure
    */
 
+  if ( (action != RESET) && (action != LOAD) ) {
+
+    cgi_units_menu_read();
 
   /* Metal resistivity relative to copper */
   if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
@@ -218,43 +284,6 @@ int cgiMain(void){
   }
 
 
-  /* flags to the program: */
-  if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = ANALYZE;
-  }
-  else if(cgiFormStringNoNewlines("synth_w",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_W;
-  }
-  else if(cgiFormStringNoNewlines("synth_s",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_S;
-  }
-  else if(cgiFormStringNoNewlines("synth_h",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_H;
-  }
-  else if(cgiFormStringNoNewlines("synth_es",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_ES;
-  }
-  else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_L;
-  }
-  else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = RESET;
-  }
-  else{
-    action = LOAD;
-  }
-
-  /* check out the checkbox */
-  cgiFormRadio("stype",stypeStrings,NSTYPE,&stype,defSTYPE);
-
-
 #ifdef DEBUG
   fprintf(cgiOut,"<PRE>\n");
   fprintf(cgiOut,"CGI:  action = %d\n",action);
@@ -262,37 +291,39 @@ int cgiMain(void){
   fprintf(cgiOut,"</PRE>\n");
 #endif
 
-  if ( (action == RESET) || (action == LOAD) ){
-    w     = defW;
-    s     = defS;
-    l     = defL;
-    
-    tmet  = defTMET;
-    rho   = defRHO;
-    rough = defRGH;
 
-    h     = defH;
-    es    = defES;
-    tand  = defTAND;
+  /* copy data over to the line structure */
+  line->w           = w*line->units_lwst->sf;
+  line->s           = s*line->units_lwst->sf;
+  line->l           = l*line->units_lwst->sf;
+  line->subs->h     = h*line->units_lwst->sf;
+  line->subs->tmet  = tmet*line->units_lwst->sf;
+  line->subs->rough = rough*line->units_rough->sf;
 
-    Ro    = defRO;
-    k     = defK;
-    zeven = defZEVEN;
-    zodd  = defZODD;
-    elen  = defELEN;
 
-    stype = defSTYPE;
-    sprintf(zkchecked,"checked");
-    sprintf(evodchecked," ");
-  }
-  else{
-    switch (stype){
+  line->freq = freq * line->units_freq->sf;
+  
+  /* copy over the other parameters */
+  line->subs->tand  = tand;
+  line->subs->er    = es;
+  line->subs->rho   = rho*line->units_rho->sf;
+
+  line->len = elen;
+
+  line->z0 = Ro;
+  line->k = k;
+  line->z0e = zeven;
+  line->z0o = zodd;
+  
+  } /* if ( (action != RESET) && (action != LOAD) ) */
+  
+  switch (stype){
     case 0:
       sprintf(zkchecked,"checked");
       sprintf(evodchecked," ");
       break;
-    case 1:
-      sprintf(zkchecked," ");
+  case 1:
+    sprintf(zkchecked," ");
       sprintf(evodchecked,"checked");
       break;
     default:
@@ -301,64 +332,49 @@ int cgiMain(void){
       fprintf(cgiOut,"</PRE>\n");
       exit(1);
       break;
-    }
   }
 
-  /* copy data over to the line structure */
-  line->w           = w     ;
-  line->s           = s     ;
-  line->l           = l     ;
-  line->subs->h     = h     ;
-  line->subs->tmet  = tmet  ;
-  line->subs->rough = rough ;
   
-  /* convert to Hz from MHz */
-  freq_Hz = freq * 1.0e6;
-  
-  /* copy over the other parameters */
-  line->subs->tand  = tand;
-  line->subs->er    = es;
-  line->subs->rho   = rho;
-
-  line->z0 = Ro;
-  line->k = k;
-  line->z0e = zeven;
-  line->z0o = zodd;
-  line->len = elen;
-
-  
-  switch (action){
-  case ANALYZE:
 #ifdef DEBUG
-    fprintf(cgiOut,"<pre>\n");
-    fprintf(cgiOut,"CGI: --------------- Coupled_Microstrip  Analysis -----------\n");
-    fprintf(cgiOut,"CGI: Metal width                 = %g mil\n",line->w);
-    fprintf(cgiOut,"CGI: Trace spacing               = %g mil\n",line->s);
-    fprintf(cgiOut,"CGI: Metal length                = %g mil\n",line->l);
-    fprintf(cgiOut,"CGI: Metal thickness             = %g mil\n",line->subs->tmet);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->subs->rho);
-    fprintf(cgiOut,"CGI: Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-    fprintf(cgiOut,"CGI: Substrate thickness         = %g mil\n",line->subs->h);
-    fprintf(cgiOut,"CGI: Substrate dielectric const. = %g \n",line->subs->er);
-    fprintf(cgiOut,"CGI: Substrate loss tangent      = %g \n",line->subs->tand);
-    fprintf(cgiOut,"CGI: Frequency                   = %g MHz\n",freq_Hz/1e6); 
-    fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
-    fprintf(cgiOut,"</pre>\n");
+  fprintf(cgiOut,"<pre>\n");
+  fprintf(cgiOut,"CGI: --------------- Coupled_Microstrip  Analysis -----------\n");
+  fprintf(cgiOut,"CGI: Metal width                 = %g %s\n",
+	  line->w/line->units_lwst->sf, line->units_lwst->name);
+  fprintf(cgiOut,"CGI: Trace spacing               = %g %s\n",
+	  line->s/line->units_lwst->sf, line->units_lwst->name);
+  fprintf(cgiOut,"CGI: Metal length                = %g %s\n",
+	  line->l/line->units_lwst->sf, line->units_lwst->name);
+  fprintf(cgiOut,"CGI: Metal thickness             = %g %s\n",
+	  line->subs->tmet/line->units_lwst->sf, line->units_lwst->name);
+  fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",
+	  line->subs->rho/line->units_rho->sf, line->units_rho->name);
+  fprintf(cgiOut,"CGI: Metal surface roughness     = %g %s-rms\n",
+	  line->subs->rough/line->units_rough->sf, line->units_rough->name);
+  fprintf(cgiOut,"CGI: Substrate thickness         = %g %s\n",
+	  line->subs->h/line->units_lwst->sf, line->units_lwst->name);
+  fprintf(cgiOut,"CGI: Substrate dielectric const. = %g \n", line->subs->er);
+  fprintf(cgiOut,"CGI: Substrate loss tangent      = %g \n", line->subs->tand);
+  fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
+	  line->freq/line->units_freq->sf, line->units_freq->name); 
+  fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
+  fprintf(cgiOut,"</pre>\n");
 #endif
 
+  switch (action){
+  case ANALYZE:
     /* 
      * in case coupled_microstrip_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    coupled_microstrip_calc(line,freq_Hz);
+    coupled_microstrip_calc(line, line->freq);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_H); */
+    /* coupled_microstrip_syn(line, line->freq, SLISYN_H); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     h = line->subs->h;
@@ -366,7 +382,7 @@ int cgiMain(void){
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_W); */
+    /* coupled_microstrip_syn(line, line->freq, SLISYN_W); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     w = line->w;
@@ -374,7 +390,7 @@ int cgiMain(void){
 
   case SYNTH_S:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_W); */
+    /* coupled_microstrip_syn(line, line->freq, SLISYN_W); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     s = line->s;
@@ -382,7 +398,7 @@ int cgiMain(void){
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_ES); */
+    /* coupled_microstrip_syn(line, line->freq, SLISYN_ES); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
@@ -390,7 +406,7 @@ int cgiMain(void){
 
   case SYNTH_L:
     fprintf(cgiOut,"<pre>");
-    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_L); */
+    /* coupled_microstrip_syn(line, line->freq, SLISYN_L); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     l = line->l;
@@ -398,6 +414,7 @@ int cgiMain(void){
 
   }
 
+  /* XXX this last section is bogus */
   /* extract the incremental circuit model */
 
   /* electrical and physical length */
@@ -411,7 +428,7 @@ int cgiMain(void){
    * and in ns,
    * Td = elen/(360 f *1e-9)
    */
-  delay = elen /(360.0 * freq_Hz * 1e-9);
+  delay = elen /(360.0 * line->freq * 1e-9);
 
   /* include the HTML output */
 #include "header_html.c"

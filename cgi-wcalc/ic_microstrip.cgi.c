@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.cgi.c,v 1.2 2002/05/10 22:52:32 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.3 2002/06/12 11:30:06 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -39,8 +39,10 @@
 
 #include <stdio.h>
 #include "cgic.h"
+#include "cgi-units.h"
 #include "ic_microstrip.h"
 #include "ic_microstrip_id.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -59,6 +61,7 @@
 
 /* defaults for the various parameters */
 #define defW      160.0
+#define defL      1000.0
 
 #define defTMET   1.6
 #define defRGH    0.01
@@ -69,7 +72,7 @@
 
 #define defH      250.0
 #define defES     11.8
-#define defRHOS   1.0
+#define defSIGMAS 1.0
 
 #define defFREQ   1000.0
 
@@ -86,94 +89,42 @@ int cgiMain(void){
   /* microstrip variables */
   ic_microstrip_line *line;
   double freq;
-  double freq_Hz=0;
 
-  double rho,rough,tmet,w,tox,eox,h,es,rhos;
+  double rho, rough, tmet, w, l, tox, eox, h, es, sigmas;
   double Ro=0.0;
-  double Xo=0.0;
 
-  /* The circuit model */
-  double Lmis, Rmis, Cmis, Gmis;
+  cgi_units_menu *menu_lwht;
+  cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
+  cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
+  cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
+  cgi_units_menu *menu_deltal, *menu_sigmas;
 
-/* Put out the CGI header */
+  /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
-
+  
   /* create the IC microstrip line */
   line = ic_microstrip_line_new();
+  
+  menu_lwht = cgi_units_menu_new(line->units_lwht);
+  menu_L = cgi_units_menu_new(line->units_L);
+  menu_R = cgi_units_menu_new(line->units_R);
+  menu_C = cgi_units_menu_new(line->units_C);
+  menu_G = cgi_units_menu_new(line->units_G);
+  menu_len = cgi_units_menu_new(line->units_len);
+  menu_freq = cgi_units_menu_new(line->units_freq);
+  menu_loss = cgi_units_menu_new(line->units_loss);
+  menu_losslen = cgi_units_menu_new(line->units_losslen);
+  menu_rho = cgi_units_menu_new(line->units_rho);
+  menu_rough = cgi_units_menu_new(line->units_rough);
+  menu_delay = cgi_units_menu_new(line->units_delay);
+  menu_depth = cgi_units_menu_new(line->units_depth);
+  menu_deltal = cgi_units_menu_new(line->units_deltal);
+  menu_sigmas = cgi_units_menu_new(line->units_sigmas);
 
-  /*
-   * extract the parameters from the CGI form and use them to populate
-   * the microstrip structure
-   */
-
-
-  /* Metal resistivity relative to copper */
-  if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Metal thickness (m) */
-  if(cgiFormDoubleBounded("tmet",&tmet,0.0001,1000.0,defTMET) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Metalization roughness */
-  if(cgiFormDoubleBounded("rough",&rough,0.0001,1000.0,defRGH) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Microstrip width */
-  if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Oxide thickness */
-  if(cgiFormDoubleBounded("tox",&tox,0.0001,1000.0,defTOX) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Oxide relative permittivity */
-  if(cgiFormDoubleBounded("eox",&eox,0.0001,1000.0,defEOX) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate dielectric thickness */
-  if(cgiFormDoubleBounded("h",&h,0.0001,1000.0,defH) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate relative permittivity */
-  if(cgiFormDoubleBounded("es",&es,0.0001,1000.0,defES) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Substrate conductivity s/m*/
-  if(cgiFormDoubleBounded("rhos",&rhos,0.0001,1000.0,defRHOS) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-  /* Frequency of operation (MHz) */
-  if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
-
-  /* electrical parameters: */
-  if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,50.0) !=
-     cgiFormSuccess){
-    input_err=1;
-  }
-
+  cgi_units_attach_entry(menu_lwht, "entry_l");
+  cgi_units_attach_entry(menu_lwht, "entry_h");
+  cgi_units_attach_entry(menu_lwht, "entry_tox");
+  cgi_units_attach_entry(menu_lwht, "entry_tmet");
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
@@ -199,102 +150,165 @@ int cgiMain(void){
   else{
     action = LOAD;
   }
+
+  /*
+   * extract the parameters from the CGI form and use them to populate
+   * the microstrip structure
+   */
+
+  if ( (action != RESET) && (action != LOAD) ) {
+
+    cgi_units_menu_read();
+
+    /* Metal resistivity relative to copper */
+    if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Metal thickness (m) */
+    if(cgiFormDoubleBounded("tmet",&tmet,0.0001,1000.0,defTMET) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Metalization roughness */
+    if(cgiFormDoubleBounded("rough",&rough,0.0001,1000.0,defRGH) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Microstrip width */
+    if(cgiFormDoubleBounded("w",&w,0.0001,1000.0,defW) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Microstrip length */
+    if(cgiFormDoubleBounded("l",&l,0.0001,1000.0,defL) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Oxide thickness */
+    if(cgiFormDoubleBounded("tox",&tox,0.0001,1000.0,defTOX) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Oxide relative permittivity */
+    if(cgiFormDoubleBounded("eox",&eox,0.0001,1000.0,defEOX) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Substrate dielectric thickness */
+    if(cgiFormDoubleBounded("h",&h,0.0001,1000.0,defH) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Substrate relative permittivity */
+    if(cgiFormDoubleBounded("es",&es,0.0001,1000.0,defES) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Substrate conductivity s/m*/
+    if(cgiFormDoubleBounded("sigmas",&sigmas,0.0001,1000.0,defSIGMAS) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+    /* Frequency of operation (MHz) */
+    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+
+
+    /* electrical parameters: */
+    if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,50.0) !=
+       cgiFormSuccess){
+      input_err=1;
+    }
+    /* copy data over to the line structure */
+    line->w           = w*line->units_lwht->sf;
+    line->l           = l*line->units_lwht->sf;
+    line->subs->h     = h*line->units_lwht->sf;
+    line->subs->tox   = h*line->units_lwht->sf;
+    line->subs->tmet  = tmet*line->units_lwht->sf;
+    line->subs->rough = rough*line->units_rough->sf;
+
+
+    line->freq = freq * line->units_freq->sf;
   
-
-  if ( (action == RESET) || (action == LOAD) ){
-    w     = defW;
-    
-    tmet  = defTMET;
-    rho   = defRHO;
-    rough = defRGH;
-
-    tox   = defTOX;
-    eox   = defEOX;
-    
-    h     = defH;
-    es    = defES;
-    rhos  = defRHOS;
-  }
-
-  if (action != LOAD){
-    /* convert to meters from um */
-    line->w           = w     * 1.0e-6;
-    line->subs->h     = h     * 1.0e-6;
-    line->subs->tox   = tox   * 1.0e-6;
-    line->subs->tmet  = tmet  * 1.0e-6;
-    line->subs->rough = rough *1.0e-6;
-    
-    /* convert to Hz from MHz */
-    freq_Hz = freq * 1.0e6;
-    
-    /* calculate conductivity in 1/(ohm-m) from resistivity in ohm-cm */
-    line->subs->sigmas = 100.0 / rhos;
-    
     /* copy over the other parameters */
-    line->subs->eox = eox;
-    line->subs->es = es;
-    line->subs->rho = rho;
+    /* XXX */
+    line->subs->sigmas  = sigmas*line->units_sigmas->sf;
+    line->subs->eox    = eox;
+    line->subs->es    = es;
+    line->subs->rho   = rho*line->units_rho->sf;
 
     line->Ro = Ro;
-  }
-  
-  switch (action){
-  case ANALYZE:
+    line->Xo = 0.0;
+
+  } /* if ( (action != RESET) && (action != LOAD) ) */
+
 #ifdef DEBUG
-    fprintf(cgiOut,"<pre>\n");
-    fprintf(cgiOut,"-------------- IC Microstrip Analysis ----------\n");
-    fprintf(cgiOut,"Metal width                 = %g um\n",line->w*1e6);
-    fprintf(cgiOut,"Oxide thickness             = %g um\n",line->subs->tox*1e6);
-    fprintf(cgiOut,"Oxide dielectric const.     = %g \n",line->subs->eox);
-    fprintf(cgiOut,"Substrate thickness         = %g um\n",line->subs->h*1e6);
-    fprintf(cgiOut,"Substrate dielectric const. = %g \n",line->subs->es);
-    fprintf(cgiOut,"Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
-    fprintf(cgiOut,"Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
-    fprintf(cgiOut,"Frequency                   = %g GHz\n",freq_Hz/1e9); 
-    fprintf(cgiOut,"-------------- ---------------------- ----------\n");
-    fprintf(cgiOut,"</pre>\n");
+  fprintf(cgiOut,"<pre>\n");
+  fprintf(cgiOut,"-------------- IC Microstrip Analysis ----------\n");
+  fprintf(cgiOut,"Metal width                 = %g %s\n",
+	    line->w/line->units_lwht->sf, line->units_lwht->name);
+  fprintf(cgiOut,"Oxide thickness             = %g %s\n",
+	  line->tox/line->units_lwht->sf, line->units_lwht->name);
+  fprintf(cgiOut,"Oxide dielectric const.     = %g \n",
+	  line->subs->eox);
+  fprintf(cgiOut,"Substrate thickness         = %g um\n",
+	  line->subs->h/line->units_lwht->sf, line->units_lwht->name);
+  fprintf(cgiOut,"Substrate dielectric const. = %g \n",
+	  line->subs->es);
+  fprintf(cgiOut,"Substrate conductivity      = %g %s\n",
+	  line->subs->sigmas/line->units_sigmas->sf, line->units_sigmas->name);
+  fprintf(cgiOut,"Substrate resistivity       = %g 1.0/%s\n",
+	  1.0(line->subs->sigmas/line->units_sigmas->sf), line->units_sigmas->name);
+  fprintf(cgiOut,"Frequency                   = %g %s\n",
+	    line->freq/line->units_freq->sf, line->units_freq->name);
+  fprintf(cgiOut,"-------------- ---------------------- ----------\n");
+  fprintf(cgiOut,"</pre>\n");
 #endif
 
+  switch (action){
+  case ANALYZE:
     /* 
      * in case ic_microstrip_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    ic_microstrip_calc(line,freq_Hz);
+    ic_microstrip_calc(line, line->freq);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    ic_microstrip_syn(line,freq_Hz,IC_MLISYN_H);
+    ic_microstrip_syn(line, line->freq, IC_MLISYN_H);
     fprintf(cgiOut,"</pre>\n");
-    h = line->subs->h*1e6;
     break;
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    ic_microstrip_syn(line,freq_Hz,IC_MLISYN_W);
+    ic_microstrip_syn(line, line->freq, IC_MLISYN_W);
     fprintf(cgiOut,"</pre>\n");
-    w = line->w*1e6;
     break;
 
   case SYNTH_TOX:
     fprintf(cgiOut,"<pre>");
-    ic_microstrip_syn(line,freq_Hz,IC_MLISYN_TOX);
+    ic_microstrip_syn(line, line->freq, IC_MLISYN_TOX);
     fprintf(cgiOut,"</pre>\n");
-    tox = line->subs->tox*1e6;
     break;
 
   }
-
-  /* extract the incremental circuit model */
-  Lmis = line->Lmis;
-  Rmis = line->Rmis;
-  Cmis = line->Cmis;
-  Gmis = line->Gmis;
-  Ro   = line->Ro;
-  Xo   = line->Xo;
 
 
   /* include the HTML output */
