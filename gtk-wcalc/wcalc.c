@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.18 2004/07/29 02:14:34 dan Exp $ */
+/* $Id: wcalc.c,v 1.19 2004/07/29 02:38:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -291,8 +291,8 @@ void wcalc_setup (gpointer data,
 
     if( (fp == NULL) && (homedir != NULL) ) {
       /* check $HOME/.wcalc/ */
-      /* XXX use the glib macro for pathsep once I figure out the name */
-      sprintf(tmps, "%s/.wcalc/%s.wc", homedir, model_name);
+      sprintf(tmps, "%s%s.wcalc%s%s.wc", 
+	      homedir, G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S, model_name);
 #ifdef DEBUG
       g_print("\ttrying \"%s\"\n", tmps);
 #endif
@@ -305,8 +305,7 @@ void wcalc_setup (gpointer data,
 
     if( (fp == NULL) && (rcdir != NULL) ) {
       /* check $WCALC_RCDIR/ */
-      /* XXX use the glib macro for pathsep once I figure out the name */
-      sprintf(tmps, "%s/%s.wc", rcdir, model_name);
+      sprintf(tmps, "%s%s%s.wc", rcdir, G_DIR_SEPARATOR_S, model_name);
 #ifdef DEBUG
       g_print("\ttrying \"%s\"\n", tmps);
 #endif
@@ -543,24 +542,17 @@ void wcalc_set_title(Wcalc * wcalc)
 
 
   if (wcalc->file_name != NULL) {
-#ifdef WIN32
-#define DIRSEP '\\'
-#else
-#define DIRSEP '/'
-#endif
     /* extract the basefile name */
     wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
     while(--wcalc->file_basename > wcalc->file_name){
-      if(*wcalc->file_basename == DIRSEP)
+      if(*wcalc->file_basename == G_DIR_SEPARATOR)
 	break;
     }
     wcalc->file_basename++;
-#undef DIRSEP
-  }
-  else {
+  } else {
     wcalc->file_basename = "Untitled";
   }
-
+    
   if (wcalc->window_title != NULL)
     free(wcalc->window_title);
   

@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.5 2002/05/10 22:52:44 dan Exp $ */
+/* $Id: print.c,v 1.6 2002/06/12 11:30:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -141,11 +141,7 @@ void global_printer_init()
     global_print_config->eps_dir=WCALC_DATADIR;
   }
 
-#ifdef WIN32
-  global_print_config->dir_sep='\\';
-#else
-  global_print_config->dir_sep='/';
-#endif
+  global_print_config->dir_sep=G_DIR_SEPARATOR;
 
 #ifdef DEBUG
   g_print("print.c:global_printer_init():  Set eps_dir=\"%s\"\n",
