@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.5 2001/09/18 20:42:58 dan Exp $ */
+/*      $Id: wcalc.h,v 1.6 2001/09/19 19:17:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -58,7 +58,14 @@ enum {
   WC_MODEL_STRIPLINE,
 };
 
+/* Global list of the names of the various models */
 GList *global_model_names;
+
+/* Global list of pointers to the _new() functions for each model */
+GList *global_model_new;
+
+/* Global list of menu paths for the models */
+GList *global_model_menus;
 
 typedef struct WCALC
 {

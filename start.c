@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.3 2001/09/18 20:42:56 dan Exp $ */
+/* $Id: start.c,v 1.4 2001/09/19 19:17:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,8 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
@@ -56,15 +58,67 @@ VER \
 "Dan McMahill."
 
 
+/*
+ * This is ok to have file scope becasue we will only have 1 splash
+ * window open at a time ever
+ */
+static GtkWidget *combo_model;
+
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
+  guint ind;
+  guint len;
+  char *name;
+  int foundit=0;
+  void *new_cmd;
+
+  /* lookup the selected model in the list of models */
+  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(combo_model)->entry));
+
+  /* how many model entries might there be? */
+  len = g_list_length(global_model_names);
+
+  /* figure out which one we've selected */
+  for(ind=0; ind<len; ind++){
+    if(strcmp(g_list_nth_data(global_model_names,ind),name) == 0){
+#ifdef DEBUG
+      g_print("ok_pressed():  Found entry at index %d\n",ind);
+#endif
+      foundit = 1;
+      break;
+    }
+  }
+
+  if(!foundit){
+    g_print("start.c:ok_pressed():  could not find \"%s\" in the model list\n",
+	    name);
+  }
+
+#ifdef DEBUG
+  g_print("start.c:ok_pressed():  length of global_model_names is %d\n",
+	  g_list_length(global_model_names));
+  g_print("start.c:ok_pressed():  Model \"Microstrip\" is entry # %d\n",
+	  g_list_index(global_model_names,"Microstrip"));
+  g_print("start.c:ok_pressed():  Model \"%s\" is entry # %d\n",
+	  name, ind);
+#endif
+
+  /* extract the _new function for our selected model */
+  new_cmd = (void *) g_list_nth_data(global_model_new,ind);
+
+  if(new_cmd == NULL){
+    g_print("start.c:ok_pressed():  Sorry, I don't know how to create \"%s\"\n",
+	    name);
+    return ;
+  }
+
   /* unmake it modal */
   gtk_grab_remove(window);
 
   /* blow away the window */
   gtk_widget_destroy(window);
 
-  wcalc_setup (NULL, WC_MODEL_MICROSTRIP, NULL);
+  wcalc_setup (NULL, ind, NULL);
 
 }
 
@@ -76,7 +130,6 @@ void start_popup(void)
 
   GtkWidget *button;
   GtkWidget *label;
-  GtkWidget *combo_model;
 
   GtkWidget *separator;
   GtkWidget *action_area;

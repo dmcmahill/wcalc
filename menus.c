@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.8 2001/09/18 20:42:54 dan Exp $ */
+/* $Id: menus.c,v 1.9 2001/09/19 19:17:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -49,8 +49,8 @@
 			 gpointer data);
 */
 static void window_close (gpointer data,
-			     guint action,
-			     GtkWidget *widget);
+			  guint action,
+			  GtkWidget *widget);
 
 
 /* This is the GtkItemFactoryEntry structure used to generate new menus.
@@ -76,15 +76,9 @@ static void window_close (gpointer data,
            "<LastBranch>"     -> create a right justified branch 
 */
 
-static GtkItemFactoryEntry menu_items[] = {
+static GtkItemFactoryEntry static_menu_items[] = {
   { "/_File",           NULL,          NULL,             0, "<Branch>" },
   { "/File/_New",       NULL,          NULL,             0, "<Branch>" },
-  { "/File/_New/Air Coil",
-                        NULL,          wcalc_setup,      WC_MODEL_AIRCOIL, NULL },
-  { "/File/_New/Microstrip",
-                        NULL,          wcalc_setup,      WC_MODEL_MICROSTRIP, NULL },
-  { "/File/_New/Stripline",
-                        NULL,          wcalc_setup,      WC_MODEL_STRIPLINE, NULL },
   { "/File/sep1",       NULL,          NULL,             0, "<Separator>" },
   { "/File/_Open",      "<control>O",  wcalc_open,       0, NULL },
   { "/File/_Save",      "<control>S",  wcalc_save,       0, NULL },
@@ -96,6 +90,16 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/File/Quit",       "<control>Q",  gtk_main_quit,    0, NULL },
   { "/_Options",        NULL,          NULL,             0, "<Branch>" },
   { "/Options/tearoff", NULL,          0,                0, "<Tearoff>"},
+  { "/Options/_Freq. Units",
+                        NULL,          0,                0, "<Branch>"},
+  { "/Options/_Freq. Units/_Hz",
+                        NULL,          0,                0, "<RadioItem>"},
+  { "/Options/_Freq. Units/_kHz",
+                        NULL,          0,                0, "<RadioItem>"},
+  { "/Options/_Freq. Units/_MHz",
+                        NULL,          0,                0, "<RadioItem>"},
+  { "/Options/_Freq. Units/_GHz",
+                        NULL,          0,                0, "<RadioItem>"},
   { "/_Window",         NULL,          NULL,             0, "<Branch>" },
   { "/Window/tearoff",  NULL,          0,                0, "<Tearoff>"},
   { "/_Help",           NULL,          NULL,             0, "<LastBranch>" },
@@ -109,7 +113,27 @@ void get_main_menu( Wcalc *wcalc,
 {
   GtkItemFactory *item_factory;
   GtkAccelGroup *accel_group;
-  gint nmenu_items = sizeof (menu_items) / sizeof (menu_items[0]);
+  GtkItemFactoryEntry *menu_items;
+  gint nmenu_items = sizeof (static_menu_items) / sizeof (static_menu_items[0]);
+  guint nmodels;
+  int i;
+
+  nmodels = g_list_length(global_model_names);
+  menu_items = (GtkItemFactoryEntry *) 
+    g_malloc((nmenu_items+nmodels)*sizeof(GtkItemFactoryEntry));
+
+  /* copy over the static menu items */
+  for (i=0; i<nmenu_items; i++){
+    menu_items[i] = static_menu_items[i];
+  }
+
+  /* add in the models */
+  for (i=0; i<nmodels; i++){
+    menu_items[nmenu_items+i] = (GtkItemFactoryEntry)
+    {g_list_nth_data(global_model_menus,i),NULL,wcalc_setup,i,NULL};
+  }
+  
+  nmenu_items += nmodels;
 
   accel_group = gtk_accel_group_new ();
 
