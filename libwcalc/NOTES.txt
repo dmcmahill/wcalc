@@ -1,7 +1,12 @@
-$Id$
+$Id: NOTES.txt,v 1.1 2002/01/20 03:35:51 dan Exp $
 
 Notes about various papers and modeling ideas.
 
+
+Coplanar Waveguide
+------------------
+9. G. Ghione, C. Naldi, "Parameters of Coplanar Waveguide with Lower Ground Plane,"
+Electronics Letters, Vol.19, No.18 , pp.734-735, Sept. 1, 1983.
 
 Spiral Inductors
 ----------------
