@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.8 2001/09/20 20:32:51 dan Exp $ */
+/* $Id: print.c,v 1.9 2001/09/22 04:37:09 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
