@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.2 2002/01/03 03:54:54 dan Exp $ */
+/* $Id: misc.c,v 1.3 2002/01/07 01:24:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -319,6 +319,87 @@ void resistivity_units_set(composite_units_data *units,char *str)
   printf("resistivity_units_set():  found \"%s\" at index %d\n",str,i);
 #endif
   units->numi[1] = i;
+
+}
+
+/* units/meters */
+composite_units_data * inc_units_new(int type, const units_data *nu)
+{
+  composite_units_data *u;
+  
+  if ( (u = malloc(sizeof(composite_units_data))) == NULL ) {
+    fprintf(stderr,"inc_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  u->type = type;
+
+  u->nnum = 1;
+  u->nden = 1;
+
+  if ( (u->num = malloc(u->nnum*sizeof(units_data))) == NULL ) {
+    fprintf(stderr,"inc_units_new():  malloc failed.\n");
+    exit(1);
+  }
+  if ( (u->den = malloc(u->nden*sizeof(units_data))) == NULL ) {
+    fprintf(stderr,"inc_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  /* 
+   * allocate memory for the arrays that specify the current
+   * value of the units 
+   */
+  if ( (u->numi = malloc(u->nnum*sizeof(int))) == NULL ) {
+    fprintf(stderr,"inc_units_new():  malloc failed.\n");
+    exit(1);
+  }
+  if ( (u->deni = malloc(u->nden*sizeof(int))) == NULL ) {
+    fprintf(stderr,"inc_units_new():  malloc failed.\n");
+    exit(1);
+  }
+  
+  u->num[0] = nu;
+  u->den[0] = length_units;
+
+  u->numi[0] = units_get_index(u->num[0], 1.0);
+  u->deni[0] = units_get_index(u->den[0], 1.0);
+
+  return u;
+}
+
+void inc_units_free(composite_units_data *u)
+{
+  free(u->num);
+  free(u->numi);
+  free(u->den);
+  free(u->deni);
+  free(u);
+}
+
+/* initialize a inc_units composite units from a string */
+void inc_units_set(int type, const units_data *nu, composite_units_data *units,char *str) 
+{
+  char *tok;
+  int i;
+
+  assert(units->type == type);
+
+  tok = strtok(str,"/");
+  i=units_get_index_name(nu,tok);
+
+#ifdef DEBUG
+  printf("inc_units_set():  found \"%s\" at index %d\n",str,i);
+#endif
+  units->numi[0] = i;
+
+  tok = strtok(NULL,"/");
+  i=units_get_index_name(length_units,tok);
+
+#ifdef DEBUG
+  printf("inc_units_set():  found \"%s\" at index %d\n",str,i);
+#endif
+  units->deni[0] = i;
 
 }
 

@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.2 2002/01/03 03:54:55 dan Exp $ */
+/* $Id: misc.h,v 1.3 2002/01/07 01:24:19 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -58,11 +58,18 @@ typedef struct COMPOSITE_UNITS_DATA
   int nnum, nden;
 
   /* what sort of units are these? */
-  enum {UNITS_RESISTIVITY} type;
+  enum {
+    UNITS_RESISTIVITY,
+    UNITS_INC_CAPACITANCE,
+    UNITS_INC_CONDUCTANCE,
+    UNITS_INC_INDUCTANCE,
+    UNITS_INC_RESISTANCE,
+  } type;
 
 } composite_units_data;
 
 extern const units_data capacitance_units[];
+extern const units_data conductance_units[];
 extern const units_data frequency_units[];
 extern const units_data inductance_units[];
 extern const units_data length_units[];
@@ -76,9 +83,32 @@ int units_size(const units_data *units);
 char ** units_strings_get(const units_data *units);
 int units_get_index(const units_data *units, double sf);
 int units_get_index_name(const units_data *units, char *name);
+
 composite_units_data * resistivity_units_new(void);
 void resistivity_units_free(composite_units_data *u);
 void resistivity_units_set(composite_units_data *units,char *str);
+
+composite_units_data * inc_units_new(int type, const units_data *nu);
+void inc_units_free(composite_units_data *u);
+void inc_units_set(int type, const units_data *nu, composite_units_data *units,char *str);
+
+#define inc_capacitance_units_new() inc_units_new(UNITS_INC_CAPACITANCE,capacitance_units)
+#define inc_capacitance_units_free(u) inc_units_free((u))
+#define inc_capacitance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
+
+#define inc_conductance_units_new() inc_units_new(UNITS_INC_CONDUCTANCE,conductance_units)
+#define inc_conductance_units_free(u) inc_units_free((u))
+#define inc_conductance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
+
+#define inc_inductance_units_new() inc_units_new(UNITS_INC_INDUCTANCE,inductance_units)
+#define inc_inductance_units_free(u) inc_units_free((u))
+#define inc_inductance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
+
+#define inc_resistance_units_new() inc_units_new(UNITS_INC_RESISTANCE,resistance_units)
+#define inc_resistance_units_free(u) inc_units_free((u))
+#define inc_resistance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
+
+
 void units_update(composite_units_data *units, double *sf, char **name);
 
 double dia2awg(double dia);
