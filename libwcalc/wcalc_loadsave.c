@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.17 2002/06/12 11:30:33 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.18 2004/07/21 22:18:05 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
