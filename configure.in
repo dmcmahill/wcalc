@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.23 2001/10/17 03:56:17 dan Exp $
+dnl $Id: configure.in,v 1.24 2001/10/18 03:39:00 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -148,6 +148,7 @@ AC_SUBST(GTK_WCALC)
 
 # where to install the CGI programs
 
+AC_MSG_CHECKING([where to install the CGI programs])
 AC_ARG_WITH([cgibin],
 [  --with-cgibin=cgibin    Install the CGI programs in the specified
                           directory.  [default = libexecdir/cgi-bin]],
@@ -161,11 +162,12 @@ fi
 [
 CGIBINDIR='${libexecdir}/cgi-bin'
 ])
-
+AC_MSG_RESULT([$CGIBINDIR])
 AC_SUBST(CGIBINDIR)
 
 # path to the CGI programs on the webserver
 
+AC_MSG_CHECKING([URI path to  the CGI programs])
 AC_ARG_WITH([cgibin],
 [  --with-cgipath=cgipath  Path used by the web server to access
                           the CGI programs. [default = /cgi-bin/]],
@@ -173,17 +175,18 @@ AC_ARG_WITH([cgibin],
 if test "X$with_cgipath" = "Xno" ; then
 	AC_ERROR([--without-cgipath is not allowed])
 else
-	CGIBINDIR=$with_cgipath
+	CGIPATH=$with_cgipath
 fi
 ],
 [
 CGIPATH='/cgi-bin/'
 ])
-
+AC_MSG_RESULT([$CGIPATH])
 AC_SUBST(CGIPATH)
 
 # where to install the HTML pages and .PNG files:
 
+AC_MSG_CHECKING([where to install the html pages])
 AC_ARG_WITH([htmldir],
 [  --with-htmldir=htmldir  Install the HTML files and PNG images needed
                           for the web page and the the CGI interface to
@@ -200,12 +203,13 @@ fi
 [
 HTMLDIR='${pkgdatadir}'
 ])
-
+AC_MSG_RESULT([$HTMLDIR])
 AC_SUBST(HTMLDIR)
 
 # path to the HTML pages and .PNG files for the webserver:
 
 
+AC_MSG_CHECKING([for the URI path to the web pages])
 AC_ARG_WITH([htmlpath],
 [  --with-htmlpath=htmlpath    Path used by the web server to access the
                           HTML files and PNG images.
@@ -220,7 +224,7 @@ fi
 [
 HTMLPATH='/wcalc/'
 ])
-
+AC_MSG_RESULT([$HTMLPATH])
 AC_SUBST(HTMLPATH)
 
 
