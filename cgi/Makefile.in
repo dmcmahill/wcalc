@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 2001/09/12 23:51:48 dan Exp $
+# $Id: Makefile.in,v 1.7 2001/09/13 14:52:01 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -94,7 +94,7 @@ ic_microstrip_html.c:	ic_microstrip.html
 	$(HTML2C) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_html.c
 
 ic_microstrip_id.h: ic_microstrip.html
-	$(HTML2ID) $(srcdir)/ic_microstrip.html >> $(srcdir)/ic_microstrip_id.h
+	$(HTML2ID) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_id.h
 
 ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip_html.c footer_html.c ic_microstrip_id.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/ic_microstrip.cgi.c
@@ -124,7 +124,7 @@ microstrip_html.c:	microstrip.html
 	$(HTML2C) $(srcdir)/microstrip.html > $(srcdir)/microstrip_html.c
 
 microstrip_id.h: microstrip.html
-	$(HTML2ID) $(srcdir)/microstrip.html >> $(srcdir)/microstrip_id.h
+	$(HTML2ID) $(srcdir)/microstrip.html > $(srcdir)/microstrip_id.h
 
 microstrip.cgi.o: microstrip.cgi.c microstrip_html.c footer_html.c microstrip_id.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/microstrip.cgi.c
