@@ -1,4 +1,4 @@
-# $Id$
+# $Id: Makefile,v 1.1 2001/09/07 18:40:03 dan Exp $
 #
 
 # Copyright (c) 2001 Dan McMahill
@@ -36,6 +36,7 @@
 TGIF_SRCS=	\
 		coupled_microstrip.obj \
 		ic_microstrip.obj \
+		ic_microstrip_model.obj \
 		microstrip.obj \
 		stripline.obj
 
