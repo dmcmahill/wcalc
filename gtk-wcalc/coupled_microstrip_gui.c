@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.3 2004/07/30 04:14:47 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.4 2004/07/30 04:37:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -69,10 +69,7 @@ static void use_z0ez0o_pressed(GtkWidget *widget, gpointer data );
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void analyze( GtkWidget *w, gpointer data );
-static void synthesize_w( GtkWidget *w, gpointer data );
-static void synthesize_l( GtkWidget *w, gpointer data );
-static void synthesize_h( GtkWidget *w, gpointer data );
-static void synthesize_er( GtkWidget *w, gpointer data );
+static void synthesize( GtkWidget *w, gpointer data );
 static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( coupled_microstrip_gui *gui);
 
@@ -237,6 +234,17 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
   
 
+  /* Synthesize button */
+  button = gtk_button_new_with_label ("Synthesize");
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 4, 
+		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
+  gtk_widget_show (button);
+
   /* Analyze button */
   button = gtk_button_new_with_label ("Analyze");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -271,18 +279,6 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 
 		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-
-  /* width synthesize */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x+3, x+4, y, y+1, 
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show (button);
-
   y++;
 
   /* ---------------- Width  -------------- */
@@ -309,17 +305,6 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
   gtk_widget_show(lwht);
   wc_units_attach_units_label(ug, lwht);
-
-  /* spacing synthesize */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x+3, x+4, y, y+1, 
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show (button);
 
   y++;
 
@@ -372,17 +357,6 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(lwht);
   wc_units_attach_units_label(ug, lwht);
 
-  /* height synthesis */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_h), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x+3, x+4, y, y+1, 
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show (button);
-
   y++;
 
   /* ---------------- Dielectric Constant -------------- */
@@ -401,17 +375,6 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_er);
-
-  /* dielectric constant synthesize */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_er), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x+3, x+4, y, y+1,
-		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
-  gtk_widget_show (button);
 
   y++;
 
@@ -1039,26 +1002,10 @@ static void analyze( GtkWidget *w, gpointer data )
   calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "analyze");
 }
 
-static void synthesize_w( GtkWidget *w, gpointer data )
+static void synthesize( GtkWidget *w, gpointer data )
 {
-  calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "synthesize_w");
+  calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "synthesize");
 }
-
-static void synthesize_l( GtkWidget *w, gpointer data )
-{
-  calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "synthesize_l");
-}
-
-static void synthesize_h( GtkWidget *w, gpointer data )
-{
-  calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "synthesize_h");
-}
-
-static void synthesize_er( GtkWidget *w, gpointer data )
-{
-  calculate(WC_COUPLED_MICROSTRIP_GUI(data), w, "synthesize_er");
-}
-
 
 static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data )
 {
@@ -1182,19 +1129,9 @@ static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data 
   if( strcmp(data,"analyze")==0) {
     rslt=coupled_microstrip_calc(gui->line, gui->line->freq);
   }
-  else if( strcmp(data,"synthesize_w")==0) {
-    rslt=coupled_microstrip_syn(gui->line, gui->line->freq, MLISYN_W);
-  }
-  else if( strcmp(data,"synthesize_l")==0) {
-    rslt=coupled_microstrip_syn(gui->line, gui->line->freq, MLISYN_L);
-  }
-  else if( strcmp(data,"synthesize_h")==0) {
-    rslt=coupled_microstrip_syn(gui->line, gui->line->freq, MLISYN_H);
-  }
-  else if( strcmp(data,"synthesize_er")==0) {
-    rslt=coupled_microstrip_syn(gui->line, gui->line->freq, MLISYN_ES);
-  }
-  else{
+  else if( strcmp(data,"synthesize")==0) {
+    rslt=coupled_microstrip_syn(gui->line, gui->line->freq);
+  } else{
     fprintf(stderr,"coupled_microstrip_gui.c:  error in coupled_microstrip callback\n"
 	    "Please report this bug and how you triggered it\n");
     exit(1);
