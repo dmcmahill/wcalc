@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.12 2004/07/27 20:54:46 dan Exp $ */
+/*      $Id: stripline.c,v 1.13 2004/07/31 03:39:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -148,6 +148,8 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   int rslt;
   stripline_line tmp_line;
 
+  double L, R, C, G, delay, depth, deltal;
+
 #ifdef DEBUG_CALC
   printf("stripline_calc_int(): --------------- Stripline Analysis ------------\n");
   printf("stripline_calc_int(): flag                        = %d\n",flag);
@@ -224,15 +226,14 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   /*
    * delay on line 
    */
-  line->delay = line->l / v;
+  delay = line->l / v;
+  
 
-
-   line->z0 = z0;
-   line->Ro = z0;
-   line->Xo = 0.0;
+   /* XXX - need open circuit end correction for stripline */
+   deltal = 0;
 
    /* find the incremental circuit model */
-   
+  
    /*
     * find L and C from the impedance and velocity
     * 
@@ -240,13 +241,18 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
     * 
     * this gives the result below
     */
-   line->Ls = line->z0/v;
-   line->Cs = 1.0/(line->z0*v);
-
+   
+   L = z0/v;
+   C = 1.0/(z0*v);
+  
    /* resistance will be updated below */
-   line->Rs = 0.0;
-   line->Gs = 2*M_PI*f*line->Cs*line->subs->tand;
+   R = 0.0;
+   G = 2*M_PI*f*C*line->subs->tand;
 
+   delay = line->l / v;
+
+   /* we'll update this if its a top level calculation */
+   depth = 0;
 
   /* Loss */
    if(flag == WITHLOSS) {
@@ -281,6 +287,9 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        /* skin depth in meters */
        line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
        delta = line->skindepth;
+       
+       /* make a copy, we'll want it  later */
+       depth = delta;
 
 #ifdef notdef
        /* warn the user if the loss calc is suspect. */
@@ -327,7 +336,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   printf("stripline_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
 		  z1,z2,z0,lc);
 #endif
-	   line->Rs = lc*2*line->z0;
+	   R = lc*2*line->z0;
 
 	 }
 
@@ -335,10 +344,10 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        else if(line->subs->tmet > 0.0)
 	 {
 	   /* resistance per meter = 1/(Area*conductivity) */
-	   line->Rs = 1/(line->w*line->subs->tmet*sigma);  
+	   R = 1/(line->w*line->subs->tmet*sigma);  
   
 	   /* conduction losses, nepers per meter */
-	   lc = line->Rs/(2.0*z0);
+	   lc = R/(2.0*z0);
 
 	   /*
 	    * change delta to be equal to the metal thickness for
@@ -347,7 +356,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   delta = line->subs->tmet;
 #ifdef DEBUG_CALC
 	   printf("stripline_calc_int(): LF conduction loss, R=%g, lc=%g\n",
-		  line->Rs,lc);
+		  R,lc);
 #endif
 	   /* no conduction loss case */
 	 }
@@ -387,11 +396,25 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        loss = 0.0;
      }
 
+   
+   /*  store results */
+   line->z0 = z0;
+
+   /* XXX fixme .  Ro + j Xo = sqrt((jwL + R) / (jwC + G))*/
+   line->Ro = z0;
+   line->Xo = 0.0;
+
    line->loss = loss;
    line->losslen = loss/line->l;
-   
-   /* XXX - need open circuit end correction for stripline */
-   line->deltal=0;
+   line->skindepth = depth;
+
+   line->deltal = deltal;
+   line->delay = delay;
+
+   line->Ls = L;
+   line->Rs = R; 
+   line->Cs = C;
+   line->Gs = G;
    
    return 0;
 }
