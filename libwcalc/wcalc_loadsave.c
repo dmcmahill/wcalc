@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.12 2002/01/19 02:41:12 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.13 2002/02/16 13:42:48 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -755,7 +755,9 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
   assert(list != NULL);
 
   cur = list;
-  tok=strtok(str," ");
+  if ( (tok=strtok(str," ")) == NULL ) {
+    return -1;
+  }
 
   while ( cur != NULL) {
     switch (cur->spec_type) {
@@ -802,7 +804,9 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
 	  fprintf(stderr,"fspec_read_string():  Invalid type, '%c' in fspec\n",cur->type);
 	  exit(1);
 	}
-	tok=strtok(NULL," ");
+	if ( (tok=strtok(str," ")) == NULL ) {
+	  return -1;
+	}
 
       }
       break;
@@ -811,7 +815,9 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
 #ifdef DEBUG
       printf("fspec_read_string():  skipping SPEC_FIXED\n");
 #endif
-      tok=strtok(NULL," ");
+      if ( (tok=strtok(str," ")) == NULL ) {
+	return -1;
+      }
       break;
 	
     case SPEC_COMMENT:
