@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.20 2004/08/02 21:09:00 dan Exp $ */
+/* $Id: wcalc.c,v 1.21 2004/08/30 22:59:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -163,7 +163,7 @@ int main( int   argc,
   if( (localedir=getenv("WCALC_LOCALEDIR")) == NULL ) {
     bindtextdomain (PACKAGE, LOCALEDIR);
   } else {
-    g_print("binding to localedir=\"%s\"\n",localedir);
+    /* g_print("binding to localedir=\"%s\"\n",localedir); */
     bindtextdomain (PACKAGE, localedir);
   }
   textdomain (PACKAGE);
