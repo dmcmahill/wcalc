@@ -1,4 +1,4 @@
-/* $Id: about.h,v 1.1 2001/10/05 00:50:21 dan Exp $ */
+/* $Id: about.h,v 1.2 2002/01/03 03:54:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -36,10 +36,14 @@
 #ifndef __ABOUT_H__
 #define __ABOUT_H__
 
+#include <gtk/gtk.h>
+
 void about_popup(void);
 void copyright_popup(void);
 
 /* XXX should move this to a seperate help .c file */
+void asciitab_popup(GtkWidget * (*table_fn)(void),char *title);
+
 void permitivity_popup(void);
 void resistivity_popup(void);
 

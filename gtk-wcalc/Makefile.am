@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.13 2002/01/07 01:24:15 dan Exp $
+## $Id: Makefile.am,v 1.14 2002/01/07 10:57:20 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -47,6 +47,8 @@ wcalc_SOURCES = \
 	epscat.h \
 	files.c \
 	files.h \
+	gtk-units.c \
+	gtk-units.h \
 	ic_microstrip_gui.c \
 	ic_microstrip_gui.h \
 	menus.c \
@@ -66,7 +68,10 @@ wcalc_SOURCES = \
 
 man_MANS=	wcalc.1
 
-ASCIITABS=	resistivity.asciitab
+ASCIITABS=\
+	permitivity.asciitab \
+	resistivity.asciitab
+
 GTKTABS=	${ASCIITABS:.asciitab=.c}
 
 BUILT_SOURCES=	${GTKTABS}

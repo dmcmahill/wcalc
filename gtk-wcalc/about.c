@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.3 2002/01/07 10:57:20 dan Exp $ */
+/* $Id: about.c,v 1.4 2002/01/10 18:33:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -174,56 +174,18 @@ void copyright_popup(void)
   gtk_widget_show (window);
 }
 
-void permitivity_popup(void)
-{
-  GtkWidget *button;
-  GtkWidget *label;
-  GtkWidget *window;
- 
-  /* create the "Permitivities" window */
-  window = gtk_dialog_new();
-  
-  /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "Permitivities of Common Materials");
-  gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
-  /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
-		     GTK_OBJECT(window));
-  
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
-		      button, TRUE, FALSE, 0);
-  gtk_widget_show (button);
-  
-
-  /* add the text to the window */
-  label = gtk_label_new (
-			 "Silicon          (Si)   \n"
-			 "Silicon Dioxide  (SiO2) \n"
-			 );
-  gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
-		      label, TRUE, TRUE, 0);
-  gtk_widget_show (label);
-
-  /* show it */
-  gtk_widget_show (window);
-}
-
-void resistivity_popup(void)
+void asciitab_popup(GtkWidget * (*table_fn)(void), char *title)
 {
   GtkWidget *button;
   GtkWidget *tab;
   GtkWidget *window;
-  extern GtkWidget * resistivity_table(void);
 
-  /* create the "Resistivities" window */
+  /* create the window */
   window = gtk_dialog_new();
   
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "Resistivities of Common Materials");
+  gtk_window_set_title (GTK_WINDOW (window), title);
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */
@@ -238,7 +200,7 @@ void resistivity_popup(void)
   
 
   /* add the text to the window */
-  tab = resistivity_table();
+  tab = table_fn();
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
 		      tab, TRUE, TRUE, 0);
   gtk_widget_show (tab);
@@ -247,6 +209,19 @@ void resistivity_popup(void)
   gtk_widget_show (window);
 }
 
+void permitivity_popup(void)
+{
+  extern GtkWidget * permitivity_table(void);
+  asciitab_popup(permitivity_table,
+		 "Permitivities of Common Materials");
+}
+
+void resistivity_popup(void)
+{
+  extern GtkWidget * resistivity_table(void);
+  asciitab_popup(resistivity_table,
+		 "Resistivities of Common Materials");
+}
 
 
 
