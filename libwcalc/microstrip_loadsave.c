@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.c,v 1.4 2002/05/09 23:50:01 dan Exp $ */
+/* $Id: microstrip_loadsave.c,v 1.5 2002/06/12 11:30:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -184,3 +184,20 @@ void microstrip_save(microstrip_line *line, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) line->subs);
 }
 
+
+/* XXX need to handle both line and substrate specs */
+char * microstrip_save_string(microstrip_line *line)
+{
+  fspec *myspec;
+  char *str;
+
+  myspec=get_fspec(LINE_SPEC);
+  str=fspec_write_string(myspec,(unsigned long) line);
+  return str;
+}
+
+/* XXX write me! */
+int microstrip_load_string(microstrip_line *line, char *str)
+{
+  return 0;
+}
