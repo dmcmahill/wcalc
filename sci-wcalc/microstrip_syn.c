@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: microstrip_syn.c,v 1.1 2001/10/31 14:51:10 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -218,7 +218,7 @@ void mexFunction(
     line->subs->tand  = tand[*ind_tand];
     line->freq        = freq[*ind_freq];
 
-    line->z0          = z0[*ind_z0];
+    line->Ro          = z0[*ind_z0];
     line->len         = elen[*ind_elen];
     
     if ((flag[*ind_flag] > 3) || (flag[*ind_flag] < 0) ) {
@@ -231,8 +231,8 @@ void mexFunction(
     /* extract the outputs */
     w_out[ind]  = line->w;
     l_out[ind]  = line->l;
-    h_out[ind]  = line->h;
-    er_out[ind] = line->er;
+    h_out[ind]  = line->subs->h;
+    er_out[ind] = line->subs->er;
     keff[ind]   = line->keff;
     loss[ind]   = line->loss;
     deltal[ind] = line->deltal;

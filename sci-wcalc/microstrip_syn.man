@@ -1,4 +1,4 @@
-.\" $Id$
+.\" $Id: microstrip_syn.man,v 1.1 2001/10/31 14:51:10 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -39,7 +39,7 @@ microstrip_syn - Microstrip transmission line synthesis
 .SH CALLING SEQUENCE
 .nf
 [w_out,h_out,l_out,er_out,keff,loss,deltal] = 
-    microstrip_syn(z0,w,h,l,tmet,rho,rough,er,tand,f,flag);
+    microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
 .fi
 .SH PARAMETERS
 .TP 10
@@ -124,8 +124,9 @@ tand=0.01;        // loss tangent
 f=2.4e9;          // frequency
 flag=0;           // synthesize width
 [w_out,h_out,l_out,er_out,keff,loss,deltal] = ...
-    microstrip_syn(z0,w,h,l,tmet,rho,rough,er,tand,f,flag);
-disp(sprintf('w=%g mils, l=%g mils',w/sf,l/sf));
+    microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
+disp(sprintf('w=%g mils, l=%g mils',w_out/sf,l_out/sf));
+disp(sprintf('er=%g',er_out));
 disp(sprintf('z0=%g ohms, length=%g degrees',z0,elen));
 disp(sprintf('keff=%g',keff));
 disp(sprintf('loss=%g dB',loss));
