@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/05 01:29:38 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -37,17 +37,27 @@ bin_PROGRAMS = wcalc
 
 wcalc_SOURCES = \
 	about.c \
+	about.h \
 	alert.c \
 	air_coil_gui.c \
+	air_coil_gui.h \
 	files.c \
+	files.h \
 	menus.c \
+	menus.h \
 	microstrip_gui.c \
+	microstrip_gui.h \
 	print.c \
+	print.h \
 	start.c \
+	start.h \
 	version.c \
-	wcalc.c
+	wcalc.c \
+	wcalc.h
 
-INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc
+EXTRA_DIST=	icon_bitmap
+
+INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
 wcalc_LDADD = ../libwcalc/libwcalc.la
 wcalc_LDFLAGS = @GTK_LIBS@  
 

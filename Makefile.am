@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2001/10/10 02:51:52 dan Exp $
+# $Id: Makefile.am,v 1.4 2001/10/12 03:53:34 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -36,3 +36,8 @@
 SUBDIRS = include libwcalc pixmaps gtk-wcalc cgi-wcalc @SCI_WCALC@ 
 DIST_SUBDIRS = include libwcalc pixmaps gtk-wcalc cgi-wcalc sci-wcalc 
 
+# XXX need to move the ps stuff
+EXTRA_DIST=	ltcf-c.sh \
+	ps_header.c \
+	ps_footer.c \
+	ps_microstrip.c 

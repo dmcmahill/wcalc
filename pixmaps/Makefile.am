@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/05 02:58:19 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/12 03:53:36 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -59,7 +59,7 @@ TGIF=		XENVIRONMENT=$(srcdir)/Xdefaults.tgif @TGIF@
 TGIF_FLAGS=	-print -color
 
 BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${EPSC}
-
+EXTRA_DIST=	Xdefaults.tgif ${TGIF_SRCS} ${BUILT_SOURCES}
 
 # All the new suffix rules
 
