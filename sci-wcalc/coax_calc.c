@@ -1,4 +1,4 @@
-/* $Id: coax_calc.c,v 1.2 2001/12/09 15:41:54 dan Exp $ */
+/* $Id: coax_calc.c,v 1.3 2001/12/09 21:17:20 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -192,7 +192,7 @@ void mexFunction(
   /* output pointers */
   z0   = mxGetPr(Z0_OUT);
   elen = mxGetPr(ELEN_OUT);
-  loss = mxGetPr(Z0_OUT);
+  loss = mxGetPr(LOSS_OUT);
   L    = mxGetPr(L_OUT);
   R    = mxGetPr(R_OUT);
   C    = mxGetPr(C_OUT);
@@ -200,9 +200,6 @@ void mexFunction(
 
   /* the actual computation */
   line = coax_new();
-
-  /* XXX get from flags */
-
 
   for (ind=0; ind<(rows*cols); ind++){
     /*
