@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: wcalc-config.in,v 1.1 2004/08/06 12:24:25 dan Exp $
+# $Id: wcalc-config.in,v 1.2 2004/08/09 12:56:22 dan Exp $
 #
 
 # directories from the configure script
@@ -10,6 +10,8 @@ libdir=@libdir@
 includedir=@includedir@
 bindir=@bindir@
 
+pkgincludedir=${includedir}/@PACKAGE@
+
 # other stuff from the configure script
 cflags="-I${includedir}"
 libs="-L${libdir} -Wl,-R${libdir} -lwcalc @LIBS@"
@@ -17,11 +19,13 @@ libs="-L${libdir} -Wl,-R${libdir} -lwcalc @LIBS@"
 usage() {
 	echo "Usage: wcalc-config [OPTIONS] [LIBRARIES]"
 	echo "Options:"
-        echo "    [--prefix[=DIR]]"
-	echo "    [--exec-prefix[=DIR]]"
-	echo "    [--version]"
-	echo "    [--libs]"
 	echo "    [--cflags]"
+	echo "    [--exec-prefix[=DIR]]"
+	echo "    [--includedir]"
+	echo "    [--libdir]"
+	echo "    [--libs]"
+        echo "    [--prefix[=DIR]]"
+	echo "    [--version]"
 	echo "Libraries:"
 	echo "    wcalc"
 }
@@ -55,6 +59,16 @@ while test $# -ne 0; do
 
 	--help|-h )
 		usage
+		exit 0
+		;;
+
+	--includedir )
+		echo "$pkgincludedir"
+		exit 0
+		;;
+
+	--libdir )
+		echo "$libdir"
 		exit 0
 		;;
 
