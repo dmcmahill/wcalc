@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.5 2001/09/17 20:45:17 dan Exp $ */
+/* $Id: print.c,v 1.6 2001/09/18 21:08:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -46,6 +46,7 @@
 /* for rint() if its missing from math.h */
 #include "mathutil.h"
 
+#include "microstrip_gui.h"
 #include "print.h"
 #include "wcalc.h"
 
@@ -483,6 +484,8 @@ static int print_ps_header(Wcalc *wcalc,FILE *fp)
   double tab3=0.6;
   double tab4=0.5;
 
+  microstrip_gui *gui;
+
   time_t now;
   
   const char *name="Microstrip Analysis/Synthesis";
@@ -504,6 +507,7 @@ static int print_ps_header(Wcalc *wcalc,FILE *fp)
 
 #include "ps_microstrip.c"
 
+  gui = WC_MICROSTRIP_GUI(wcalc);
 
   fprintf(fp,"%% spit out the numbers\n");
   fprintf(fp,"newline\n");
@@ -517,46 +521,46 @@ static int print_ps_header(Wcalc *wcalc,FILE *fp)
   fprintf(fp,"col1x coly moveto\n");
   fprintf(fp,"/leftcol col1x  def\n");
   fprintf(fp,"(W) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  wcalc->line->w);
+	  gui->line->w);
   fprintf(fp,"(H) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  wcalc->line->subs->h);
+	  gui->line->subs->h);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g mils ) show newline\n",
-	  wcalc->line->l);
+	  gui->line->l);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  wcalc->line->subs->tmet);
+	  gui->line->subs->tmet);
   fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g) show newline\n",
-	  wcalc->line->subs->rho);
+	  gui->line->subs->rho);
   fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g mils-rms) show newline\n",
-	  wcalc->line->subs->rough);
+	  gui->line->subs->rough);
   fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
-	  wcalc->line->subs->er);
+	  gui->line->subs->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
-	  wcalc->line->subs->tand);
+	  gui->line->subs->tand);
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
   fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g ) show (W) symbolshow newline\n",
-	  wcalc->line->z0);
+	  gui->line->z0);
   fprintf(fp,"(keff) show tab1 (=) show tab2 (%g) show newline\n",
-	  wcalc->line->keff);
+	  gui->line->keff);
   fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
-	  wcalc->line->len);
+	  gui->line->len);
   fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
-	  wcalc->line->loss);
+	  gui->line->loss);
   fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
-	  wcalc->line->losslen);
+	  gui->line->losslen);
   fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
-	  wcalc->line->skindepth);
+	  gui->line->skindepth);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
-	  wcalc->line->Ls);
+	  gui->line->Ls);
   fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
-	  wcalc->line->Rs);
+	  gui->line->Rs);
   fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
-	  wcalc->line->Cs);
+	  gui->line->Cs);
   fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
-	  wcalc->line->Gs);
+	  gui->line->Gs);
   
 #include "ps_footer.c"
 

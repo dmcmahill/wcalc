@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.7 2001/09/20 02:02:59 dan Exp $ */
+/*      $Id: wcalc.h,v 1.8 2001/09/20 03:04:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -43,8 +43,6 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
-
-#include "microstrip.h"
 
 
 /* Global list of the names of the various models */
@@ -92,59 +90,6 @@ typedef struct WCALC
   gui_destroy;
   */
 
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
-
-  /* frequency entry */
-  GtkWidget *text_freq;
-
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
-  /*
-   * Values vbox and its contents
-   */
-  GtkWidget *values_vbox;
-  GtkWidget *text_W,*text_L,*text_Z0,*text_elen;
-
-  /*
-   * Outputs vbox and its contents
-   */
-  GtkWidget *outputs_vbox;
-  GtkWidget *label_keff,*label_loss,*label_losslen,*label_skindepth;
-
-
-  /*
-   * Substrate vbox and its contents
-   */
-  GtkWidget *substrate_vbox;
-  GtkWidget *text_H,*text_er,*text_rho,*text_rough,*text_tmet,*text_tand;
-
-  /*
-   * Picture vbox and its contents
-   */
-  GtkWidget *picture_vbox;
-  GtkWidget *text_status;
-
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
-
-
-  /*
-   * the microstrip line which is being analyzed
-   */
-  microstrip_line *line;
-
 } Wcalc;
 
 void wcalc_setup(gpointer data,
@@ -152,5 +97,7 @@ void wcalc_setup(gpointer data,
 		 GtkWidget *widget);
 
 Wcalc *Wcalc_new(void);
+
+#define WC_WCALC(x)      ((Wcalc *) (x))
 
 #endif __WCALC_H_

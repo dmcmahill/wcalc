@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.14 2001/09/20 02:02:58 dan Exp $ */
+/* $Id: wcalc.c,v 1.15 2001/09/20 03:04:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -46,9 +46,8 @@
 #include "icon_bitmap"
 #include "menus.h"
 
-#include "microstrip.h"
 #include "microstrip_gui.h"
-#include "stripline_gui.h"
+//#include "stripline_gui.h"
 #include "physconst.h"
 
 #include "about.h"
@@ -179,10 +178,11 @@ static void global_model_init()
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
   global_model_new = g_list_append(global_model_new,microstrip_gui_new);
 
+  /*
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
   global_model_new = g_list_append(global_model_new,stripline_gui_new);
-
+  */
 }
 
 void wcalc_setup (gpointer data,
@@ -315,8 +315,6 @@ Wcalc *Wcalc_new(void)
 
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);
-  g_print("              wcalc->line = %p\n",new->line);
-  g_print("              wcalc->line->subs = %p\n",new->line->subs);
 #endif
 
   return(new);
