@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.c,v 1.5 2002/05/12 15:17:45 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.6 2002/06/12 11:30:25 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -40,6 +40,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _(String) String
+
+#include "alert.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "coupled_microstrip.h"
@@ -47,6 +50,13 @@
 #ifdef DMALLOC
 #include <dmalloc.h>
 #endif
+
+/* Hammerstad and Jensen effective dielectric constant */
+static double ee_HandJ(double u, double er);
+
+/* Hammerstad and Jensen characteristic impedance */
+static double z0_HandJ(double u);
+
 
 /*function [z0e,z0o,len,loss,kev,kodd,deltale,deltalo]=cmlicalc(w,l,s,f,subs,flag)*/
 /* CMLICALC   Analyze coupled microstrip transmission line from physical parameters
@@ -85,15 +95,28 @@
 
  *  Reference:
  *
- *  The equations for effective permittivity and characteristic impedance are
- *  from:
- *  Manfred Kirschning and Rolf Jansen, "Accurate Wide-Range Design Equations for
- *    the Frequency-Dependent Characteristic of Parallel Coupled Microstrip
- *    Lines", IEEE Transactions on Microwave Theory and Techniques, Vol MTT-32,
- *    No 1, January 1984, p83-90.
- *    corrections in MTT-33, No 3, March 1985, p. 288
+ *  The equations for effective permittivity and characteristic
+ *  impedance for the coupled lines are from:
  *
+ *    Kirschning and Jansen (MTT):
+ *    Manfred Kirschning and Rolf Jansen, "Accurate Wide-Range Design Equations for
+ *      the Frequency-Dependent Characteristic of Parallel Coupled Microstrip
+ *      Lines", IEEE Transactions on Microwave Theory and Techniques, Vol MTT-32,
+ *      No 1, January 1984, p83-90.
+ *      corrections in MTT-33, No 3, March 1985, p. 288
  *
+ *  Effective permittivity and characteristic impedance for a single
+ *  microstrip which is used in the Kirschning and Jansen (MTT) paper
+ *  is from:
+ *
+ *    E. Hammerstad and O. Jensen, "Accurate Models for Microstrip Computer-
+ *      Aided Design" IEEE MTT-S, International Symposium Digest, Washington
+ *      D.C., May 1980, pp. 407-409
+ *
+ *    Kirschning and Jansen (EL):
+ *    M. Kirschning and R. H. Jansen, "Accurate Model for Effective Dielectric 
+ *      Constant of Microstrip with Validity up to Millimetre-Wave Frequencies"
+ *      Electronics Letters, Vol 18, No. 6, March 18th, 1982, pp 272-273.
  *
  */
 
@@ -106,10 +129,10 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* substrate parameters */
   double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
 
-  double u,g,deltau,V,AE,BE,EFE0,AU,EF,AO,BO,CO,DO;
+  double u,g,deltau,deltau1,deltaur,T,V,EFE0,EF,AO,BO,CO,DO;
   double EFO0,fn;
   double P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12,P13,P14,P15;
-  double FEF,FOF,EFEF,EFOF,FU,ZL0;
+  double FEF,FOF,EFEF,EFOF,ZL0;
   double Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10,Q11,Q12,Q13,Q14;
   double Q15,Q16,Q17,Q18,Q19,Q20,Q21,Q22,Q23,Q24,Q25,Q26;
   double Q27,Q28,Q29;
@@ -186,71 +209,126 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   u = w/h;
   g = s/h;
-
-  deltau = (t/(2*M_PI*h));
-  /* XXX 
-     deltau = deltau*log(1 + 4*exp(1)*h/(t*coth(sqrt(6.517*u))^2))*(1 + 1/cosh(sqrt(er-1)));
-     u = u + deltau;
-  */
+  
+  /*
+   * verify that the geometry is in a range where the accuracy
+   * is good.  This is given by (1) in Kirschning and Jansen (MTT)
+   */
+  if( (u  < 0.1) || (u  > 10.0) ) {
+    alert(_("Warning:  u=w/h=%g is outside the range for highly accurate results\n"),u);
+  }
+  if( (g  < 0.1) || (g  > 10.0) ) {
+    alert(_("Warning:  g=s/h=%g is outside the range for highly accurate results\n"),g);
+  }
+  if( (er < 1.0) || (er > 18.0) ) {
+    alert(_("Warning:  er=%g is outside the range for highly accurate results\n"),er);
+  }
+  
+  if(t>0.0) {
+    /* find normalized metal thickness */
+    T = t/h;
+    
+    /* (6) from Hammerstad and Jensen */
+    deltau1 = (T/M_PI)*log(1.0 + 4.0*exp(1.0)/(T*pow(coth(sqrt(6.517*u)),2.0)));
+    
+    /* (7) from Hammerstad and Jensen */
+    deltaur = 0.5*(1.0 + 1.0/cosh(sqrt(er-1.0)))*deltau1;
+    
+    deltau = deltaur;
+    
+#ifdef DEBUG_CALC
+    printf("coupled_microstrip.c: coupled_microstrip_calc():  deltau1 = %g \n",deltau1);
+    printf("                                                  deltaur = %g \n",deltaur);
+    printf("                                                  t/h     = %g \n",T);
+#endif
+  }
+  else {
+    deltau = 0.0;
+    deltau1 = 0.0;
+    deltaur = 0.0;
+  }
 
   /*
    * static even mode relative permittivity (f=0)
+   * (3) from Kirschning and Jansen (MTT).  Accurate to 0.7 % over
+   * "accurate" range
    */
   V = u*(20.0 + pow(g,2.0))/(10.0 + pow(g,2.0)) + g*exp(-g);
-  AE = 1.0 
-    + (1.0/49.0)*log((pow(V,4.0) + pow((V/52.0),2.0))/(pow(V,4.0) + 0.432)) 
-    + (1.0/18.7)*log(1.0 + pow((V/18.1),3.0));
-  BE = 0.564*pow(((er-0.9)/(er+3.0)),0.053);
-  EFE0 = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/V),(-AE*BE));
+  /*
+   * note:  The equations listed in (3) in Kirschning and Jansen (MTT)
+   * are the same as in Hammerstad and Jensen but with u in H&J
+   * replaced with V from K&J.
+   */
+  EFE0 = ee_HandJ(V,er);
 
 
   /*
-   * static single strip, T=0, relative permittivity (f=0)
+   * static single strip, T=0, relative permittivity (f=0), width=w
+   * This is from Hammerstad and Jensen.  
    */
-  AU = 1.0 
-    + (1.0/49.0)*log((pow(u,4.0) + pow((u/52.0),2.0))/(pow(u,4.0) + 0.432)) 
-    + (1.0/18.7)*log(1.0 + pow((u/18.1),3.0));
-  EF = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/u),(-AU*BE));
+  EF = ee_HandJ(u,er);
 
 
 
   /*
    * static odd mode relative permittivity (f=0)
+   * This is (4) from Kirschning and Jansen (MTT).  Accurate to 0.5%.
    */
-  AO = 0.7278*(EF - (er+1.0)/2.0)*(1.0 - exp(-0.179*u));
+  AO = 0.7287*(EF - (er+1.0)/2.0)*(1.0 - exp(-0.179*u));
   BO = 0.747*er/(0.15 + er);
   CO = BO - (BO - 0.207) * exp(-0.414*u);
   DO = 0.593 + 0.694*exp(-0.562*u);
+
+  /*
+   * XXX is the correction implemented correctly here?
+   * Its not clear from the published correction if its the first EF
+   * or the second EF which should be - instead of +
+   */
   EFO0 = ((er+1.0)/2.0 + AO - EF)*exp(-CO*(pow(g,DO))) + EF;
 
 
-  /* normalized frequency */
+  /* normalized frequency  (2) from Kirschning and Jansen (MTT) */
   fn = 1e-6 * f * h;
 
-
+  /*
+   * check for range of validity for the dispersion equations.  p. 85
+   * of Kirschning and Jansen (MTT) says fn <= 25 gives 1.4% accuracy.
+   */
+  if( fn > 25.0 ) {
+    alert(_("Warning:  Frequency is higher (by %g %%) than the range\n"
+	    "over which the dispersion equations are accurate."),100.0*(fn-25.0)/25.0);
+  }
+  
   /*
    * even/odd mode relative permittivity including dispersion
    */
+
+  /* even mode dispersion.  (6) from Kirschning and Jansen (MTT) */
   P1 = 0.27488+ (0.6315 + 0.525/(pow((1.0 + 0.0157*fn),20.0)))*u - 0.065683*exp(-8.7513*u);
   P2 = 0.33622*(1.0 - exp(-0.03442*er));
-  P3 = 0.0363*exp(-4.6*u)*(1 - exp(-pow((fn/38.7),4.97)));
+  P3 = 0.0363*exp(-4.6*u)*(1.0 - exp(-pow((fn/38.7),4.97)));
   P4 = 1.0 + 2.751*(1.0 - exp(-pow((er/15.916),8.0)));
   P5 = 0.334*exp(-3.3*pow((er/15.0),3.0)) + 0.746;
-  P6 = P5*exp(-pow((fn/18),0.368));
+  P6 = P5*exp(-pow((fn/18.0),0.368));
   P7 = 1.0 + 4.069*P6*(pow(g,0.479))*exp(-1.347*(pow(g,0.595)) - 0.17*(pow(g,2.5)));
+  FEF = P1*P2*pow(((P3*P4 + 0.1844*P7)*fn),1.5763);
+
+  /* odd mode dispersion.  (7) from Kirschning and Jansen (MTT) */
   P8 = 0.7168*(1.0 + 1.076/(1.0 + 0.0576*(er-1.0)));
   P9 = P8 - 0.7913*(1.0 - exp(-pow((fn/20.0),1.424)))*atan(2.481*pow((er/8.0),0.946));
   P10 = 0.242*pow((er-1.0),0.55);
-  P11 = 0.6366*(exp(-0.3401*fn) - 1.0)*atan(1.263*pow((u/3),1.629));
+  P11 = 0.6366*(exp(-0.3401*fn) - 1.0)*atan(1.263*pow((u/3.0),1.629));
   P12 = P9 + (1.0 - P9)/(1.0 + 1.183*pow(u,1.376));
   P13 = 1.695*P10/(0.414 + 1.605*P10);
-  P14 = 0.8928 + 0.1072*(1.0 - exp(-0.42*pow((fn/20),3.215)));
+  P14 = 0.8928 + 0.1072*(1.0 - exp(-0.42*pow((fn/20.0),3.215)));
   P15 = fabs(1.0 - 0.8928*(1.0 + P11)*P12*exp(-P13*(pow(g,1.092)))/P14);
-
-  FEF = P1*P2*pow(((P3*P4 + 0.1844*P7)*fn),1.5763);
   FOF = P1*P2*pow(((P3*P4 + 0.1844)*fn*P15),1.5763);
   
-  /* relative permittivities: */
+  /*
+   * relative permittivities including dispersion via generalization
+   * of Getsinger's dispersion relation.  This is (5) in Kirschning
+   * and Jansen (MTT).
+   */
   EFEF = er - (er - EFE0)/(1.0 + FEF);
   EFOF = er - (er - EFO0)/(1.0 + FOF);
 
@@ -259,23 +337,25 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    * static single strip, T=0, characteristic impedance (f=0)
    *  (Hammerstad and Jensen)
    */
-  FU = 6.0 + (2.0*M_PI - 6.0)*exp(-pow((30.666/u),0.7528));
-  ZL0 = (60.0/sqrt(EF)) * log(FU/u + sqrt(1.0 + pow((2.0/u),2.0)));
-
+  ZL0 = z0_HandJ(u)/sqrt(EF);
 
   /*
    * static even mode characteristic impedance (f=0)
+   * (8) from Kirschning and Jansen (MTT)
+   * 0.6% accurate
    */
   Q1 = 0.8695*(pow(u,0.194));
   Q2 = 1.0 + 0.7519*g + 0.189*(pow(g,2.31));
   Q3 = 0.1975 + pow((16.6 + pow((8.4/g),6.0)),-0.387) 
     + log((pow(g,10.0))/(1.0 + pow((g/3.4),10.0)))/241.0;
-  Q4 = (.02*Q1/Q2)/(exp(-g)*(pow(u,Q3)) + (2.0 - exp(-g))*(pow(u,-Q3)));
-  z0e0 = ZL0 * sqrt(EF/EFE0) / (1.0 - (ZL0/377)*sqrt(EF)*Q4);
+  Q4 = (2.0*Q1/Q2)/(exp(-g)*(pow(u,Q3)) + (2.0 - exp(-g))*(pow(u,-Q3)));
+  z0e0 = ZL0 * sqrt(EF/EFE0) / (1.0 - (ZL0/377.0)*sqrt(EF)*Q4);
 
 
   /*
    * static odd mode characteristic impedance (f=0)
+   * (9) from Kirschning and Jansen (MTT)
+   * 0.6% accurate
    */
   Q5 = 1.794 + 1.14*log(1.0 + 0.638/(g + 0.517*(pow(g,2.43))));
   Q6 = 0.2305 
@@ -293,24 +373,25 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /*
    * relative permittivity including dispersion
    * of single microstrip of width W, Tmet=0
-   *  (Kirschning and Jansen)
+   * Kirschning and Jansen (EL)
    */
 
   /* normalized frequency (GHz-cm) */
   /* save fn */
   fnold = fn;
 
-  fn = 1e-7 * f * h;
+  fn = 1.0e-7 * f * h;
 
+  /* (2) from Kirschning and Jansen (EL) */
   xP1 = 0.27488 + (0.6315 + (0.525 / (pow((1.0 + 0.157*fn),20.0))) )*u 
     - 0.065683*exp(-8.7513*u);
   xP2 = 0.33622*(1.0 - exp(-0.03442*er));
-  xP3 = 0.0363*exp(-4.6*u)*(1 - exp(-pow((fn/3.87),4.97)));
+  xP3 = 0.0363*exp(-4.6*u)*(1.0 - exp(-pow((fn/3.87),4.97)));
   xP4 = 1.0 + 2.751*( 1.0 -  exp(-pow((er/15.916),8.0)));
-  xP = xP1*xP2*pow(((0.1844 + xP3*xP4)*10*fn),1.5763);
+  xP = xP1*xP2*pow(((0.1844 + xP3*xP4)*10.0*fn),1.5763);
 
+  /* (1) from Kirschning and Jansen (EL) */
   EFF = (EF + er*xP)/(1.0 + xP);
-
   /* recall fn */
   fn=fnold;
 
@@ -318,27 +399,43 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   /*
    * Characteristic Impedance of single strip, Width=W, Tmet=0
-   *  (Jansen and Kirschning)
+   * Jansen and Kirschning
    */
 
   /* normalized frequency (GHz-mm)*/
   /* save fn */
   fnold = fn;
   fn = 1e-6 * f * h;
-
+  
+  /* (1) from Jansen and Kirschning */
   R1 = 0.03891*(pow(er,1.4));
   R2 = 0.267*(pow(u,7.0));
   R3 = 4.766*exp(-3.228*(pow(u,0.641)));
   R4 = 0.016 + pow((0.0514*er),4.524);
   R5 = pow((fn/28.843),12.0);
   R6 = 22.20*(pow(u,1.92));
+
+  /* (2) from Jansen and Kirschning */
   R7 = 1.206 - 0.3144*exp(-R1)*(1.0 - exp(-R2));
-  R8 = 1.0 + 1.275*(1.0 - exp(-0.004625*R3*(pow(er,1.674))));
+  R8 = 1.0 + 1.275*(1.0 - 
+		    exp(-0.004625*R3*
+			pow(er,1.674)*
+			pow(fn/18.365,2.745)));
   R9 = (5.086*R4*R5/(0.3838 + 0.386*R4))*(exp(-R6)/(1.0 + 1.2992*R5));
-  R9 = R9 * (pow((er-1.0),6.0))/(1.0 + 10*pow((er-1.0),6.0));
+  R9 = R9 * (pow((er-1.0),6.0))/(1.0 + 10.0*pow((er-1.0),6.0));
+
+  /* (3) from Jansen and Kirschning */
   R10 = 0.00044*(pow(er,2.136)) + 0.0184;
   R11 = (pow((fn/19.47),6.0))/(1.0 + 0.0962*(pow((fn/19.47),6.0)));
   R12 = 1.0 / (1.0 + 0.00245*u*u);
+
+  /* (4) from Jansen and Kirschning */
+  /*
+   * EF is the 0 frequency (static) relative dielectric constant for a
+   * single microstrip.
+   * EFF is the frequency dependent relative dielectric constant for a
+   * single microstrip given in Kirschning and Jansen (EL)
+   */
   R13 = 0.9408*(pow(EFF,R8)) - 0.9603;
   R14 = (0.9408 - R9)*pow(EF,R8)-0.9603;
   R15 = 0.707*R10*(pow((fn/12.3),1.097));
@@ -346,7 +443,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   R17 = R7*(1.0 - 1.1241*(R12/R16)*exp(-0.026*(pow(fn,1.15656))-R15));
 
   /* ZLF = zero thickness single strip characteristic impedance including dispersion */
-  ZLF = (60.0/sqrt(EFF)) * log(FU/u + sqrt(1.0 + pow((2.0/u),2.0)))*(pow((R13/R14),R17));
+  ZLF = ZL0 * pow((R13/R14),R17);
 
   /* Q0 = R17 from zero thickness, single microstrip */
   Q0 = R17;
@@ -357,18 +454,19 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   /*
    * even mode characteristic impedance including dispersion
+   * this is (10) from Kirschning and Jansen (MTT)
    */
   Q11 = 0.893*(1.0 - 0.3/(1.0 + 0.7*(er-1.0)));
   Q12 = 2.121*((pow((fn/20.0),4.91))
 	       /(1 + Q11*pow((fn/20.0),4.91)))*exp(-2.87*g)*pow(g,0.902);
-  Q13 = 1.0 + 0.038*pow((er/8),5.1);
+  Q13 = 1.0 + 0.038*pow((er/8.0),5.1);
   Q14 = 1.0 + 1.203*(pow((er/15.0),4.0))/(1.0 + pow((er/15.0),4.0));
   Q15 = 1.887*exp(-1.5*(pow(g,0.84)))*(pow(g,Q14)) 
-    /(1.0 + 0.41*(pow((fn/15.0),3.0))*(pow(u,(2/Q13)))/(0.125 + pow(u,(1.626/Q13))));
+    /(1.0 + 0.41*(pow((fn/15.0),3.0))*(pow(u,(2.0/Q13)))/(0.125 + pow(u,(1.626/Q13))));
   Q16 = (1.0 + 9.0/(1.0 + 0.403*pow((er-1.0),2.0)))*Q15;
   Q17 = 0.394*(1.0 - exp(-1.47*pow((u/7.0),0.672)))*(1.0 - exp(-4.25*pow((fn/20.0),1.87)));
   Q18 = 0.61*(1.0 - exp(-2.13*pow((u/8),1.593)))/(1.0 + 6.544*pow(g,4.17));
-  Q19 = 0.21*(pow(g,4.0))/((1.0 + 0.18*(pow(g,4.9)))*(1.0 + 0.1*u*u)*(1 + pow((fn/24),3.0)));
+  Q19 = 0.21*(pow(g,4.0))/((1.0 + 0.18*(pow(g,4.9)))*(1.0 + 0.1*u*u)*(1 + pow((fn/24.0),3.0)));
   Q20 = (0.09 + 1.0/(1.0 + 0.1*pow((er-1.0),2.7)))*Q19;
   Q21 = fabs(1.0 - 42.54*pow(g,0.133)*exp(-0.812*g)*pow(u,2.5)/(1.0 + 0.033*pow(u,2.5)));
   
@@ -376,36 +474,50 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   QE = 0.016 + pow((0.0514*er*Q21),4.524);
   PE = 4.766*exp(-3.228*pow(u,0.641));
   DE = 5.086*QE*(RE/(0.3838 + 0.386*QE))
-    *(exp(-22.2*pow(u,1.92))/(1 + 1.2992*RE))
+    *(exp(-22.2*pow(u,1.92))/(1.0 + 1.2992*RE))
     *((pow((er-1.0),6.0))/(1.0 + 10.0*pow((er-1.0),6.0)));
   CE = 1.0+1.275*(1.0 - exp(-0.004625*PE*pow(er,1.674)*pow((fn/18.365),2.745)))
     - Q12 + Q16 - Q17 + Q18 + Q20;
 
+  /*
+   * EFF is the single microstrip effective dielectric constant from 
+   * Kirschning and Jansen (EL).
+   */
   z0ef = z0e0 
     * (pow((0.9408*pow(EFF,CE) - 0.9603),Q0))
-    /(pow(((0.9408 - DE)*pow(EF,CE) - 0.9603),Q0));
+    /(pow(((0.9408 - DE)*pow(EFF,CE) - 0.9603),Q0));
 
 
   /*
    * odd mode characteristic impedance including dispersion
+   * This is (11) from Kirschning and Jansen (MTT)
    */
   Q29 = 15.16/(1.0 + 0.196*pow((er-1.0),2.0));
   Q28 = 0.149*(pow((er-1.0),3.0))/(94.5 + 0.038*pow((er-1.0),3.0));
   Q27 = 0.4*pow(g,0.84)
-    *(1.0 + 2.5*(pow((er-1.0),1.5))/(5 + pow((er-1.0),1.5)));
+    *(1.0 + 2.5*(pow((er-1.0),1.5))/(5.0 + pow((er-1.0),1.5)));
   Q26 = 30.0 
-    - 22.2*(( pow(((er-1)/13.0),12.0)) 
+    - 22.2*(( pow(((er-1.0)/13.0),12.0)) 
 	    / (1.0 + 3.0*pow(((er-1.0)/13.0),12.0))) 
     - Q29;
-  Q25 = (0.3*fn*fn/(10 + fn*fn))
+  Q25 = (0.3*fn*fn/(10.0 + fn*fn))
     *(1.0 + 2.333*(pow((er-1.0),2.0))/(5.0 + pow((er-1.0),2.0)));
   Q24 = 2.506*Q28*pow(u,0.894)
     *(pow(((1.0 + 1.3*u)*fn/99.25),4.29))/(3.575 + pow(u,0.894));
-  Q23 = 1.0 + 0.005*fn*Q27/((1.0 + 0.812*pow((fn/15),1.9))/(1.0 + 0.025*u*u));
+  Q23 = 1.0 + 0.005*fn*Q27/((1.0 + 0.812*pow((fn/15.0),1.9))/(1.0 + 0.025*u*u));
   Q22 = 0.925*(pow((fn/Q26),1.536))/(1.0 + 0.3*pow((fn/30.0),1.536));
   
+  /*
+   * in this final expression, ZLF is the frequency dependent single
+   * microstrip characteristic impedance from Jansen and Kirschning.
+   */
   z0of = ZLF + (z0o0*pow((EFOF/EFO0),Q22) - ZLF*Q23)/(1.0 + Q24 + (pow((0.46*g),2.2))*Q25);
 
+  /* accuracy check from page 87 in Kirschning and Jansen (MTT) */
+  if( fn > 20.0 ) {
+    alert(_("Warning:  Normalized frequency is higher than the\n"
+	    "maximum for < 2.5 %% error in even/odd mode impedance."));
+  }
 
   /*
    * electrical length 
@@ -423,7 +535,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /*
    * Loss
    */
-  /* XXX need loss equations */
+  /* XXX need loss equations.  Use Hammerstad and Jensen */
   loss=0.0;
 
   /* calculate skin depth */
@@ -442,7 +554,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    *  (Kirschning, Jansen, and Koster)
    */
 
-  /* deltal(2u,er) (per Kirschning and Jansen notation) */
+  /* deltal(2u,er) (per Kirschning and Jansen (MTT) notation) */
   uold = u;
   u = 2*u;
   z1 = 0.434907*((pow(EF,0.81) + 0.26)/(pow(EF,0.81) - 0.189))
@@ -454,7 +566,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   
   d2 = h * z1 * z3 * z5 / z4;
 
-  /* deltal(u,er) (per Kirschning and Jansen notation) */
+  /* deltal(u,er) (per Kirschning and Jansen (MTT) notation) */
   u = uold;
   z1 = 0.434907*((pow(EF,0.81) + 0.26)/(pow(EF,0.81) - 0.189))
     *(pow(u,0.8544) + 0.236)/(pow(u,0.8544) + 0.87);
@@ -468,6 +580,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   /*
    * Even and Odd Mode End corrections
+   * (12) and (13) from Kirschning and Jansen (MTT)
    */
   R1 = 1.187*(1.0-exp(-0.069*pow(u,2.1)));
   R2 = 0.343*pow(u,0.6187) + (0.45*er/(1.0+er))*(pow(u,(1.357 + 1.65/(1.0 + 0.7*er))));
@@ -477,7 +590,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   /* make it print in mils for now. */
   sf=1/25.4e-6;
-  deltale =sf*( (d2 - d1 + 0.0198*h*pow(g,R1)) );
+  deltale =sf*( (d2 - d1 + 0.0198*h*pow(g,R1))*exp(-0.328*pow(g,2.244)) +d1 );
   deltalo =sf*( (d1 - h*R3)*(1.0 - exp(-R4)) + h*R3 );
 
   /*  [z0e,z0o,len,loss,kev,kodd]=cmlicalc(w,l,s,f,subs) */
@@ -489,6 +602,9 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
   line->kev = EFEF;
   line->kodd = EFOF;
+
+  /* coupling coefficient */
+  line->k = (z0ef-z0of)/(z0ef+z0of);
 
   line->deltale = deltale;
   line->deltalo = deltale;
@@ -658,8 +774,6 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
     {
       iters++;
    
-      /*[ze0,zo0,ltmp,loss,kev,kodd]=cmlicalc(w,l,s,f,subs); */
-   
 #ifdef DEBUG_SYN
       printf("ze = %g\tzo = %g\tw = %g\ts = %g\n",ze0,zo0,w,s);
 #endif
@@ -673,10 +787,6 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
       else
 	{
 	  /* approximate the first jacobian */
-	  /* XXX
-	    [ze1,zo1,ltmp,loss,kev,kodd]=cmlicalc(w+delta,l,s,f,subs);
-	    [ze2,zo2,ltmp,loss,kev,kodd]=cmlicalc(w,l,s+delta,f,subs);
-	  */
 	  dedw = (ze1 - ze0)/delta;
 	  dodw = (zo1 - zo0)/delta;
 	  deds = (ze2 - ze0)/delta;
@@ -707,8 +817,53 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
   return(0);
 }
 
+/*
+ * Effective dielectric constant from Hammerstad and Jensen
+ */
+static double ee_HandJ(double u, double er)
+{
+  double A,B,E0;
+
+  /* (4) from Hammerstad and Jensen */
+  A = 1.0 + (1.0/49.0)
+    *log((pow(u,4.0) + pow((u/52.0),2.0))/(pow(u,4.0) + 0.432)) 
+    + (1.0/18.7)*log(1.0 + pow((u/18.1),3.0));
+  
+  /* (5) from Hammerstad and Jensen */
+  B = 0.564*pow(((er-0.9)/(er+3.0)),0.053);
+
+  
+  /* 
+   * zero frequency effective permitivity.  (3) from Hammerstad and
+   * Jensen.  This is ee(ur,er) thats used by (9) in Hammerstad and
+   * Jensen.
+   */
+  E0 = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/u),(-A*B));
+
+  return E0;
+}
 
 
+/* 
+ * Characteristic impedance from (1) and (2) in Hammerstad and Jensen 
+ */
+static double z0_HandJ(double u)
+{
+  double F,z01;
+  
+  /* (2) from Hammerstad and Jensen.  'u' is the normalized width */
+  F = 6.0 + (2.0*M_PI - 6.0)*exp(-pow((30.666/u),0.7528));
+
+  /* (1) from Hammerstad and Jensen */
+  z01 = (FREESPACEZ0/(2*M_PI)) * log(F/u + sqrt(1.0 + pow((2/u),2.0)));
+
+#ifdef DEBUG_CALC
+  printf("microstrip.c: z0_HandJ(%g) = %g Ohms. FREESPACEZ0=%g Ohms\n",
+         u,z01,FREESPACEZ0);
+#endif
+
+  return z01;
+}
 
 void coupled_microstrip_line_free(coupled_microstrip_line * line)
 {
@@ -732,6 +887,4 @@ coupled_microstrip_line *coupled_microstrip_line_new()
 
   return(newline);
 }
-
-
 
