@@ -1,7 +1,7 @@
-/* $Id: start.c,v 1.9 2002/12/17 15:29:36 dan Exp $ */
+/* $Id: start.c,v 1.10 2004/03/14 13:33:42 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
