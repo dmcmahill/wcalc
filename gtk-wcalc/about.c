@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.1 2001/10/05 00:50:21 dan Exp $ */
+/* $Id: about.c,v 1.2 2002/01/03 03:54:46 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -218,9 +218,10 @@ void permitivity_popup(void)
 void resistivity_popup(void)
 {
   GtkWidget *button;
-  GtkWidget *label;
+  GtkWidget *tab;
   GtkWidget *window;
- 
+  extern GtkWidget * resistivity_table(void);
+
   /* create the "Resistivities" window */
   window = gtk_dialog_new();
   
@@ -243,23 +244,10 @@ void resistivity_popup(void)
   
 
   /* add the text to the window */
-  label = gtk_label_new (
-			 "Aluminum (Al)   3.2e-8\n"
-			 "Bismuth  (Bi)   119e-8\n"
-			 "Brass    (??)   ??e-8\n"
-			 "Copper   (Cu)   1.72e-8\n"
-			 "Gold     (Au)   ??e-8\n"
-			 "Iron     (Fe)   15e-8\n"
-			 "Lead     (Pb)   ??e-8\n"
-			 "Mercury  (Hg)   94.1e-8\n"
-			 "Platinum (Pt)   11e-8\n"
-			 "Silver   (Ag)   1.05e-8\n"
-			 "Tungsten (W )   5.5e-8\n"
-			 );
-  gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
+  tab = resistivity_table();
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
-		      label, TRUE, TRUE, 0);
-  gtk_widget_show (label);
+		      tab, TRUE, TRUE, 0);
+  gtk_widget_show (tab);
 
   /* show it */
   gtk_widget_show (window);

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2001/11/28 07:18:55 dan Exp $
+## $Id: Makefile.am,v 1.13 2002/01/07 01:24:15 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -61,11 +61,19 @@ wcalc_SOURCES = \
 	stripline_gui.h \
 	version.c \
 	wcalc.c \
-	wcalc.h
+	wcalc.h \
+	${GTKTABS}
 
 man_MANS=	wcalc.1
 
-EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} resistivity.asciitab
+ASCIITABS=	resistivity.asciitab
+GTKTABS=	${ASCIITABS:.asciitab=.c}
+
+BUILT_SOURCES=	${GTKTABS}
+
+FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
+
+EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS}
 
 INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
 
@@ -80,4 +88,9 @@ clean-local:
 runwcalc:	$(srcdir)/runwcalc.in
 	sed "s;@BUILDDIR@;`pwd`;g" $< > $@
 	chmod 755 $@
+
+SUFFIXES= .asciitab
+
+.asciitab.c :
+	$(FORMAT_TAB) gtk_fname=$*_table $(srcdir)/$< > $(srcdir)/$@
 
