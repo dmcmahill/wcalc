@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.16 2001/10/05 01:29:37 dan Exp $
+dnl $Id: configure.in,v 1.17 2001/10/06 23:51:41 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -50,6 +50,52 @@ AM_PROG_LIBTOOL
 dnl used for processing the drawings to give png's
 dnl and xpm's
 AC_PATH_PROG(TGIF, tgif)
+
+# scilab
+SCI_WCALC=sci-wcalc
+
+AC_ARG_WITH([scilab],
+[  --with-scilab=scidir    Use the specified scilab installation.  
+                          The specified directory should be the base of
+                          your scilab installation.  For example,
+                          /opt/scilab-2.6.  [default = search for
+                          an installed scilab]],
+[
+if test "X$with_scilab" = "Xno" ; then
+	SCI_WCALC=""
+else
+	SCI=$with_scilab
+fi
+],
+[
+AC_PATH_PROG(SCILAB,scilab)
+if test "X$SCILAB" != "X" ; then
+	AC_MSG_CHECKING([for the scilab base directory])
+	[SCI=`awk -F "=" '/^[ \t]*SCI[ \t]*=/ {gsub(/\"/,""); print $2}' $SCILAB`]
+	AC_MSG_RESULT([$SCI])
+else
+	SCI_WCALC=""
+fi
+])
+
+
+if test "X$SCI_WCALC" != "X"; then
+	AC_MSG_CHECKING([for the scilab stack header])
+	if test -f $SCI/routines/stack-c.h ; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		AC_MSG_WARN([The directory $SCI does not appear to be the root
+of a complete (and working) scilab installation.
+The scilab interface will not be built.])
+		SCI_WCALC=""
+	fi
+fi
+
+AC_SUBST(SCI)
+AC_SUBST(SCI_WCALC)
+
+# ------------- done with scilab tests -------------------
 
 AC_CYGWIN
 AC_MINGW32
