@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.9 2001/10/17 03:41:48 dan Exp $
+## $Id: Makefile.am,v 1.10 2001/10/17 03:56:18 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -33,10 +33,6 @@
 ##  SUCH DAMAGE.
 ##
 
-pkgdata_DATA = \
-	copying.html \
-	index.html
-
 cgibinexecdir = @CGIBINDIR@
 
 cgibinexec_PROGRAMS = \
@@ -62,6 +58,7 @@ stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\"
 
 LDADD = ../libwcalc/libwcalc.la
+LDFLAGS = -all-static
 
 BUILT_SOURCES = \
 	air_coil_html.c \
