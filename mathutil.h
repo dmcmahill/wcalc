@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.1 2001/02/11 19:26:24 dan Exp $ */
+/*      $Id: mathutil.h,v 1.2 2001/09/12 03:52:01 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -35,6 +35,15 @@
 
 #ifndef __MATHUTIL_H__
 #define __MATHUTIL_H__
+
+#include <math.h>
+
+#ifndef M_E
+#define M_E             2.7182818284590452354   /* e */
+#endif
+#ifndef M_PI
+#define M_PI            3.14159265358979323846  /* pi */
+#endif
 
 double coth(double x);
 
