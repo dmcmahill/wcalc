@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.6 2002/06/12 11:30:29 dan Exp $ */
+/* $Id: microstrip.c,v 1.7 2002/08/07 00:44:26 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Dan McMahill
@@ -374,6 +374,12 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    R15 = 0.707*R10*pow((fn/12.3),1.097);
    R16 = 1.0 + 0.0503*er*er*R11*(1.0 - exp(-pow((u/15),6.0)));
    R17 = R7*(1.0 - 1.1241*(R12/R16)*exp(-0.026*pow(fn,1.15656)-R15));
+
+   
+#ifdef DEBUG_CALC
+   printf("microstrip.c: microstrip_calc()  R13 = %g, R14 = %g, R17=%g\n",
+	  R13,R14,R17);
+#endif
 
    /* (5) from Jansen and Kirschning */
    z0 = z0*pow((R13/R14),R17);
