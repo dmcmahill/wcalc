@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.18 2002/06/17 23:37:48 dan Exp $
+## $Id: Makefile.am,v 1.19 2002/12/17 15:29:32 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -44,6 +44,7 @@ ACLOCAL_AMFLAGS=	-I m4
 
 # XXX need to move the ps stuff
 EXTRA_DIST= config.rpath \
+	gettext.h \
 	ltcf-c.sh \
 	ps_header.c \
 	ps_footer.c \
