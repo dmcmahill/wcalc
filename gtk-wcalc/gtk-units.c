@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.19 2004/07/26 01:07:05 dan Exp $ */
+/* $Id: gtk-units.c,v 1.20 2004/08/02 21:09:24 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -154,7 +154,7 @@ void wc_units_menu_init2(void * item, void * data)
  * wc_units_menu_new()
  *
  */
-GtkWidget *wc_units_menu_new(const wc_units *units, 
+GtkWidget *wc_units_menu_new(wc_units *units, 
 			     Wcalc *gui,
 			     wc_units_gui **ug
 			     )
