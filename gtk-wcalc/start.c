@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.6 2001/09/22 03:50:17 dan Exp $ */
+/* $Id: start.c,v 1.1 2001/10/05 00:50:23 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -63,6 +63,21 @@ VER \
  * window open at a time ever
  */
 static GtkWidget *combo_model;
+
+/*
+ * The window delete/destroy event callbacks
+ */
+
+static gint destroy_event (GtkWidget *widget, 
+			   GdkEvent *event,
+			   gpointer data)
+{
+  gtk_main_quit ();
+  
+  /* we have indeed handled this event */
+  return TRUE;
+}
+
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
@@ -153,6 +168,18 @@ void start_popup(void)
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW(window), "WaveCalc");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
+
+  /* Window Manager "delete" */
+  gtk_signal_connect (GTK_OBJECT (window), "delete_event",
+		      GTK_SIGNAL_FUNC (destroy_event),
+		      NULL);
+  
+  /* Window Manager "destroy" */
+  gtk_signal_connect (GTK_OBJECT (window), "destroy_event",
+		      GTK_SIGNAL_FUNC (destroy_event),
+		      NULL);
+  
+
   gtk_widget_realize(window);
 
 
