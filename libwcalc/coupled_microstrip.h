@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.8 2004/07/30 22:33:51 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.9 2004/08/30 22:23:09 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -70,6 +70,10 @@ typedef struct COUPLED_MICROSTRIP_LINE
 
   double loss_ev, loss_odd, losslen_ev, losslen_odd, skindepth;
 
+  /* incremental circuit model */
+  double Lev, Rev, Cev, Gev;
+  double Lodd, Rodd, Codd, Godd;
+
   /* analysis frequency */
   double freq;
 
@@ -87,6 +91,8 @@ typedef struct COUPLED_MICROSTRIP_LINE
   wc_units *units_delay;
   wc_units *units_depth;
   wc_units *units_deltal;
+
+  wc_units *units_L, *units_R, *units_C, *units_G;
 
 } coupled_microstrip_line;
 
