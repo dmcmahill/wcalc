@@ -1,7 +1,7 @@
-# $Id$
+# $Id: README.newmodel,v 1.1 2001/10/25 00:49:55 dan Exp $
 
 This document describes the steps required to add a new model to the
-scilab interfaces. 
+scilab interfaces.   Luckily, it is very simple!
 
 ----------------------------------------------------------------------
 Prerequisites
@@ -10,42 +10,28 @@ It is assumed that the 'normal' wcalc style model.c and model.h files
 have been written and work correctly.
 
 ----------------------------------------------------------------------
-Write a scilab interface module
+Write a scilab mex interface module
 ----------------------------------------------------------------------
-A good starting point is to copy sci_air_coil.c to sci_yourmodel.c and
+A good starting point is to copy air_coil_calc.c to yourfunction.c and
 edit from there.  This is where you write the internal function that
 does input argument checking, prepares the input arguments for your
 model's functions, and makes the actual call to the model functions.
-You will want one interface function for each new scilab function you
-are adding.  All interface functions for a particular model
-'yourmodel' should go in 'sci_yourmodel.c'.  In addition, prototypes
-for these functions should go in 'sci_yourmodel.h'.
+You will want one file for each new scilab function you
+are adding.
 
-
-----------------------------------------------------------------------
-Add the interface to Makefile.in
-----------------------------------------------------------------------
-Add 'sci_yourmodel.c' to CSRCS.
-
-
-
-Add the model to sci_wcalc.c
-
-Look for the definition of Tab[] in sci_wcalc.c:
-
-static TabF Tab[]={
-  {intair_coil_calc, "air_coil_calc"}
-};
-
-Add the functions for the new model using the format
-{interface_function_name, "scilab_function_name"} to the Tab[]
-definition.   You will add one line per scilab function you are
-adding.  Note that scilab imposes a maximum of 99 new functions here.
-
+These interfaces should be written using the MEX style interface for
+compatibility with Matlab
 
 ----------------------------------------------------------------------
-Add the interface to sci_wcalc_load.sce
+Add the interface to mex.mk
 ----------------------------------------------------------------------
-The scilab script in 'sci_wcalc_load.sce' should be used in the users
-.scilab script or called whenever they want to load the wcalc
-routines. 
+List your new files in the file 'mex.mk'
+
+----------------------------------------------------------------------
+Write a Scilab man page
+----------------------------------------------------------------------
+Write a scilab man page for each of your new functions.  Use
+air_coil_calc.man for an example.  Note that you _must_ write the
+man page (or at a minimum include a placeholder) or the build will
+fail!
+
