@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2002/06/18 01:24:48 dan Exp $
 
 ##
 ## Copyright (c) 2002 Dan McMahill
@@ -59,6 +59,8 @@ EXTRA_DIST=	man_start.incl man_end.incl
 
 CP_INCL=	sed -e 's;a href=";a href="../;g' \
 		    -e 's;img src=";img src="../;g' 
+
+@SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
 
 left_column.incl: $(srcdir)/../left_column.incl
 	$(CP_INCL) $< > $@

@@ -1,4 +1,4 @@
-## $Id: shtml.mk,v 1.3 2002/02/07 02:34:51 dan Exp $
+## $Id: shtml.mk,v 1.4 2002/05/10 22:49:38 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -34,7 +34,7 @@
 ##
 
 # the include= is a ':' seperated search path for SSI directives
-SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_PATH)
+SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_PATH) $(SHTML2HTML_SF)
 
 # All the new suffix rules
 

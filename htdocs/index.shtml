@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: index.shtml,v 1.4 2002/05/10 22:49:36 dan Exp $ -->
+<!-- $Id: index.shtml,v 1.5 2004/07/28 11:49:06 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -53,7 +53,7 @@ stripline synthesis,
 	<b>Recent News</b>
       </font>
       <font face="helvetica, arial" size="-1">
-	&nbsp;[<a href="Changes/">More</a>]
+	&nbsp;[<a href="news.html">More</a>]
       </font>
     </dl>
 
@@ -62,7 +62,7 @@ stripline synthesis,
 <!-- Recent news  -->
 
 <li><font face="helvetica, arial" size="-1">
-  <a href="">A news item</a>
+  <a href="news.html#wcalc-0.9">wcalc-0.9 Released</a>
 </font></li>
 
 

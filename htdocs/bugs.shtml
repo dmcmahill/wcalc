@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: projects.shtml,v 1.6 2004/07/28 11:49:08 dan Exp $ -->
+<!-- Copyright (c) 2004
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@users.sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Current Wcalc Projects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Getting Help and Reporting Bugs
+    </font>
+    <br>
+    <br>
+    </center>
+
+    <H2>Bug Reporting</H2>
+    <P>While I have tried my best to ensure that Wcalc is a high quality program,
+    there are bound to be some bugs.  I rely on you, the user, to help me out by
+    reporting them.  Please report all bugs on the <A HREF="http://www.sourceforge.net/projects/wcalc">Wcalc
+    Sourceforge Project Page</A>.  Please be sure to include the following information
+    in your bug report:
+    <UL>
+    <LI>Wcalc version.</LI>
+    <LI>Operating system version.</LI>
+    <LI>Compiler and version.</LI>
+    <LI>How to reproduce the bug.</LI>
+    <LI>Anything else that you feel may be relevant to the bug.</LI>
+    </UL>
+    In addition, it is useful to me to have a way of contacting you to try out a
+    possible fix or if I need more information.
+    </P>
+    <P>
+    Reporting bugs on the <A HREF="http://www.sourceforge.net/projects/wcalc">Wcalc Sourceforge Project Page</A>,
+    causes them to go into a bug database ensuring that they don't get lost in all the spam which
+    fills my inbox.
+    </P>
+
+    <H2>Mailing Lists and Other Support</H2>
+    <P>There some user forums available at
+    the <A HREF="http://www.sourceforge.net/projects/wcalc">Wcalc Sourceforge Project Page</A>.
+    </P>
+
+    <H2>New Models</H2>
+    <P>I am always interested in adding new models and improving the existing models.
+    It is very helpful to me to have references for any new model suggestions.  Researching
+    the best models is often times the most difficult part of adding another model.
+    </P>
+
+    <font face="helvetica, arial">
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

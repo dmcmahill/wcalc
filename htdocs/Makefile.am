@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.22 2004/01/10 04:56:38 dan Exp $
+## $Id: Makefile.am,v 1.23 2004/07/28 11:39:34 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -53,6 +53,7 @@ SHTML_IN=	\
 	about.shtml \
 	air_coil.shtml \
 	AWG.shtml \
+	bugs.shtml \
 	cgi-wcalc.shtml \
 	coax.shtml \
 	coupled_microstrip.shtml \
@@ -62,6 +63,7 @@ SHTML_IN=	\
 	index.shtml \
 	mex-wcalc.shtml \
 	microstrip.shtml \
+	news.shtml \
 	obtaining.shtml \
 	octave-wcalc.shtml \
 	permeability.shtml \
@@ -111,6 +113,7 @@ ${HTML_OUT} : ${INCL_FILES}
 
 CGIPATH=	@CGIPATH@
 
+@SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
 
 FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=html html_no_table=yes
 

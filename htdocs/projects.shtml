@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.5 2002/05/10 22:49:38 dan Exp $ -->
+<!-- $Id: projects.shtml,v 1.6 2004/07/28 11:49:08 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -37,18 +37,21 @@ stripline synthesis,
 
     <H2>In Progress</H2>
     <UL>
-    <LI>Improved handling of units.  The current code for letting the
-    user choose units is a bit of a mess.  This must be fixed before
-    the first release.</LI>
-    <LI>Add the ability to load a previously saved design.</LI>
-    <LI>Finish the mex/sci-wcalc interfaces.</LI>
-    <LI>Make GUI's for the remaining models.</LI>
+    <LI>Bug hunting.  This is always a high priority.</LI>
+    <LI>Model verification.  This is also high priority.  When possible
+    I try to collect data points from other tools for comparison.</LI>
+    <LI>Better gtk2 support.  The development has went on for so long that
+    gtk2 is really the prefered gtk platform, however gtk-wcalc still uses
+    some obsolete gtk1 code.</LI>
     </UL>
 
     <H2>Future</H2>
     <UL>
-    <LI>i18n.  Once the cleanup of the units handling code is
-    complete, it should be a relatively straightforward job.</LI>
+    <LI>i18n.  Some of the framework is in place as well as the start of a
+    Spanish language translation.  I have not worked on CGI i18n.  In fact
+    I'm not sure of the best way to proceed there.</LI>
+    <LI>I would like to figure out how to use a field solver to provide accuracy
+    validation.</LI>
     <LI>More models.
         <UL>
 	<LI>co-planar waveguide</LI>

@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.12 2002/06/25 21:34:44 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.13 2004/01/10 04:56:38 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -24,6 +24,7 @@
    <tr><td bgcolor="#FFFFFF" nowrap>
       <font face="helvetica, arial" size="-1">
 	&nbsp;<a href="about.html">About Wcalc</a><br>
+	&nbsp;<a href="bugs.html">Reporting bugs</a><br>
 	&nbsp;<a href="projects.html">Current projects</a><br>
 	&nbsp;<a href="obtaining.html">Obtaining Wcalc</a><br>
 	&nbsp;<a href="screenshots.html">Screenshots</a><br>
