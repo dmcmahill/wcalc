@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.14 2004/08/02 21:09:27 dan Exp $ */
+/*      $Id: wcalc.h,v 1.15 2004/08/30 22:59:23 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -191,4 +191,5 @@ void vals_changedCB(GtkWidget *widget, gpointer data );
 
 #define WC_WCALC(x)      ((Wcalc *) (x))
 
-#endif __WCALC_H__
+#endif /* __WCALC_H__ */
+
