@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_test.c,v 1.2 2003/01/17 03:24:03 dan Exp $ */
+/* $Id: coupled_microstrip_test.c,v 1.3 2004/07/30 22:33:51 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -44,7 +44,10 @@
 #endif
 
 #include "coupled_microstrip.h"
-/* XXX need this #include "coupled_microstrip_loadsave.h" */
+#include "coupled_microstrip_loadsave.h"
+
+#include "physconst.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -68,6 +71,8 @@ int main(int argc, char **argv)
   coupled_microstrip_line *line;
 
   line = coupled_microstrip_line_new();
+  wc_savestr_to_units("5", line->units_lwst);
+
   sf = 1.0;
 
   if ( argc < 2) {
@@ -156,7 +161,16 @@ int main(int argc, char **argv)
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
 	  line->freq = atof(tok);
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
-	  flag = atoi(tok);
+	  line->z0 = atof(tok);
+	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
+	  line->k = atof(tok);
+	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
+	  line->z0e = atof(tok);
+	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
+	  line->z0o = atof(tok);
+	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
+	  line->use_z0k = atoi(tok);
+	action=ACTION_SYN;
       }
       else {
 #ifdef DEBUG
@@ -171,16 +185,24 @@ int main(int argc, char **argv)
       case ACTION_CALC:
 	/*#ifdef DEBUG*/
 	printf(" --------- Coupled_Microstrip Analysis ----------\n");
-	printf(" Metal width                 = %g mil\n",line->w);
-	printf(" Metal spacing               = %g mil\n",line->s);
-	printf(" Metal thickness             = %g mil\n",line->subs->tmet);
-	printf(" Metal relative resistivity  = %g \n",line->subs->rho);
+	printf(" Metal width                 = %g mil\n",
+	       M2MIL(line->w));
+	printf(" Metal spacing               = %g mil\n",
+	       M2MIL(line->s));
+	printf(" Metal thickness             = %g mil\n",
+	       M2MIL(line->subs->tmet));
+	printf(" Metal resistivity           = %g ohm-m\n",
+	       line->subs->rho);
 	printf(" Metal surface roughness     = %g mil-rms\n",
-	       line->subs->rough);
-	printf(" Substrate thickness         = %g mil\n",line->subs->h);
-	printf(" Substrate dielectric const. = %g \n",line->subs->er);
-	printf(" Substrate loss tangent      = %g \n",line->subs->tand);
-	printf(" Frequency                   = %g MHz\n",line->freq/1e6); 
+	       M2MIL(line->subs->rough));
+	printf(" Substrate thickness         = %g mil\n",
+	       M2MIL(line->subs->h));
+	printf(" Substrate dielectric const. = %g \n",
+	       line->subs->er);
+	printf(" Substrate loss tangent      = %g \n",
+	       line->subs->tand);
+	printf(" Frequency                   = %g MHz\n",
+	       line->freq/1e6); 
 	printf(" -------------- ---------------------- ----------\n");
 	/*#endif*/
 	printf("-----------------------------------------------------\n");
@@ -196,6 +218,65 @@ int main(int argc, char **argv)
 	       line->kev,
 	       line->kodd,
 	       line->freq);
+	break;
+
+      case ACTION_SYN:
+	/*#ifdef DEBUG*/
+	printf(" --------- Coupled_Microstrip Synthesis ----------\n");
+	printf(" Metal width                 = %g mil\n",
+	       M2MIL(line->w));
+	printf(" Metal spacing               = %g mil\n",
+	       M2MIL(line->s));
+	printf(" Metal thickness             = %g mil\n",
+	       M2MIL(line->subs->tmet));
+	printf(" Metal resistivity           = %g ohm-m\n",
+	       line->subs->rho);
+	printf(" Metal surface roughness     = %g mil-rms\n",
+	       M2MIL(line->subs->rough));
+	printf(" Substrate thickness         = %g mil\n",
+	       M2MIL(line->subs->h));
+	printf(" Substrate dielectric const. = %g \n",
+	       line->subs->er);
+	printf(" Substrate loss tangent      = %g \n",
+	       line->subs->tand);
+	printf(" Frequency                   = %g MHz\n",
+	       line->freq/1e6); 
+	printf(" -------------- ---------------------- ----------\n");
+	/*#endif*/
+	printf("-----------------------------------------------------\n");
+	printf("Z0E= %8.4f Ohms, Z0O= %8.4f Ohms, Z0= %8.4f Ohms, "
+	       "k= %8.4f (%8.4f dB)\n",
+	       line->z0e,
+	       line->z0o,
+	       line->z0,
+	       line->k,
+	       20.0*log10(line->k));
+	printf("Keven= %8.5f, Kodd= %8.5f, Freq= %8.4f Hz\n",
+	       line->kev,
+	       line->kodd,
+	       line->freq);
+	coupled_microstrip_syn(line,line->freq);
+	printf(" --------- Coupled_Microstrip Synthesis ----------\n");
+	printf(" Metal width                 = %g mil\n",
+	       M2MIL(line->w));
+	printf(" Metal spacing               = %g mil\n",
+	       M2MIL(line->s));
+	printf(" Metal thickness             = %g mil\n",
+	       M2MIL(line->subs->tmet));
+	printf(" Metal resistivity           = %g ohm-m\n",
+	       line->subs->rho);
+	printf(" Metal surface roughness     = %g mil-rms\n",
+	       M2MIL(line->subs->rough));
+	printf(" Substrate thickness         = %g mil\n",
+	       M2MIL(line->subs->h));
+	printf(" Substrate dielectric const. = %g \n",
+	       line->subs->er);
+	printf(" Substrate loss tangent      = %g \n",
+	       line->subs->tand);
+	printf(" Frequency                   = %g MHz\n",
+	       line->freq/1e6); 
+	printf(" -------------- ---------------------- ----------\n");
+
 	break;
 
       default:
