@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/17 02:41:03 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/17 03:57:09 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -66,5 +66,3 @@ wcalc_LDFLAGS = @GTK_LIBS@
 
 man_MANS=	wcalc.1
 
-TESTS= wcalc
-TESTS_ENVIRONMENT=	"FOO=bar"
