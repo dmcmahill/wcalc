@@ -1,7 +1,7 @@
-/* $Id: about.c,v 1.11 2003/01/11 01:08:48 dan Exp $ */
+/* $Id: about.c,v 1.12 2004/03/14 13:33:40 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -118,7 +118,7 @@ void about_popup(void)
 #define COPYRIGHT_TEXT \
 "WaveCalc\n" \
 "\n" \
-"Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill\n" \
+"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill\n" \
 "All rights reserved.\n" \
 "\n" \
 "This code is derived from software written by Dan McMahill\n" \
