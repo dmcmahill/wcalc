@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.7 2004/08/02 21:09:01 dan Exp $ */
+/* $Id: print.c,v 1.8 2004/08/05 13:20:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -122,8 +122,8 @@ void global_printer_init()
   /* initialize the page format configuration */
   global_print_config->fontsize=12;
   global_print_config->leftmargin=1.0;
-  global_print_config->topmargin=1.5;
-  global_print_config->bottommargin=1.5;
+  global_print_config->topmargin=0.75;
+  global_print_config->bottommargin=0.75;
   global_print_config->paperheight=11;
   global_print_config->paperwidth=8.5;
   global_print_config->tab1=0.75;
