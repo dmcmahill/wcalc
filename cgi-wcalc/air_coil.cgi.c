@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.17 2004/08/05 21:42:49 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.18 2004/08/13 04:43:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -81,15 +81,15 @@
 
 
 
-/* defaults for the various parameters */
+/* defaults for the various parameters (in MKS) */
 #define defN      4
 #define defAWG    22
-#define defRHO    1.0
-#define defDIA    0.25
-#define defLEN    0.50
+#define defRHO    1.72e-8
+#define defDIA    INCH2M(0.25)
+#define defLEN    INCH2M(0.50)
 #define defFILL   2.0
-#define defFREQ   10.0
-#define defIND    100.0
+#define defFREQ   100.0e6
+#define defIND    100.0e-9
 
 static const char *name_string="air_coil.cgi";
 static int input_err;
@@ -173,58 +173,75 @@ int cgiMain(void){
     
 
     /* Number of turns */
-    if(cgiFormDoubleBounded("N",&N,0.0001,1000.0,defN) !=
+    if(cgiFormDoubleBounded("N", &N, 1.0, 1000.0, defN) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("N must be in the range 1 <= N <= 1000");
     }
     
     /* wire size */
-    if(cgiFormDoubleBounded("AWG",&AWG,0.0001,1000.0,defAWG) !=
+    if(cgiFormDoubleBounded("AWG", &AWG, 1.0, 60.0, defAWG) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Wire size must be in the range 1 <= AWG <= 60");
     }
     
-    /* Metal resistivity relative to copper */
-    if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
+    /* Metal resistivity */
+    /*
+     * Copper is 1.72e-8 ohm-m
+     * Lets only allow materials with in about a factor of 1000 in
+     * each way.  This should be a ridicuously wide range 
+     */
+    if(cgiFormDoubleBounded("rho", &rho, 
+			    1.72e-11/coil->units_rho->sf, 
+			    1.72e-5/coil->units_rho->sf,
+			    defRHO/coil->units_rho->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Resistivity out of range");
     }
     
     /* inside diameter */
-    if(cgiFormDoubleBounded("dia",&dia,0.0001,1000.0,defDIA) !=
+    if(cgiFormDouble("dia", &dia, defDIA/coil->units_dia->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Error reading diameter");
     }
     
     
     /* Solenoid length  */
-    if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
+    if(cgiFormDouble("len", &len, defLEN/coil->units_dia->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Error reading length");
     }
     
 
     /* Solenoid fill  */
-    if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
+    if(cgiFormDoubleBounded("fill", &coil->fill, 1.0, 10.0, defFILL) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Fill out of range.  Must be between 1 and 10");
     }
 
-    if (cgiFormRadio("use_fill",fill_choices,2,&coil->use_fill,0) !=
+    if (cgiFormRadio("use_fill", fill_choices, 2, &coil->use_fill, 0) !=
 	cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Error reading fill/len radio button");
     }
     
     /* Frequency of operation  */
-    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
+    if(cgiFormDouble("freq", &freq, defFREQ/coil->units_freq->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Error reading frequency");
     }
 
     /* Desired Inductance */
-    if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
+    if(cgiFormDouble("L", &L, defIND/coil->units_L->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
+      printFormError("Error reading inductance");
     }
 
 
