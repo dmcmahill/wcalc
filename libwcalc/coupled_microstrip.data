@@ -1,4 +1,4 @@
-# $Id: coupled_microstrip.data,v 1.1 2003/01/11 01:01:43 dan Exp $
+# $Id: coupled_microstrip.data,v 1.2 2003/01/17 03:22:54 dan Exp $
 #
 # Input data for coupled_microstrip_test program
 #
@@ -18,6 +18,7 @@ comment ZE=62.23917496126 ZO=47.87507185472
 comment Z0=54.58667395481 C_DB=-17.69129997383
 comment KE=3.782718677758 KO=3.194588630653 
 comment AE_DB=0.020891617157 AO_DB=0.017928767350 Skin depth=0.082106708917
+calc 1.0e6
 #
 calc 0.001
 comment Linecalc gives
