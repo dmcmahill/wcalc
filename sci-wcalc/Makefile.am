@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.22 2002/12/10 10:42:17 dan Exp $
+## $Id: Makefile.am,v 1.23 2003/02/06 02:08:23 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -177,7 +177,7 @@ whatis: ${SCIMANS}  $(srcdir)/Makefile.am
 			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
 			printf("\n"); \
 		} \
-		/^\.SH[ \t]*NAME/ {s=1}' ${srdir}/$$f ; done) | sort > whatis
+		/^\.SH[ \t]*NAME/ {s=1}' ${srcdir}/$$f ; done) | sort > whatis
 
 SUFFIXES=
 
