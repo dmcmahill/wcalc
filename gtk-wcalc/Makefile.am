@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.26 2004/07/29 02:05:16 dan Exp $
+## $Id: Makefile.am,v 1.27 2004/07/29 02:38:23 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -74,6 +74,7 @@ man_MANS=	wcalc.1
 pkgdata_DATA= \
 	air_coil.wc \
 	coax.wc \
+	coupled_microstrip.wc \
 	ic_microstrip.wc \
 	microstrip.wc \
 	stripline.wc
