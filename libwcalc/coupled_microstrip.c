@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.9 2003/01/11 00:59:58 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.10 2003/01/17 03:21:52 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
@@ -118,6 +118,16 @@ static double z0_HandJ(double u);
  *      Constant of Microstrip with Validity up to Millimetre-Wave Frequencies"
  *      Electronics Letters, Vol 18, No. 6, March 18th, 1982, pp 272-273.
  *
+ *  The loss equations are from Hammerstad and Jensen.
+ *
+ *
+ *  I must acknowledge the transcalc project,
+ *  http://transcalc.sourceforge.net
+ *  They have an independent implementation of the same equations
+ *  which provided something to compare to.  By comparing all of my
+ *  intermediate results with all of theirs I found one bug in their
+ *  code and one in mine.  A win for everyone!
+ *
  */
 
 double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
@@ -145,8 +155,11 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* even/odd mode impedance at the frequency of interest */
   double z0ef,z0of;
 
-  double v,len,loss,uold,z1,z2,z3,z4,z5,d1,d2;
+  double v,len,uold,z1,z2,z3,z4,z5,d1,d2;
   double sf;
+
+  /* copper loss */
+  double Ko, lc, Res;
 
   /* even/odd mode open end correction lengths */
   double deltale, deltalo;
@@ -596,22 +609,137 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   len = 360.0*len;
 
   /*
-   * Loss
+   * Dielectric Losses
    */
-  /* XXX need loss equations.  Use Hammerstad and Jensen */
-  loss=0.0;
+
+  /* loss in nepers/meter */
+  if (er > 1.0) {
+    line->losslen_ev=(M_PI*f*sqrt(EFE0)/LIGHTSPEED)*(er/EFE0)*((EFE0-1.0)/(er-1.0))*tand;
+    line->losslen_odd=(M_PI*f*sqrt(EFO0)/LIGHTSPEED)*(er/EFO0)*((EFO0-1.0)/(er-1.0))*tand;
+  }
+  else {
+    /* XXX verify this one */
+    line->losslen_ev = 0.0;
+    line->losslen_odd = 0.0;
+  }
+  
+  /* loss in dB/meter */
+  line->losslen_ev  = 20.0*log10(exp(1.0)) * line->losslen_ev;
+  line->losslen_odd = 20.0*log10(exp(1.0)) * line->losslen_odd;
+  
+
+  /* loss in dB */
+  line->loss_ev = l * line->losslen_ev;
+  line->loss_odd = l * line->losslen_odd;
+  
+#ifdef DEBUG_CALC
+#endif
+  printf("coupled_microstrip_calc():  Even mode dielectric loss = %g dB/m \n",
+	 line->losslen_ev);
+  printf("coupled_microstrip_calc():  Odd mode dielectric loss = %g dB/m \n",
+	 line->losslen_odd);
 
   /* calculate skin depth */
-   
+
   /* conductivity */
   sigma = 5.8e7 /rho;
    
-  /* permeability of free space */
+  /* permeability of free space Henries/meter*/
   mu = 4.0*M_PI*1e-7;
    
   /* skin depth in meters */
   depth = sqrt(1.0/(M_PI*f*mu*sigma));
    
+
+  /* warn the user if the loss calc is suspect. */
+  if(t < 3.0*depth)
+    {
+      alert("Warning:  The metal thickness is less than\n"
+	    "three skin depths.  Use the loss results with\n"
+	    "caution.\n");
+    }
+  
+  /*
+   * if the skinDepth is greater than Tmet, assume current
+   * flows uniformly through  the conductor.  Then loss
+   * is just calculated from the dc resistance of the
+   * trace.  This is somewhat
+   * suspect, but I dont have time right now to come up
+   * with a better result.
+   */
+#ifdef notdef   
+  if(depth <= t)
+    {
+      
+      /*
+       * Find the current distribution factor.  This is (39) from
+       * Hammerstad and Jensen.
+       */
+      Ko = exp(-1.2*pow( (z0e0 + z0o0)/(2.0*FREESPACEZ0), 0.7));
+
+#ifdef DEBUG_CALC
+#endif
+      printf("coupled_microstrip_calc():  Ko = %g\n",Ko);
+
+      /* skin resistance */
+      Rs = 1.0 / (sigma * depth);
+
+      /* conduction losses, nepers per meter */
+      lc = (M_PI*z0e0*h*f/(Rs*LIGHTSPEED))*(u/Ko);
+      /* dB/meter */
+      lc = 20.0*log10(exp(1.0)) * lc;
+
+      printf("coupled_microstrip_calc():  Even mode conduction loss = %g dB/m",
+	     lc);
+
+      /* conduction losses, nepers per meter */
+      lc = (M_PI*z0o0*h*f/(Rs*LIGHTSPEED))*(u/Ko);
+      /* dB/meter */
+      lc = 20.0*log10(exp(1.0)) * lc;
+
+      printf("coupled_microstrip_calc():  Even mode conduction loss = %g dB/m",
+	     lc);
+    }
+  
+  /* "dc" case  */
+  else if(t > 0.0)
+    {
+      /* resistance per meter = 1/(Area*conductivity) */
+      Res = 1/(w*t*sigma);  
+      
+      /* conduction losses, nepers per meter */
+      lc = Res/(2.0*z0);
+      
+      /*
+       * change delta to be equal to the metal thickness for
+       * use in surface roughness correction
+       */
+      delta = t;
+      
+      /* no conduction loss case */
+    }
+  else
+    {
+      lc=0.0;
+    }
+  
+ 
+  /* loss in dB/meter */
+  lc = 20.0*log10(exp(1.0)) * lc;
+  
+  /* loss in dB */
+  lc = lc * l;
+  
+  /* factor due to surface roughness
+   * note that the equation in Fooks and Zakarevicius is slightly 
+   * errored.   
+   * the correct equation is penciled in my copy and was 
+   * found in Hammerstad and Bekkadal as well as Hammerstad and Jensen 
+   */
+  lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((roughmil/delta),2.0)));
+  
+#endif
+
   /*
    * Single Line End correction
    *  (Kirschning, Jansen, and Koster)
@@ -674,10 +802,6 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   
   /* electrical length */
   line->len     = len;
-
-  /* loss, loss per unit length */
-  line->loss      = loss;
-  line->losslen   = loss/line->l;
 
   /* skin depth in mils */
   line->skindepth =  M2MIL(depth);

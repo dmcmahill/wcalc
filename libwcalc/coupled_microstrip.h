@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.3 2002/05/10 22:52:52 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.4 2002/06/12 11:30:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -62,9 +62,9 @@ typedef struct COUPLED_MICROSTRIP_LINE
   double deltale, deltalo;
 
   /* even and odd mode effective relative permitivitty */
-  double kev,kodd;
+  double kev, kodd;
 
-  double loss,losslen,skindepth;
+  double loss_ev, loss_odd, losslen_ev, losslen_odd, skindepth;
 
   /* analysis frequency */
   double freq;
