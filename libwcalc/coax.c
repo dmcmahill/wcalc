@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.19 2004/07/23 22:11:56 dan Exp $ */
+/* $Id: coax.c,v 1.20 2004/07/28 03:29:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -291,7 +291,9 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     line->fc = v/(M_PI*(line->a + line->b));
     
     /*
-     * exact solution
+     * Rather than use the approximate TE10 cutoff frequency from
+     * Rosloniec, use an exact solution.  This can actually be solved
+     * by hand without too much pain.
      */
 
     k = 2*M_PI*line->fc / v;
@@ -339,6 +341,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
    */
   line->delay = line->len/v;
   line->elen = 360.0*line->freq*line->delay;
+
+  /* XXX need to calculate max E-field strength */
 
   return 0;
 }
