@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.28 2005/02/12 15:20:41 dan Exp $ */
+/* $Id: coax.c,v 1.29 2005/02/14 23:38:43 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -167,6 +167,14 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   printf("coax_calc_int():  ----------------------\n");
 #endif
 
+
+  /* qualify the inputs some */
+
+  if (line->b <= line->a ) {
+    alert("Error: b (%g) must be > a (%g)\r\n"
+	  "for a coax line\r\n");
+    return -1;
+  }
 
   if (line->c >= line->b - line->a) {
     alert("Error:  c (%g)  must be < b - a (%g)\r\n"
