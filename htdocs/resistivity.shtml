@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: resistivity.shtml,v 1.1 2002/01/10 18:15:14 dan Exp $ -->
+<!-- $Id: resistivity.shtml,v 1.2 2002/01/19 02:23:41 dan Exp $ -->
 <!-- Copyright (c) 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -30,6 +30,7 @@ resistivity,
     <!--#include virtual="resistivity.incl"-->
     </table>
 
+    <!--#include virtual="disclaimer_properties.incl"-->
   </td>
 
 </tr>

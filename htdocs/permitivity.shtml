@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: permitivity.shtml,v 1.1 2002/01/11 15:32:48 dan Exp $ -->
+<!-- $Id: permitivity.shtml,v 1.2 2002/01/19 02:23:40 dan Exp $ -->
 <!-- Copyright (c) 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -33,6 +33,7 @@ relative permitivity,
     <!--#include virtual="permitivity.incl"-->
     </table>
 
+    <!--#include virtual="disclaimer_properties.incl"-->
   </td>
 
 </tr>
