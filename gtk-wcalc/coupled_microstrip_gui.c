@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.4 2004/07/30 04:37:10 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.5 2004/07/30 22:35:53 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -84,7 +84,7 @@ static void picture_init(coupled_microstrip_gui *gui,
 			 GtkWidget *parent);
 static void tooltip_init(coupled_microstrip_gui *gui);
 
-static char *name="Microstrip Analysis/Synthesis";
+static char *name="Coupled Microstrip Analysis/Synthesis";
 static char *version="v0.1";
 /*
  * Public Functions
