@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.1 2001/09/15 23:56:38 dan Exp $ */
+/* $Id: print.c,v 1.2 2001/09/16 19:56:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -48,26 +48,40 @@ static void print_browse_file(void);
 static void browse_ok_sel (GtkWidget *w, GtkWidget *fs);
 static void browse_cancel_sel (GtkWidget *w, GtkWidget *window);
 
+static void save_state(void);
+
 static int print_ps_header(FILE *fp);
 static void do_print(void);
 
 
 /* the print command */
-static GtkWidget *text_cmd;
+static GtkWidget *text_cmd=NULL;
 
 /* the print to file filename */
-static GtkWidget *text_fname;
+static GtkWidget *text_fname=NULL;
 
 /* the "browse" button */
-static GtkWidget *browse_button;
+static GtkWidget *browse_button=NULL;
 
 /* where to print */
 #define PRINT_TO_PRINTER  0
 #define PRINT_TO_FILE     1
 static int where_print;
 
+static int stop_sig;
+
+/* 
+ * remember the last print command and last print filename so the next
+ * time we're asked to print, we can get back the sane info.
+ */
+static GString *print_cmd;
+static GString *print_file;
+
 static void to_printer_pressed (GtkWidget *w, gpointer data)
 {
+  if (stop_sig)
+    return;
+
   gtk_widget_set_sensitive (text_cmd, TRUE);
   gtk_widget_set_sensitive (text_fname, FALSE);
   where_print = PRINT_TO_PRINTER;
@@ -76,6 +90,9 @@ static void to_printer_pressed (GtkWidget *w, gpointer data)
 
 static void to_file_pressed (GtkWidget *w, gpointer data)
 {
+  if (stop_sig)
+    return;
+
   gtk_widget_set_sensitive (text_cmd, FALSE);
   gtk_widget_set_sensitive (text_fname, TRUE);
   where_print = PRINT_TO_FILE;
@@ -85,6 +102,11 @@ static void to_file_pressed (GtkWidget *w, gpointer data)
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
   char *str;
+
+  if (stop_sig)
+    return;
+
+  save_state();
 
   str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
   printf("ok_pressed():  print command = \"%s\"\n",str);
@@ -112,6 +134,11 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
 
 static void cancel_pressed (GtkWidget *w, GtkWidget *window)
 {
+  if (stop_sig)
+    return;
+
+  save_state();
+
   /* unmake it modal */
   gtk_grab_remove(window);
 
@@ -120,6 +147,16 @@ static void cancel_pressed (GtkWidget *w, GtkWidget *window)
 
 }
 
+static void save_state()
+{
+  char *str;
+
+  str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
+  g_string_assign(print_cmd,str);
+
+  str = gtk_entry_get_text( GTK_ENTRY(text_fname) ); 
+  g_string_assign(print_file,str);
+}
  
 void print_popup(void)
 {
@@ -136,9 +173,16 @@ void print_popup(void)
 
   static int first_time=1;
   
+  /* block signals */
+  stop_sig=1;
+
   if (first_time){
     where_print=PRINT_TO_PRINTER;
+
+    print_cmd = g_string_new("lpr");
+    print_file = g_string_new("wcalc.ps");
     first_time = 0;
+
   }
 
   /* create the "print" dialog */
@@ -242,7 +286,7 @@ void print_popup(void)
 
 
   text_cmd = gtk_entry_new_with_max_length( 80 );
-  gtk_entry_set_text(GTK_ENTRY(text_cmd),"lpr -Ppastry ");
+  gtk_entry_set_text(GTK_ENTRY(text_cmd),print_cmd->str);
   gtk_table_attach_defaults (GTK_TABLE(table), text_cmd, 1, 5, 1, 2);
   if (where_print == PRINT_TO_PRINTER)
     gtk_widget_set_sensitive (text_cmd, TRUE);
@@ -268,7 +312,7 @@ void print_popup(void)
 
 
   text_fname = gtk_entry_new_with_max_length( 80 );
-  gtk_entry_set_text(GTK_ENTRY(text_fname),"wcalc.ps");
+  gtk_entry_set_text(GTK_ENTRY(text_fname),print_file->str);
   if (where_print == PRINT_TO_FILE)
     gtk_widget_set_sensitive (text_fname, TRUE);
   else
@@ -278,7 +322,7 @@ void print_popup(void)
 
 
   browse_button = gtk_button_new_with_label ("Browse...");
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+  gtk_signal_connect(GTK_OBJECT(browse_button), "clicked",
 		     GTK_SIGNAL_FUNC(print_browse_file), 
 		     GTK_OBJECT(window));
   //gtk_table_attach_defaults (GTK_TABLE(table), button, 4, 5, 2, 3);
@@ -293,6 +337,10 @@ void print_popup(void)
    * show the action area table
    */
   gtk_widget_show (table);
+
+  /* allow signals */
+  stop_sig=0;
+
 
   /* show the complete dialog box */
   gtk_widget_show (window);
