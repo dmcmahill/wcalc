@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.7 2004/07/30 04:16:03 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.8 2004/07/30 22:33:51 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -91,7 +91,7 @@ typedef struct COUPLED_MICROSTRIP_LINE
 } coupled_microstrip_line;
 
 
-double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
+int coupled_microstrip_calc(coupled_microstrip_line *line, double f);
 int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
 
 void coupled_microstrip_line_free(coupled_microstrip_line * line);

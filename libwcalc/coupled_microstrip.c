@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.20 2004/07/31 06:04:08 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.21 2004/08/02 21:01:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -131,7 +131,7 @@ static double z0_HandJ(double u);
  *
  */
 
-double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
+int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 {
 
   /* input physical dimensions */
@@ -807,7 +807,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* skin depth in m */
   line->skindepth =  depth;
 
-  return(line->z0);
+  return 0;
 }
 
 /*function [w,l,s,loss,kev,kodd]=cmlisyn(z0e,z0o,len,f,subs) */
