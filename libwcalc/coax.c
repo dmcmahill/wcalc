@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.23 2004/08/31 21:38:17 dan Exp $ */
+/* $Id: coax.c,v 1.24 2004/09/02 21:27:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -354,6 +354,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   line->elen = 360.0*line->freq*line->delay;
 
   /* XXX need to calculate max E-field strength */
+  line->emax = 0.0;
 
   return 0;
 }
