@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.10 2004/07/19 22:37:02 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.11 2004/07/20 04:23:36 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -83,15 +83,6 @@ typedef struct _WC_UNITS_GUI
 
 } wc_units_gui;
 #define WC_UNITS_GUI(x)      ((wc_units_gui *) (x))
-
-typedef struct _WC_LABEL_UNITS
-{
-  wc_units_gui *units_gui;
-  GtkWidget *label;
-
-  double mks_val, disp_val;
-
-} wc_label_units;
 
 typedef struct _WC_UNITS_MENU_DATA
 {
