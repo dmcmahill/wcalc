@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/20 01:34:29 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/22 11:28:50 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -54,10 +54,24 @@ all-local:	${MEX_FILES}
 air_coil_calc.c: $(top_srcdir)/sci-wcalc/air_coil_calc.c
 	cp -f $(top_srcdir)/sci-wcalc/air_coil_calc.c air_coil_calc.c
 
+air_coil_syn.c: $(top_srcdir)/sci-wcalc/air_coil_syn.c
+	cp -f $(top_srcdir)/sci-wcalc/air_coil_syn.c air_coil_syn.c
+
+air_coil_calc.m: $(top_srcdir)/sci-wcalc/air_coil_calc.cat
+	fn=`echo $* | tr [:lower:] [:upper:]`; echo "% $$fn" > $@
+	cat $< | \
+		col -b | \
+		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
+				cnt==0{print "% " $$0} \
+				cnt > 0{cnt--}' \
+		>> $@
+	echo " " >> $@
+	cat $(srcdir)/copyright.m >> $@
+
 runmatlab:	$(srcdir)/runmatlab.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > runmatlab
 
-#BUILT_SOURCES=	${MEX_SOURCES}
+BUILT_SOURCES=	air_coil_calc.m
 
 # All the new suffix rules
 
