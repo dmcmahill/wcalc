@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2002/06/17 21:19:46 dan Exp $
 ##
 
 ## Copyright (c) 2002 Dan McMahill
@@ -66,7 +66,7 @@ MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
 
-LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 # various MEX flags
 MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \

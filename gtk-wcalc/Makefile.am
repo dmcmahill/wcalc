@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.20 2002/05/16 19:51:55 dan Exp $
+## $Id: Makefile.am,v 1.21 2002/06/25 21:30:20 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -88,7 +88,7 @@ INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
 	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 
-LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 wcalc_LDADD = ../libwcalc/libwcalc.la
 wcalc_LDFLAGS = @GTK_LIBS@  

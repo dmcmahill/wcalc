@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.20 2002/05/16 21:01:20 dan Exp $
+## $Id: Makefile.am,v 1.21 2002/06/27 23:43:00 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -58,7 +58,7 @@ libsci_wcalc_la_SOURCES = \
 libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la 
 libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
 
-LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 # note, we mangle the function name because with matlab, our function will have
 # the same name as the filename, but in Scilab, we need to replace mexFunction with

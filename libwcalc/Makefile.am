@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2002/05/10 22:50:41 dan Exp $
+## $Id: Makefile.am,v 1.13 2002/08/07 00:45:34 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -44,7 +44,7 @@ mathutil_test_SOURCES = alert.c mathutil_test.c
 microstrip_test_SOURCES = alert.c microstrip_test.c 
 
 LDADD = libwcalc.la
-LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 libwcalc_la_SOURCES = \
 	air_coil.c \

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.9 2002/05/10 22:52:57 dan Exp $
+## $Id: Makefile.am,v 1.10 2002/07/04 02:09:45 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -61,7 +61,7 @@ INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 
-LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 # various MEX flags
 MEXLDFLAGS=	-L../libwcalc/.libs -lwcalc \
