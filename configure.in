@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.37 2001/10/31 13:12:48 dan Exp $
+dnl $Id: configure.in,v 1.38 2001/10/31 14:56:35 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -417,41 +417,49 @@ AC_CHECK_LIB(m,sin)
 AC_CHECK_FUNCS(rint)
 
 dnl GTK checks
-AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
-if test "$WIN32" = "yes"; then
-	dnl XXX this is a hack.  It needs to be detected...
-	GTK_VER=1.3
-	GLIB_VER=1.3
-	GTK=c:/cygwin/usr/local/src/gtk+
-	GLIB=c:/cygwin/usr/local/src/glib
-	GLIB_CFLAGS="-I${GLIB} -I${GLIB}/gmodule"
-	GTK_CFLAGS="$GLIB_CFLAGS -I${GTK}/gdk -I${GTK}"
-	GLIB_LIBS="-L${GLIB} -lglib-${GLIB_VER} \
+AC_MSG_CHECKING([if gtk-wcalc should be built])
+if test "X$enable_gtk" != "Xno" ; then
+	AC_MSG_RESULT([yes])
+	AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
+	if test "$WIN32" = "yes"; then
+		dnl XXX this is a hack.  It needs to be detected...
+		GTK_VER=1.3
+		GLIB_VER=1.3
+		GTK=c:/cygwin/usr/local/src/gtk+
+		GLIB=c:/cygwin/usr/local/src/glib
+		GLIB_CFLAGS="-I${GLIB} -I${GLIB}/gmodule"
+		GTK_CFLAGS="$GLIB_CFLAGS -I${GTK}/gdk -I${GTK}"
+		GLIB_LIBS="-L${GLIB} -lglib-${GLIB_VER} \
 		   -L${GLIB}/gmodule -lgmodule-${GLIB_VER} \
 		   -L${GLIB}/gthread -lgthread-${GLIB_VER} \
 		   -L${GLIB}/gobject -lgobject-${GLIB_VER}"
-	GTK_LIBS="$GLIB_LIBS \
+		GTK_LIBS="$GLIB_LIBS \
 		  -L${GTK}/gtk -lgtk-${GTK_VER} \
 		  -L${GTK}/gdk -lgdk-${GTK_VER}"
-elif test "x$GTK_CONFIG" = "xnone"; then
-	AC_MSG_ERROR([You must have gtk installed on your system])
-else
-	AC_MSG_CHECKING([if gtk is version 1.2 or later])
-	GTK_VER=`$GTK_CONFIG --version`
+	elif test "x$GTK_CONFIG" = "xnone"; then
+		AC_MSG_ERROR([You must have gtk installed on your system])
+	else
+		AC_MSG_CHECKING([if gtk is version 1.2 or later])
+		GTK_VER=`$GTK_CONFIG --version`
 
-	case $GTK_VER in
-	0.* )
-		AC_MSG_ERROR([you need at least version 1.2 of gtk])
-		;;
-	1.1* )
-		AC_MSG_ERROR([you need at least version 1.2 of gtk])
-		;;
-	* )
-		AC_MSG_RESULT([$GTK_VER])
-		GTK_CFLAGS=`$GTK_CONFIG --cflags`
-		GTK_LIBS=`$GTK_CONFIG --libs`
-		;;
-	esac	
+		case $GTK_VER in
+		0.* )
+			AC_MSG_ERROR([you need at least version 1.2 of gtk])
+			;;
+		1.1* )
+			AC_MSG_ERROR([you need at least version 1.2 of gtk])
+			;;
+		* )
+			AC_MSG_RESULT([$GTK_VER])
+			GTK_CFLAGS=`$GTK_CONFIG --cflags`
+			GTK_LIBS=`$GTK_CONFIG --libs`
+			;;
+		esac	
+	fi
+else
+	AC_MSG_RESULT([no])
+	GTK_CFLAGS=""
+	GTK_LIBS=""
 fi
 	
 dnl Only use -Wall if we have gcc
