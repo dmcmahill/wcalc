@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.9 2004/08/05 21:42:28 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.10 2004/08/31 21:38:21 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -254,13 +254,14 @@ int ic_microstrip_load_string(ic_microstrip_line *line, const char *str)
   /* XXX fixme*/
   val = strtok(mystr," ");
 
+  free(mystr);
+
   /* read the model version  */
   if ( val == NULL ){
     alert("Could not determine the ic_microstrip file_version\n");
     return -1;
   }
 
-  free(mystr);
 
 #ifdef DEBUG
   printf("ic_microstrip_loadsave.c:ic_microstrip_load_string():  "
@@ -282,7 +283,6 @@ int ic_microstrip_load_string(ic_microstrip_line *line, const char *str)
   if (rslt != 0) {
 	return rslt;
   }
-  free(mystr);
 
   myspec = get_fspec(SUBSTRATE_SPEC);
 #ifdef DEBUG
