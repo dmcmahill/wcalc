@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.8 2002/05/09 23:49:56 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.9 2002/06/12 11:30:24 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -177,7 +177,7 @@ void coax_save(coax_line *line, FILE *fp, char *fname)
 int coax_load_string(coax_line *line, char *str)
 {
   fspec *myspec;
-  char *val;
+  /* char *val; */
   int rslt;
 
   assert(str!=NULL);

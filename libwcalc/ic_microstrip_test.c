@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_test.c,v 1.3 2002/05/09 23:49:59 dan Exp $ */
+/* $Id: ic_microstrip_test.c,v 1.4 2002/06/12 11:30:28 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -51,12 +51,7 @@
 
 int main(int argc, char **argv)
 {
-  double h=.062;
   double w=.050;
-  double t=.0014;
-  double er=4.8;
-
-
   ic_microstrip_line *line;
   double freq;
 
