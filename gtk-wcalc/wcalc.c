@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.17 2004/07/29 00:02:19 dan Exp $ */
+/* $Id: wcalc.c,v 1.18 2004/07/29 02:14:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -53,6 +53,7 @@
 /* the individual models */
 #include "air_coil_gui.h"
 #include "coax_gui.h"
+#include "coupled_microstrip_gui.h"
 #include "ic_microstrip_gui.h"
 #include "microstrip_gui.h"
 #include "stripline_gui.h"
@@ -211,14 +212,15 @@ static void global_model_init()
   global_model_new = g_list_append(global_model_new,coax_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_COAX);
 
-  /*
-  global_model_names = g_list_append(global_model_names,"Coupled Microstrip");
-  global_model_menus = g_list_append(global_model_menus,"/File/New/_Coupled Microstrip");
-  global_model_new = g_list_append(global_model_new,NULL);
+  global_model_names = g_list_append(global_model_names,
+				     "Coupled Microstrip");
+  global_model_menus = g_list_append(global_model_menus,
+				     "/File/New/_Coupled Microstrip");
+  global_model_new = g_list_append(global_model_new,
+				   coupled_microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
-  FILE_COUPLED_MICROSTRIP);
+					FILE_COUPLED_MICROSTRIP);
 
-  */
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
   global_model_new = g_list_append(global_model_new,ic_microstrip_gui_new);
@@ -366,11 +368,11 @@ void wcalc_setup (gpointer data,
     case MODEL_COAX:
       new_cmd = (void *) coax_gui_new;
       break;
-      /*
+      
     case MODEL_COUPLED_MICROSTRIP:
       new_cmd = (void *) coupled_microstrip_gui_new;
       break;
-      */
+
     case MODEL_IC_MICROSTRIP:
       new_cmd = (void *) ic_microstrip_gui_new;
       break;
