@@ -1,0 +1,18 @@
+$Id$
+
+Notes about various papers and modeling ideas.
+
+
+Spiral Inductors
+----------------
+
+Snezana Jenei, Bark J. J. C. Nauwelaers, and Stefaan Decoutere,
+"Physics-Based Closed-Form Inductance Expression for Compact Modeling
+of Integrated Spiral Inductors", JSSC, Vol 37, No 1,  Jan 2002, pp 77-80
+
+
+######################################################################
+# Local Variables:
+# mode:		Text
+# fill-column:	75
+# End:
