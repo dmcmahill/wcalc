@@ -1,6 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.9 2004/08/04 23:49:44 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.10 2004/08/05 23:46:45 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.9 2004/08/04 23:49:44 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.10 2004/08/05 23:46:45 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -167,10 +167,10 @@ void mexFunction(
 		   " (needs 7 or 8).");
     } 
 
-  if (nlhs > 5)
+  if (nlhs > 6)
     {
       mexErrMsgTxt("wrong number of output arguments to AIR_COIL_CALC"
-		   " (needs <= 5).");
+		   " (needs <= 6).");
     }
   
   /* 
