@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.5 2001/09/27 02:01:47 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.6 2001/09/27 12:54:12 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -332,7 +332,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-
+  /* XXX  units for resistivity
   hbox = gtk_hbox_new(FALSE,1);
   gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 1, 2, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
@@ -386,7 +386,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
   gtk_widget_show(combo);
 
-
+  */
 
   text = gtk_label_new( "Inductance" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
@@ -512,6 +512,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_set_sensitive(gui->text_rho,FALSE);
   gtk_widget_show(gui->text_rho);
 
   gui->text_L = gtk_entry_new_with_max_length( ENTRYLENGTH );
