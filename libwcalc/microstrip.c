@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.9 2003/01/24 11:11:50 dan Exp $ */
+/* $Id: microstrip.c,v 1.10 2004/07/26 22:22:29 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -135,12 +135,6 @@ int microstrip_calc(microstrip_line *line, double f)
   if(rslt != 0)
     return rslt;
   
-  /* find the incremental circuit model */
-  line->Ls = 0.0;
-  line->Rs = 0.0;
-  line->Cs = 0.0;
-  line->Gs = 0.0;
-
   line->Ro = line->z0;
   line->Xo = 0.0;
 
@@ -390,7 +384,10 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
     */
    v = LIGHTSPEED / sqrt(EF);
 
-
+   /*
+    * delay on line 
+    */
+   line->delay = line->l / v;
 
    /*
     * End correction
@@ -408,6 +405,21 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    deltal = h * z1 * z3 * z5 / z4;
 
    line->deltal = M2MIL(deltal);
+
+   /* find the incremental circuit model */
+   /*
+    * find L and C from the impedance and velocity
+    * 
+    * z0 = sqrt(L/C), v = 1/sqrt(LC)
+    * 
+    * this gives the result below
+    */
+   line->Ls = line->z0/v;
+   line->Cs = 1.0/(line->z0*v);
+   
+   /* resistance will be updated below */
+   line->Rs = 0.0;
+   line->Gs = 2*M_PI*f*line->Cs*line->subs->tand;
 
    if(flag == WITHLOSS)
      {
@@ -517,11 +529,16 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
 	   /* conduction losses, nepers per meter */
 	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
+
+	   line->Rs = lc*2*line->z0;
 	 }
 
 	   /* "dc" case  */
        else if(t > 0.0)
 	 {
+	   /* resistance per meter = 1/(Area*conductivity) */
+	   line->Rs = 1/(line->w*line->subs->tmet*sigma);  
+
 	   /* resistance per meter = 1/(Area*conductivity) */
 	   Res = 1/(w*t*sigma);  
   
