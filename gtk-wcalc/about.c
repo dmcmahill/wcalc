@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.10 2003/01/02 06:40:06 dan Exp $ */
+/* $Id: about.c,v 1.11 2003/01/11 01:08:48 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
@@ -64,7 +64,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001\n" \
+"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004\n" \
 "Dan McMahill."
 
 
