@@ -1,7 +1,7 @@
-/* $Id: about.h,v 1.6 2002/06/12 11:30:08 dan Exp $ */
+/* $Id: about.h,v 1.7 2002/06/25 21:30:20 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -42,7 +42,7 @@ void about_popup(void);
 void copyright_popup(void);
 
 /* XXX should move this to a seperate help .c file */
-void asciitab_popup(GtkWidget * (*table_fn)(void),char *title);
+void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title);
 
 void AWG_popup(void);
 void permeability_popup(void);

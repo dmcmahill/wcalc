@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.11 2004/07/29 00:02:13 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.12 2004/07/30 04:37:21 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -660,7 +660,7 @@ static void synthesize_len( GtkWidget *w, gpointer data )
 
 static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 {
-  char *vstr;
+  const char *vstr;
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Nf) ); 

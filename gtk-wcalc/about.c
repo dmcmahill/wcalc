@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.12 2004/03/14 13:33:40 dan Exp $ */
+/* $Id: about.c,v 1.13 2004/07/20 15:49:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -189,7 +189,7 @@ void copyright_popup(void)
 }
 
 
-void asciitab_popup(GtkWidget * (*table_fn)(void), char *title)
+void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
 {
   GtkWidget *button;
   GtkWidget *tab;
