@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2001/10/24 03:02:53 dan Exp $
+## $Id: Makefile.am,v 1.12 2001/10/28 22:55:24 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -36,7 +36,13 @@
 # list of all the mex files
 include $(srcdir)/mex.mk
 
-pkglib_LTLIBRARIES = libsci_wcalc.la
+scimandir=	${pkgdatadir}/sci-wcalc
+sciman_DATA=	${SCIMANS} ${SCICATS} whatis
+
+lib_LTLIBRARIES= libsci_wcalc.la
+
+pkglibexecdir=  ${libexecdir}/${PACKAGE}
+pkglibexec_SCRIPTS=	load_wcalc.sce
 
 libsci_wcalc_la_SOURCES = \
 	alert.c \
@@ -54,11 +60,14 @@ INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -Dm
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 
-all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce
+all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce 
+
+clean-local:
+	-rm ${SCICATS} whatis load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS}
 
-BUILT_SOURCES= libsci_wcalc.c load_wcalc.sce test_wcalc.sce whatis ${SCICATS}
+BUILT_SOURCES= libsci_wcalc.c  whatis ${SCICATS}
 
 #
 # Generate the entry point function that scilab uses to access the
@@ -100,7 +109,13 @@ load_wcalc.sce.in: $(srcdir)/mex.mk
 	@echo "****************************************************"
 	@echo "Generating the scilab loader function in $@"
 	@echo "****************************************************"
-	@echo "scilab_functions=[..." > $@
+	@echo "// Execute this script from within Scilab to load" > $@
+	@echo "// the wcalc interface.  Do this with:" >> $@
+	@echo "//    --> exec(\"${pkglibexecdir}/load_wcalc.sce\");" >> $@
+	@echo "// The exec line can be added to the .scilab file in" >> $@
+	@echo "// your home directory." >> $@
+	@echo "" >> $@
+	@echo "scilab_functions=[..." >> $@
 	@for mex in ${MEX_SRCS} ; do \
 		mexfn=`basename $$mex .c`; \
 		echo "\"$${mexfn}\";" >> $@ ; \
@@ -111,20 +126,24 @@ load_wcalc.sce.in: $(srcdir)/mex.mk
 	@echo "    \"libsci_wcalc_gateway\",..." >> $@
 	@echo "     scilab_functions);" >> $@
 	@echo "" >> $@
+	@echo "%helps=[%helps; \"@manpath@\", \"Wcalc\"];" >> $@
+	@echo "" >> $@
 
 load_wcalc.sce:	load_wcalc.sce.in
-	sed  's;@libpath@;${pkglibdir}/;g' $< > $@
+	sed     -e 's;@libpath@;${libdir}/;g' \
+		-e 's;@manpath@;${scimandir};g' $< > $@
 	@echo "****************************************************"
 	@echo "* To use the scilab interface after installation   *"
 	@echo "* execute the file \"load_wcalc.sce\" from within    *"
 	@echo "* scilab.  This is done by:                        *"
-	@echo "       --> exec(\"${pkglibdir}/load_wcalc.sce\");"
+	@echo "       --> exec(\"${pkglibexecdir}/load_wcalc.sce\");"
 	@echo "* you may wish to add that command to your .scilab *"
 	@echo "* file to have it loaded automatically on startup. *"
 	@echo "****************************************************"
 
 test_wcalc.sce:	load_wcalc.sce.in
-	sed -e "s;@libpath@;`pwd`/.libs/;g" $< > $@
+	sed     -e "s;@libpath@;`pwd`/.libs/;g" \
+		-e "s;@manpath@;`pwd`;g" $< > $@
 	@echo "****************************************************"
 	@echo "* To test the scilab interface before installation *"
 	@echo "* execute the file \"test_wcalc.sce\" from within    *"
