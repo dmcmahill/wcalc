@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.5 2003/01/19 05:07:40 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.6 2004/07/26 11:08:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -54,6 +54,9 @@ typedef struct COUPLED_MICROSTRIP_LINE
   /* even and odd mode impedance */
   double z0e;
   double z0o;
+
+  /* flag which says to use z0/k instead of z0e/z0o for synthesis */
+  int use_z0k;
 
   /* electrical length (degrees) */
   double len;

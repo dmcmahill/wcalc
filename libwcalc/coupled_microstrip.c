@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.14 2004/07/27 20:58:33 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.15 2004/07/29 22:08:52 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -799,7 +799,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   line->k = (z0ef-z0of)/(z0ef+z0of);
 
   line->deltale = deltale;
-  line->deltalo = deltale;
+  line->deltalo = deltalo;
   
   /* electrical length */
   line->len     = len;
@@ -1102,6 +1102,8 @@ coupled_microstrip_line *coupled_microstrip_line_new()
   newline->subs->rho   = 3e-8;
   newline->subs->rough = MIL2M(0.055);
 
+  newline->use_z0k = 1;
+
   newline->units_lwst    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
   newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
@@ -1113,6 +1115,7 @@ coupled_microstrip_line *coupled_microstrip_line_new()
   newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
+  
   /* and do a calculation to finish the initialization */
   coupled_microstrip_calc(newline, newline->freq);
 
