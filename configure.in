@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.64 2004/09/02 00:49:02 dan Exp $
+dnl $Id: configure.in,v 1.65 2004/09/02 05:16:25 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -77,7 +77,7 @@ wc_libwcalc_yesno=yes
 
 AC_MSG_CHECKING([if libwcalc should be built])
 AC_ARG_ENABLE([libwcalc],
-[  --enable-libwcalc         Causes libwcalc to be built.  If
+[  --enable-libwcalc       Causes libwcalc to be built.  If
                            --disable-libwcalc is given, the
                            configure process will search
                            for a preinstalled libwcalc [default=yes]],
@@ -209,45 +209,95 @@ AC_SUBST(SCI_WCALC)
 #
 # ------------- octave tests -------------------
 #
-OCT_WCALC=octave-wcalc
+
+OCT_WCALC=
 wc_oct_wcalc_yesno=no
 
 AC_ARG_WITH([octave],
-[  --with-octave=octdir    Use the specified octave installation.  
-                          The specified directory should be the base of
+[  --with-octave=[octdir]    Build the octave frontend.  If octdir is
+                          given then octdir should be the base of
                           your octave installation.  For example,
-                          /opt/octave-2.6.  [default = search for
-                          an installed octave]],
+                          /opt/octave-2.6.  If octdir is not given
+			  the octave installation will be searched for.
+			  [default = do not build oct-wcalc]],
 [
 if test "X$with_octave" = "Xno" ; then
 	OCT_WCALC=""
+elif test "X$with_octave" = "Xyes" ; then
+	AC_PATH_PROG(OCTAVE, octave, no)
+	if test "X$OCTAVE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(OCTAVE_CONFIG, octave-config, no)
+	if test "X$OCTAVE_CONFIG" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(MKOCTFILE, mkoctfile, no)
+	if test "X$MKOCTFILE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(OCTMEX, mex, no)
+	if test "X$OCTMEX" = "Xno" ; then
+		AC_ERROR([No octave mex could be found])
+	fi
+
+	OCT_WCALC=octave-wcalc
+	wc_oct_wcalc_yesno=yes
 else
 	OCT=$with_octave
-	OCT_WCALC="octave-wcalc"
+	AC_PATH_PROG(OCTAVE, octave, no, [$OCT/bin:$PATH])
+	if test "X$OCTAVE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(OCTAVE_CONFIG, octave-, no, [$OCT/bin:$PATH])
+	if test "X$OCTAVE_CONFIG" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(MKOCTFILE, mkoctfile, no, [$OCT/bin:$PATH])
+	if test "X$MKOCTFILE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+	AC_PATH_PROG(OCTMEX, mex, no, [$OCT/bin:$PATH])
+	if test "X$OCTMEX" = "Xno" ; then
+		AC_ERROR([No octave mex could be found])
+	fi
+
+	OCT_WCALC=octave-wcalc
 	wc_oct_wcalc_yesno=yes
 fi
-],
-[
-OCT_WCALC=""
-with_octave=no
 ])
 
 
 if test "X$OCT_WCALC" != "X"; then
-	AC_MSG_CHECKING([for the octave stack header])
-	if test -f $OCT/routines/stack-c.h ; then
-		AC_MSG_RESULT([yes])
-	else
-		AC_MSG_RESULT([no])
-		AC_MSG_WARN([The directory $OCT does not appear to be the root
-of a complete (and working) octave installation.
-The octave interface will not be built.])
-		OCT_WCALC=""
-	fi
+	AC_MSG_CHECKING([if octave supports mex files])
+	AC_MSG_RESULT([not done yet.  FIXME])
 fi
 
-AC_SUBST(OCT)
+if test "X$OCT_WCALC" != "X"; then
+	AC_MSG_CHECKING([for the octave site oct directory])
+	SITEOCT=`$OCTAVE_CONFIG --print LOCALVEROCTFILEDIR`
+	AC_MSG_RESULT([$SITEOCT])
+
+	AC_MSG_CHECKING([for the octave site fcn directory])
+	SITEOCTM=`$OCTAVE_CONFIG --print LOCALVERFCNFILEDIR`
+	AC_MSG_RESULT([$SITEOCTM])
+else
+	OCT_VER=""
+fi
+
 AC_SUBST(OCT_WCALC)
+AC_SUBST(OCTAVE)
+AC_SUBST(OCTAVE_CONFIG)
+AC_SUBST(MKOCTFILE)
+AC_SUBST(OCTMEX)
+AC_SUBST(SITEOCT)
+AC_SUBST(SITEOCTM)
 
 # ------------- done with octave tests -------------------
 
@@ -283,7 +333,7 @@ AC_SUBST(HTDOCS)
 wc_sf_wcalc_yesno=no
 AC_MSG_CHECKING([if the sourceforge specific content should be added])
 AC_ARG_ENABLE([sourceforge],
-[  --enable-sourceforge         Causes the sourceforge specific content to be added [default=no]],
+[  --enable-sourceforge    Causes the sourceforge specific content to be added [default=no]],
 [
 if test "X$enable_sourceforge" = "Xno" ; then
 	SOURCEFORGE_NO=""

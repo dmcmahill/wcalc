@@ -1,4 +1,5 @@
-## $Id: Makefile.am,v 1.2 2002/12/10 10:42:16 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.3 2004/08/11 13:04:38 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -43,7 +44,8 @@ include $(top_srcdir)/sci-wcalc/mex.mk
 # the 'mex' command to compile the mex files
 #MEX=	@MEX@
 #MEX=	/usr/pack/octave-2.1.35-jp/sun4u-SunOS-5.6/bin/mex
-MEX=	$(srcdir)/mex
+#MEX=	$(srcdir)/mex
+MEX=	@OCTMEX@
 
 # the suffix for the compiled mex file
 #MEXSFX=	@MEXSFX@
@@ -51,10 +53,12 @@ MEXSFX=	oct
 
 # base directory for octave installation
 #OCTAVE_DIR=	@OCTAVE_DIR@
-OCTAVE_DIR=	/usr/pack/octave-2.1.35-jp/sun4u-SunOS-5.6/libexec/octave/2.1.35/site/oct/sparc-sun-solaris2.6/octave-forge
+#OCTAVE_DIR=	/usr/pack/octave-2.1.35-jp/sun4u-SunOS-5.6/libexec/octave/2.1.35/site/oct/sparc-sun-solaris2.6/octave-forge
 
-pkglibexecdir=	${libexecdir}/${PACKAGE}
-pkglibexec_DATA=	${MEX_FILES} ${MEX_MANS}
+octfiledir=	@SITEOCT@/${PACKAGE}
+fcnfiledir=	@SITEOCTM@/${PACKAGE}
+octfile_DATA=	${MEX_FILES}
+fcnfile_DATA=	${MEX_MANS}
 
 noinst_SCRIPTS=		runoctave
 
@@ -85,7 +89,7 @@ runoctave:	$(srcdir)/runoctave.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runoctave.in copyright.m mex mkoctfile
+EXTRA_DIST=	runoctave.in copyright.m mex mkcotfile
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man
