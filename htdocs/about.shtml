@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>About Wcalc</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      About Wcalc
+    </font>
+    <br>
+    <br>
+    </center>
+    
+    <font face="helvetica, arial">
+    <H2>Overview</H2>
+    <p>
+    Wcalc is a tool for the analysis and synthesis of transmission line structures and 
+    related components.  Wcalc provides the ability to analyze the electrical parameters
+    of a particular structure based on the physical dimensions and material parameters.
+    The synthesis portion calculates the required physical parameters to meet desired
+    electrical specifications.  Wcalc includes several models and places an emphasis on
+    accuracy.  Several frontends provide the user with several options for its use.
+    </p>
+
+    <H2>History</H2>
+    <p>
+    Work on Wcalc was started in 1997 as part of a RF and microwave
+    filter design toolkit.  During the initial work on that program
+    (no its not currently available), it quickly became apparent that
+    an essential piece of that tool was a microstrip transmission line
+    synthesis routine.  Considerable time was spent researching the
+    available approximations for microstrip analysis with the goal of
+    implementing the most accurate approximations.  The result of that
+    early work was a JavaScript based analysis/synthesis tool.  This
+    tool is still available under the name <a
+    href="http://mcalc.sourceforge.net">mcalc</a>.
+    </p>
+
+    <p>
+    Some of the lessons learned when writing <a
+    href="http://mcalc.sourceforge.net">mcalc</a> are:  I don't like
+    programming in JavaScript, sometimes I don't have access to a
+    JavaScript enabled web browser at the computer I'm in front of,
+    and sometimes the simple calculator based frontend to the
+    numerical routines is simply not enough.  These considerations led
+    to the decision to create a tool with the flexibility to support
+    several frontends in a way that makes the addition of new models
+    relatively straightforward.
+    </p>
+
+    <H2>Frontends</H2>
+    <p>
+    At this time, Wcalc includes 3 frontends to the numerical
+    routines.  A CGI interface provides a simple way to provide, for
+    example, company-wide access to the calculators via an intranet.
+    The <a href="http://www.gtk.org">GTK+</a> based graphical user
+    interface is the standard standalone version of Wcalc.  Finally an
+    interface to <a href="http://www-rocq.inria.fr/scilab">Scilab</a>
+    is provided for users who need additional processing capability
+    and access to plotting routines.
+    </p>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

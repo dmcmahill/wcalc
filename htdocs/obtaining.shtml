@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2001
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>How to Get Wcalc</title>
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      How to Get Wcalc
+    </font>
+    <em>downloads not available yet (soon though)</em>
+    <br>
+    <br>
+    </center>
+    
+    <font face="helvetica, arial">
+    <H2>Source Format</H2>
+    <p>
+    Wcalc comes with complete source code which can easily be compiled
+    on most Unix-like operating systems with no modifications.  In
+    addition, it can be compiled under WIN32 using the <a
+    href="http://www.mingw.org">mingw</a> toolchain with the <a
+    href="http://www.cygnus.com">cygwin</a> environment.
+    </p>
+
+    <H2>Binaries</H2>
+    <p>
+    Currently Wcalc is not distributed in binary format although it is
+    possible that a WIN32 binary will be made available in the future.
+    </p>
+
+    <H2>Native Packages</H2>
+    <p>
+    Wcalc is also available as a native package for several operating
+    systems.  Please note that these are maintained by groups other
+    than the Wcalc maintainer:<br>
+    <ul>
+    <li><a href="http://www.netbsd.org">NetBSD</a><a
+    href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/cad/wcalc/README.html>package</a>.</LI>
+    </ul>
+    </p>
+
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>
