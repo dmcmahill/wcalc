@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.10 2002/01/18 02:54:56 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.11 2002/01/18 03:04:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -738,7 +738,6 @@ char * fspec_write_string(fspec *list, unsigned long base)
 	fprintf(stderr,"fspec_write_string():  malloc() failed\n");
 	exit(1);
       }
-      printf("allocated %d bytes for string\n",len);
       str[0]='\0';
     }
   } 
