@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.12 2002/05/10 22:52:25 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.13 2002/06/12 11:29:59 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -253,17 +253,17 @@ int cgiMain(void){
   }  /* if ( (action != RESET) && (action != LOAD) ) */
   else {
 #ifdef DEBUG
-    printf("%s:  checking for a cookie to load\n",name_string);
+    printf(_("%s:  checking for a cookie to load\n"),name_string);
 #endif
     /* load a stored cookie if it exists */
     if(cgiCookieStringNoNewlines(name_string,cookie_load_str,COOKIE_MAX) ==
        cgiCookieSuccess) {
 #ifdef DEBUG
-      printf("%s:  loading cookie \"%s\"\n",name_string,cookie_load_str);
+      printf(_("%s:  loading cookie \"%s\"\n"),name_string,cookie_load_str);
 #endif
       air_coil_load_string(coil,cookie_load_str);
 #ifdef DEBUG
-      printf("%s:  finished loading cookie\n",name_string);
+      printf(_("%s:  finished loading cookie\n"),name_string);
 #endif
     }
   }
