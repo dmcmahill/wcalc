@@ -1,4 +1,4 @@
-/* $Id: coax.h,v 1.3 2001/11/28 15:39:46 dan Exp $ */
+/* $Id: coax.h,v 1.4 2002/01/03 03:54:53 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -133,6 +133,7 @@ coax_line *coax_new(void);
 #define COAXSYN_B    1    /* Synthesize B with A, C fixed */
 #define COAXSYN_C    2    /* Synthesize C with A, B fixed */
 #define COAXSYN_ER   3    /* Synthesize Er with A, B, C fixed */
+#define COAXSYN_L    4    /* Synthesize L with A, B, C, Er fixed */
 
 
 #endif /*__COAX_H__*/
