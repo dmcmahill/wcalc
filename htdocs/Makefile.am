@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/23 12:28:05 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/27 16:05:43 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -78,12 +78,14 @@ EXTRA_DIST=	${BUILT_SOURCES} ${SHTML_IN} ${INCL_FILES} ${PNGS}
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}
 
+CGIPATH=	@CGIPATH@
+
 # All the new suffix rules
 
 SUFFIXES = .shtml .html
 
 .shtml.html :
-	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml > $*.html
+	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml | sed 's;/cgi-bin/;/${CGIPATH}/;g' > $*.html
 	@@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
 	@@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
 	@@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
