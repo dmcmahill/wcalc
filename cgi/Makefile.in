@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 2001/09/13 14:53:35 dan Exp $
+# $Id: Makefile.in,v 1.9 2001/09/13 19:13:26 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -64,7 +64,8 @@ LIBS    = @LIBS@ -lm
 HTML2C  = ${AWK} -f ../html2c out=cgiOut 
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
-PROGS = ic_microstrip.cgi \
+PROGS = air_coil.cgi \
+	ic_microstrip.cgi \
 	microstrip.cgi \
 	stripline.cgi
 
@@ -72,9 +73,73 @@ PROGS = ic_microstrip.cgi \
 ../mathutil.o: $(srcdir)/../mathutil.c
 	cd .. && $(MAKE) mathutil.o
 
+../misc.o: $(srcdir)/../misc.c
+	cd .. && $(MAKE) misc.o
+
 footer_html.c:	footer.html
 	$(HTML2C) $(srcdir)/footer.html > $(srcdir)/footer_html.c
 
+
+###########################################
+#
+# air_coil.cgi
+
+AIR_COIL_CGI_CFILES=	air_coil.cgi.c \
+			cgic.c 
+
+AIR_COIL_CGI_OFILES=	${AIR_COIL_CGI_CFILES:.c=.o} \
+			../air_coil.o \
+			../mathutil.o \
+			../misc.o 
+
+../air_coil.o: $(srcdir)/../air_coil.c
+	cd .. && $(MAKE) air_coil.o
+
+
+air_coil_html.c:	air_coil.html
+	$(HTML2C) $(srcdir)/air_coil.html > $(srcdir)/air_coil_html.c
+
+air_coil_id.h: air_coil.html
+	$(HTML2ID) $(srcdir)/air_coil.html > $(srcdir)/air_coil_id.h
+
+air_coil.cgi.o: air_coil.cgi.c air_coil_html.c footer_html.c air_coil_id.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/air_coil.cgi.c
+
+air_coil.cgi:  $(AIR_COIL_CGI_OFILES)
+	$(CC) $(CFLAGS) -o $@ $(AIR_COIL_CGI_OFILES) $(LDFLAGS) $(LIBS)
+
+#
+###########################################
+
+###########################################
+#
+# coupled_microstrip.cgi
+
+COUPLED_MICROSTRIP_CGI_CFILES=	coupled_microstrip.cgi.c \
+				cgic.c 
+
+COUPLED_MICROSTRIP_CGI_OFILES=	${COUPLED_MICROSTRIP_CGI_CFILES:.c=.o} \
+				../coupled_microstrip.o \
+				../mathutil.o 
+
+../coupled_microstrip.o: $(srcdir)/../coupled_microstrip.c
+	cd .. && $(MAKE) coupled_microstrip.o
+
+
+coupled_microstrip_html.c:	coupled_microstrip.html
+	$(HTML2C) $(srcdir)/coupled_microstrip.html > $(srcdir)/coupled_microstrip_html.c
+
+coupled_microstrip_id.h: coupled_microstrip.html
+	$(HTML2ID) $(srcdir)/coupled_microstrip.html > $(srcdir)/coupled_microstrip_id.h
+
+coupled_microstrip.cgi.o: coupled_microstrip.cgi.c coupled_microstrip_html.c footer_html.c coupled_microstrip_id.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/coupled_microstrip.cgi.c
+
+coupled_microstrip.cgi:  $(COUPLED_MICROSTRIP_CGI_OFILES)
+	$(CC) $(CFLAGS) -o $@ $(COUPLED_MICROSTRIP_CGI_OFILES) $(LDFLAGS) $(LIBS)
+
+#
+###########################################
 
 ###########################################
 #

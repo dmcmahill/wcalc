@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil.c,v 1.1 2001/09/13 21:16:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -45,6 +45,18 @@
 #include "air_coil.h"
 #include "misc.h"
 
+
+/* estimate of the enamel insulation thickness (inches) */
+#define TINSUL 0.0015
+
+
+static double air_coil_calc_int(air_coil *coil, double freq, int flag);
+
+/* air_coil_calc_int flags */
+#define CALC_ALL  0  /* all calculation (calculate everything) */ 
+#define CALC_MIN  1  /* minimum calculation (skip some)        */ 
+
+
 /*
  *function [L,Q,SRF]=indcalc(N,len,AWG,dia,freq)
  * INDCALC    Calculate inductance parameters for single-layer solenoids
@@ -86,6 +98,13 @@
 
 double air_coil_calc(air_coil *coil, double freq)
 {
+  double L;
+  L = air_coil_calc_int(coil,freq,CALC_ALL);
+  return L;
+}
+
+static double air_coil_calc_int(air_coil *coil, double freq, int flag)
+{
   double pitch;
   double wirediam;
   double turndiam;
@@ -107,6 +126,12 @@ double air_coil_calc(air_coil *coil, double freq)
 
   /* variables for loss */
   double A,Q0,w;
+
+  /* regular and minimum possible length */
+  double len, lmin;
+
+  /* temp storage */
+  air_coil tmp_coil;
 
   pitch = coil->len / coil->Nf;
 
@@ -157,6 +182,26 @@ double air_coil_calc(air_coil *coil, double freq)
   /* inductance in Henries */
   coil->L = L0 * Kn * s;
 
+
+#ifdef DEBUG_CALC
+  printf("air_coil_calc():  ----------------------\n");
+  printf("air_coil_calc():  Input values:\n");
+  printf("air_coil_calc():  ----------------------\n");
+  printf("air_coil_calc():  N    = %g\n",coil->Nf);
+  printf("air_coil_calc():  AWG  = %g\n",coil->AWGf);
+  printf("air_coil_calc():  I.D. = %g inches\n",coil->dia);
+  printf("air_coil_calc():  len  = %g inches\n",coil->len);
+  printf("air_coil_calc():  rho  = %g\n",coil->rho);
+  printf("air_coil_calc():  freq = %g MHz\n",coil->Qfreq);
+  printf("air_coil_calc():  ----------------------\n");
+  printf("air_coil_calc():  x  = %g\n",x);
+  printf("air_coil_calc():  L0 = %g nH\n",L0*1e9);
+  printf("air_coil_calc():  \n");
+  printf("air_coil_calc():  ----------------------\n");
+  printf("air_coil_calc():  found an inductance of L = %g nH\n",coil->L*1e9);
+  printf("air_coil_calc():  ----------------------\n");
+#endif
+
   /*
    * find SRF 
    */
@@ -167,6 +212,12 @@ double air_coil_calc(air_coil *coil, double freq)
 
   /* self resonant freq (MHz) */
   SRF = 1.0 / (2*M_PI*sqrt(coil->L*cap)); 
+  coil->SRF = SRF;
+
+#ifdef DEBUG_CALC
+  printf("air_coil_calc():  SRF = %g MHz\n",SRF);
+  printf("air_coil_calc():  ----------------------\n");
+#endif
 
   /*
    * find Q 
@@ -190,6 +241,31 @@ double air_coil_calc(air_coil *coil, double freq)
 
   coil->Q     = Q0 * (1 - (w*w));
   coil->Qfreq = freq;
+
+#ifdef DEBUG_CALC
+  printf("air_coil_calc():  Q = %g MHz\n",coil->Q);
+  printf("air_coil_calc():  ----------------------\n");
+#endif
+
+
+  if(flag == CALC_ALL){
+    /*
+     * figure out the ratio of length to minimum length.
+     * this is useful in figuring out how much room you have
+     * to play with
+     */
+
+    /* minimum length with this wire and # of turns */
+    lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
+
+    len = coil->len;
+    coil->fill = len/lmin;
+
+    tmp_coil = *coil;
+    tmp_coil.len  = lmin;
+    coil->Lmax = air_coil_calc_int(&tmp_coil,freq,CALC_MIN);
+    coil->len = len;
+  }
 
   return(coil->L);
 }
@@ -227,8 +303,24 @@ void air_coil_syn(air_coil *coil, double f, int flag)
 
   L = coil->L;
 
+#ifdef DEBUG_SYN
+  printf("air_coil_syn():  ----------------------\n");
+  printf("air_coil_syn():  Input values:\n");
+  printf("air_coil_syn():  ----------------------\n");
+  printf("air_coil_syn():  N    = %g\n",coil->Nf);
+  printf("air_coil_syn():  AWG  = %g\n",coil->AWGf);
+  printf("air_coil_syn():  I.D. = %g inches\n",coil->dia);
+  printf("air_coil_syn():  len  = %g inches\n",coil->len);
+  printf("air_coil_syn():  rho  = %g\n",coil->rho);
+  printf("air_coil_syn():  freq = %g MHz\n",coil->Qfreq);
+  printf("air_coil_syn():  ----------------------\n");
+  printf("air_coil_syn():  desired inductance  = %g nH\n",L*1e9);
+  printf("air_coil_syn():  \n");
+  printf("air_coil_syn():  ----------------------\n");
+#endif
+
   /* initial guess for N */
-  if (flag == 1){
+  if (flag == AIRCOILSYN_NMIN){
     N = L*awg2dia(coil->AWGf)/(M_PI*M_PI*coil->dia*coil->dia*2.54e-9);
     N2 = N + 1;
   }
@@ -238,10 +330,15 @@ void air_coil_syn(air_coil *coil, double f, int flag)
    * The extra factor is more or less whats
    * due to the enamel insulation.
    */
-  lenPerTurn= awg2dia(coil->AWGf) + 0.0015;
+  lenPerTurn= awg2dia(coil->AWGf) + TINSUL;
 
 
-  if (flag == 1){
+  if (flag == AIRCOILSYN_NMIN){
+    /* we've been asked to synthesize using the minimum possible N */
+#ifdef DEBUG_SYN
+  printf("air_coil_syn():  Starting iteration to find Nmin\n");
+#endif
+
     /* Iterate to find the minimum number of turns */
     error=1;
     while(error > 0.2){
@@ -252,41 +349,70 @@ void air_coil_syn(air_coil *coil, double f, int flag)
 
       coil->Nf  = N1;
       coil->len = len1;
-      Lsyn1     = air_coil_calc(coil,f);
+      Lsyn1     = air_coil_calc_int(coil,f,CALC_MIN);
 
       coil->Nf  = N2;
       coil->len = len2;
-      Lsyn2     = air_coil_calc(coil,f);
+      Lsyn2     = air_coil_calc_int(coil,f,CALC_MIN);
   
       N = N2 + (L - Lsyn2)*(N2-N1)/(Lsyn2-Lsyn1);
       error = fabs(N-N2);
+#ifdef DEBUG_SYN
+  printf("air_coil_syn():  Ntrial = %g  Error = %g  Lsyn1=%g Lsyn2=%g\n",N,error,Lsyn1,Lsyn2);
+#endif
     }
 
     N = ceil(N);
     coil->Nf = N;
+#ifdef DEBUG_SYN
+  printf("air_coil_syn():  Nmin = %g\n",N);
+  printf("air_coil_syn():  ----------------------\n");
+#endif
   }
+  else{
+    /* we're supposed to use the user supplied N */
+    N = coil->Nf;
+  }
+
+
 
   /* Iterate to find the length */
   len2 = N*lenPerTurn;
   len  = 1.2*len2;
 
-  error=1;
-  while(error > 1e-3){
+#ifdef DEBUG_SYN
+  printf("air_coil_syn():  Starting iteration to find length\n");
+  printf("air_coil_syn():  len = %g    len2 = %g\n",len,len2);
+#endif
+
+  error=1.0;
+  while(error > 1e-8){
     len1 = len2;
     len2 = len;
-
+    
     coil->len = len1;
-    Lsyn1     = air_coil_calc(coil,f);
-
+    Lsyn1     = air_coil_calc_int(coil,f,CALC_MIN);
+    
     coil->len = len2;
-    Lsyn2     = air_coil_calc(coil,f);
+    Lsyn2     = air_coil_calc_int(coil,f,CALC_MIN);
     
   
     len = len2 + (L - Lsyn2)*(len2-len1)/(Lsyn2-Lsyn1);
-    error = abs(len-len2)/len;
+    error = fabs(len-len2)/len;
+
+#ifdef DEBUG_SYN
+    printf("air_coil_syn():  len=%g\tlen1=%g\tlen2=%g\n",len,len1,len2);
+    printf("                 L1=%g\tL2=%g\terror=%g\n",Lsyn1,Lsyn2,error);
+#endif
+  
+    coil->len = len;
+
+    /* fill in the rest of the data */
+    air_coil_calc_int(coil,f,CALC_ALL);
+
   }
 
-  if (flag == 0){
+  if (flag == AIRCOILSYN_NFIX){
     if (len < N*lenPerTurn){
       fprintf(stderr,"air_coil_syn():  WARNING:  the specified value of N=%g is\n",N);
       fprintf(stderr,"air_coil_syn():  too low.  You CAN NOT fit the desired\n");
@@ -296,4 +422,26 @@ void air_coil_syn(air_coil *coil, double f, int flag)
   }
 
 }
+
+
+void air_coil_free(air_coil *coil)
+{
+  free(coil);
+}
+
+
+air_coil *air_coil_new()
+{
+  air_coil *newcoil;
+
+  newcoil = (air_coil *) malloc(sizeof(air_coil));
+  if(newcoil == NULL)
+    {
+      fprintf(stderr,"air_coil_new: malloc() failed\n");
+      exit(1);
+    }
+
+  return(newcoil);
+}
+
 

@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil.h,v 1.1 2001/09/13 21:16:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -50,11 +50,20 @@ typedef struct AIR_COIL
   double AWGf;
   int AWG;
 
+  /* resistivity relative to copper */
+  double rho;
+
   /* inside diameter of coil */
   double dia;
 
   /* inductance (H) */
   double L;
+
+  /* inductance when the length is at a minimum (nH) */
+  double Lmax;
+
+  /* ratio of length to minimum length */
+  double fill;
 
   /* Q at freq (Hz) */
   double Q;
@@ -78,8 +87,8 @@ air_coil *air_coil_new(void);
  * Flags for synthesis
  */
 
-#define AIRCOILSYN_L    0    /* Synthesize the length              */
-#define AIRCOILSYN_N    1    /* Synthesize the number of turns     */
+#define AIRCOILSYN_NMIN    0    /* Synthesize for minimum N         */
+#define AIRCOILSYN_NFIX    1    /* Synthesize length with fixed N   */
 
 
 #endif /*__AIR_COIL_H_*/
