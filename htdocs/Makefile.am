@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2001/10/16 04:40:57 dan Exp $
+## $Id: Makefile.am,v 1.3 2001/10/17 03:41:51 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -72,7 +72,7 @@ PNGS=\
 	screen2.png
 
 BUILT_SOURCES = ${HTML_OUT}
-EXTRA_DIST=	${BUILT_SOURCES} ${INCL_FILES}
+EXTRA_DIST=	${BUILT_SOURCES} ${INCL_FILES} ${PNGS}
 
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}
