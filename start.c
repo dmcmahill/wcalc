@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: start.c,v 1.1 2001/09/15 14:43:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "pixmaps/splash.xpm"
 #include "start.h"
 
 #define ABOUT_TEXT \
@@ -54,7 +55,6 @@ VER \
 "Dan McMahill."
 
 
-extern int init_done;
 extern void wcalc_setup(void);
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
@@ -67,26 +67,59 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
 
   wcalc_setup ();
 
-  //init_done = 1;
-
 }
 
  
 void start_popup(void)
 {
+  GtkWidget *window;
+  GtkWidget *main_vbox;
+
   GtkWidget *button;
   GtkWidget *label;
-  GtkWidget *window;
+  GtkWidget *combo_model;
+
+  GtkWidget *separator;
+  GtkWidget *action_area;
+
+  /* stuff for the picture */
+  GtkWidget *pixmapwid;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+  GtkStyle *style;    
  
-  /* create the "About" window */
-  window = gtk_dialog_new();
+  GList *glist=NULL;
+
+  /* create the initial window */
+  //  window = gtk_window_new(GTK_WINDOW_DIALOG);
+  window = gtk_window_new(GTK_WINDOW_DIALOG);
   
   /* made it modal */
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "About WaveCalc");
+  gtk_window_set_title (GTK_WINDOW(window), "WaveCalc");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
+  gtk_widget_realize(window);
+
+
+  main_vbox = gtk_vbox_new (FALSE, 0);
+  gtk_container_add (GTK_CONTAINER (window), main_vbox);
+  gtk_widget_show(main_vbox);
+
+
+  /*
+   * The Action Area
+   */
+
+  action_area = gtk_hbox_new (TRUE, 5);
+  gtk_container_set_border_width (GTK_CONTAINER (action_area), 10);
+  gtk_box_pack_end (GTK_BOX (main_vbox), action_area, FALSE, TRUE, 0);
+  gtk_widget_show(action_area);
+
+  separator = gtk_hseparator_new ();
+  gtk_box_pack_end (GTK_BOX (main_vbox), separator, FALSE, TRUE, 0);
+  gtk_widget_show (separator);
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label ("Ok");
@@ -94,19 +127,55 @@ void start_popup(void)
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
   
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+  gtk_box_pack_start (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
+  gtk_window_set_focus(GTK_WINDOW(window),button);
   gtk_widget_show (button);
+
+
+  glist = g_list_append(glist,"Air Core Inductor");
+  glist = g_list_append(glist,"Microstrip");
+
+  combo_model =  gtk_combo_new();
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo_model), glist);
+  gtk_combo_set_use_arrows( GTK_COMBO(combo_model), 1);
+  gtk_box_pack_start (GTK_BOX (action_area), combo_model, FALSE, FALSE, 0);
+  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo_model)->entry), FALSE);
+  //  gtk_widget_set_usize(GTK_WIDGET(combo_model),60,0);
+  gtk_widget_show( combo_model );
+
+  /*
+   * The info Area
+   */
+
+  //  my_vbox = gtk_vbox_new (FALSE, 1);
+  //  gtk_box_pack_start (GTK_BOX (main_vbox), my_vbox, FALSE, TRUE, 0);
+
+  /* now for the pixmap from gdk */
+
+  style = gtk_widget_get_style( window );
   
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+					 &mask,
+					 &style->bg[GTK_STATE_NORMAL],
+					 (gchar **) splash);
+    					
+  /* a pixmap widget to contain the pixmap */
+  pixmapwid = gtk_pixmap_new( pixmap , mask);
+  gtk_box_pack_start (GTK_BOX (main_vbox),
+		      pixmapwid, FALSE, FALSE, 0);
+  gtk_widget_show( pixmapwid );
+    
+
 
   /* add the text to the window */
   label = gtk_label_new (ABOUT_TEXT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+  gtk_box_pack_start (GTK_BOX (main_vbox),
 		      label, TRUE, TRUE, 0);
   gtk_widget_show (label);
 
   /* show it */
-  gtk_widget_show (window);
+   gtk_widget_show (window);
 }
 
 
