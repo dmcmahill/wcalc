@@ -1,0 +1,14 @@
+# $Id$
+#
+# stripline test data
+#
+#
+# [z0, loss, deltal] = 
+#   stripline_calc(w, h, l, tmet, rho, rough, er, tand, f);
+#
+
+* Stripline calculation
+stripline_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
+
+
+

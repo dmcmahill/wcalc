@@ -1,0 +1,12 @@
+# $Id$
+#
+# coax test data
+#
+#
+# [z0, elen, loss, L, R, C, G] = 
+#   coax_calc(a, b, c, t, rho_a, rho_b, er, tand, len, f);
+#
+
+* Coax calculation 
+coax_calc 0.1 1.0 0.0 0.01 1.72e-8 3.2e-8 9.0 0.001 1.0 500e6
+

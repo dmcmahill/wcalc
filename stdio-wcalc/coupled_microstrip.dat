@@ -1,0 +1,12 @@
+# $Id$
+#
+# coax test data
+#
+#
+# [z0, k, z0e, z0o, kev, kodd, loss_ev, loss_odd, deltal_ev, deltal_odd] =
+#   coupled_microstrip_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+#
+
+* Coupled microstrip calculation
+coupled_microstrip_calc 2e-3 0.5e-3 3e-3 0.01 0.1e-3 3.0e-8 0.05 4.2 5.0e-6 100e6
+

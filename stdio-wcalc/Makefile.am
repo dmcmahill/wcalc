@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.3 2004/01/10 19:53:04 dan Exp $
+## $Id: Makefile.am,v 1.4 2004/08/02 21:11:14 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -52,5 +52,13 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 stdio_wcalc_LDADD = ../libwcalc/libwcalc.la
 
-EXTRA_DIST= ${man_MANS}
+TEST_INPUTS= \
+	air_coil.dat \
+	coax.dat \
+	coupled_microstrip.dat \
+	ic_microstrip.dat \
+	microstrip.dat \
+	stripline.dat
+
+EXTRA_DIST= ${man_MANS} ${TEST_INPUTS}
 

@@ -1,0 +1,15 @@
+# $Id$
+#
+# air_coil test data
+#
+#
+#  [L,Q,SRF,len_out,fill_out] = 
+#    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+#
+
+* Air coil calculation using length
+air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+
+* Air coil calculation using fill
+air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
+
