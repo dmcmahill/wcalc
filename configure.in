@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.58 2004/01/10 14:43:38 dan Exp $
+dnl $Id: configure.in,v 1.59 2004/07/28 11:53:47 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -503,6 +503,11 @@ dnl GTK checks
 AC_MSG_CHECKING([if gtk-wcalc should be built])
 if test "X$enable_gtk" != "Xno" ; then
 	AC_MSG_RESULT([yes])
+	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0, GTK22="yes", GTK22="no")
+
+	if test "X$GTK22" = "Xno" ; then
+	AC_MSG_NOTICE([Did not find gtk-2.2.0 or higher.  I will look for gtk-1.2])
+
 	AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
 	if test "$WIN32" = "yes"; then
 		dnl XXX this is a hack.  It needs to be detected...
@@ -534,11 +539,17 @@ if test "X$enable_gtk" != "Xno" ; then
 			;;
 		* )
 			AC_MSG_RESULT([$GTK_VER])
+			AC_MSG_CHECKING([for gtk CFLAGS])
 			GTK_CFLAGS=`$GTK_CONFIG --cflags`
+			AC_MSG_RESULT([$GTK_CFLAGS])
+			AC_MSG_CHECKING([for gtk libs])
 			GTK_LIBS=`$GTK_CONFIG --libs`
+			AC_MSG_RESULT([$GTK_LIBS])
 			;;
 		esac	
 	fi
+fi
+
 else
 	AC_MSG_RESULT([no])
 	GTK_CFLAGS=""
