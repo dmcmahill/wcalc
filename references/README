@@ -1,0 +1,10 @@
+# $Id$
+
+This directory contains several of the technical references used in the
+development of the routines in libwcalc.
+
+rt312.pdf	-- Application note from Rogers Corp. regarding single
+                   microstrip.
+
+
+
