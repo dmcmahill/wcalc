@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: resistivity.shtml,v 1.3 2002/05/14 00:44:41 dan Exp $ -->
+<!-- Copyright (c) 2002
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Unit Conversion Factors</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  Unit Conversion Factors">
+<meta name="KEYWORDS" content="
+conductivity,
+resistivity,
+units,
+unit conversion,
+units conversion,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Unit Conversion Factors
+    </font>
+    <br>
+    <br>
+
+    <table border=2>
+    <!--#include virtual="units.incl"-->
+    </table>
+
+    <!--#include virtual="disclaimer_properties.incl"-->
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

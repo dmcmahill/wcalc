@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.19 2002/05/16 19:29:19 dan Exp $
+## $Id: Makefile.am,v 1.20 2002/06/18 01:24:46 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -70,7 +70,8 @@ SHTML_IN=	\
 	resistivity.shtml \
 	sci-wcalc.shtml \
 	screenshots.shtml \
-	stripline.shtml
+	stripline.shtml \
+	units.shtml
 
 INCL_FILES=\
 	disclaimer_properties.incl \
@@ -83,7 +84,8 @@ BUILT_INCL_FILES=\
 	AWG.incl \
 	permeability.incl \
 	permitivity.incl \
-	resistivity.incl
+	resistivity.incl \
+	units.incl
 
 HTML_OUT=	${SHTML_IN:.shtml=.html}
 
