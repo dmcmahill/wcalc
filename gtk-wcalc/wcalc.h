@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.15 2004/08/30 22:59:23 dan Exp $ */
+/*      $Id: wcalc.h,v 1.16 2005/01/18 17:46:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -188,6 +188,9 @@ Wcalc *Wcalc_new(void);
 void wcalc_save_needed(GtkWidget *widget, gpointer data );
 void wcalc_set_title(Wcalc * wcalc);
 void vals_changedCB(GtkWidget *widget, gpointer data );
+
+/* report how many open wcalc windows we have */
+int wcalc_num_windows(void);
 
 #define WC_WCALC(x)      ((Wcalc *) (x))
 

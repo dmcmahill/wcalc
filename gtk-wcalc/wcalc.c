@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.21 2004/08/30 22:59:22 dan Exp $ */
+/* $Id: wcalc.c,v 1.22 2004/11/14 02:15:28 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -356,6 +356,12 @@ void wcalc_setup (gpointer data,
     g_print("wcalc_setup():  extracting model type\n");
 #endif
     type = wcalc_load(fp);
+    if( type == -1 ) {
+      alert("The file \n"
+	    "\"%s\"\n"
+	    "appears to be corrupted\n", fname);
+      return ;
+    }
 #ifdef DEBUG
     g_print("wcalc_setup():  model type = %d\n", type);
 #endif
@@ -583,4 +589,9 @@ void vals_changedCB(GtkWidget *widget, gpointer data )
 }
 
 
+/* report how many open wcalc windows we have */
+int wcalc_num_windows(void)
+{
+  return (g_slist_length(window_list));
+}
 

@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.11 2004/07/28 02:01:45 dan Exp $ */
+/* $Id: start.c,v 1.12 2004/08/05 12:12:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -153,6 +153,13 @@ static void open_pressed (GtkWidget *w, GtkWidget *window)
 #endif
 
   wcalc_open();
+
+  /*
+   * if we didn't end up with any open windows then keep the startup
+   * window open 
+   */
+  if (wcalc_num_windows() == 0)
+    return;
 
   /* unmake it modal */
   gtk_grab_remove(window);
