@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/10/24 01:23:36 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/10/24 02:59:58 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,10 @@
 ##  SUCH DAMAGE.
 ##
 
+# to find the mex source files
+vpath %.c $(top_srcdir)/sci-wcalc
+vpath %.man $(top_srcdir)/sci-wcalc
+
 # list of all the mex files
 include $(top_srcdir)/sci-wcalc/mex.mk
 
@@ -46,10 +50,11 @@ MEXSFX=	@MEXSFX@
 MATLAB_DIR=	@MATLAB_DIR@
 
 pkglibexecdir=	${libexecdir}/${PACKAGE}
+pkglibexec_DATA=	${MEX_FILES} ${MEX_MANS}
 
 noinst_SCRIPTS=		runmatlab
 
-pkglib_LTLIBRARIES=	libmex-alert.la
+lib_LTLIBRARIES=	libmex-alert.la
 libmex_alert_la_SOURCES=	alert.c
 INCLUDES = -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include
 
@@ -64,18 +69,8 @@ MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc
 
 all-local:	${MEX_FILES} runmatlab ${MEX_MANS}
 
-# copy over the source files
-air_coil_calc.c: $(top_srcdir)/sci-wcalc/air_coil_calc.c
-	cp -f $(top_srcdir)/sci-wcalc/air_coil_calc.c air_coil_calc.c
-
-air_coil_syn.c: $(top_srcdir)/sci-wcalc/air_coil_syn.c
-	cp -f $(top_srcdir)/sci-wcalc/air_coil_syn.c air_coil_syn.c
-
-air_coil_calc.man: $(top_srcdir)/sci-wcalc/air_coil_calc.man
-	cp -f $< $@
-
-air_coil_syn.man: $(top_srcdir)/sci-wcalc/air_coil_syn.man
-	cp -f $< $@
+clean-local:
+	-rm ${MEX_FILES} runmatlab ${MEX_MANS}
 
 runmatlab:	$(srcdir)/runmatlab.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > $@
@@ -88,7 +83,7 @@ EXTRA_DIST=	runmatlab.in copyright.m
 SUFFIXES= .c .${MEXSFX} .m .cat .man
 
 .c.${MEXSFX} :
-	$(MEX) $(MEXINCLUDES) $*.c $(MEXLDFLAGS)
+	$(MEX) $(MEXINCLUDES) $< $(MEXLDFLAGS)
 
 .cat.m :
 	@echo "****************************************************"
@@ -102,7 +97,7 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man
 			t=1; \
 		} \
 		/^\.SH[ \t]*NAME/ {s=1} \
-		END{printf("\n");}' $*.man > $@
+		END{printf("\n");}' $(top_srcdir)/sci-wcalc/$*.man > $@
 	echo "%" >> $@
 	cat $< | \
 		col -b -x | \
