@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.11 2004/07/20 04:23:36 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.12 2004/07/20 23:05:21 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -166,5 +166,6 @@ void  wc_units_attach(wc_units_gui *ug,
        (wc_units_attach((ug), (widget), NULL, NULL, NULL, NULL, 1,    \
        UNITS_LABEL))
 
+void wc_units_menu_init(Wcalc *);
 
 #endif /* __GTK_UNITS_H__ */

@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.20 2004/07/19 22:37:00 dan Exp $ */
+/* $Id: coax_gui.c,v 1.21 2004/07/20 04:23:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -134,7 +134,7 @@ coax_gui *coax_gui_new(void)
 
   wcalc->window_title=NULL;
   wcalc->save_needed=NULL;
-
+  wcalc->units_menu_list = NULL;
   /*
    * Initialize the model dependent portions
    */
@@ -213,6 +213,8 @@ void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
+
+  wc_units_menu_init( wcalc );
 }
 
 /*

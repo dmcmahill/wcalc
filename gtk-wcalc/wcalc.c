@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.13 2002/12/17 15:29:37 dan Exp $ */
+/* $Id: wcalc.c,v 1.14 2002/12/18 13:56:44 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -406,13 +406,15 @@ Wcalc *Wcalc_new(void)
   new = (Wcalc *) malloc(sizeof(Wcalc));
   if (new == NULL)
     {
-      fprintf(stderr,"Wcalac_new():  couldn't allocate memory\n");
+      fprintf(stderr,"Wcalc_new():  couldn't allocate memory\n");
       exit(1);
     }
 
   new->file_basename="Untitled";
 
   new->init_done=0;
+
+  new->units_menu_list = NULL;
 
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);

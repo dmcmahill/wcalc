@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.12 2004/07/20 04:23:35 dan Exp $ */
+/* $Id: gtk-units.c,v 1.13 2004/07/20 23:05:33 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -70,6 +70,72 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
 
 static wc_units_menu_data *wc_units_menu_data_new(int ind);
 
+static void wc_units_menu_init1(void * item, void * data);
+static void wc_units_menu_init2(void * item, void * data);
+
+void wc_units_menu_init(Wcalc *wc)
+{
+
+  g_list_foreach( wc->units_menu_list,
+		  (GFunc) wc_units_menu_init1,
+		  NULL );
+}
+
+void wc_units_menu_init1(void * item, void * data)
+{
+  wc_units_gui *ug;
+
+  ug = (wc_units_gui *) item;
+
+#ifdef DEBUG
+  printf("wc_units_menu_init1():  ug = %p\n", ug);
+#endif
+
+  /*
+   * iterate over each of the options menus for the various terms in
+   * the units menu.
+  */
+  g_list_foreach( ug->menu_num,
+		  (GFunc) wc_units_menu_init2,
+		  item );
+
+  g_list_foreach( ug->menu_den,
+		  (GFunc) wc_units_menu_init2,
+		  item );
+}
+
+void wc_units_menu_init2(void * item, void * data)
+{
+  GtkWidget *w;
+  GtkWidget *m;
+  GtkWidget *menu_item;
+  wc_units_gui *ug;
+
+  ug = (wc_units_gui *) data;
+
+#ifdef DEBUG
+  printf("wc_units_menu_init2():  ug = %p\n", ug);
+#endif
+  w = GTK_WIDGET( item );
+
+  /* pick out the menu */
+  m = gtk_option_menu_get_menu(GTK_OPTION_MENU(w));
+
+  /* figure out which one is active */
+  menu_item = gtk_menu_get_active(GTK_MENU( m ));
+
+#ifdef DEBUG
+  printf("wc_units_menu_init2():  Running calback.  "
+	 "item = %p, data = %p, m = %p, "
+	 "menu_item = %p\n",
+	 item, data, m, menu_item);
+#endif
+
+  /* run the callback */
+  wc_units_menu_changed( menu_item, (gpointer) ug);
+
+}
+
 /*
  * wc_units_menu_new()
  *
@@ -93,6 +159,9 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
   (*ug)->menu_num = NULL;
   (*ug)->menu_den = NULL;
   (*ug)->update_list = NULL;
+
+  /* append to our list of units GUI's */
+  gui->units_menu_list =  g_list_append(gui->units_menu_list, *ug);
   
   /* create the container for the complete units menu */
   hbox = gtk_hbox_new(FALSE,0);
@@ -109,7 +178,8 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
   }
   else {
     for ( i = 0; i < units->nnum; i++) {
-      item = wc_units_submenu_new(gui, units->num[i], 0, (*ug), wc_units_menu_changed);
+      item = wc_units_submenu_new(gui, units->num[i], 0, (*ug), 
+				  wc_units_menu_changed);
 
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
@@ -134,7 +204,8 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
       
       for (i=0; i<units->nden; i++) {
-	item = wc_units_submenu_new(gui, units->den[i], 0, (*ug), wc_units_menu_changed);
+	item = wc_units_submenu_new(gui, units->den[i], 0, (*ug), 
+				    wc_units_menu_changed);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
 	/* add to our list of denominator menus */
@@ -158,7 +229,7 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
 
 void wc_units_menu_changed( GtkWidget *w, gpointer data)
 {
-  int which,ind;
+  int which, ind;
   wc_units_gui *ug;
   wc_units_menu_data *menu_data;
   guint i;
@@ -191,12 +262,14 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   }
   else if ( (ind = g_list_index(ug->menu_den,menu_data->opt_menu)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed denominator[%d] units\n", ug, ind);
+    g_print("wc_units_menu_changed():  ug %p changed denominator[%d] units\n", 
+	    ug, ind);
 #endif
     ug->units->deni[ind] = which;
   }
   else {
-    fprintf(stderr,"wc_units_menu_changed():  ug %p could not locate menu\n",ug);
+    fprintf(stderr,"wc_units_menu_changed():  ug %p could not locate menu\n",
+	    ug);
     exit(1);
   }
 
@@ -327,6 +400,7 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
     data = wc_units_menu_data_new(i);
     data->opt_menu = opt_menu;
     gtk_object_set_user_data(GTK_OBJECT(item),(gpointer *) data);
+
     /* `menu' becomes the parent of each `item' */
     gtk_menu_append(GTK_MENU(menu), item);
     gtk_widget_show(item);
@@ -338,8 +412,10 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
   gtk_option_menu_set_menu(GTK_OPTION_MENU(opt_menu), menu);
 
   /* pick the default (initial) selection */
+  /* XXX */
+  initial = 2;
   gtk_option_menu_set_history(GTK_OPTION_MENU(opt_menu), initial);
-
+  
   gtk_widget_show_all(opt_menu);
   
   return opt_menu;

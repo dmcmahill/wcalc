@@ -1,7 +1,7 @@
-/*      $Id: wcalc.h,v 1.9 2002/12/17 16:10:47 dan Exp $ */
+/*      $Id: wcalc.h,v 1.10 2003/03/03 04:26:36 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -145,6 +145,13 @@ typedef struct WCALC
    */
   int values_in_sync;
 
+  /*
+   * a list which keeps track of all units menus in the GUI.  This
+   * will be used to tickle the callbacks of all the units menus as
+   * part of the GUI initialization.
+   */
+  GList *units_menu_list;
+  
   /*  
   model_new;
   gui_init;
