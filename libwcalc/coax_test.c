@@ -1,4 +1,4 @@
-/* $Id: coax_test.c,v 1.4 2002/06/12 11:30:25 dan Exp $ */
+/* $Id: coax_test.c,v 1.5 2004/07/23 22:11:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -75,6 +75,7 @@ int main(int argc, char **argv)
   printf("Coefficient for Rosloniec (6.2) page 184 = %g\n",line->z0);
   printf("Adjusting er to produce 59.952\n");
   line->er = pow(line->z0/59.952,2.0);
+  printf("er = %g\n", line->er);
   coax_calc(line,freq);
   printf("After adjustment, coefficient for Rosloniec (6.2) page 184 = %g\n",line->z0);
 
