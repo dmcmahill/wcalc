@@ -1,8 +1,8 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.3 2001/10/29 11:57:38 dan Exp $
+## $Id: sciman.mk,v 1.4 2003/03/03 03:25:20 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -36,11 +36,15 @@
 
 SUFFIXES+= .cat .man .htm
 
+TBL=	@TBL@
+NEQN=	@NEQN@
+GROFF=	@GROFF@
+
 .man.cat : 
 	@echo "****************************************************"
 	@echo "Processing $*.man to produce $*.cat"
 	@echo "****************************************************"
-	cat $< | tbl | neqn | nroff -man | \
+	cat $< | ${TBL} | ${NEQN} -Tascii | ${GROFF} -man -Tascii | \
 		${AWK} 'BEGIN{s=0;t=0;} \
 		     /^ *$$/ {s=1;next;} \
 		     s==1 { \
@@ -54,7 +58,7 @@ SUFFIXES+= .cat .man .htm
 	@echo "****************************************************"
 	@echo "Processing $*.man to produce $*.htm"
 	@echo "****************************************************"
-	cat $< | tbl | neqn -Thtml| groff -man -Thtml| \
+	cat $< | ${TBL} | ${NEQN} -Thtml -Tps | ${GROFF} -man -Thtml| \
 		${AWK} 'BEGIN{s=0;t=0;} \
 		     /^ *$$/ {s=1;next;} \
 		     s==1 { \
@@ -63,3 +67,4 @@ SUFFIXES+= .cat .man .htm
 			t=1; \
 		     } \
 		     {print;}' > $@
+
