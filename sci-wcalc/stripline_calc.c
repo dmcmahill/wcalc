@@ -1,9 +1,9 @@
-/* $Id: stripline_calc.c,v 1.3 2002/05/10 22:53:06 dan Exp $ */
+/* $Id: stripline_calc.c,v 1.4 2002/06/12 11:30:38 dan Exp $ */
 
-static char vcid[] = "$Id: stripline_calc.c,v 1.3 2002/05/10 22:53:06 dan Exp $";
+static char vcid[] = "$Id: stripline_calc.c,v 1.4 2002/06/12 11:30:38 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -68,9 +68,17 @@ static char vcid[] = "$Id: stripline_calc.c,v 1.3 2002/05/10 22:53:06 dan Exp $"
 
 /* Output Arguments */
 
-#define	Z0_OUT	   plhs[0]
-#define	LOSS_OUT   plhs[1]
-#define	DELTAL_OUT plhs[2]
+#define	Z0_OUT    plhs[0]
+#define	ELEN_OUT  plhs[1]
+#define	LOSS_OUT  plhs[2]
+#define	L_OUT	  plhs[3]
+#define	R_OUT     plhs[4]
+#define	C_OUT     plhs[5]
+#define	G_OUT     plhs[6]
+#define	LC_OUT    plhs[7]
+#define	LD_OUT    plhs[8]
+#define	DELTAL_OUT plhs[9]
+#define	DEPTH_OUT  plhs[10]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -122,7 +130,8 @@ void mexFunction(
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq;
 
   /* outputs */
-  double	*z0,*loss,*deltal;
+  double	*z0, *elen, *loss, *L, *R, *C, *G;
+  double	*lc, *ld, *deltal, *depth;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -155,9 +164,9 @@ void mexFunction(
 		 " (needs 9).");
   } 
 
-  if (nlhs > 4) {
+  if (nlhs > 11) {
     mexErrMsgTxt("wrong number of output arguments to STRIPLINE_CALC"
-		 " (needs <= 4).");
+		 " (needs <= 11).");
   }
   
   
@@ -182,13 +191,29 @@ void mexFunction(
 
   /* Create matrices for the return arguments */
   Z0_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  ELEN_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LOSS_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  R_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  C_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  G_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LC_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LD_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
   DELTAL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  DEPTH_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
-  z0     = mxGetPr(Z0_OUT);
-  loss   = mxGetPr(LOSS_OUT);
+  z0   = mxGetPr(Z0_OUT);
+  elen = mxGetPr(ELEN_OUT);
+  loss = mxGetPr(LOSS_OUT);
+  L    = mxGetPr(L_OUT);
+  R    = mxGetPr(R_OUT);
+  C    = mxGetPr(C_OUT);
+  G    = mxGetPr(G_OUT);
+  lc   = mxGetPr(LC_OUT);
+  ld   = mxGetPr(LD_OUT);
   deltal = mxGetPr(DELTAL_OUT);
+  depth  = mxGetPr(DEPTH_OUT);
 
   /* the actual computation */
   line = stripline_line_new();
@@ -217,6 +242,18 @@ void mexFunction(
     z0[ind]     = line->Ro;
     loss[ind]   = line->loss;
     deltal[ind] = line->deltal;
+
+    z0[ind]   = line->z0;
+    elen[ind] = line->len;
+    loss[ind] = line->loss;
+    L[ind]    = line->Ls;
+    R[ind]    = line->Rs;
+    C[ind]    = line->Cs;
+    G[ind]    = line->Gs;
+    lc[ind]   = line->lc;
+    ld[ind]   = line->ld;
+    deltal[ind]  = line->deltal;
+    depth[ind]   = line->skindepth;
   }
 
   /* clean up */

@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.28 2004/09/03 02:09:53 dan Exp $
+## $Id: Makefile.am,v 1.29 2004/09/03 02:55:06 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -82,7 +82,12 @@ RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
 TEST_FILES=	\
 	air_coil_calc.tst \
-	air_coil_syn.tst
+	air_coil_syn.tst \
+	coax_calc.tst \
+	coax_syn.tst \
+	microstrip_calc.tst \
+	stripline_calc.tst \
+	stripline_syn.tst
 
 TEST_OUT=	${TEST_FILES:.tst=.dia}
 TEST_REF=	${TEST_OUT:=.ref}

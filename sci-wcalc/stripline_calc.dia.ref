@@ -1,0 +1,79 @@
+ 
+ 
+exec test_wcalc.sce;
+shared archive loaded
+
+ 
+ 
+disp('**** stripline_calc ****');
+ 
+ **** stripline_calc ****   
+ 
+sf=25.4e-6;       // mils to meters conversion factor
+ 
+w=20*sf;          // width
+ 
+h=15*sf;          // height
+ 
+l=1100*sf;        // length
+ 
+tmet=1.4*sf;      // metal thickness
+ 
+rho=1.72e-8;      // resitivity
+ 
+rough=0.05*sf;    // metal surface roughness
+ 
+er=4.5;           // relative dielectric constant
+ 
+tand=0.01;        // loss tangent
+ 
+f=2.4e9;          // frequency
+ 
+[z0,elen,loss,L,R,C,G,lc,ld,deltal,depth] = stripline_calc(w,h,l,tmet,rho,rough,er,tand,f);
+ 
+disp(sprintf('z0   = %8.4g Ohms',z0));
+ 
+ z0   =    21.65 Ohms   
+ 
+disp(sprintf('elen = %8.4g degrees',elen));
+ 
+ elen =    170.8 degrees   
+ 
+disp(sprintf('loss = %8.4g dB',loss));
+ 
+ loss =   0.2498 dB   
+ 
+disp(sprintf('L    = %8.4g H/m',L));
+ 
+ L    = 1.532e-07 H/m   
+ 
+disp(sprintf('R    = %8.4g Ohms/m',R));
+ 
+ R    =    34.45 Ohms/m   
+ 
+disp(sprintf('C    = %8.4g F/m',C));
+ 
+ C    = 3.269e-10 F/m   
+ 
+disp(sprintf('G    = %8.4g S/m',G));
+ 
+ G    =  0.04929 S/m   
+ 
+disp(sprintf('lc   = %8.4g dB/m',lc));
+ 
+ lc   =   0.1996 dB/m   
+ 
+disp(sprintf('ld   = %8.4g dB/m',ld));
+ 
+ ld   =  0.05015 dB/m   
+ 
+disp(sprintf('open end correction = %8.4g mil', deltal/sf));
+ 
+ open end correction =        0 mil   
+ 
+disp(sprintf('skin depth = %8.4g um', depth*1e6));
+ 
+ skin depth =    1.347 um   
+ 
+ 
+ 

@@ -1,9 +1,9 @@
-/* $Id: microstrip_calc.c,v 1.3 2002/05/10 22:53:05 dan Exp $ */
+/* $Id: microstrip_calc.c,v 1.4 2002/06/12 11:30:38 dan Exp $ */
 
-static char vcid[] = "$Id: microstrip_calc.c,v 1.3 2002/05/10 22:53:05 dan Exp $";
+static char vcid[] = "$Id: microstrip_calc.c,v 1.4 2002/06/12 11:30:38 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -68,10 +68,18 @@ static char vcid[] = "$Id: microstrip_calc.c,v 1.3 2002/05/10 22:53:05 dan Exp $
 
 /* Output Arguments */
 
-#define	Z0_OUT	   plhs[0]
-#define	KEFF_OUT   plhs[1]
-#define	LOSS_OUT   plhs[2]
-#define	DELTAL_OUT plhs[3]
+#define	Z0_OUT    plhs[0]
+#define	KEFF_OUT  plhs[1]
+#define	ELEN_OUT  plhs[2]
+#define	LOSS_OUT  plhs[3]
+#define	L_OUT	  plhs[4]
+#define	R_OUT     plhs[5]
+#define	C_OUT     plhs[6]
+#define	G_OUT     plhs[7]
+#define	LC_OUT    plhs[8]
+#define	LD_OUT    plhs[9]
+#define	DELTAL_OUT plhs[10]
+#define	DEPTH_OUT  plhs[11]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -123,7 +131,8 @@ void mexFunction(
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq;
 
   /* outputs */
-  double	*z0,*keff,*loss,*deltal;
+  double	*z0, *keff, *elen, *loss, *L, *R, *C, *G;
+  double	*lc, *ld, *deltal, *depth;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -156,9 +165,9 @@ void mexFunction(
 		 " (needs 9).");
   } 
 
-  if (nlhs > 4) {
+  if (nlhs > 12) {
     mexErrMsgTxt("wrong number of output arguments to MICROSTRIP_CALC"
-		 " (needs <= 4).");
+		 " (needs <= 12).");
   }
   
   
@@ -184,15 +193,31 @@ void mexFunction(
   /* Create matrices for the return arguments */
   Z0_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
   KEFF_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  ELEN_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LOSS_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  R_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  C_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  G_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LC_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LD_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
   DELTAL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  DEPTH_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
-  z0     = mxGetPr(Z0_OUT);
+  z0   = mxGetPr(Z0_OUT);
   keff   = mxGetPr(KEFF_OUT);
-  loss   = mxGetPr(LOSS_OUT);
+  elen = mxGetPr(ELEN_OUT);
+  loss = mxGetPr(LOSS_OUT);
+  L    = mxGetPr(L_OUT);
+  R    = mxGetPr(R_OUT);
+  C    = mxGetPr(C_OUT);
+  G    = mxGetPr(G_OUT);
+  lc   = mxGetPr(LC_OUT);
+  ld   = mxGetPr(LD_OUT);
   deltal = mxGetPr(DELTAL_OUT);
-
+  depth  = mxGetPr(DEPTH_OUT);
+  
   /* the actual computation */
   line = microstrip_line_new();
 
@@ -219,8 +244,16 @@ void mexFunction(
     /* extract the outputs */
     z0[ind]     = line->z0;
     keff[ind]   = line->keff;
-    loss[ind]   = line->loss;
-    deltal[ind] = line->deltal;
+    elen[ind] = line->len;
+    loss[ind] = line->loss;
+    L[ind]    = line->Ls;
+    R[ind]    = line->Rs;
+    C[ind]    = line->Cs;
+    G[ind]    = line->Gs;
+    lc[ind]   = line->alpha_c;
+    ld[ind]   = line->alpha_d;
+    deltal[ind]  = line->deltal;
+    depth[ind]   = line->skindepth;
   }
 
   /* clean up */

@@ -1,6 +1,6 @@
-/* $Id: coax_calc.c,v 1.6 2002/05/10 22:53:01 dan Exp $ */
+/* $Id: coax_calc.c,v 1.7 2002/06/12 11:30:36 dan Exp $ */
 
-static char vcid[] = "$Id: coax_calc.c,v 1.6 2002/05/10 22:53:01 dan Exp $";
+static char vcid[] = "$Id: coax_calc.c,v 1.7 2002/06/12 11:30:36 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: coax_calc.c,v 1.6 2002/05/10 22:53:01 dan Exp $";
 #endif
 
 /*
- * [z0,elen,loss,L,R,C,G] = 
+ * [z0,elen,loss,L,R,C,G,lc,ld,fc,em] = 
  *    coax_calc(a,b,c,tshield,rho_a,rho_b,er,tand,len,freq);
  */
 
@@ -76,6 +76,10 @@ static char vcid[] = "$Id: coax_calc.c,v 1.6 2002/05/10 22:53:01 dan Exp $";
 #define	R_OUT     plhs[4]
 #define	C_OUT     plhs[5]
 #define	G_OUT     plhs[6]
+#define	LC_OUT    plhs[7]
+#define	LD_OUT    plhs[8]
+#define	FC_OUT    plhs[9]
+#define	EM_OUT    plhs[10]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -129,7 +133,8 @@ void mexFunction(
   unsigned int *ind_freq;
 
   /* outputs */
-  double	*z0,*elen,*loss,*L,*R,*C,*G;
+  double	*z0, *elen, *loss, *L, *R, *C, *G;
+  double	*lc, *ld, *fc, *em;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -163,10 +168,10 @@ void mexFunction(
 		   " (needs 10).");
     } 
 
-  if (nlhs > 7)
+  if (nlhs > 11)
     {
       mexErrMsgTxt("wrong number of output arguments to COAX_CALC"
-		   " (needs <= 7).");
+		   " (needs <= 11).");
     }
   
   
@@ -199,6 +204,10 @@ void mexFunction(
   R_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   C_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   G_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LC_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LD_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  FC_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  EM_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   z0   = mxGetPr(Z0_OUT);
@@ -208,6 +217,10 @@ void mexFunction(
   R    = mxGetPr(R_OUT);
   C    = mxGetPr(C_OUT);
   G    = mxGetPr(G_OUT);
+  lc   = mxGetPr(LC_OUT);
+  ld   = mxGetPr(LD_OUT);
+  fc   = mxGetPr(FC_OUT);
+  em   = mxGetPr(EM_OUT);
 
   /* the actual computation */
   line = coax_new();
@@ -241,6 +254,10 @@ void mexFunction(
     z0[ind]   = line->z0;
     elen[ind] = line->elen;
     loss[ind] = line->loss;
+    lc[ind]   = line->alpha_c;
+    ld[ind]   = line->alpha_d;
+    fc[ind]   = line->fc;
+    em[ind]   = line->emax;
   }
 
   /* clean up */
