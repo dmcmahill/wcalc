@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.7 2001/12/21 03:12:12 dan Exp $ */
+/* $Id: coax.c,v 1.8 2002/01/03 03:54:52 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -57,9 +57,14 @@
  */
 
 /* debug the coax_calc() function */
-#define DEBUG_CALC
+/* #define DEBUG_CALC */
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
+
+#include "config.h"
+
+/* for DBL_EPSILON */
+#include <float.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -72,6 +77,17 @@
 #include "misc.h"
 
 
+
+/* finds the error in the TE10 boundary condition.  Error should be 0 */
+static double coax_TE10_err(coax_line *line, double k)
+{
+  double err;
+  
+  err = bessel_J1p(k*line->a)*bessel_Y1p(k*line->b) -
+    bessel_J1p(k*line->b)*bessel_Y1p(k*line->a);
+
+  return err;
+}
 
 static int coax_calc_int(coax_line *line, double freq, int flag);
 
@@ -101,6 +117,12 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   double delta_s=1.0;
   double omega;
   double db_per_np;
+
+  /* for TE10 cutoff calculation */
+  double k,kold;
+  double err,errold;
+  double ddk;
+  int i;
 
 #ifdef DEBUG_CALC
   printf("\n");
@@ -263,7 +285,36 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     /*
      * exact solution
      */
+
+    k = 2*M_PI*line->fc / v;
+    kold = 0.99*k;
+    err = coax_TE10_err(line,k);
+    errold = coax_TE10_err(line,kold);
     
+#ifdef DEBUG_CALC
+    printf("coax_calc_int():  finding TE10 cutoff freq.  initial = %g Hz\n",
+	   line->fc);
+#endif
+
+    while (fabs(err/k) > 5*DBL_EPSILON) {
+      ddk = (err - errold)/(k - kold);
+      kold = k;
+      errold = err;
+      k = k - err/ddk;
+      err = coax_TE10_err(line,k);
+
+#ifdef DEBUG_CALC
+      printf("coax_calc_int():  k=%10.6g,"
+	     " err=%12.8g\n",k,err);
+#endif
+    }
+
+    line->fc = k*v/(2*M_PI);
+#ifdef DEBUG_CALC
+    printf("coax_calc_int():  finding TE10 cutoff freq.  final = %g Hz\n",
+	   line->fc);
+#endif
+
   }
 
   /*
