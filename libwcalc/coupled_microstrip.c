@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.6 2002/06/12 11:30:25 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.7 2003/01/10 02:49:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
@@ -280,9 +280,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   DO = 0.593 + 0.694*exp(-0.562*u);
 
   /*
-   * XXX is the correction implemented correctly here?
-   * Its not clear from the published correction if its the first EF
-   * or the second EF which should be - instead of +
+   * Note, this includes the published correction
    */
   EFO0 = ((er+1.0)/2.0 + AO - EF)*exp(-CO*(pow(g,DO))) + EF;
 
