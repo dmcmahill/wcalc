@@ -1,4 +1,4 @@
-/* $Id: air_coil_calc.c,v 1.1 2001/10/22 01:03:28 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.2 2001/10/22 02:29:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -43,7 +43,10 @@
 
 #include "mex.h"
 
-/* function [L,Q,SRF]=air_coil_calc(N,len,AWG,dia,freq) */
+/*
+ * function [L,Q,SRF,len,fill] =
+ *       air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag) 
+ */
 
 /* Input Arguments */
 
@@ -214,11 +217,11 @@ void mexFunction(
      * done when processsing the input arguments.
      */
     coil->Nf       = N[*ind_N];
-    coil->len      = INCH2M(len[*ind_len]);
+    coil->len      = len[*ind_len];
     coil->fill     = fill[*ind_fill];
     coil->AWGf     = AWG[*ind_AWG];
     coil->rho      = rho[*ind_rho];
-    coil->dia      = INCH2M(dia[*ind_dia]);
+    coil->dia      = dia[*ind_dia];
     coil->freq     = freq[*ind_freq];
     coil->use_fill = flag[*ind_flag];    
 
