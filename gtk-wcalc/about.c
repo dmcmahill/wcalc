@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.5 2002/01/11 12:07:45 dan Exp $ */
+/* $Id: about.c,v 1.6 2002/05/10 22:52:35 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -211,6 +211,20 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), char *title)
 
   /* show it */
   gtk_widget_show (window);
+}
+
+void AWG_popup(void)
+{
+  extern GtkWidget * AWG_table(void);
+  asciitab_popup(AWG_table,
+		 "Table of Wire Diameter vs. A.W.G.");
+}
+
+void permeability_popup(void)
+{
+  extern GtkWidget * permeability_table(void);
+  asciitab_popup(permeability_table,
+		 "Permeabilities of Common Materials");
 }
 
 void permitivity_popup(void)

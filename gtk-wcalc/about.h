@@ -1,4 +1,4 @@
-/* $Id: about.h,v 1.3 2002/01/11 12:07:46 dan Exp $ */
+/* $Id: about.h,v 1.4 2002/05/10 22:52:35 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -44,6 +44,8 @@ void copyright_popup(void);
 /* XXX should move this to a seperate help .c file */
 void asciitab_popup(GtkWidget * (*table_fn)(void),char *title);
 
+void AWG_popup(void);
+void permeability_popup(void);
 void permitivity_popup(void);
 void resistivity_popup(void);
 

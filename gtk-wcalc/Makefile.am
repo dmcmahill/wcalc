@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.15 2002/01/11 12:07:45 dan Exp $
+## $Id: Makefile.am,v 1.16 2002/05/10 22:52:34 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -69,12 +69,14 @@ wcalc_SOURCES = \
 man_MANS=	wcalc.1
 
 ASCIITABS=\
+	AWG.asciitab \
+	permeability.asciitab \
 	permitivity.asciitab \
 	resistivity.asciitab
 
 GTKTABS=	${ASCIITABS:.asciitab=.c}
 
-BUILT_SOURCES=	${GTKTABS}
+BUILT_SOURCES=	${GTKTABS} AWG.asciitab
 
 FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
@@ -95,6 +97,15 @@ clean-local:
 runwcalc:	$(srcdir)/runwcalc.in
 	sed "s;@BUILDDIR@;`pwd`;g" $< > $@
 	chmod 755 $@
+
+AWG.asciitab:	$(srcdir)/Makefile
+	${AWK}  'BEGIN{ \
+				printf("Wire Size (AWG)|Diameter (mil)|Diameter (mm)\n\n"); \
+				for(awg=8;awg<=42;awg++){ \
+					dia = 0.005 / ((92.0^((awg - 36.0)/39.0)) ); \
+					printf("%d\t|%10.2f\t|%6.3f\n",awg,1e3*dia,25.4*dia);\
+					}\
+				}' /dev/null > $@
 
 SUFFIXES= .asciitab
 
