@@ -1,4 +1,4 @@
-// $Id$
+// $Id: test.sce,v 1.1 2004/09/02 06:04:01 dan Exp $
 //
 // Copyright (c) 2004 Dan McMahill
 // All rights reserved.
@@ -45,12 +45,12 @@ dia=0.25*0.0254;  // 0.25 inches inside diameter
 f=10e6;           // 10 MHz operation
 flag=1;           // use fill to calculate length
 [L,Q,SRF,len_out,fill_out,Lmax] = air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
-disp(sprintf('L=%g nH',L*1e9));
-disp(sprintf('Q=%g at %g MHz',Q,f/1e6));
-disp(sprintf('Self Resonant Freq=%g MHz',SRF/1e6));
-disp(sprintf('Length=%g inches',len_out/0.0254));
-disp(sprintf('Fill=%g',fill_out));
-disp(sprintf('Lmax=%g nH',Lmax*1e9));
+disp(sprintf('L=%8.4g nH',L*1e9));
+disp(sprintf('Q=%8.4g at %8.4g MHz',Q,f/1e6));
+disp(sprintf('Self Resonant Freq=%8.4g MHz',SRF/1e6));
+disp(sprintf('Length=%8.4g inches',len_out/0.0254));
+disp(sprintf('Fill=%8.4g',fill_out));
+disp(sprintf('Lmax=%8.4g nH',Lmax*1e9));
 
 disp('**** air_coil_syn ****');
 L=220e-9;         // we want 220 nH
@@ -63,14 +63,14 @@ dia=0.25*0.0254;  // 0.25 inches inside diameter
 f=10e6;           // 10 MHz operation
 flag=0;           // synthesize for minimum number of turns
 [Nout,len_out,fill_out,Q,SRF,Lm] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);
-disp(sprintf('Number of turns = %g ',Nout));
-disp(sprintf('Length=%g inches',len_out/0.0254));
-disp(sprintf('Fill=%g',fill_out));
-disp(sprintf('Inside diameter = %g inches ',dia/0.0254));
-disp(sprintf('L=%g nH',L*1e9));
-disp(sprintf('Q=%g at %g MHz',Q,f/1e6));
-disp(sprintf('Self Resonant Freq=%g MHz',SRF/1e6));
-disp(sprintf('Closewound inductance =%g nH',Lm*1e9));
+disp(sprintf('Number of turns = %8.4g ',Nout));
+disp(sprintf('Length=%8.4g inches',len_out/0.0254));
+disp(sprintf('Fill=%8.4g',fill_out));
+disp(sprintf('Inside diameter = %8.4g inches ',dia/0.0254));
+disp(sprintf('L=%8.4g nH',L*1e9));
+disp(sprintf('Q=%8.4g at %8.4g MHz',Q,f/1e6));
+disp(sprintf('Self Resonant Freq=%8.4g MHz',SRF/1e6));
+disp(sprintf('Closewound inductance =%8.4g nH',Lm*1e9));
 
 quit
 
