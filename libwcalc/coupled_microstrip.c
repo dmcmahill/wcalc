@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.19 2004/07/31 03:39:14 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.20 2004/07/31 06:04:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -156,11 +156,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* even/odd mode impedance at the frequency of interest */
   double z0ef,z0of;
 
-  double v,len,uold,z1,z2,z3,z4,z5,d1,d2;
-  double sf;
-
-  /* copper loss */
-  double Ko, lc, Res;
+  double v, len, uold, z1, z2, z3, z4, z5, d1, d2;
 
   /* even/odd mode open end correction lengths */
   double deltale, deltalo;
@@ -172,17 +168,25 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 
 
 #ifdef DEBUG_CALC
-// XXX fix units here
   printf("coupled_microstrip_calc(): --------- Coupled_Microstrip Analysis ----------\n");
-  printf("coupled_microstrip_calc(): Metal width                 = %g mil\n",line->w);
-  printf("coupled_microstrip_calc(): Metal spacing               = %g mil\n",line->s);
-  printf("coupled_microstrip_calc(): Metal thickness             = %g mil\n",line->subs->tmet);
-  printf("coupled_microstrip_calc(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("coupled_microstrip_calc(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("coupled_microstrip_calc(): Substrate thickness         = %g mil\n",line->subs->h);
-  printf("coupled_microstrip_calc(): Substrate dielectric const. = %g \n",line->subs->er);
-  printf("coupled_microstrip_calc(): Substrate loss tangent      = %g \n",line->subs->tand);
-  printf("coupled_microstrip_calc(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("coupled_microstrip_calc(): Metal width                 = %g %s\n",
+	 line->w/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_calc(): Metal spacing               = %g %s\n",
+	 line->s/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_calc(): Metal thickness             = %g %s\n",
+	 line->subs->tmet/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_calc(): Metal resistivity           = %g %s\n",
+	 line->subs->rho/line->units_rho->sf, line->units_rho->name);
+  printf("coupled_microstrip_calc(): Metal surface roughness     = %g %s-rms\n",
+	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
+  printf("coupled_microstrip_calc(): Substrate thickness         = %g %s\n",
+	 line->subs->h/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_calc(): Substrate dielectric const. = %g \n",
+	 line->subs->er);
+  printf("coupled_microstrip_calc(): Substrate loss tangent      = %g \n",
+	 line->subs->tand);
+  printf("coupled_microstrip_calc(): Frequency                   = %g %s\n",
+	 line->freq/line->units_freq->sf, line->units_freq->name);
   printf("coupled_microstrip_calc(): -------------- ---------------------- ----------\n");
 #endif
 
@@ -778,11 +782,8 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   R4 = (0.271 + 0.0281*er)*(pow(g,(1.167*er/(0.66+er))))
     + (1.025*er/(0.687+er))*(pow(g,(0.958*er/(0.706+er))));
 
-  /* make it print in mils for now. */
-  /* XXX MKS police! */
-  sf=1/25.4e-6;
-  deltale =sf*( (d2 - d1 + 0.0198*h*pow(g,R1))*exp(-0.328*pow(g,2.244)) +d1 );
-  deltalo =sf*( (d1 - h*R3)*(1.0 - exp(-R4)) + h*R3 );
+  deltale = (d2 - d1 + 0.0198*h*pow(g,R1))*exp(-0.328*pow(g,2.244)) +d1 ;
+  deltalo = (d1 - h*R3)*(1.0 - exp(-R4)) + h*R3 ;
 
   /*  [z0e,z0o,len,loss,kev,kodd]=cmlicalc(w,l,s,f,subs) */
   /* copy over the results */
@@ -849,15 +850,15 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
 int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 {
 
-  double h,er,l,lmil,wmin,wmax,abstol,reltol;
+  double h, er, l, wmin, wmax, abstol, reltol;
   int maxiters;
-  double z0,w;
+  double z0, w;
   int iters;
   int done;
-  double v,len;
+  double len;
 
-  double s,smin,smax,z0e,z0o,k;
-  double loss,kev,kodd,keff,delta,cval,err,d;
+  double s, smin, smax, z0e, z0o, k;
+  double loss, kev, kodd, delta, cval, err, d;
 
   double AW,F1,F2,F3;
 
