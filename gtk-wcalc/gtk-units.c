@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.21 2004/08/05 12:39:43 dan Exp $ */
+/* $Id: gtk-units.c,v 1.22 2004/08/30 22:59:19 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -283,7 +283,7 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   }
   else {
     fprintf(stderr,"wc_units_menu_changed():  ug %p could not locate menu\n",
-	    ug);
+	    (void *) ug);
     exit(1);
   }
 
