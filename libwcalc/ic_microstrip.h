@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.h,v 1.2 2001/09/12 23:49:58 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.1 2001/10/05 00:37:31 dan Exp $ */
 
 /*
  * Copyright (c)  2001 Dan McMahill
@@ -78,6 +78,9 @@ typedef struct IC_MICROSTRIP_LINE
 
   ic_microstrip_subs *subs;
 
+  /* frequency of operation */
+  double freq;
+
 } ic_microstrip_line;
 
 
@@ -85,11 +88,13 @@ typedef struct IC_MICROSTRIP_LINE
  * Function Prototypes
  */
 
-double ic_microstrip_calc(ic_microstrip_line *line, double f);
+int ic_microstrip_calc(ic_microstrip_line *line, double f);
 int ic_microstrip_syn(ic_microstrip_line *line, double f, int flag);
 
 ic_microstrip_line *ic_microstrip_line_new(void);
+void ic_microstrip_line_free(ic_microstrip_line *);
 ic_microstrip_subs *ic_microstrip_subs_new(void);
+void ic_microstrip_subs_free(ic_microstrip_subs *);
 
 /*
  * Flags for synthesis

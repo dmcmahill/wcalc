@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.4 2001/09/17 14:32:30 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.1 2001/10/05 00:37:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,11 +33,17 @@
  * SUCH DAMAGE.
  */
 
+/* Debug the analysis routine */
+/* #define DEBUG_CALC */
+
+/* Debug the synthesis routine */
+#define DEBUG_SYN
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "alert.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "ic_microstrip.h"
@@ -91,7 +97,7 @@ static double Zustrip(double h, double w, double t, double er);
  *
  */
 
-double ic_microstrip_calc(ic_microstrip_line *line, double f)
+int ic_microstrip_calc(ic_microstrip_line *line, double f)
 {
   double omega;
   double w;
@@ -165,11 +171,27 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   sigmas = line->subs->sigmas;
 
 
+#ifdef DEBUG_CALC
+  printf("ic_microstrip_calc(): -------------- IC Microstrip Synthesis ----------\n");
+  printf("ic_microstrip_calc(): Metal width                 = %g um\n",line->w*1e6);
+  printf("ic_microstrip_calc(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
+  printf("ic_microstrip_calc(): Oxide dielectric const.     = %g \n",line->subs->eox);
+  printf("ic_microstrip_calc(): Substrate thickness         = %g um\n",line->subs->h*1e6);
+  printf("ic_microstrip_calc(): Substrate dielectric const. = %g \n",line->subs->es);
+  printf("ic_microstrip_calc(): Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
+  printf("ic_microstrip_calc(): Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
+  printf("ic_microstrip_calc(): Metal thickness             = %g um\n",line->subs->tmet*1e6);
+  printf("ic_microstrip_calc(): Metal resistivity           = %g ohm-cm\n",line->subs->rho/100.0);
+  printf("ic_microstrip_calc(): Metal roughness             = %g um-rms\n",line->subs->rough*1e6);
+  printf("ic_microstrip_calc(): Frequency                   = %g GHz\n",f/1e9); 
+  printf("ic_microstrip_calc(): -------------- ---------------------- ----------\n");
+#endif
+
   /* 
    * Find the oxide capacitance assuming tox << w
    */
   Cox = (eox*e0/tox)*w;
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Finding oxide capacitance\n");
   printf("Cox = %g fF/um\n",Cox*1e9);
 #endif
@@ -177,39 +199,39 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   /*
    * Find substrate capacitance using Wheelers microstrip equations
    */
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Finding substrate capacitance\n");
 #endif
   Lsemi = sqrt(mu0*e0)*Zustrip(h,w,tmet,1.0);
   Z0semi = Zustrip(h,w,tmet,es);
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",h,w,tmet,es);
   printf("Z0semi = %g ohms\n",Z0semi);
 #endif
   Csemi = Lsemi/(Z0semi*Z0semi);
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Csemi = %g fF/um\n",Csemi*1e15*1e-6);
   printf("Lsemi = %g pH/um\n",Lsemi*1e12*1e-6);
 #endif
 
   /* substrate conductance */
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Finding substrate conductance\n");
 #endif
   Gsemi = (sigmas/(es*e0))*Csemi;
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Gsemi = %g s/um\n",Gsemi*1e-6);
 #endif
 
 
   /* admittance per unit length of the MIS transmission line */
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Finding Ytot\n");
 #endif
   Ytot = c_div(c_complex(-omega*omega*Csemi*Cox,omega*Cox*Gsemi),
 	       c_complex(Gsemi,omega*(Csemi + Cox)));
 
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Ytot (1/(ohm-cm)) = %g + j%g\n",
 	  0.01*REAL(Ytot),0.01*IMAG(Ytot));
 #endif
@@ -223,7 +245,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   a = h*w/(2*k-w);
   b = a + h;
   
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("k = %g\n",k);
   printf("a = %g\n",a);
   printf("b = %g\n",b);
@@ -306,7 +328,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   Ztot = c_rmul(Zi,c_div(num,den));
 
 
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Zi    = %g ohms/um\n",Zi*1e-6);
   printf("Zsemi = %g + i%g\n",REAL(Zsemi),IMAG(Zsemi));
 #endif
@@ -326,7 +348,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   Cmis = IMAG(Ytot)/omega;
 
 
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Lmis = %g pH/um\n",Lmis*1e6);
   printf("Cmis = %g fF/um\n",Cmis*1e9);
   printf("Rmis = %g ohm/um\n",Rmis*1e-6);
@@ -343,7 +365,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   gamma_mis = c_sqrt(c_mul(Ztot,Ytot));
   alpha_mis = REAL(gamma_mis);
   beta_mis  = IMAG(gamma_mis);
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("gamma_mis = %g + i%g\n",alpha_mis,beta_mis);
 #endif
 
@@ -351,7 +373,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
 
   slowwave = beta_mis/(omega*sqrt(mu0*e0));
 
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("omega = %g rad/sec\n",omega);
 #endif
 
@@ -360,7 +382,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
 
   /* loss total for the line */
   
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("Zo (ohms) = %g + j%g\n",REAL(Zo_mis),IMAG(Zo_mis));
   printf("MIS wavelength           = %g mm\n",1e3*lambda_mis);
   printf("Free space wavelength    = %g mm\n",1e3*LIGHTSPEED/f);
@@ -376,7 +398,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   line->Ro   = REAL(Zo_mis);
   line->Xo   = IMAG(Zo_mis);
 
-  return line->Ro;
+  return 0;
 }
 
 
@@ -420,6 +442,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
 
 int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 {
+  int rslt;
 
   double l;
   double Ro, Xo;
@@ -479,19 +502,20 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
    *    3)  an initial guess for the parameter
    */
 
+  /* XXX initialize and set limits in a ratio way */
   switch(flag){
   case IC_MLISYN_W:
     optpar = &(line->w);
-    varmax = 1000.0e-6;
-    varmin = 0.1e-6;
-    var    = 100e-6;
+    varmax = 100.0*line->subs->h;
+    varmin = 1.0e-4*line->subs->h;
+    var    = 0.2*line->subs->h;
     break;
 
   case IC_MLISYN_H:
     optpar = &(line->subs->h);
-    varmax = 10000.0e-6;
-    varmin = 10e-6;
-    var    = 250e-6;
+    varmax = 1.0e4*line->w;
+    varmin = 0.01*line->w;
+    var    = 5.0*line->w;
     break;
 
   case IC_MLISYN_TOX:
@@ -535,7 +559,8 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   line->l=l;
 
 
-#ifdef DEBUG
+#ifdef DEBUG_SYN
+  printf("\n");
   printf("ic_microstrip_syn(): -------------- IC Microstrip Synthesis ----------\n");
   printf("ic_microstrip_syn(): Metal width                 = %g um\n",line->w*1e6);
   printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
@@ -549,32 +574,50 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",Ro);
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
   printf("ic_microstrip_syn(): Starting optimization value = %g\n",var);
+  printf("ic_microstrip_syn(): Optimization flag           = %d\n",flag);
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
 
 
   /* Initialize the various error values */
-  *optpar = varmin;
-  errmin = ic_microstrip_calc(line,freq) - Ro;
+    *optpar = varmin;
+    rslt = ic_microstrip_calc(line,freq);
+    if (rslt)
+      return rslt;
+    errmin = line->Ro - Ro;
 
-  *optpar = varmax;
-  errmax = ic_microstrip_calc(line,freq) - Ro;
+    *optpar = varmax;
+    rslt = ic_microstrip_calc(line,freq);
+    if (rslt)
+      return rslt;
+    errmax = line->Ro - Ro;
 
-  *optpar = var;
-  err = ic_microstrip_calc(line,freq) - Ro;
+    *optpar = var;
+    rslt = ic_microstrip_calc(line,freq);
+    if (rslt)
+      return rslt;
+    err = line->Ro - Ro;
 
-  varold = 0.99*var;
-  *optpar = varold;
-  errold = ic_microstrip_calc(line,freq) - Ro;
-
+    varold = 0.99*var;
+    *optpar = varold;
+    rslt = ic_microstrip_calc(line,freq);
+    if (rslt)
+      return rslt;
+    errold = line->Ro - Ro;
 
   /* see if we've actually been able to bracket the solution */
   if (errmax*errmin > 0){
-    fprintf(stderr,
-	    "ic_microstrip_syn():  could not bracket the solution\n");
-    exit(1);
+#ifdef DEBUG_SYN
+    printf("Could not bracket solution\n");
+#endif
+    alert("Could not bracket the solution.\n"
+	  "Synthesis failed.\n");
+    return -1;
   }
+#ifdef DEBUG_SYN
+  printf("Solution has been bracketed\n");
+#endif
   
   /* figure out the slope of the error vs variable */
   if (errmax > 0)
@@ -609,7 +652,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
      */
 
     if ( (var>varmax) || (var<varmin) ){
-#ifdef DEBUG
+#ifdef DEBUG_SYN
       printf("ic_microstrip_syn():  Taking a bisection step\n");
 #endif
       var = (varmin + varmax)/2.0;
@@ -617,9 +660,11 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 
     /* update the error value */
     *optpar = var;
-    err = ic_microstrip_calc(line,freq) - Ro;
-    
-      
+    rslt = ic_microstrip_calc(line,freq);
+    err = line->Ro - Ro;
+    if (rslt)
+      return rslt;
+
     /* update our bracket of the solution. */
 
     if (sign*err > 0)
@@ -631,26 +676,26 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
     /* check to see if we've converged */
     if (fabs(err) < abstol){
       done = 1;
-#ifdef DEBUG
+#ifdef DEBUG_SYN
       printf("ic_microstrip_syn():  abstol converged after iteration #%d\n",
 	     iters);
 #endif
     }
     else if ( fabs((var-varold)/var) < reltol){
       done = 1;
-#ifdef DEBUG
+#ifdef DEBUG_SYN
       printf("ic_microstrip_syn():  reltol converged after iteration #%d\n",
 	     iters);
 #endif
     }
     else if (iters >= maxiters){
-      fprintf(stderr,"MLISYN failed to converge in %d iterations\n",
-	      maxiters);
-      exit(1);
+      alert("Synthesis failed to converge in\n"
+	    "%d iterations\n", maxiters);
+      return -1;
     }
     
 
-#ifdef DEBUG
+#ifdef DEBUG_SYN
       printf("ic_microstrip_syn(): iteration #%d:  var = %g\terr = %g\n",iters,var,err);
 #endif
       /* done with iteration */
@@ -669,7 +714,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   /* recalculate using real length to find loss  */
   ic_microstrip_calc(line,freq);
 
-#ifdef DEBUG  
+#ifdef DEBUG_SYN  
   printf("ic_microstrip_syn(): -------------- -  Synthesis Results -  ----------\n");
   printf("ic_microstrip_syn(): Metal width                 = %g um\n",line->w*1e6);
   printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
@@ -685,7 +730,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
-  return(0);
+  return 0;
 }
 
 
@@ -701,6 +746,31 @@ ic_microstrip_line *ic_microstrip_line_new(void)
     }
 
   newline->subs = ic_microstrip_subs_new();
+
+  /* initialize the values to something */
+  newline->l    = 1000.0e-6;
+  newline->w    = 150.0e-6;
+  newline->freq = 2.4e9;
+
+  newline->subs->tox   = 1.0e-6;
+  newline->subs->eox   = 4.0;
+  newline->subs->h     = 250e-6;
+  newline->subs->es    = 11.8;
+  newline->subs->sigmas= 1e3;
+  newline->subs->tmet  = 1.4e-6;
+  newline->subs->rho   = 1.0;
+  newline->subs->rough = 0.0;
+
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("ic_microstrip_line_new():  calling ic_microstrip_calc\n");
+#endif
+
+  /* and do a calculation to finish the initialization */
+  ic_microstrip_calc(newline,newline->freq);
+  
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("ic_microstrip_line_new():  all done\n");
+#endif
 
   return(newline);
 }
@@ -719,6 +789,16 @@ ic_microstrip_subs *ic_microstrip_subs_new(void)
   return(newsubs);
 }
 
+void ic_microstrip_line_free(ic_microstrip_line *line)
+{
+  free(line->subs);
+  free(line);
+}
+
+void ic_microstrip_subs_free(ic_microstrip_subs *subs)
+{
+  free(subs);
+}
 
 /*
  * Calculate microstrip characteristic impedance using the
