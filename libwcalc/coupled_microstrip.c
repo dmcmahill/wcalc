@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.c,v 1.10 2003/01/17 03:21:52 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.11 2003/01/19 05:07:39 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,6 +45,7 @@
 #include "alert.h"
 #include "mathutil.h"
 #include "physconst.h"
+#include "units.h"
 #include "coupled_microstrip.h"
 
 #ifdef DMALLOC
@@ -1061,6 +1062,20 @@ static double z0_HandJ(double u)
 void coupled_microstrip_line_free(coupled_microstrip_line * line)
 {
   free(line->subs);
+  wc_units_free(line->units_lwht);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
+  wc_units_free(line->units_len);
+  wc_units_free(line->units_freq);
+  wc_units_free(line->units_loss);
+  wc_units_free(line->units_losslen);
+  wc_units_free(line->units_rho);
+  wc_units_free(line->units_rough);
+  wc_units_free(line->units_delay);
+  wc_units_free(line->units_depth);
+  wc_units_free(line->units_deltal);
   free(line);
 }
 
@@ -1077,6 +1092,17 @@ coupled_microstrip_line *coupled_microstrip_line_new()
     }
 
   newline->subs = microstrip_subs_new();
+
+  newline->units_lwst    = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
+  newline->units_loss    = wc_units_new(WC_UNITS_DB);
+  newline->units_losslen = wc_units_new(WC_UNITS_DB_PER_LEN);
+  newline->units_rho     = wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_rough   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_delay   = wc_units_new(WC_UNITS_TIME);
+  newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   return(newline);
 }

@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.h,v 1.4 2002/06/12 11:30:26 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.5 2003/01/19 05:07:40 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -37,6 +37,7 @@
 #define __COUPLED_MICROSTRIP_H_
 
 #include "microstrip.h"
+#include "units.h"
 
 
 typedef struct COUPLED_MICROSTRIP_LINE
@@ -48,7 +49,7 @@ typedef struct COUPLED_MICROSTRIP_LINE
   double s;
 
   /* characteristic impedance (ohms) and coupling factor */
-  double z0,k;
+  double z0, k;
 
   /* even and odd mode impedance */
   double z0e;
@@ -70,6 +71,19 @@ typedef struct COUPLED_MICROSTRIP_LINE
   double freq;
 
   microstrip_subs *subs;
+
+  /* user units */
+  wc_units *units_lwst;
+  wc_units *units_len;
+
+  wc_units *units_freq;
+  wc_units *units_loss;
+  wc_units *units_losslen;
+  wc_units *units_rho;
+  wc_units *units_rough;
+  wc_units *units_delay;
+  wc_units *units_depth;
+  wc_units *units_deltal;
 
 } coupled_microstrip_line;
 
