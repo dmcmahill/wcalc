@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.16 2004/07/21 23:48:23 dan Exp $ */
+/* $Id: gtk-units.c,v 1.17 2004/07/25 04:03:29 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 /* #define DEBUG2 */
 
