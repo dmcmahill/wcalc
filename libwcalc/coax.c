@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.18 2004/07/21 23:49:38 dan Exp $ */
+/* $Id: coax.c,v 1.19 2004/07/23 22:11:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -182,6 +182,11 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
    */
   line->L = line->z0/v;
   line->C = 1.0/(line->z0*v);
+
+#ifdef DEBUG_CALC
+  printf("coax_calc_int():  Found line->L (%p) = %g\n",
+	 &(line->L), line->L);
+#endif
 
   if (flag == CALC_ALL) {
     /*
