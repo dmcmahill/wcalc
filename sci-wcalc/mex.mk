@@ -1,4 +1,4 @@
-## $Id: mex.mk,v 1.3 2001/10/22 11:31:30 dan Exp $
+## $Id: mex.mk,v 1.4 2001/10/23 00:48:37 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,7 @@
 ##  SUCH DAMAGE.
 ##
 
-MEX_SOURCES=	\
+MEX_SRCS=	\
 	air_coil_calc.c \
 	air_coil_syn.c
 
