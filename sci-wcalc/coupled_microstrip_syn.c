@@ -1,9 +1,9 @@
-/* $Id: coupled_microstrip_syn.c,v 1.4 2002/05/10 22:53:03 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.4 2002/05/10 22:53:03 dan Exp $";
+static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -152,7 +152,7 @@ void mexFunction(
 
 
   /*
-   * Arguemnt checking and processing
+   * Argument checking and processing
    */
 
   if (nrhs == 0) {
@@ -240,13 +240,15 @@ void mexFunction(
     line->z0e         = z0[*ind_z0];
     line->z0o         = k[*ind_k];
     line->len         = elen[*ind_elen];
-    
+    line->use_z0k     = elen[*ind_flag];
+   
+
     if ((flag[*ind_flag] > 3) || (flag[*ind_flag] < 0) ) {
       mexErrMsgTxt("flag must be one of 0,1,2,3 in COUPLED_MICROSTRIP_SYN");
     }
 
     /* run the calculation */
-    coupled_microstrip_syn(line,line->freq,flag[*ind_flag]);
+    coupled_microstrip_syn(line, line->freq);
 
     /* extract the outputs */
     w_out[ind]  = line->w;
