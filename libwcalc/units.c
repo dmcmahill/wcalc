@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.5 2004/07/21 17:34:53 dan Exp $ */
+/* $Id: units.c,v 1.6 2004/07/21 22:17:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -327,6 +327,12 @@ int wc_savestr_to_units( const char *str,  wc_units *units )
   }
   
   free( tmps1 );
+
+
+  units->sf = wc_units_to_sf( units );
+  if( units->name != NULL )
+    free(units->name);
+  units->name = wc_units_to_str( units );
   
   return 0;
 }
