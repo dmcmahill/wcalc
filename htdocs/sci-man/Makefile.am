@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/28 22:50:26 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/29 02:01:59 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -57,6 +57,7 @@ clean-local:
 
 
 #BUILT_SOURCES= ${SCIMANHTML} ${SCIMANSHTML}
+EXTRA_DIST=	man_start.incl man_end.incl
 
 whatis.incl: ${SCIMANS} Makefile
 	@echo "****************************************************"

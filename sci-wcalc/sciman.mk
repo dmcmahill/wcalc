@@ -1,4 +1,4 @@
-## $Id$
+## $Id: sciman.mk,v 1.1 2001/10/24 01:23:36 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -39,7 +39,7 @@ SUFFIXES+= .cat .man
 	@echo "****************************************************"
 	@echo "Processing $*.man to produce $*.cat"
 	@echo "****************************************************"
-	cat $*.man | tbl | neqn | nroff -man | \
+	cat $(srcdir)/$*.man | tbl | neqn | nroff -man | \
 		${AWK} 'BEGIN{s=0;t=0;} \
 		     /^ *$$/ {s=1;next;} \
 		     s==1 { \
