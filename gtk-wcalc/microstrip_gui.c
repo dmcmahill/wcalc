@@ -1,7 +1,7 @@
-/* $Id: microstrip_gui.c,v 1.7 2002/06/12 11:30:15 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.8 2004/07/26 22:22:26 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG */
+#define DEBUG
 #include "config.h"
 
 #include <gtk/gtk.h>
@@ -131,13 +131,16 @@ microstrip_gui *microstrip_gui_new(void)
    */
 
   /* create the microstrip line which will be used */
+#ifdef DEBUG
+  g_print("microstrip_gui_new():  Creating new microstrip line\n");
+#endif
   new_gui->line = microstrip_line_new();
   new_gui->phys_units_text = NULL;
 
 #ifdef DEBUG
-  g_print("Wcalc_new():  New pointer is %p\n",new);
-  g_print("              wcalc->line = %p\n",new->line);
-  g_print("              wcalc->line->subs = %p\n",new->line->subs);
+  g_print("microstrip_gui_new():  New pointer is %p\n", new_gui);
+  g_print("              wcalc->line = %p\n", new_gui->line);
+  g_print("              wcalc->line->subs = %p\n", new_gui->line->subs);
 #endif
 
   return new_gui;
