@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.5 2002/02/19 10:32:42 dan Exp $ */
+/* $Id: misc.h,v 1.6 2002/06/12 11:30:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -59,6 +59,7 @@ typedef struct COMPOSITE_UNITS_DATA
 
   /* what sort of units are these? */
   enum {
+    UNITS_FREQUENCY,
     UNITS_RESISTIVITY,
     UNITS_INC_CAPACITANCE,
     UNITS_INC_CONDUCTANCE,
@@ -87,6 +88,10 @@ int units_get_index_name(const units_data *units, char *name);
 composite_units_data * resistivity_units_new(void);
 void resistivity_units_free(composite_units_data *u);
 int resistivity_units_set(composite_units_data *units,char *str);
+
+composite_units_data * frequency_units_new(void);
+void frequency_units_free(composite_units_data *u);
+int frequency_units_set(composite_units_data *units,char *str);
 
 composite_units_data * inc_units_new(int type, const units_data *nu);
 void inc_units_free(composite_units_data *u);

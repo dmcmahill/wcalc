@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.8 2002/06/25 20:45:15 dan Exp $ */
+/* $Id: misc.c,v 1.9 2002/07/05 03:20:34 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -333,6 +333,79 @@ int resistivity_units_set(composite_units_data *units,char *str)
   printf("resistivity_units_set():  found \"%s\" at index %d (mystr=\"%s\")\n",tok,i,mystr);
 #endif
   units->numi[1] = i;
+
+  return 0;
+}
+
+/* ohm-meters */
+composite_units_data * frequency_units_new(void)
+{
+  composite_units_data *u;
+  
+  if ( (u = malloc(sizeof(composite_units_data))) == NULL ) {
+    fprintf(stderr,"frequency_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  u->type = UNITS_FREQUENCY;
+
+  u->nnum = 1;
+  u->nden = 0;
+
+  u->den = NULL;
+  if ( (u->num = malloc(u->nnum*sizeof(units_data))) == NULL ) {
+    fprintf(stderr,"frequency_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  /* 
+   * allocate memory for the arrays that specify the current
+   * value of the units 
+   */
+  if ( (u->numi = malloc(u->nnum*sizeof(int))) == NULL ) {
+    fprintf(stderr,"frequency_units_new():  malloc failed.\n");
+    exit(1);
+  }
+  u->deni=NULL;
+  
+  u->num[0] = frequency_units;
+
+  u->numi[0] = units_get_index(u->num[0], 1.0);
+
+  return u;
+}
+
+void frequency_units_free(composite_units_data *u)
+{
+  free(u->num);
+  free(u->numi);
+  free(u);
+}
+ 
+/* initialize a frequency composite units from a string */
+int frequency_units_set(composite_units_data *units,char *str) 
+{
+  char *tok;
+  char *mystr;
+  int i;
+
+  assert(units->type == UNITS_FREQUENCY);
+
+#ifdef DEBUG
+  printf("frequency_units_set():  initializing %p from \"%s\"\n",units,str);
+#endif
+
+  /* make a local copy because strtok is destructive */
+  mystr=strdup(str);
+  if ( (tok = strtok(mystr,"-")) == NULL ) {
+    return -1;
+  }
+  i=units_get_index_name(frequency_units,tok);
+
+#ifdef DEBUG
+  printf("frequency_units_set():  found \"%s\" at index %d (mystr=\"%s\")\n",tok,i,mystr);
+#endif
+  units->numi[0] = i;
 
   return 0;
 }
