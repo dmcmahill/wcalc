@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.11 2004/07/28 03:25:27 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.12 2004/07/29 00:02:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1068,6 +1068,9 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->z0);
   fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
 	  gui->line->len);
+  fprintf(fp,"(Delay) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->delay/gui->line->units_delay->sf,
+	  gui->line->units_delay->name);
   fprintf(fp,"(Loss) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->loss/gui->line->units_loss->sf,
 	  gui->line->units_loss->name);
