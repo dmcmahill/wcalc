@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2001/10/20 12:35:33 dan Exp $
+## $Id: Makefile.am,v 1.12 2001/10/23 00:54:17 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -40,4 +40,6 @@ DIST_SUBDIRS = include libwcalc pixmaps gtk-wcalc cgi-wcalc sci-wcalc mex-wcalc 
 EXTRA_DIST=	ltcf-c.sh \
 	ps_header.c \
 	ps_footer.c \
-	ps_microstrip.c 
+	ps_microstrip.c \
+	README.newmodel \
+	README.win32
