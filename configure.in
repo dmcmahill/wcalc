@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.73 2004/11/12 02:14:20 dan Exp $
+dnl $Id: configure.in,v 1.74 2004/11/12 04:42:55 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -68,7 +68,7 @@ AC_PATH_PROG(NEQN, neqn)
 
 AC_LANG_PUSH(C)
 wc_save_LIBS="$LIBS"
-for fl in "-Wl,-rpath=" "-Wl,--rpath=" "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	LIBS="$wc_save_LIBS ${fl}path"
 	AC_MSG_CHECKING([if $CC accepts ${fl}path for runtime libraries])
 	AC_LINK_IFELSE([
@@ -344,7 +344,7 @@ void mexFunction(
 
 	wc_save_LIBS="$LIBS"
 	rpath=""
-	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+	for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
@@ -877,7 +877,7 @@ void mexFunction(
 
 	wc_save_LIBS="$LIBS"
 	rpath=""
-	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+	for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $MEX accepts ${fl}path for runtime libraries])
 	    AC_LINK_IFELSE([
