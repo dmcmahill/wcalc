@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.16 2001/09/20 12:40:34 dan Exp $ */
+/* $Id: wcalc.c,v 1.17 2001/09/20 20:32:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+//#define DEBUG
 
 #include <gtk/gtk.h>
 
@@ -46,8 +46,12 @@
 #include "icon_bitmap"
 #include "menus.h"
 
+/* the individual models */
+#include "air_coil_gui.h"
 #include "microstrip_gui.h"
 //#include "stripline_gui.h"
+
+
 #include "physconst.h"
 
 #include "about.h"
@@ -162,11 +166,11 @@ static void global_model_init()
   global_model_menus = NULL;
   global_model_new = NULL;
 
-  /*
   global_model_names = g_list_append(global_model_names,"Air Core Inductor");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Air Core Inductor");
-  global_model_new = g_list_append(global_model_new,NULL);
+  global_model_new = g_list_append(global_model_new,air_coil_gui_new);
 
+  /*
   global_model_names = g_list_append(global_model_names,"Coupled Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coupled Microstrip");
   global_model_new = g_list_append(global_model_new,NULL);
@@ -246,10 +250,10 @@ void wcalc_setup (gpointer data,
    * right size, but then not have it change while running.
    * Unfortunately, we don't know the correct size at compile time. 
    */
-  gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550);
+  //gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550);
 
   /* don't let the user grow or shrink this window */
-  gtk_window_set_policy(GTK_WINDOW(wcalc->window),FALSE,FALSE,TRUE);
+  //gtk_window_set_policy(GTK_WINDOW(wcalc->window),FALSE,FALSE,TRUE);
 
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);

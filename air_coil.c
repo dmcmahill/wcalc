@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.2 2001/09/14 01:59:02 dan Exp $ */
+/* $Id: air_coil.c,v 1.3 2001/09/17 15:27:26 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -45,12 +45,14 @@
 #include "air_coil.h"
 #include "misc.h"
 
+/* XXX need to deal with alert() properly */
+#define alert(x)  printf(x)
 
 /* estimate of the enamel insulation thickness (inches) */
 #define TINSUL 0.0015
 
 
-static double air_coil_calc_int(air_coil *coil, double freq, int flag);
+static int air_coil_calc_int(air_coil *coil, double freq, int flag);
 
 /* air_coil_calc_int flags */
 #define CALC_ALL  0  /* all calculation (calculate everything) */ 
@@ -96,14 +98,18 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag);
  *
  */
 
-double air_coil_calc(air_coil *coil, double freq)
+int air_coil_calc(air_coil *coil, double freq)
 {
-  double L;
-  L = air_coil_calc_int(coil,freq,CALC_ALL);
-  return L;
+  int rslt;
+
+  rslt=air_coil_calc_int(coil,freq,CALC_ALL);
+#ifdef DEBUG_CALC
+  printf("air_coil_calc():  returning %d\n",rslt);
+#endif
+  return rslt;
 }
 
-static double air_coil_calc_int(air_coil *coil, double freq, int flag)
+static int air_coil_calc_int(air_coil *coil, double freq, int flag)
 {
   double pitch;
   double wirediam;
@@ -133,24 +139,24 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
   /* temp storage */
   air_coil tmp_coil;
 
-  pitch = coil->len / coil->Nf;
+  pitch = M2INCH(coil->len) / coil->Nf;
 
   wirediam = awg2dia(coil->AWGf);
-  turndiam = coil->dia + wirediam;
+  turndiam = M2INCH(coil->dia) + wirediam;
 
   /*
    * the xk is calculated via the 'x' equation
    * from the Geffe reference.
    * x for the Nagaoka correction factor
    */
-  xk = turndiam / coil->len; 
+  xk = turndiam / M2INCH(coil->len); 
 
   /*
    * this 'x' is 1/x from the Geffe article, this
    * was one of the corrections
    * x for the Q and SRF equations
    */
-  x = coil->len / turndiam;  
+  x = M2INCH(coil->len) / turndiam;  
 
   /*
    * check to see if x is in the correct range for our
@@ -161,7 +167,7 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
     printf("air_coil_calc():  Maximum len/turndiam, x = %g\n",x);
     printf("air_coil_calc():  Minimum len/turndiam, x = %g\n",x);
     printf("air_coil_calc():  x is outside the range 0.1 <= x <= 5\n");
-    exit(1);
+    return -1;
   }
 
 
@@ -176,7 +182,7 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
   s = 1 - ((2*coil->len*(a+b))/(M_PI*turndiam*coil->Nf*Kn));
 
   /* nominal inductance */
-  L0 = (pow((M_PI*turndiam*coil->Nf),2.0) * 2.54e-9)/coil->len;
+  L0 = (pow((M_PI*turndiam*coil->Nf),2.0) * 2.54e-9)/M2INCH(coil->len);
 
 
   /* inductance in Henries */
@@ -189,10 +195,10 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
   printf("air_coil_calc():  ----------------------\n");
   printf("air_coil_calc():  N    = %g\n",coil->Nf);
   printf("air_coil_calc():  AWG  = %g\n",coil->AWGf);
-  printf("air_coil_calc():  I.D. = %g inches\n",coil->dia);
-  printf("air_coil_calc():  len  = %g inches\n",coil->len);
+  printf("air_coil_calc():  I.D. = %g inches\n",M2INCH(coil->dia));
+  printf("air_coil_calc():  len  = %g inches\n",M2INCH(coil->len));
   printf("air_coil_calc():  rho  = %g\n",coil->rho);
-  printf("air_coil_calc():  freq = %g MHz\n",coil->Qfreq);
+  printf("air_coil_calc():  freq = %g MHz\n",coil->freq*1e-6);
   printf("air_coil_calc():  ----------------------\n");
   printf("air_coil_calc():  x  = %g\n",x);
   printf("air_coil_calc():  L0 = %g nH\n",L0*1e9);
@@ -212,10 +218,12 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
 
   /* self resonant freq (MHz) */
   SRF = 1.0 / (2*M_PI*sqrt(coil->L*cap)); 
-  coil->SRF = SRF;
+
+  /* SRF in Hz */
+  coil->SRF = SRF*1e6;
 
 #ifdef DEBUG_CALC
-  printf("air_coil_calc():  SRF = %g MHz\n",SRF);
+  printf("air_coil_calc():  SRF = %g MHz\n",coil->SRF*1e-6);
   printf("air_coil_calc():  ----------------------\n");
 #endif
 
@@ -231,19 +239,19 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
   }
   else{
     fprintf(stderr,"air_coil_calc():  x=%g which is outside the allowed range\n",x);
-    exit(1);
+    return -1;
   }
 
 
-  Q0 = A * turndiam * sqrt(freq);
+  Q0 = A * turndiam * sqrt(freq*1e-6);
 
-  w = freq / SRF;
+  w = (freq*1e-6) / SRF;
 
   coil->Q     = Q0 * (1 - (w*w));
-  coil->Qfreq = freq;
+  coil->freq = freq;
 
 #ifdef DEBUG_CALC
-  printf("air_coil_calc():  Q = %g MHz\n",coil->Q);
+  printf("air_coil_calc():  Q = %g \n",coil->Q);
   printf("air_coil_calc():  ----------------------\n");
 #endif
 
@@ -258,16 +266,18 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
     /* minimum length with this wire and # of turns */
     lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
 
-    len = coil->len;
+    len = M2INCH(coil->len);
     coil->fill = len/lmin;
 
     tmp_coil = *coil;
-    tmp_coil.len  = lmin;
-    coil->Lmax = air_coil_calc_int(&tmp_coil,freq,CALC_MIN);
-    coil->len = len;
+    tmp_coil.len  = INCH2M(lmin);
+    if (air_coil_calc_int(&tmp_coil,freq,CALC_MIN) != 0)
+      return -1;
+    coil->Lmax = tmp_coil.L;
+
   }
 
-  return(coil->L);
+  return 0;
 }
 
 /*
@@ -290,7 +300,7 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
  * 
  */
 
-void air_coil_syn(air_coil *coil, double f, int flag)
+int air_coil_syn(air_coil *coil, double f, int flag)
 {
   double N=0;
   double N1=0;
@@ -311,10 +321,10 @@ void air_coil_syn(air_coil *coil, double f, int flag)
   printf("air_coil_syn():  ----------------------\n");
   printf("air_coil_syn():  N    = %g\n",coil->Nf);
   printf("air_coil_syn():  AWG  = %g\n",coil->AWGf);
-  printf("air_coil_syn():  I.D. = %g inches\n",coil->dia);
-  printf("air_coil_syn():  len  = %g inches\n",coil->len);
+  printf("air_coil_syn():  I.D. = %g inches\n",M2INCH(coil->dia));
+  printf("air_coil_syn():  len  = %g inches\n",M2INCH(coil->len));
   printf("air_coil_syn():  rho  = %g\n",coil->rho);
-  printf("air_coil_syn():  freq = %g MHz\n",coil->Qfreq);
+  printf("air_coil_syn():  freq = %g MHz\n",coil->freq*1e-6);
   printf("air_coil_syn():  ----------------------\n");
   printf("air_coil_syn():  desired inductance  = %g nH\n",L*1e9);
   printf("air_coil_syn():  \n");
@@ -323,7 +333,7 @@ void air_coil_syn(air_coil *coil, double f, int flag)
 
   /* initial guess for N */
   if (flag == AIRCOILSYN_NMIN){
-    N = L*awg2dia(coil->AWGf)/(M_PI*M_PI*coil->dia*coil->dia*2.54e-9);
+    N = L*awg2dia(coil->AWGf)/(M_PI*M_PI*M2INCH(coil->dia)*M2INCH(coil->dia)*2.54e-9);
     N2 = N + 1;
   }
 
@@ -350,12 +360,14 @@ void air_coil_syn(air_coil *coil, double f, int flag)
       len2 = N2*lenPerTurn;
 
       coil->Nf  = N1;
-      coil->len = len1;
-      Lsyn1     = air_coil_calc_int(coil,f,CALC_MIN);
+      coil->len = INCH2M(len1);
+      air_coil_calc_int(coil,f,CALC_MIN);
+      Lsyn1     = coil->L;
 
       coil->Nf  = N2;
-      coil->len = len2;
-      Lsyn2     = air_coil_calc_int(coil,f,CALC_MIN);
+      coil->len = INCH2M(len2);
+      air_coil_calc_int(coil,f,CALC_MIN);
+      Lsyn2     = coil->L;
   
       N = N2 + (L - Lsyn2)*(N2-N1)/(Lsyn2-Lsyn1);
       error = fabs(N-N2);
@@ -392,11 +404,13 @@ void air_coil_syn(air_coil *coil, double f, int flag)
     len1 = len2;
     len2 = len;
     
-    coil->len = len1;
-    Lsyn1     = air_coil_calc_int(coil,f,CALC_MIN);
+    coil->len = INCH2M(len1);
+    air_coil_calc_int(coil,f,CALC_MIN);
+    Lsyn1     = coil->L;
     
-    coil->len = len2;
-    Lsyn2     = air_coil_calc_int(coil,f,CALC_MIN);
+    coil->len = INCH2M(len2);
+    air_coil_calc_int(coil,f,CALC_MIN);
+    Lsyn2     = coil->L;
     
   
     len = len2 + (L - Lsyn2)*(len2-len1)/(Lsyn2-Lsyn1);
@@ -407,10 +421,11 @@ void air_coil_syn(air_coil *coil, double f, int flag)
     printf("                 L1=%g\tL2=%g\terror=%g\n",Lsyn1,Lsyn2,error);
 #endif
   
-    coil->len = len;
+    coil->len = INCH2M(len);
 
     /* fill in the rest of the data */
-    air_coil_calc_int(coil,f,CALC_ALL);
+    if (air_coil_calc_int(coil,f,CALC_ALL) != 0)
+      return -1;
 
   }
 
@@ -419,10 +434,11 @@ void air_coil_syn(air_coil *coil, double f, int flag)
       fprintf(stderr,"air_coil_syn():  WARNING:  the specified value of N=%g is\n",N);
       fprintf(stderr,"air_coil_syn():  too low.  You CAN NOT fit the desired\n");
       fprintf(stderr,"air_coil_syn():  number of turns into the required length\n");
-      exit(1);
+      return -1;
     }
   }
 
+  return 0;
 }
 
 
@@ -442,6 +458,28 @@ air_coil *air_coil_new()
       fprintf(stderr,"air_coil_new: malloc() failed\n");
       exit(1);
     }
+
+  newcoil->Nf = 4.0;
+  newcoil->len = INCH2M(0.5);
+  newcoil->AWGf = 22.0;
+  newcoil->rho = 1.0;
+  newcoil->dia = INCH2M(0.25);
+  newcoil->freq = 10e6;
+  
+  newcoil->len_sf = 1.0;
+  newcoil->dia_sf = 1.0;
+  newcoil->L_sf = 1.0;
+  newcoil->SRF_sf = 1.0;
+  newcoil->freq_sf = 1.0;
+
+  newcoil->len_units="m";
+  newcoil->dia_units="m";
+  newcoil->L_units="H";
+  newcoil->SRF_units="Hz";
+  newcoil->freq_units="Hz";
+
+  /* get the rest of the entries in sync */
+  air_coil_calc(newcoil,newcoil->freq);
 
   return(newcoil);
 }

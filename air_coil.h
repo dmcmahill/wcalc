@@ -1,4 +1,4 @@
-/* $Id: air_coil.h,v 1.1 2001/09/13 21:16:50 dan Exp $ */
+/* $Id: air_coil.h,v 1.2 2001/09/14 01:59:03 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -41,14 +41,12 @@ typedef struct AIR_COIL
 
   /* Number of turns */
   double Nf;
-  int N;
 
   /* length of coil */
   double len;
 
   /* wire gauge */
   double AWGf;
-  int AWG;
 
   /* resistivity relative to copper */
   double rho;
@@ -67,17 +65,29 @@ typedef struct AIR_COIL
 
   /* Q at freq (Hz) */
   double Q;
-  double Qfreq;
+  double freq;
 
 
   /* Self resonant frequency */
   double SRF;
 
+  /* 
+   * various units and scale factors which may be useful for several
+   * backends.  The scale factors multiply the internal values to get
+   * the external units.
+   *
+   * For example, we might have:
+   *   L_units="nH" and L_sf = 1e-9;
+   */
+  
+  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf;
+  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units;
+
 } air_coil;
 
 
-double air_coil_calc(air_coil *coil, double f);
-void air_coil_syn(air_coil *coil, double f, int flag);
+int air_coil_calc(air_coil *coil, double f);
+int air_coil_syn(air_coil *coil, double f, int flag);
 
 void air_coil_free(air_coil * line);
 air_coil *air_coil_new(void);

@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.4 2001/09/19 19:17:38 dan Exp $ */
+/* $Id: start.c,v 1.5 2001/09/20 02:02:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+//#define DEBUG
 
 #include <stdio.h>
 #include <stdlib.h>

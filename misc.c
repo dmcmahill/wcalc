@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.1 2001/09/13 21:16:48 dan Exp $ */
+/* $Id: misc.c,v 1.2 2001/09/18 21:08:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,8 +33,14 @@
  * SUCH DAMAGE.
  */
 
+//#define DEBUG
+
 #include <stdio.h>
 #include <math.h>
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
 /* for rint() if its missing from math.h */
 #include "mathutil.h"
@@ -86,6 +92,91 @@ double dia2awg(double dia)
 }
 
 
+/* 
+ * given the units, return the scale factor required to obtain meters
+ * Ie, to convert 5 inches to meters, do
+ *  5.0 * phys_units_get_sf("inches")
+ */
+
+double phys_units_get_sf(char *str)
+{
+  double sf;
+
+  if (strcmp(str,"um") == 0)
+    sf = 1e-6;
+  else if (strcmp(str,"mm") == 0)
+    sf = 1e-3;
+  else if (strcmp(str,"cm") == 0)
+    sf = 1e-2;
+  else if (strcmp(str,"m") == 0)
+    sf = 1.0;
+  else if (strcmp(str,"mil") == 0)
+    sf = 25.4e-6;
+  else if (strcmp(str,"inches") == 0)
+    sf = 25.4e-3;
+  else{
+    fprintf(stderr,"ERROR:  physical units string \"%s\" not recognised\n",
+	    str);
+    exit(1);
+  }
+
+#ifdef DEBUG
+  printf("misc.c:phys_units_get_sf():  units = \"%s\", sf=%g\n",
+	 str,sf);
+#endif
+
+  return sf;
+}
+
+/* 
+ * given the units, return the scale factor required to obtain Hz
+ * Ie, to convert 5 kHz to Hz, do
+ *  5.0 * phys_units_get_sf("kHz")
+ */
+
+double freq_units_get_sf(char *str)
+{
+  if (strcmp(str,"mHz") == 0)
+    return 1e-3;
+  else if (strcmp(str,"Hz") == 0)
+    return 1.0;
+  else if (strcmp(str,"kHz") == 0)
+    return 1e3;
+  else if (strcmp(str,"MHz") == 0)
+    return 1e6;
+  else if (strcmp(str,"GHz") == 0)
+    return 1e9;
+  else if (strcmp(str,"THz") == 0)
+    return 1e12;
+  else{
+    fprintf(stderr,"ERROR:  physical units string \"%s\" not recognised\n",
+	    str);
+    exit(1);
+  }
+
+}
+
+double induct_units_get_sf(char *str)
+{
+  if (strcmp(str,"pH") == 0)
+    return 1e-12;
+  else if (strcmp(str,"nH") == 0)
+    return 1e-9;
+  else if (strcmp(str,"uH") == 0)
+    return 1e-6;
+  else if (strcmp(str,"mH") == 0)
+    return 1e-3;
+  else if (strcmp(str,"H") == 0)
+    return 1.0;
+  else if (strcmp(str,"kH") == 0)
+    return 1e3;
+  else{
+    fprintf(stderr,"ERROR:  inductance units string \"%s\" not recognised\n",
+	    str);
+    exit(1);
+  }
+
+}
 
 
 

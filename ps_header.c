@@ -1,4 +1,4 @@
-/* $Id: ps_header.c,v 1.2 2001/09/17 20:45:18 dan Exp $ */
+/* $Id: ps_header.c,v 1.3 2001/09/20 20:32:53 dan Exp $ */
 
 /* ********* Automatically Generated.  Do not edit! ******** */
 /* *********         Created with html2c            ******** */
@@ -161,9 +161,8 @@ fprintf(fp,"%%\n");
 fprintf(fp,"%% larger font\n");
 fprintf(fp,"currfont fsize 2.0 mul scalefont setfont\n");
 fprintf(fp,"(WaveCalc:  Version-%s) centertopshow newlinecenter\n",VER);
-fprintf(fp,"currfont fsize 1.5 mul scalefont setfont\n");
-fprintf(fp,"(%s) centertopshow newlinecenter\n",wcalc->model_name);
-fprintf(fp,"(%s) centertopshow newlinecenter\n",wcalc->model_version);
+fprintf(fp,"currfont fsize 1.2 mul scalefont setfont\n");
+fprintf(fp,"(%s, %s) centertopshow newlinecenter\n",wcalc->model_name,wcalc->model_version);
 fprintf(fp,"newlinecenter\n");
 fprintf(fp,"currfont fsize scalefont setfont\n");
 fprintf(fp,"\n");

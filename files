@@ -10,6 +10,8 @@ about.h
 aclocal.m4
 air_coil.c
 air_coil.h
+air_coil_gui.c
+air_coil_gui.h
 config.h.in
 config.guess
 config.sub
@@ -17,6 +19,7 @@ configure
 configure.in
 coupled_microstrip.c
 coupled_microstrip.h
+eps2c
 file_new_dialog.c
 file_new_dialog.h
 fileops.c

@@ -1,4 +1,4 @@
-/* $Id: physconst.h,v 1.1 2001/02/11 19:26:27 dan Exp $ */
+/* $Id: physconst.h,v 1.2 2001/09/12 23:55:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -56,6 +56,9 @@
 
 #define MIL2M(x)  (x*25.4e-6)
 #define M2MIL(x)  (x/25.4e-6)
+
+#define INCH2M(x)  (x*25.4e-3)
+#define M2INCH(x)  (x/25.4e-3)
 
 #define MILSTR   "mil"
 #define UMSTR    "um "
