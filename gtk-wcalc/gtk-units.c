@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.11 2004/07/19 22:37:02 dan Exp $ */
+/* $Id: gtk-units.c,v 1.12 2004/07/20 04:23:35 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -67,6 +67,8 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
 				       int initial,
 				       gpointer gui,
 				       void (*callback)(GtkWidget *, gpointer));
+
+static wc_units_menu_data *wc_units_menu_data_new(int ind);
 
 /*
  * wc_units_menu_new()
