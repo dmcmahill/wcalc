@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.12 2004/07/26 11:08:15 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.13 2004/07/26 11:12:41 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -1089,6 +1089,19 @@ coupled_microstrip_line *coupled_microstrip_line_new()
 
   newline->subs = microstrip_subs_new();
 
+  /* initialize the values to something */
+  newline->l    = MIL2M(1000.0);
+  newline->s    = MIL2M(15.0);
+  newline->w    = MIL2M(110.0);
+  newline->freq = 1.0e9;
+
+  newline->subs->h     = MIL2M(62.0);
+  newline->subs->er    = 4.8;
+  newline->subs->tand  = 0.01;
+  newline->subs->tmet  = MIL2M(1.4);
+  newline->subs->rho   = 3e-8;
+  newline->subs->rough = MIL2M(0.055);
+
   newline->units_lwst    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
   newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
@@ -1099,6 +1112,9 @@ coupled_microstrip_line *coupled_microstrip_line_new()
   newline->units_delay   = wc_units_new(WC_UNITS_TIME);
   newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
+
+  /* and do a calculation to finish the initialization */
+  coupled_microstrip_calc(newline, newline->freq);
 
   return(newline);
 }
