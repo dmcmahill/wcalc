@@ -1,7 +1,7 @@
-/* $Id: coax.c,v 1.13 2002/05/09 23:49:56 dan Exp $ */
+/* $Id: coax.c,v 1.14 2002/06/12 11:30:24 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -613,7 +613,11 @@ coax_line *coax_new()
 
   newline->units_rhoa = resistivity_units_new();
   newline->units_rhob = resistivity_units_new();
-
+  newline->units_L = inc_inductance_units_new();
+  newline->units_R = inc_resistance_units_new();
+  newline->units_C = inc_capacitance_units_new();
+  newline->units_G = inc_conductance_units_new();
+  
   newline->a = 1.0;
   newline->b = 2.0;
   newline->c = 0.0;
