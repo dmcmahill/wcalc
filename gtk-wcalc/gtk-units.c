@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: gtk-units.c,v 1.1 2002/01/11 15:37:58 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -46,29 +46,117 @@
 #include <string.h>
 #endif
 
-#include "icon_bitmap"
 #include "alert.h"
-#include "menus.h"
-
-/* the individual models */
-#include "air_coil_gui.h"
-#include "coax_gui.h"
-#include "ic_microstrip_gui.h"
-#include "microstrip_gui.h"
-#include "stripline_gui.h"
 
 /* libwcalc related */
 #include "misc.h"
 #include "physconst.h"
 
 /* GTK-wcalc related */
-#include "about.h"
-#include "start.h"
+#include "gtk-units.h"
 #include "wcalc.h"
-#include "wcalc_loadsave.h"
 
 
+GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
+				       Wcalc *gui,
+				       void (*callback)(GtkWidget *, gpointer))
+{
+  GtkWidget *hbox;
+  GtkWidget *item;
+  int i;
+  wc_units_gui *ug;
 
+
+  if ( (ug = malloc(sizeof(wc_units_gui))) == NULL ) {
+    fprintf(stderr,"wc_composite_units_menu_new():  malloc() failed\n");
+    exit(1);
+  }
+
+  ug->units=units;
+  ug->menu_num=NULL;
+  ug->menu_den=NULL;
+
+  hbox = gtk_hbox_new(FALSE,0);
+
+  /* the numerator */
+  if (units->nnum == 0) {
+      item = gtk_label_new("1");
+      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+  }
+  else {
+    for (i=0; i<units->nnum; i++) {
+      item = units_menu_new(units->num[i],0,gui,callback);
+      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+
+      /* add to our list of numerator menus */
+      g_list_append(ug->menu_num,item);
+      
+      if (i < (units->nnum - 1)) {
+	item = gtk_label_new("-");
+	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+      }
+    }
+  }
+
+  if (units->nden > 0) {
+      item = gtk_label_new("/");
+      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+
+      /* add to our list of denominator menus */
+      g_list_append(ug->menu_den,item);
+      
+      for (i=0; i<units->nden; i++) {
+	item = units_menu_new(units->den[i],0,gui,callback);
+	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+	
+	if (i < (units->nden - 1)) {
+	  item = gtk_label_new("-");
+	  gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+	}
+      }   
+  }
+
+  gtk_widget_show_all(hbox);
+  
+  return hbox;
+}
+
+
+static void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
+{
+  int which;
+  //  coax_gui *gui;
+
+  // gui = WC_COAX_GUI(data);
+  //g_list_nth_data(ug->menu_num,action);
+
+  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+#ifdef DEBUG
+  g_print("wc_composite_units_menu_changed():  \n");
+#endif
+
+}
+
+#ifdef notdef
+static void wc_composite_units_menu_update( coax_gui *gui,int which)
+{
+  gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_abct_units), which);
+
+  gtk_label_set_text(GTK_LABEL(gui->units_b),length_units[which].name);
+  gtk_label_set_text(GTK_LABEL(gui->units_c),length_units[which].name);
+  gtk_label_set_text(GTK_LABEL(gui->units_t),length_units[which].name);
+  gui->line->a_sf = length_units[which].sf;
+  gui->line->b_sf = length_units[which].sf;
+  gui->line->c_sf = length_units[which].sf;
+  gui->line->tshield_sf = length_units[which].sf;
+
+  gui->line->a_units = length_units[which].name;
+  gui->line->b_units = length_units[which].name;
+  gui->line->c_units = length_units[which].name;
+  gui->line->tshield_units = length_units[which].name;
+
+}
+#endif
 
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
@@ -104,7 +192,7 @@ GtkWidget *units_menu_new(const units_data *units,
 
   gtk_widget_show_all(opt_menu);
   
-  return(opt_menu);
+  return opt_menu;
 }
 
 void  set_sf_menu(GtkWidget *menu, const units_data units[],double sf)

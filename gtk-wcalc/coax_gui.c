@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.6 2002/01/03 03:54:47 dan Exp $ */
+/* $Id: coax_gui.c,v 1.7 2002/01/11 15:37:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -61,6 +61,10 @@
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
+static void L_units_changed(GtkWidget *w, gpointer data );
+static void R_units_changed(GtkWidget *w, gpointer data );
+static void C_units_changed(GtkWidget *w, gpointer data );
+static void G_units_changed(GtkWidget *w, gpointer data );
 static void abct_units_changed(GtkWidget *w, gpointer data );
 static void abct_units_update(coax_gui *gui,int which);
 static void len_units_changed(GtkWidget *w, gpointer data );
@@ -669,25 +673,25 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Henries/m" );
+  text = wc_composite_units_menu_new(gui->L_units,gui,L_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Ohms/m" );
+  text = wc_composite_units_menu_new(gui->R_units,gui,R_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Farads/m" );
+  text = wc_composite_units_menu_new(gui->C_units,gui,C_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Siemens/m" );
+  text = wc_composite_units_menu_new(gui->G_units,gui,G_units_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 0,0,XPAD,YPAD);
 
 
@@ -796,6 +800,63 @@ static void picture_init(coax_gui *gui, GtkWidget *window,GtkWidget *parent)
   gtk_widget_show (gui->text_status);
   
 
+}
+
+static void L_units_changed( GtkWidget *w, gpointer data)
+{
+  int which;
+  coax_gui *gui;
+
+  gui = WC_COAX_GUI(data);
+
+  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+#ifdef DEBUG
+  g_print("L_units_changed():  gui  =%p\n",gui);
+  g_print("L_units_changed():  which=%d\n",which);
+#endif
+  //  abct_units_update(gui,which);
+}
+static void R_units_changed( GtkWidget *w, gpointer data)
+{
+  int which;
+  coax_gui *gui;
+
+  gui = WC_COAX_GUI(data);
+
+  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+#ifdef DEBUG
+  g_print("R_units_changed():  gui  =%p\n",gui);
+  g_print("R_units_changed():  which=%d\n",which);
+#endif
+  //  abct_units_update(gui,which);
+}
+static void C_units_changed( GtkWidget *w, gpointer data)
+{
+  int which;
+  coax_gui *gui;
+
+  gui = WC_COAX_GUI(data);
+
+  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+#ifdef DEBUG
+  g_print("C_units_changed():  gui  =%p\n",gui);
+  g_print("C_units_changed():  which=%d\n",which);
+#endif
+  //  abct_units_update(gui,which);
+}
+static void G_units_changed( GtkWidget *w, gpointer data)
+{
+  int which;
+  coax_gui *gui;
+
+  gui = WC_COAX_GUI(data);
+
+  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+#ifdef DEBUG
+  g_print("G_units_changed():  gui  =%p\n",gui);
+  g_print("G_units_changed():  which=%d\n",which);
+#endif
+  //  abct_units_update(gui,which);
 }
 
 static void abct_units_changed( GtkWidget *w, gpointer data)

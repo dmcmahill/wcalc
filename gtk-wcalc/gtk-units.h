@@ -1,4 +1,4 @@
-/*      $Id$ */
+/*      $Id: gtk-units.h,v 1.1 2002/01/11 15:37:59 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -47,6 +47,35 @@
 #endif
 
 #include "misc.h"
+#include "wcalc.h"
+
+typedef struct WC_UNITS_GUI
+{
+  /* the composite units */
+  composite_units_data *units;
+
+  /* the single scale factor */
+  double *sf;
+
+  /* the complete units string */
+  char *name;
+
+  /*
+   * flag that says we should update the displayed value to reflect
+   * new units. 
+   */
+  int sync_value;
+
+  /*
+   * list of options menus for the various components of the units
+   */
+  GtkWidget **opt_menus;
+
+  /* ist of the names of the various models */
+  GList *menu_num, *menu_den;
+
+} wc_units_gui;
+
 
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
@@ -56,5 +85,9 @@ GtkWidget *units_menu_new(const units_data *units,
 void  set_sf_menu(GtkWidget *menu,
 		  const units_data units[],
 		  double sf);
+
+GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
+				       Wcalc *gui,
+				       void (*callback)(GtkWidget *, gpointer));
 
 #endif /* __GTK_UNITS_H__ */
