@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.15 2004/07/28 03:29:40 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.16 2004/07/29 00:02:20 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -496,8 +496,13 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* XXX fix these */
   line->loss=0;
   line->losslen=0;
-  line->met_skindepth=0;
-  line->subs_skindepth=0;
+
+  /* skin depth in meters */
+
+  line->met_skindepth = sqrt(1.0/(M_PI*line->freq*
+				  4.0*M_PI*1.0e-7/line->subs->rho));
+  line->subs_skindepth = sqrt(1.0/(M_PI*line->freq*
+				   4.0*M_PI*1.0e-7*line->subs->sigmas));
 
   /* electrical length */
   line->len  = 360*line->l/lambda_mis;
