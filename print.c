@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.2 2001/09/16 19:56:15 dan Exp $ */
+/* $Id: print.c,v 1.3 2001/09/17 14:31:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -215,7 +215,10 @@ void print_popup(void)
 		     GTK_OBJECT(window));
   gtk_box_pack_start (GTK_BOX (my_hbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
+  /* also put the focus on the print button */
+  gtk_window_set_focus(GTK_WINDOW(window),button);
   
+
   /* Add the "Cancel" button and set its action */
   button = gtk_button_new_with_label ("Cancel");
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
