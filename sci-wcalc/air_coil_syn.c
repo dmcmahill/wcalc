@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil_syn.c,v 1.1 2001/10/23 00:48:37 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -65,9 +65,8 @@
 #define	N_OUT	  plhs[0]
 #define	LEN_OUT   plhs[1]
 #define	FILL_OUT  plhs[2]
-#define	L_OUT	  plhs[3]
-#define	Q_OUT     plhs[4]
-#define	SRF_OUT   plhs[5]
+#define	Q_OUT     plhs[3]
+#define	SRF_OUT   plhs[4]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -84,6 +83,7 @@ if (vector && (m>1 || n>1) &&                                         \
     ( (m != rows) || (n != cols) ) ){                                 \
     mexErrMsgTxt(#y ": all vector/matrix inputs must have the same"   \
                     " dimensions in AIR_COIL_SYN.");                  \
+    (z) = NULL;                                                       \
 }                                                                     \
 else if(m*n > 1) {                                                    \
  vector=1;                                                            \
@@ -113,13 +113,13 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *N,*AWG,*rho,*len,*dia,*freq,*fill,*flag;
+  double *L,*N,*AWG,*rho,*len,*dia,*freq,*fill,*flag;
 
-  unsigned int *ind_N,*ind_AWG,*ind_rho,*ind_len,*ind_dia;
+  unsigned int *ind_L,*ind_N,*ind_AWG,*ind_rho,*ind_len,*ind_dia;
   unsigned int *ind_freq,*ind_fill,*ind_flag;
 
   /* outputs */
-  double	*L,*Q,*SRF,*len_out,*fill_out;
+  double	*N_out,*Q,*SRF,*len_out,*fill_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -130,11 +130,14 @@ void mexFunction(
   /* do we have any vectors in our input */
   int vector=0;
 
-  /* we've been given the fill/len flag */
+  /* we've been given the flag */
   int has_flag=0;
 
   /* indices for the main loop */
   unsigned int ind=0, fixed=0;
+
+  /* synthesis type flag */
+  int sflag;
 
   /* our air coil for calculations */
   air_coil_coil *coil;
@@ -145,19 +148,19 @@ void mexFunction(
    */
 
   /* Check for proper number of arguments */
-  if (nrhs == 7) 
+  if (nrhs == 8) 
     has_flag=0;
-  else if (nrhs == 8)
+  else if (nrhs == 9)
     has_flag=1;
   else
     {
-      mexErrMsgTxt("wrong number of input arguments to AIR_COIL_CALC"
-		   " (needs 7 or 8).");
+      mexErrMsgTxt("wrong number of input arguments to AIR_COIL_SYN"
+		   " (needs 8 or 9).");
     } 
 
   if (nlhs > 5)
     {
-      mexErrMsgTxt("wrong number of output arguments to AIR_COIL_CALC"
+      mexErrMsgTxt("wrong number of output arguments to AIR_COIL_SYN"
 		   " (needs <= 5).");
     }
   
@@ -171,6 +174,7 @@ void mexFunction(
    *              index,
    *              pointer)
    */
+  CHECK_INPUT(L_IN, L, ind_L, L);
   CHECK_INPUT(N_IN, N, ind_N, N);
   CHECK_INPUT(AWG_IN, AWG, ind_AWG, AWG);
   CHECK_INPUT(RHO_IN, RHO, ind_rho, rho);
@@ -192,24 +196,23 @@ void mexFunction(
   }
 
   /* Create matrices for the return arguments */
-  L_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  Q_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  SRF_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  N_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LEN_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   FILL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  Q_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  SRF_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
-  L        = mxGetPr(L_OUT);
-  Q        = mxGetPr(Q_OUT);
-  SRF      = mxGetPr(SRF_OUT);
+  N_out    = mxGetPr(N_OUT);
   len_out  = mxGetPr(LEN_OUT);
   fill_out = mxGetPr(FILL_OUT);
+  Q        = mxGetPr(Q_OUT);
+  SRF      = mxGetPr(SRF_OUT);
 
   /* the actual computation */
   coil = air_coil_new();
 
-  /* XXX get from flags */
-
+  coil->use_fill = 0;
 
   for (ind=0; ind<(rows*cols); ind++){
     /*
@@ -218,6 +221,7 @@ void mexFunction(
      * which inputs are scalar and which are matrices easily.  (It's
      * done when processsing the input arguments.
      */
+    coil->L        = L[*ind_L];
     coil->Nf       = N[*ind_N];
     coil->len      = INCH2M(len[*ind_len]);
     coil->fill     = fill[*ind_fill];
@@ -225,17 +229,23 @@ void mexFunction(
     coil->rho      = rho[*ind_rho];
     coil->dia      = INCH2M(dia[*ind_dia]);
     coil->freq     = freq[*ind_freq];
-    coil->use_fill = flag[*ind_flag];    
+
+    if(flag[*ind_flag]==0) {
+      sflag = AIRCOILSYN_NMIN;
+    }
+    else {
+      sflag = AIRCOILSYN_NFIX;
+    }
 
     /* run the calculation */
-    air_coil_calc(coil,coil->freq);
+    air_coil_syn(coil,coil->freq,sflag);
 
     /* extract the outputs */
-    L[ind]        = coil->L;
-    Q[ind]        = coil->Q;
-    SRF[ind]      = coil->SRF;
+    N_out[ind]    = coil->Nf;
     len_out[ind]  = coil->len;
     fill_out[ind] = coil->fill;
+    Q[ind]        = coil->Q;
+    SRF[ind]      = coil->SRF;
   }
 
   /* clean up */
