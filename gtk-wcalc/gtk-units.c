@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.13 2004/07/20 23:05:33 dan Exp $ */
+/* $Id: gtk-units.c,v 1.14 2004/07/21 04:32:28 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -178,7 +178,7 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
   }
   else {
     for ( i = 0; i < units->nnum; i++) {
-      item = wc_units_submenu_new(gui, units->num[i], 0, (*ug), 
+      item = wc_units_submenu_new(gui, units->num[i], units->numi[i], (*ug), 
 				  wc_units_menu_changed);
 
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
@@ -204,7 +204,7 @@ GtkWidget *wc_units_menu_new(const wc_units *units,
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
       
       for (i=0; i<units->nden; i++) {
-	item = wc_units_submenu_new(gui, units->den[i], 0, (*ug), 
+	item = wc_units_submenu_new(gui, units->den[i], units->deni[i], (*ug), 
 				    wc_units_menu_changed);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
@@ -412,8 +412,6 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
   gtk_option_menu_set_menu(GTK_OPTION_MENU(opt_menu), menu);
 
   /* pick the default (initial) selection */
-  /* XXX */
-  initial = 2;
   gtk_option_menu_set_history(GTK_OPTION_MENU(opt_menu), initial);
   
   gtk_widget_show_all(opt_menu);
