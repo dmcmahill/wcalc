@@ -1,7 +1,7 @@
-/* $Id: misc.h,v 1.3 2002/01/07 01:24:19 dan Exp $ */
+/* $Id: misc.h,v 1.4 2002/01/11 15:36:45 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -86,7 +86,7 @@ int units_get_index_name(const units_data *units, char *name);
 
 composite_units_data * resistivity_units_new(void);
 void resistivity_units_free(composite_units_data *u);
-void resistivity_units_set(composite_units_data *units,char *str);
+int resistivity_units_set(composite_units_data *units,char *str);
 
 composite_units_data * inc_units_new(int type, const units_data *nu);
 void inc_units_free(composite_units_data *u);

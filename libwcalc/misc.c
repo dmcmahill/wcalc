@@ -1,7 +1,7 @@
-/* $Id: misc.c,v 1.3 2002/01/07 01:24:18 dan Exp $ */
+/* $Id: misc.c,v 1.4 2002/01/11 15:36:44 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -297,29 +297,41 @@ void resistivity_units_free(composite_units_data *u)
 }
 
 /* initialize a resistivity composite units from a string */
-void resistivity_units_set(composite_units_data *units,char *str) 
+int resistivity_units_set(composite_units_data *units,char *str) 
 {
   char *tok;
+  char *mystr;
   int i;
 
   assert(units->type == UNITS_RESISTIVITY);
 
-  tok = strtok(str,"-");
+#ifdef DEBUG
+  printf("resistivity_units_set():  initializing %p from \"%s\"\n",units,str);
+#endif
+
+  /* make a local copy because strtok is destructive */
+  mystr=strdup(str);
+  if ( (tok = strtok(mystr,"-")) == NULL ) {
+    return -1;
+  }
   i=units_get_index_name(resistance_units,tok);
 
 #ifdef DEBUG
-  printf("resistivity_units_set():  found \"%s\" at index %d\n",str,i);
+  printf("resistivity_units_set():  found \"%s\" at index %d (mystr=\"%s\")\n",tok,i,mystr);
 #endif
   units->numi[0] = i;
 
-  tok = strtok(NULL,"-");
+  if ( (tok = strtok(NULL,"-")) == NULL ) {
+    return -1;
+  }
   i=units_get_index_name(length_units,tok);
 
 #ifdef DEBUG
-  printf("resistivity_units_set():  found \"%s\" at index %d\n",str,i);
+  printf("resistivity_units_set():  found \"%s\" at index %d (mystr=\"%s\")\n",tok,i,mystr);
 #endif
   units->numi[1] = i;
 
+  return 0;
 }
 
 /* units/meters */
