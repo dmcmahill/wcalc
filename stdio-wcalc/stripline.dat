@@ -1,4 +1,4 @@
-# $Id$
+# $Id: stripline.dat,v 1.1 2004/08/03 02:03:20 dan Exp $
 #
 # stripline test data
 #
@@ -11,4 +11,11 @@
 stripline_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
 
 
+*************** From LineCalc ************
+* w=0.6mm, L=100mm, H=1.5748mm, Tmet=0.03556mm, rough=0mm
+* Line Calc gives
+* Z0=49.68826436862 E=263.0887973531
+* A_DB=0.543680385634 Skin depth=0.002089723191
+
+stripline_calc 0.6e-3 1.5748e-3 100e-3 0.03556e-3 1.72e-8 0.0 4.8 0.022 1.0e9
 

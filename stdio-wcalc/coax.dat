@@ -1,4 +1,4 @@
-# $Id: coax.dat,v 1.1 2004/08/03 02:03:19 dan Exp $
+# $Id: coax.dat,v 1.2 2004/08/03 02:54:40 dan Exp $
 #
 # coax test data
 #
@@ -7,11 +7,17 @@
 #   coax_calc(a, b, c, t, rho_a, rho_b, er, tand, len, f);
 #
 
+* Coax calculation output gives
+* z0, elen, loss, L, R, C, G
+*
+
+
 * Coax calculation 
 coax_calc 0.1 1.0 0.0 0.01 1.72e-8 3.2e-8 9.0 0.001 1.0 500e6
 
 
 *************** Table 6.1 in Rosloneic ************
+*
 * 50.000 ohms
 coax_calc 1.520e-3 3.5e-3 0.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
 * 50.000 ohms
@@ -24,4 +30,12 @@ coax_calc 1.520e-3 3.5e-3 1.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
 coax_calc 1.520e-3 3.5e-3 2.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
 * 49.453 ohms
 coax_calc 1.520e-3 3.5e-3 3.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
+*
+*
+*************** From LineCalc ************
+* a=18.5 mil, b=45mil, c=0, L=1000mil, tshield=10mil
+* LineCalc gives Z0=36.77816704468, E.Len=442.0029187514 deg
+* Atten (dB) = 0.047486652400
+coax_calc 0.4699e-3 1.143e-3 0.0 0.254e-3 1.72e-8 1.72e-8 2.1 0.0003 25.4e-3 10e9
+
 

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: coupled_microstrip.dat,v 1.1 2004/08/03 02:03:19 dan Exp $
 #
 # coax test data
 #
@@ -7,6 +7,50 @@
 #   coupled_microstrip_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
 #
 
+* z0, k, z0e, z0o, kev, kodd, loss_ev, loss_odd, deltal_ev, deltal_odd
+
 * Coupled microstrip calculation
 coupled_microstrip_calc 2e-3 0.5e-3 3e-3 0.01 0.1e-3 3.0e-8 0.05 4.2 5.0e-6 100e6
+
+
+*************** From LineCalc ************
+*
+* w=20mil, s=10mil, h=62mil, L=500mil, tmet=1.4mil, rho=2.44e-8 ohm-m
+* rough=0.0, er=4.8, tand=0.022, freq=1GHz
+* Line Calc gives
+* Z0=86.27235721343 C_DB=-6.117821791691
+* ZE=148.3274347790 ZO=50.17898159064
+* KE=3.369505454007 KO=2.570284185490
+* AE_DB=0.047823539373 AO_DB=0.057387532349
+* E_MEAN=26.22203567121
+* Skin depth=0.097857094098
+*
+coupled_microstrip_calc 0.508e-3 0.254e-3 1.5748e-3 12.7e-3 35.56e-6 2.44e-8 0.0 4.8 0.022 1e9
+*
+* w=80mil, s=10mil, h=62mil, L=500mil, tmet=1.4mil, rho=2.44e-8 ohm-m
+* rough=0.0, er=4.8, tand=0.022, freq=1GHz
+* Line Calc gives
+* Z0=51.57816187151 C_DB=-8.657652935153
+* ZE=75.97868573140 ZO=35.01385627343
+* KE=3.743292216125 KO=2.871285232314
+* AE_DB=0.049858753927 AO_DB=0.050516811000
+* E_MEAN=27.67399319947
+* Skin depth=0.097857094098
+*
+coupled_microstrip_calc 2.032e-3 0.254e-3 1.5748e-3 12.7e-3 35.56e-6 2.44e-8 0.0 4.8 0.022 1e9
+
+*
+* w=80mil, s=10mil, h=62mil, L=500mil, tmet=0mil, rho=2.44e-8 ohm-m
+* rough=0.0, er=4.8, tand=0.022, freq=1kHz
+* Line Calc gives
+*
+* Z0=53.22274085488 C_DB=-9.082828563745
+* ZE=76.82870276592 ZO=36.86981612505
+* KE=3.720664805531 KO=3.025172637356
+* AE_DB=0.000000045310 AO_DB=0.000000037404
+* E_MEAN=0.000027971067
+* Skin depth=97.85709409767
+*
+coupled_microstrip_calc 2.032e-3 0.254e-3 1.5748e-3 12.7e-3 0.0 2.44e-8 0.0 4.8 0.022 1e3
+
 

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: microstrip.dat,v 1.1 2004/08/03 02:03:20 dan Exp $
 #
 # microstrip test data
 #
@@ -7,8 +7,16 @@
 #   microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
 #
 
+* z0, keff, loss, deltal
+
 * Microstrip calculation
 microstrip_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
 
+*************** From LineCalc ************
+* w=0.6mm, L=100mm, H=0.6mm, Tmet=0.025mm, rough=25.4e-6mm
+* Line Calc gives
+* Z0=48.08720336054 E_EFF=305.9271827158
+* K_EFF=6.490417898558 A_DB=0.621663265207 Skin depth=0.002485570190
 
+microstrip_calc 0.6e-3 0.6e-3 100e-3 0.025e-3 2.44e-8 25.4e-9 9.9 0.022 1e9
 
