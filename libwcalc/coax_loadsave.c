@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.5 2002/01/19 02:46:24 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.6 2002/02/16 15:50:03 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG  */
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -206,15 +206,20 @@ int coax_load_string(coax_line *line, char *str)
   printf("coax_loadsave.c:coax_load_string():  loading \"%s\"\n",str);
 #endif
   rslt=fspec_read_string(myspec,str,(unsigned long) line);
-
+  if (rslt != 0) {
+	return rslt;
+  }
   /*
    * parse the composite units data 
    */
 #ifdef DEBUG
   printf("coax_loadsave.c:coax_load_string():  setting resistivity units\n");
 #endif
-  resistivity_units_set(line->units_rhoa,line->rho_a_units);
-  resistivity_units_set(line->units_rhob,line->rho_b_units);
+  rslt = resistivity_units_set(line->units_rhoa,line->rho_a_units);
+  if (rslt != 0) {
+	return rslt;
+  }
+  rslt = resistivity_units_set(line->units_rhob,line->rho_b_units);
 
   return rslt;
 }
