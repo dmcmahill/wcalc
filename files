@@ -50,6 +50,8 @@ start.c
 start.h
 stripline.c
 stripline.h
+stripline_gui.c
+stripline_gui.h
 version.c
 wcalc.c
 wcalc.h

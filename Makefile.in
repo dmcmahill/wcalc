@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.20 2001/09/18 20:42:52 dan Exp $
+# $Id: Makefile.in,v 1.21 2001/09/19 19:16:00 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -77,6 +77,7 @@ CFILES = \
 	print.c \
 	start.c \
 	stripline.c \
+	stripline_gui.c \
 	version.c \
 	wcalc.c
 
