@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.4 2001/11/12 12:42:15 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.5 2001/11/25 16:32:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -100,16 +100,8 @@ static double Zustrip(double h, double w, double t, double er);
 int ic_microstrip_calc(ic_microstrip_line *line, double f)
 {
   double omega;
-  double w;
-
-  double rho,tmet,rough;
-  double tox,eox;
-  double h,es,sigmas;
-
   double mu0, e0;
-
   double Cox;
-
   double Csemi, Gsemi, Lsemi, Z0semi;
 
   /* 
@@ -144,35 +136,11 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   omega = 2.0*M_PI*f;
 
   /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4*M_PI*1.0e-7;
+  mu0 = 4.0*M_PI*1.0e-7;
   e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
   
-  /* Metal resistivity relative to copper */
-  rho = line->subs->rho;
-  /* Metal thickness (mils) */
-  tmet = line->subs->tmet;
-  /* Metalization roughness */
-  rough = line->subs->rough;
-
-  /* Microstrip width */
-  w = line->w;
-
-  /* Oxide thickness */
-  tox = line->subs->tox;
-  /* Oxide relative permittivity */
-  eox = line->subs->eox;
-
-
-  /* Substrate dielectric thickness */
-  h = line->subs->h;
-  /* Substrate relative permittivity */
-  es = line->subs->es;
-  /* Substrate conductivity */
-  sigmas = line->subs->sigmas;
-
-
 #ifdef DEBUG_CALC
-  printf("ic_microstrip_calc(): -------------- IC Microstrip Synthesis ----------\n");
+  printf("ic_microstrip_calc(): -------------- IC Microstrip Analysis ----------\n");
   printf("ic_microstrip_calc(): Metal width                 = %g um\n",line->w*1e6);
   printf("ic_microstrip_calc(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
   printf("ic_microstrip_calc(): Oxide dielectric const.     = %g \n",line->subs->eox);
@@ -190,7 +158,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* 
    * Find the oxide capacitance assuming tox << w
    */
-  Cox = (eox*e0/tox)*w;
+  Cox = (line->subs->eox*e0/line->subs->tox)*line->w;
 #ifdef DEBUG_CALC
   printf("Finding oxide capacitance\n");
   printf("Cox = %g fF/um\n",Cox*1e9);
@@ -202,10 +170,10 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 #ifdef DEBUG_CALC
   printf("Finding substrate capacitance\n");
 #endif
-  Lsemi = sqrt(mu0*e0)*Zustrip(h,w,tmet,1.0);
-  Z0semi = Zustrip(h,w,tmet,es);
+  Lsemi = sqrt(mu0*e0)*Zustrip(line->subs->h,line->w,line->subs->tmet,1.0);
+  Z0semi = Zustrip(line->subs->h,line->w,line->subs->tmet,line->subs->es);
 #ifdef DEBUG_CALC
-  printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",h,w,tmet,es);
+  printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",line->subs->h,line->w,line->subs->tmet,line->subs->es);
   printf("Z0semi = %g ohms\n",Z0semi);
 #endif
   Csemi = Lsemi/(Z0semi*Z0semi);
@@ -218,15 +186,21 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 #ifdef DEBUG_CALC
   printf("Finding substrate conductance\n");
 #endif
-  Gsemi = (sigmas/(es*e0))*Csemi;
+  Gsemi = (line->subs->sigmas/(line->subs->es*e0))*Csemi;
 #ifdef DEBUG_CALC
   printf("Gsemi = %g s/um\n",Gsemi*1e-6);
 #endif
 
 
+
   /* admittance per unit length of the MIS transmission line */
 #ifdef DEBUG_CALC
-  printf("Finding Ytot\n");
+  printf("ic_microstrip_calc():  Finding Ytot\n");
+  printf("                       -omega*omega*Csemi*Cox = %g\n",-omega*omega*Csemi*Cox);
+  printf("                       omega*Cox*Gsemi = %g\n",omega*Cox*Gsemi);
+  printf("                       --------------------\n");
+  printf("                       Gsemi = %g\n",Gsemi);
+  printf("                       omega*(Csemi + Cox) = %g\n",omega*(Csemi + Cox));
 #endif
   Ytot = c_div(c_complex(-omega*omega*Csemi*Cox,omega*Cox*Gsemi),
 	       c_complex(Gsemi,omega*(Csemi + Cox)));
@@ -241,9 +215,9 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * transmission line 
    */
 
-  k = 3*h + w/2;
-  a = h*w/(2*k-w);
-  b = a + h;
+  k = 3*line->subs->h + line->w/2;
+  a = line->subs->h*line->w/(2*k-line->w);
+  b = a + line->subs->h;
   
 #ifdef DEBUG_CALC
   printf("k = %g\n",k);
@@ -261,7 +235,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *
    */
   Zsemi = c_sqrt(c_div(c_complex(0,omega*mu0),
-		       c_complex(sigmas,omega*es*e0)));
+		       c_complex(line->subs->sigmas,omega*line->subs->es*e0)));
 
   /* 
    * divide by j w (yes, j*w, not j*omega) to get 
@@ -274,7 +248,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *             \/
    *
    */
-  Zsemi = c_div(Zsemi,c_complex(0,w));
+  Zsemi = c_div(Zsemi,c_complex(0,line->w));
 
   /*
    *               ----------------------------------------
@@ -283,7 +257,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *          \/                \                      /
    *
    */
-  betas = c_sqrt(c_complex(-omega*omega*mu0*es*e0,omega*mu0*sigmas));
+  betas = c_sqrt(c_complex(-omega*omega*mu0*line->subs->es*e0,omega*mu0*line->subs->sigmas));
 
   /* j betas a */
   jba = c_mul(c_complex(0.0,1.0),c_rmul(a,betas));
@@ -291,6 +265,11 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* j betas b */
   jbb = c_mul(c_complex(0.0,1.0),c_rmul(b,betas));
 
+#ifdef DEBUG_CALC
+  printf("ic_microstrip_calc():  betas = %g + %gi\n",REAL(betas),IMAG(betas));
+  printf("ic_microstrip_calc():  jba   = %g + %gi\n",REAL(jba),IMAG(jbb));
+  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",REAL(jbb),IMAG(jbb));
+#endif
 
   /*
    * Now we need the multiplication factor which depends on the Hankel
@@ -308,11 +287,16 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 	      c_mul(c_hankel1_2(jba),c_hankel0_1(jbb)));
 
   /* multiply into our expression for Zsemi.  This is the final answer */
+#ifdef DEBUG_CALC
+  printf("Zsemi (partial)= %g + i%g\n",REAL(Zsemi),IMAG(Zsemi));
+  printf("num = %g + i%g\n",REAL(num),IMAG(num));
+  printf("den = %g + i%g\n",REAL(den),IMAG(den));
+#endif
   Zsemi = c_mul(Zsemi, c_div(num,den));
 
   /* find the oxide impedance and propagation constant */
-  Zi = sqrt(mu0/(eox*e0))/w;
-  gammai = c_complex(0,omega*sqrt(mu0*eox*e0));
+  Zi = sqrt(mu0/(line->subs->eox*e0))/line->w;
+  gammai = c_complex(0,omega*sqrt(mu0*line->subs->eox*e0));
 
   /* combine to find the total MIS incremental series impedance */
 
@@ -322,8 +306,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *            Zi    + Zsemi  tanh(gammai tox)
    */
 
-  num = c_add(Zsemi               , c_rmul(Zi    , c_tanh(c_rmul(tox,gammai))));
-  den = c_add(c_complex(Zi,0.0)   , c_mul (Zsemi , c_tanh(c_rmul(tox,gammai))));
+  num = c_add(Zsemi               , c_rmul(Zi    , c_tanh(c_rmul(line->subs->tox,gammai))));
+  den = c_add(c_complex(Zi,0.0)   , c_mul (Zsemi , c_tanh(c_rmul(line->subs->tox,gammai))));
   
   Ztot = c_rmul(Zi,c_div(num,den));
 
@@ -370,7 +354,6 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 #endif
 
   lambda_mis = 2.0*M_PI/beta_mis;
-
   slowwave = beta_mis/(omega*sqrt(mu0*e0));
 
 #ifdef DEBUG_CALC
@@ -451,7 +434,6 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
  *
  */
 
-//#define DEBUG
 
 int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 {
@@ -473,7 +455,10 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 
 
   /* the optimization variables, current, min/max, and previous values */
-  double var, varmax, varmin, varold;
+  double var=0;
+  double varmax=0;
+  double varmin=0;
+  double varold=0;
   
   /* errors due to the above values for the optimization variable */
   double err, errmax, errmin, errold;
@@ -485,7 +470,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   double sign;
 
   /* pointer to which parameter of the line is being optimized */
-  double *optpar;
+  double *optpar=NULL;
 
   /* number of iterations so far, and max number allowed */
   int iters;
@@ -752,11 +737,10 @@ ic_microstrip_line *ic_microstrip_line_new(void)
   ic_microstrip_line *newline;
 
   newline = (ic_microstrip_line *) malloc(sizeof(ic_microstrip_line));
-  if(newline == NULL)
-    {
-      fprintf(stderr,"ic_microstrip_line_new: malloc() failed\n");
-      exit(1);
-    }
+  if(newline == NULL) {
+    fprintf(stderr,"ic_microstrip_line_new: malloc() failed\n");
+    exit(1);
+  }
 
   newline->subs = ic_microstrip_subs_new();
 
@@ -795,7 +779,7 @@ ic_microstrip_line *ic_microstrip_line_new(void)
   newline->subs->rough_units = "m";
 
 #if defined(DEBUG_CALC) || defined(DEBUG_SYN)
-  printf("ic_microstrip_line_new():  calling ic_microstrip_calc\n");
+  printf("ic_microstrip_line_new():  calling ic_microstrip_calc(%p,%g)\n",newline,newline->freq);
 #endif
 
   /* and do a calculation to finish the initialization */
@@ -813,8 +797,7 @@ ic_microstrip_subs *ic_microstrip_subs_new(void)
   ic_microstrip_subs *newsubs;
 
   newsubs = (ic_microstrip_subs *) malloc(sizeof(ic_microstrip_subs));
-  if(newsubs == NULL)
-    {
+  if(newsubs == NULL) {
       fprintf(stderr,"ic_microstrip_subs_new: malloc() failed\n");
       exit(1);
     }
@@ -867,160 +850,4 @@ static double Zustrip(double h, double w, double t, double er)
 
   return(z0);
 }
-
-
-
-#define def
-
-#ifdef notdef
-int main(int argc, char **argv)
-{
-  double h=.062;
-  double w=.050;
-  double t=.0014;
-  double er=4.8;
-  complex x,j0,j1,y0,y1;
-
-  ic_microstrip_line *line;
-  double freq;
-
-#ifdef def
-  line = ic_microstrip_line_new();
-
-  /* Metal resistivity relative to copper */
-  line->subs->rho = 1.0;
-  /* Metal thickness (m) */
-  line->subs->tmet = 5.0e-6;
-  /* Metalization roughness */
-  line->subs->rough = 1.0e-6;
-
-  /* Microstrip width */
-  line->w = 160e-6;
-
-  /* Oxide thickness */
-  line->subs->tox = 1.0e-6;
-  /* Oxide relative permittivity */
-  line->subs->eox = 4.0;
-
-
-  /* Substrate dielectric thickness */
-  line->subs->h = 250e-6;
-  /* Substrate relative permittivity */
-  line->subs->es = 10.0;
-  /* Substrate conductivity s/m*/
-  line->subs->sigmas = 100.0;
-
-  freq = 1.0e9;
-
-  if (argc == 9){
-    printf("Using external data\n");
-    /* Metal resistivity relative to copper */
-    line->subs->rho = 1.0;
-    /* Metal thickness (m) */
-    line->subs->tmet = atof(argv[1]);
-    /* Metalization roughness */
-    line->subs->rough = 1.0;
-    
-    /* Microstrip width */
-    line->w = atof(argv[2]);
-    
-    /* Oxide thickness */
-    line->subs->tox = atof(argv[3]);
-    /* Oxide relative permittivity */
-    line->subs->eox = atof(argv[4]);
-    
-    
-    /* Substrate dielectric thickness */
-    line->subs->h = atof(argv[5]);
-    /* Substrate relative permittivity */
-    line->subs->es = atof(argv[6]);
-    /* Substrate conductivity s/m*/
-    line->subs->sigmas = atof(argv[7]);
-    
-    freq = atof(argv[8]);
-  }
-
-
-  printf("-------------- IC Microstrip Analysis ----------\n");
-  printf("Metal width                 = %g um\n",line->w*1e6);
-  printf("Oxide thickness             = %g um\n",line->subs->tox*1e6);
-  printf("Oxide dielectric const.     = %g \n",line->subs->eox);
-  printf("Substrate thickness         = %g um\n",line->subs->h*1e6);
-  printf("Substrate dielectric const. = %g \n",line->subs->es);
-  printf("Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
-  printf("Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
-  printf("Frequency                   = %g GHz\n",freq/1e9); 
-  printf("-------------- ---------------------- ----------\n");
-
-  ic_microstrip_calc(line,freq);
-
-#endif
-
-#ifdef notdef
-  printf("------------------------------------\n");
-  while(w<=0.120){
-    printf("z0 (w=%6.4f) = %6.4f\n",w,Zustrip(h,w,t,er));
-    w = w + 0.010;
-  }
-  printf("------------------------------------\n");
-#endif
-
-#ifdef notdef
-  w=-4.0;
-  while (w <= 4.001){
-    x = c_complex(1.0,w);
-    j0 = c_bessel_J0(x);
-    w = w + 0.1;
-    printf("J0( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-  }
-#endif
-
-#ifdef notdef
-  w=-4.0;
-  while (w <= 4.001){
-    x = c_complex(0.0,w);
-    j1 = c_bessel_J1(x);
-    w = w + 0.1;
-    printf("J1( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j1),IMAG(j1));
-  }
-#endif
-
-#ifdef notdef
-  w=-4.0;
-  while (w <= 4.001){
-    x = c_complex(w,0.0);
-    j0 = c_bessel_Y0(x);
-    w = w + 0.1;
-    printf("Y0( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-  }
-#endif
-
-#ifdef notdef
-  x = c_complex(0.1,0.2);
-  j0 = c_cosh(x);
-  printf("cosh( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-
-  x = c_complex(0.1,-0.2);
-  j0 = c_cosh(x);
-  printf("cosh( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-
-  x = c_complex(-0.1,-0.2);
-  j0 = c_cosh(x);
-  printf("cosh( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-
-  x = c_complex(-0.1,0.2);
-  j0 = c_cosh(x);
-  printf("cosh( %8.6f + i %8.6f ) = %8.6f + i %8.6f\n",
-	   REAL(x),IMAG(x),REAL(j0),IMAG(j0));
-#endif
-
-  return 0;
-}
-#endif
 
