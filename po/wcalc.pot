@@ -7,108 +7,118 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-12-17 10:36-0500\n"
-"PO-Revision-Date: 2002-12-29 14:05-0500\n"
+"POT-Creation-Date: 2003-01-02 01:44-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtk-wcalc/menus.c:87
+#: gtk-wcalc/menus.c:89
 msgid "/_File"
 msgstr ""
 
-#: gtk-wcalc/menus.c:88
+#: gtk-wcalc/menus.c:90
 msgid "/File/_New"
 msgstr ""
 
-#: gtk-wcalc/menus.c:89
+#: gtk-wcalc/menus.c:91
 msgid "/File/sep1"
 msgstr ""
 
-#: gtk-wcalc/menus.c:90
+#: gtk-wcalc/menus.c:92
 msgid "/File/_Open"
 msgstr ""
 
-#: gtk-wcalc/menus.c:91
+#: gtk-wcalc/menus.c:93
 msgid "/File/_Save"
 msgstr ""
 
-#: gtk-wcalc/menus.c:92
+#: gtk-wcalc/menus.c:94
 msgid "/File/Save _As"
 msgstr ""
 
-#: gtk-wcalc/menus.c:93
+#: gtk-wcalc/menus.c:95
 msgid "/File/sep2"
 msgstr ""
 
-#: gtk-wcalc/menus.c:94
+#: gtk-wcalc/menus.c:96
 msgid "/File/_Print"
 msgstr ""
 
-#: gtk-wcalc/menus.c:95
+#: gtk-wcalc/menus.c:97
 msgid "/File/sep3"
 msgstr ""
 
-#: gtk-wcalc/menus.c:96
+#: gtk-wcalc/menus.c:98
 msgid "/File/Close"
 msgstr ""
 
-#: gtk-wcalc/menus.c:97
+#: gtk-wcalc/menus.c:99
 msgid "/File/Quit"
 msgstr ""
 
-#: gtk-wcalc/menus.c:98
+#: gtk-wcalc/menus.c:100
 msgid "/_Options"
 msgstr ""
 
-#: gtk-wcalc/menus.c:99
+#: gtk-wcalc/menus.c:101
 msgid "/Options/tearoff"
 msgstr ""
 
-#: gtk-wcalc/menus.c:100
+#: gtk-wcalc/menus.c:102
 msgid "/_Window"
 msgstr ""
 
-#: gtk-wcalc/menus.c:101
+#: gtk-wcalc/menus.c:103
 msgid "/Window/tearoff"
 msgstr ""
 
-#: gtk-wcalc/menus.c:102
+#: gtk-wcalc/menus.c:104
 msgid "/_Help"
 msgstr ""
 
-#: gtk-wcalc/menus.c:103
+#: gtk-wcalc/menus.c:105
 msgid "/_Help/About"
 msgstr ""
 
-#: gtk-wcalc/menus.c:104
+#: gtk-wcalc/menus.c:106
 msgid "/_Help/Copyright"
 msgstr ""
 
-#: gtk-wcalc/menus.c:105
+#: gtk-wcalc/menus.c:107
 msgid "/_Help/_Material Properties"
 msgstr ""
 
-#: gtk-wcalc/menus.c:106
+#: gtk-wcalc/menus.c:108
 msgid "/_Help/_Material Properties/_Permeabilities"
 msgstr ""
 
-#: gtk-wcalc/menus.c:108
+#: gtk-wcalc/menus.c:110
 msgid "/_Help/_Material Properties/_Permitivities"
 msgstr ""
 
-#: gtk-wcalc/menus.c:110
+#: gtk-wcalc/menus.c:112
 msgid "/_Help/_Material Properties/_Resistivities"
 msgstr ""
 
-#: gtk-wcalc/menus.c:112
+#: gtk-wcalc/menus.c:114
 msgid "/_Help/_Material Properties/_Units"
 msgstr ""
 
-#: gtk-wcalc/menus.c:114
+#: gtk-wcalc/menus.c:116
 msgid "/_Help/_Material Properties/_Wire Sizes"
+msgstr ""
+
+#: gtk-wcalc/menus.c:200
+#, c-format
+msgid "window_close():  Called with input pointer %p\n"
+msgstr ""
+
+#: gtk-wcalc/menus.c:201
+#, c-format
+msgid "window_close():  I will destroy window %p\n"
 msgstr ""
 
 #: gtk-wcalc/start.c:241
@@ -130,501 +140,4 @@ msgid ""
 "and it may crash and/or give totally wrong results.\n"
 "Unless you're a developer you should not be using\n"
 "this."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/cgi-wcalc/air_coil.cgi.c:256
-msgid "%s:  checking for a cookie to load\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/cgi-wcalc/air_coil.cgi.c:262
-msgid "%s:  loading cookie \"%s\"\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/cgi-wcalc/air_coil.cgi.c:266
-msgid "%s:  finished loading cookie\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:84
-msgid "About WaveCalc"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:88
-msgid "Ok"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:156
-msgid "WaveCalc Copyright"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:220
-msgid "Table of Wire Diameter vs. A.W.G."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:227
-msgid "Permeabilities of Common Materials"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:234
-msgid "Permitivities of Common Materials"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:241
-msgid "Resistivities of Common Materials"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/about.c:248
-msgid "Unit Conversion Factors"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:96
-msgid "Air Core Inductor Analysis/Synthesis"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:111
-msgid "air_coil_gui_new: malloc() failed\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:164
-msgid "air_coil_gui.c:air_coil_gui_init():  calling air_coil_load\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:167
-msgid ""
-"ERROR:  Could not load the air coil\n"
-"data from the chosen file.  The values\n"
-"may be corrupted.\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:175
-msgid "air_coil_gui.c:air_coil_gui_init():  new using defaults\n"
-msgstr ""
-
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:249
-msgid "um"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:262
-msgid "Analyze"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:276
-msgid "<-Synthesize"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:343
-msgid "Wire Dia."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:351
-msgid "AWG"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:355
-msgid "Resistivity"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:415
-msgid "Inductance"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:446
-msgid "Frequency"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:564
-msgid "Len."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:636
-msgid "Output Values"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:653
-msgid "Closewound Inductance"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:657
-msgid "Len/Closewound Len"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:661
-msgid "@freq"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:758
-msgid "Values Out Of Sync"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:794
-msgid "air_coil_gui.c:calculate():  Nf = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:800
-msgid "air_coil_gui.c:calculate():  I.D. = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:806
-msgid "air_coil_gui.c:calculate():  len = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:812
-msgid "air_coil_gui.c:calculate():  fill = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:818
-msgid "air_coil_gui.c:calculate():  AWGf = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:824
-msgid "air_coil_gui.c:calculate():  rho = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:830
-msgid "air_coil_gui.c:calculate():  L = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:839
-msgid "air_coil_gui.c:calculate():  freq = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:853
-msgid "error in mstrip callback"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:857
-msgid "air_coil_gui.c:calculate():  finished calculation\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:869
-msgid ""
-"Values out of\n"
-"range."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:933
-msgid "Number of turns"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:934
-msgid "Inside diameter of the coil"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:935
-msgid "Length of the coil"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:936
-msgid "Ratio of the length of the coil to the length of a closewound coil"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:938
-msgid "Wire diameter"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:940
-msgid "Resistivity of the wire"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:941
-msgid "Inductance of the coil"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:942
-msgid "Frequency of operation"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:988
-msgid "air_coil_gui.c:dia_units_changed:  units=\"%s\", sf=%g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:1006
-msgid "air_coil_gui.c:len_units_changed:  units=\"%s\", sf=%g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:1025
-msgid "air_coil_gui.c:L_units_changed:  units=\"%s\", sf=%g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/air_coil_gui.c:1048
-msgid "air_coil_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/alert.c:113
-msgid "Wcalc:  Warning!"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:105
-msgid "Coaxial Transmission Line Analysis/Synthesis"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:120
-msgid "coax_gui_new: malloc() failed\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:180
-msgid "coax_gui.c:coax_gui_init():  calling coax_load\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:183
-msgid ""
-"ERROR:  Could not load the coax line\n"
-"data from the chosen file.  The values\n"
-"may be corrupted.\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:191
-msgid "coax_gui.c:coax_gui_init():  new using defaults\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:257
-msgid "Analyze->"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:266
-msgid "Calculate electrical characteristics from physical parameters"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:284
-msgid "Synthesize 'a' and physical length to obtain the requested characteristic impedance and electrical length."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:298
-msgid "Synthesize 'b' and physical length to obtain the requested characteristic impedance and electrical length."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:312
-msgid "Synthesize 'c' and physical length to obtain the requested characteristic impedance and electrical length."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:338
-msgid "Synthesize relative dielectric constant and physical length to obtain the requested characteristic impedance and electrical length."
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:390
-msgid "Length"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:402
-msgid "Er"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:405
-msgid "Tand"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:451
-msgid "TE10 Cutoff"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:479
-msgid "RHO_a"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:491
-msgid "RHO_b"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:673
-msgid "delay"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:681
-msgid "loss"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:693
-msgid "Conductor loss"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:696
-msgid "dB/m"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:699
-msgid "Dielectric loss"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:868
-msgid "abct_units_changed():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:869
-msgid "abct_units_changed():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:902
-msgid "len_units_changed():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:903
-msgid "len_units_changed():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:926
-msgid "freq_units_changed():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:927
-msgid "freq_units_changed():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:935
-msgid "freq_units_update():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:936
-msgid "freq_units_update():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:953
-msgid "rho_units_ohm_changed():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:954
-msgid "rho_units_ohm_changed():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:962
-msgid "rho_units_ohm_update():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:963
-msgid "rho_units_ohm_update():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:981
-msgid "rho_units_m_changed():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:982
-msgid "rho_units_m_changed():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:990
-msgid "rho_units_m_update():  gui  =%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:991
-msgid "rho_units_m_update():  which=%d\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1045
-msgid "coax_gui.c:calculate():  a = %g m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1054
-msgid "coax_gui.c:calculate():  b = %g m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1063
-msgid "coax_gui.c:calculate():  c = %g m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1072
-msgid "coax_gui.c:calculate():  len = %g m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1081
-msgid "coax_gui.c:calculate():  er = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1087
-msgid "coax_gui.c:calculate():  tand = %g\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1093
-msgid "coax_gui.c:calculate():  emax = %g V/m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1102
-msgid "coax_gui.c:calculate():  tshield = %g m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1111
-msgid "coax_gui.c:calculate():  z0 = %g Ohms\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1117
-msgid "coax_gui.c:calculate():  elen = %g Degrees\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1123
-msgid "coax_gui.c:calculate():  freq = %g Hz (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1147
-msgid "coax_gui.c:calculate():  rho_b = %g Ohm-m (%g %s)\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1171
-msgid "error in coax callback.  data=\"%s\""
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1176
-msgid "coax_gui.c:calculate():  finished calculation\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1320
-msgid "Radius of inner conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1321
-msgid "Inner radius of outer conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1322
-msgid "Offset of inner conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1323
-msgid "Physical length of line"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1324
-msgid "Dielectric relative permitivitty"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1325
-msgid "Dielectric loss tangent"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1326
-msgid "Breakdown field strength in the dielectric"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1328
-msgid "Thickness of outer conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1330
-msgid "Characteristic impedance"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1331
-msgid "Electrical length of line"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1333
-msgid "Cutoff frequency for TE10 mode"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1335
-msgid "Resistivity of inner conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1336
-msgid "Resistivity of outer conductor"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/coax_gui.c:1355
-msgid "coax_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/menus.c:185
-msgid "window_close():  Called with input pointer %p\n"
-msgstr ""
-
-#: /homes/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/menus.c:186
-msgid "window_close():  I will destroy window %p\n"
 msgstr ""
