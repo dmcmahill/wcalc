@@ -1,4 +1,4 @@
-/* $Id: air_coil_syn.c,v 1.1 2001/10/23 00:48:37 dan Exp $ */
+/* $Id: air_coil_syn.c,v 1.2 2001/10/24 01:25:22 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -223,11 +223,11 @@ void mexFunction(
      */
     coil->L        = L[*ind_L];
     coil->Nf       = N[*ind_N];
-    coil->len      = INCH2M(len[*ind_len]);
+    coil->len      = len[*ind_len];
     coil->fill     = fill[*ind_fill];
     coil->AWGf     = AWG[*ind_AWG];
     coil->rho      = rho[*ind_rho];
-    coil->dia      = INCH2M(dia[*ind_dia]);
+    coil->dia      = dia[*ind_dia];
     coil->freq     = freq[*ind_freq];
 
     if(flag[*ind_flag]==0) {
