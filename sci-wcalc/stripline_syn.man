@@ -1,4 +1,4 @@
-.\" $Id: stripline_syn.man,v 1.1 2001/11/02 00:33:31 dan Exp $
+.\" $Id: stripline_syn.man,v 1.2 2001/11/03 17:24:58 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -102,8 +102,8 @@ impedance and electrical length.  The desired characteristic
 impedance and some of the physical
 dimensions of the stripline line are given as inputs and the
 remaining dimensions are calculated.
-
 .nf
+
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
    (  dielectric,er         \\/           /|\\     (
@@ -113,6 +113,7 @@ remaining dimensions are calculated.
    (             <---W--->  /\\           \\|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
+
 .fi
 .SH EXAMPLE
 .nf

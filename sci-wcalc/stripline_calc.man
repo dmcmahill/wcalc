@@ -1,4 +1,4 @@
-.\" $Id: stripline_calc.man,v 1.1 2001/11/02 00:33:30 dan Exp $
+.\" $Id: stripline_calc.man,v 1.2 2001/11/03 17:24:58 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -83,8 +83,8 @@ stripline transmission line. The physical
 dimensions of the stripline line are given as inputs and the
 characteristic impedance, effective dielectric constant, loss and
 open circuit end correction are calculated.
-
 .nf
+
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
    (  dielectric,er         \\/           /|\\     (
@@ -94,6 +94,7 @@ open circuit end correction are calculated.
    (             <---W--->  /\\           \\|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
+
 .fi
 .SH EXAMPLE
 .nf

@@ -1,4 +1,4 @@
-.\" $Id: ic_microstrip_syn.man,v 1.1 2001/11/03 02:11:15 dan Exp $
+.\" $Id: ic_microstrip_syn.man,v 1.2 2001/11/03 17:24:57 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -109,6 +109,7 @@ remaining dimensions are calculated.
 The model accounts for dispersion (frequency dependent propagation
 velocity).
 .nf
+
                  |<--W-->|
                   _______    
                  | metal | <- tmet,rho,rough
@@ -120,7 +121,8 @@ velocity).
    (                                     \\|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
- .fi
+
+.fi
 .SH EXAMPLE
 .nf
 sf=1.0e-6;        // micron to meters conversion factor
