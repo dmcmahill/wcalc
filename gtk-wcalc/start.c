@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.5 2002/01/03 03:54:50 dan Exp $ */
+/* $Id: start.c,v 1.6 2002/05/10 22:52:45 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -62,7 +62,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001\n" \
+"WaveCalc is copyright (C) 1999, 2000, 2001, 2002\n" \
 "Dan McMahill."
 
 
@@ -282,8 +282,13 @@ void start_popup(void)
    * The info Area
    */
 
-  //  my_vbox = gtk_vbox_new (FALSE, 1);
-  //  gtk_box_pack_start (GTK_BOX (main_vbox), my_vbox, FALSE, TRUE, 0);
+  /*  my_vbox = gtk_vbox_new (FALSE, 1); */
+  /*  gtk_box_pack_start (GTK_BOX (main_vbox), my_vbox, FALSE, TRUE, 0); */
+
+  label = gtk_label_new ("**** WARNING ****\nThis is a development snapshot\nand it may crash and/or give totally wrong results.\nUnless you're a developer you should not be using\nthis.");
+  gtk_box_pack_start (GTK_BOX (main_vbox),
+		      label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
 
   /* now for the pixmap from gdk */
 
