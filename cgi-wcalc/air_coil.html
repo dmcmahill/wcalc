@@ -1,4 +1,4 @@
-<!-- $Id: air_coil.html,v 1.2 2001/10/17 03:41:49 dan Exp $ -->
+<!-- $Id: air_coil.html,v 1.3 2001/11/07 04:55:34 dan Exp $ -->
 <!--
  * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
@@ -128,10 +128,16 @@ Air Core Inductor
 </TR>
 
 <TR>
-<TD>Solenoid length (L)</TD>
+<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="fill" <@d@coil->use_fill@>>Solenoid length (L)</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@M2INCH(coil->len)@>"></TD>
 <TD>[inches]</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_nfix" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="RADIO" NAME="use_fill" VALUE="fill" <@d@coil->use_fill@>>Fill (L/Lmin)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="fill" VALUE="<@g@coil->fill@>"></TD>
+<TD></TD>
 </TR>
 
 <TR>

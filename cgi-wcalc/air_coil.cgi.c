@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.3 2001/11/07 04:55:34 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.4 2001/11/07 05:48:19 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -62,6 +62,7 @@
 #define defRHO    1.0
 #define defDIA    0.25
 #define defLEN    0.50
+#define defFILL   2.0
 #define defFREQ   10.0
 #define defIND    100.0
 
@@ -80,6 +81,8 @@ int cgiMain(void){
   double freq, freq_Hz;
 
   double N,AWG,rho,dia,len,L;
+
+  char *fill_choices[] = {"yes","no"};
 
 /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
@@ -127,6 +130,17 @@ int cgiMain(void){
     input_err=1;
   }
 
+  /* Solenoid fill  */
+  if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
+     cgiFormSuccess){
+    input_err=1;
+  }
+
+  if (cgiFormRadio("use_fill",fill_choices,2,&coil->use_fill,0) !=
+     cgiFormSuccess){
+    input_err=1;
+  }
+      
   /* Frequency of operation units */
 
   /* Frequency of operation  */
@@ -182,6 +196,7 @@ int cgiMain(void){
     len   = defLEN;
     L     = defIND;
     freq  = defFREQ;
+    coil->fill = defFILL;
   }
 
 
@@ -212,6 +227,7 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",coil->rho);
     fprintf(cgiOut,"CGI: Inside Diameter             = %g inches\n",M2INCH(coil->dia));
     fprintf(cgiOut,"CGI: Solenoid length             = %g inches\n",M2INCH(coil->len));
+    fprintf(cgiOut,"CGI: Solenoid fill               = %g \n",coil->fill);
     fprintf(cgiOut,"CGI: Frequency                   = %g MHz\n",freq_Hz/1e6); 
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"</pre>\n");
