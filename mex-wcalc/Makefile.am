@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.3 2001/10/22 11:28:50 dan Exp $
+## $Id: Makefile.am,v 1.4 2001/10/23 02:56:12 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -73,10 +73,12 @@ runmatlab:	$(srcdir)/runmatlab.in
 
 BUILT_SOURCES=	air_coil_calc.m
 
+EXTRA_DIST=	runmatlab.in copyright.m
+
 # All the new suffix rules
 
-SUFFIXES = .c .${MEXSFX}
+SUFFIXES = .c .${MEXSFX} .m
 
 .c.${MEXSFX} :
-	$(MEX) -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc $*.c
+	$(MEX) -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc $*.c -L$(top_srcdir)/libwcalc/.libs -lwcalc
 
