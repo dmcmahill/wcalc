@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.20 2004/08/02 21:09:24 dan Exp $ */
+/* $Id: gtk-units.c,v 1.21 2004/08/05 12:39:43 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -417,6 +417,9 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
     gtk_signal_connect(GTK_OBJECT(item), "activate",
 		       GTK_SIGNAL_FUNC(callback), 
 		       (gpointer) gui);
+    gtk_signal_connect (GTK_OBJECT (item), "activate",
+			GTK_SIGNAL_FUNC (vals_changedCB), wcgui);
+
     data = wc_units_menu_data_new(i);
     data->opt_menu = opt_menu;
     gtk_object_set_user_data(GTK_OBJECT(item),(gpointer *) data);

@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.19 2004/07/29 02:38:24 dan Exp $ */
+/* $Id: wcalc.c,v 1.20 2004/08/02 21:09:00 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -572,6 +572,15 @@ void wcalc_set_title(Wcalc * wcalc)
 
 }
 
+void vals_changedCB(GtkWidget *widget, gpointer data )
+{
+  Wcalc *gui;
+
+  gui = WC_WCALC(data);
+
+  if(gui->init_done)
+    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
+}
 
 
 

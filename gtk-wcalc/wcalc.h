@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.13 2004/07/29 00:02:19 dan Exp $ */
+/*      $Id: wcalc.h,v 1.14 2004/08/02 21:09:27 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -167,6 +167,9 @@ typedef struct WCALC
    */
   GList *units_menu_list;
   
+  /* a text widget used for calculation status (values in/out of sync) */
+  GtkWidget *text_status;
+
   /*  
   model_new;
   gui_init;
@@ -184,6 +187,7 @@ Wcalc *Wcalc_new(void);
 
 void wcalc_save_needed(GtkWidget *widget, gpointer data );
 void wcalc_set_title(Wcalc * wcalc);
+void vals_changedCB(GtkWidget *widget, gpointer data );
 
 #define WC_WCALC(x)      ((Wcalc *) (x))
 

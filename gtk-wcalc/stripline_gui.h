@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.h,v 1.5 2004/07/24 04:07:24 dan Exp $ */
+/* $Id: stripline_gui.h,v 1.6 2004/07/29 12:33:41 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -70,7 +70,6 @@ typedef struct STRIPLINE_GUI
    * Picture vbox and its contents
    */
   GtkWidget *picture_vbox;
-  GtkWidget *text_status;
 
   /*
    * list of labels which change when we change physical units

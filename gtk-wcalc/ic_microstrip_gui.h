@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.h,v 1.3 2002/06/12 11:30:14 dan Exp $ */
+/* $Id: ic_microstrip_gui.h,v 1.4 2004/07/29 00:02:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -73,8 +73,6 @@ typedef struct IC_MICROSTRIP_GUI
    * Picture vbox and its contents
    */
   GtkWidget *picture_vbox;
-  GtkWidget *text_status;
-
 
 } ic_microstrip_gui;
 

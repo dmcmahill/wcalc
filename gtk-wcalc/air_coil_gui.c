@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.12 2004/07/30 04:37:21 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.13 2004/08/05 12:12:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -76,8 +76,6 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( air_coil_gui *gui);
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
-
-static void vals_changedCB( GtkWidget *widget, gpointer data );
 
 static void values_init(air_coil_gui *gui, 
 			GtkWidget *value_parent,
@@ -630,9 +628,9 @@ static void picture_init(air_coil_gui *gui, GtkWidget *window,GtkWidget *parent)
   gtk_widget_show( pixmapwid );
     
 
-  gui->text_status = gtk_label_new( _("Values Out Of Sync") );
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (gui->text_status);
+  WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
+  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
+  gtk_widget_show (WC_WCALC(gui)->text_status);
   
 
 }
@@ -756,9 +754,9 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
    * "values out of sync" field
    */
   if (rslt==0)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "");
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
   else
-    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values out of\nrange."));
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), _("Values out of\nrange."));
 
 }
 
@@ -835,16 +833,6 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_L, _("Inductance of the coil"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
   
-}
-
-static void vals_changedCB(GtkWidget *widget, gpointer data )
-{
-  air_coil_gui *gui;
-
-  gui = WC_AIR_COIL_GUI(data);
-
-  if(WC_WCALC(gui)->init_done)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
 }
 
 static void use_len_pressed(GtkWidget *widget, gpointer data )

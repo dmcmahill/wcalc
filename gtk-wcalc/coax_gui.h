@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.12 2004/07/21 23:01:14 dan Exp $ */
+/* $Id: coax_gui.h,v 1.13 2004/07/23 22:11:55 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -86,7 +86,6 @@ typedef struct COAX_GUI
    * Picture vbox and its contents
    */
   GtkWidget *picture_vbox;
-  GtkWidget *text_status;
 
 } coax_gui;
 

@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.h,v 1.4 2002/06/12 11:30:09 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.5 2004/07/26 01:07:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -80,7 +80,6 @@ typedef struct AIR_COIL_GUI
    * Picture vbox and its contents
    */
   GtkWidget *picture_vbox;
-  GtkWidget *text_status;
 
 
 } air_coil_gui;

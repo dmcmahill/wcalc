@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.15 2004/08/02 21:09:26 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.16 2004/08/05 12:12:27 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -73,8 +73,6 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( stripline_gui *gui);
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
-
-static void vals_changedCB( GtkWidget *widget, gpointer data );
 
 static void values_init(stripline_gui *gui, GtkWidget *parent);
 static void outputs_init(stripline_gui *gui, GtkWidget *parent);
@@ -719,9 +717,9 @@ static void picture_init(stripline_gui *gui, GtkWidget *window,GtkWidget *parent
   gtk_widget_show( pixmapwid );
     
 
-  gui->text_status = gtk_label_new( "Values Out Of Sync" );
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (gui->text_status);
+  WC_WCALC(gui)->text_status = gtk_label_new( "Values Out Of Sync" );
+  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
+  gtk_widget_show (WC_WCALC(gui)->text_status);
   
 
 }
@@ -858,9 +856,9 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
    * "values out of sync" field
    */
   if (rslt==0)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "");
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
   else
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values out of\nrange.");
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
 
 }
 
@@ -978,17 +976,6 @@ static void tooltip_init(stripline_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
   
 }
-
-static void vals_changedCB(GtkWidget *widget, gpointer data )
-{
-  stripline_gui *gui;
-
-  gui = WC_STRIPLINE_GUI(data);
-
-  if(WC_WCALC(gui)->init_done)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
-}
-
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
