@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/29 11:57:38 dan Exp $
+## $Id: Makefile.am,v 1.1 2001/10/30 03:46:41 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -38,7 +38,7 @@ vpath %.man $(top_srcdir)/sci-wcalc
 include $(top_srcdir)/sci-wcalc/mex.mk
 #MEX_SRCS=air_coil_calc.c
 
-pkgimgdatadir= @HTMLDIR@
+pkgimgdatadir= @HTMLDIR@/mex-man
 pkgimgdata_DATA= ${SCIMANHTML}
 
 # the include= is a ':' seperated search path for SSI directives
@@ -52,7 +52,7 @@ SCICATS=	${SCIMANS:.man=.cat}
 all-local:	whatis.incl
 
 clean-local:	
-	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl
+	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
 
 
 BUILT_SOURCES= left_column.incl main_footer.incl
