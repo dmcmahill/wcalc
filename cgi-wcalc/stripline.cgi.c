@@ -1,4 +1,4 @@
-/* $Id: stripline.cgi.c,v 1.2 2001/09/15 02:57:41 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.1 2001/10/05 01:28:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -290,7 +290,7 @@ int cgiMain(void){
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    stripline_syn(line,freq_Hz,SLISYN_ES);
+    stripline_syn(line,freq_Hz,SLISYN_ER);
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
     break;
