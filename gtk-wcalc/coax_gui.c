@@ -1,7 +1,7 @@
-/* $Id: coax_gui.c,v 1.16 2002/07/05 23:18:39 dan Exp $ */
+/* $Id: coax_gui.c,v 1.17 2002/08/07 01:22:34 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -117,7 +117,7 @@ coax_gui *coax_gui_new(void)
   new_gui = (coax_gui *) malloc(sizeof(coax_gui));
   if(new_gui == NULL)
     {
-      fprintf(stderr,"coax_gui_new: malloc() failed\n");
+      fprintf(stderr,_("coax_gui_new: malloc() failed\n"));
       exit(1);
     }
 
@@ -177,18 +177,18 @@ void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
   /* if this is an open from file calculator, then open the file */
   if (fp != NULL){
 #ifdef DEBUG
-    g_print("coax_gui.c:coax_gui_init():  calling coax_load\n");
+    g_print(_("coax_gui.c:coax_gui_init():  calling coax_load\n"));
 #endif
     if (coax_load(gui->line,fp) != 0) {
-      alert("ERROR:  Could not load the coax line\n"
+      alert(_("ERROR:  Could not load the coax line\n"
 	    "data from the chosen file.  The values\n"
-	    "may be corrupted.\n");
+	    "may be corrupted.\n"));
     }
   }
   else{
     /* put any default values here */
 #ifdef DEBUG
-    g_print("coax_gui.c:coax_gui_init():  new using defaults\n");
+    g_print(_("coax_gui.c:coax_gui_init():  new using defaults\n"));
 #endif
   }
 
@@ -241,7 +241,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label( GTK_FRAME(frame), "Analysis/Synthesis Values" );
+  gtk_frame_set_label( GTK_FRAME(frame), _("Analysis/Synthesis Values") );
   gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
@@ -254,7 +254,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
 
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze->");
+  button = gtk_button_new_with_label (_("Analyze->"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -263,8 +263,8 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 6, 7, 0,
 		   GTK_EXPAND|GTK_FILL,XPAD,YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       "Calculate electrical characteristics "
-		       "from physical parameters",
+		       _("Calculate electrical characteristics "
+		       "from physical parameters"),
 		       NULL);
 
   
@@ -273,7 +273,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
    */
 
   /* a */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -281,13 +281,13 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,XPAD,YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       "Synthesize 'a' and physical length to "
+		       _("Synthesize 'a' and physical length to "
 		       "obtain the requested characteristic "
-		       "impedance and electrical length.",
+		       "impedance and electrical length."),
 		       NULL);
 
   /* b */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -295,13 +295,13 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2, 0,0,XPAD,YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       "Synthesize 'b' and physical length to "
+		       _("Synthesize 'b' and physical length to "
 		       "obtain the requested characteristic "
-		       "impedance and electrical length.",
+		       "impedance and electrical length."),
 		       NULL);
 
   /* c */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -309,13 +309,13 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,XPAD,YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       "Synthesize 'c' and physical length to "
+		       _("Synthesize 'c' and physical length to "
 		       "obtain the requested characteristic "
-		       "impedance and electrical length.",
+		       "impedance and electrical length."),
 		       NULL);
 
   /* Len */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -327,7 +327,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_widget_show (button);
 
   /* er */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -335,10 +335,10 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 4, 5, 0,0,XPAD,YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       "Synthesize relative dielectric constant "
+		       _("Synthesize relative dielectric constant "
 		       "and physical length to "
 		       "obtain the requested characteristic "
-		       "impedance and electrical length.",
+		       "impedance and electrical length."),
 		       NULL);
 
 
@@ -387,7 +387,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_misc_set_alignment(GTK_MISC(gui->units_c),0,0);
 
 
-  text = gtk_label_new( "Length" );
+  text = gtk_label_new( _("Length") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -399,10 +399,10 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_len_units,FALSE,FALSE,0);
 
 
-  text = gtk_label_new( "Er" );
+  text = gtk_label_new( _("Er") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Tand" );
+  text = gtk_label_new( _("Tand") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "Emax" );
@@ -448,7 +448,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   /* ---------------- TE10 Cutoff -------------- */
 
-  text = gtk_label_new( "TE10 Cutoff" );
+  text = gtk_label_new( _("TE10 Cutoff") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -459,7 +459,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
 
   /* ---------------- Frequency label/entry/units menu -------------- */
-  text = gtk_label_new( "Frequency" );
+  text = gtk_label_new( _("Frequency") );
   gtk_table_attach(GTK_TABLE(table), text,
 		   5, 6, 3, 4, 0,0,XPAD,YPAD);
 
@@ -476,7 +476,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   /* ---------------- RHO_a label/entry/units menu -------------- */
 
-  text = gtk_label_new( "RHO_a" );
+  text = gtk_label_new( _("RHO_a") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -488,7 +488,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   /* ---------------- RHO_b label/entry/units menu -------------- */
 
-  text = gtk_label_new( "RHO_b" );
+  text = gtk_label_new( _("RHO_b") );
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 5, 6, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gtk_misc_set_alignment(GTK_MISC(text),0,0);
@@ -505,7 +505,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   wc_composite_units_attach_units_label(ug,text);
 
 
-  text = gtk_label_new( "RHO_b" );
+  text = gtk_label_new( _("RHO_b") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 5, 6, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "" );
@@ -661,7 +661,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label( GTK_FRAME(frame), "Output Values" );
+  gtk_frame_set_label( GTK_FRAME(frame), _("Output Values") );
   gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
@@ -670,7 +670,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
 
   /* Text labels */
-  text = gtk_label_new( "delay" );
+  text = gtk_label_new( _("delay") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -678,7 +678,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), gui->units_delay, 
 		   2, 3, 0, 1, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "loss" );
+  text = gtk_label_new( _("loss") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "dB" );
@@ -690,16 +690,16 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "dB/m" );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Conductor loss" );
+  text = gtk_label_new( _("Conductor loss") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "dB/m" );
+  text = gtk_label_new( _("dB/m") );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 3, 4, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "Dielectric loss" );
+  text = gtk_label_new( _("Dielectric loss") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
 
-  text = gtk_label_new( "dB/m" );
+  text = gtk_label_new( _("dB/m") );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 4, 5, 0,0,XPAD,YPAD);
 
   text = gtk_label_new( "L" );
@@ -848,7 +848,7 @@ static void picture_init(coax_gui *gui, GtkWidget *window,GtkWidget *parent)
   gtk_widget_show( pixmapwid );
     
 
-  gui->text_status = gtk_label_new( "Values Out Of Sync" );
+  gui->text_status = gtk_label_new( _("Values Out Of Sync") );
   gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_status, FALSE, FALSE, 0);
   gtk_widget_show (gui->text_status);
   
@@ -865,8 +865,8 @@ static void abct_units_changed( GtkWidget *w, gpointer data)
 
   which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
-  g_print("abct_units_changed():  gui  =%p\n",gui);
-  g_print("abct_units_changed():  which=%d\n",which);
+  g_print(_("abct_units_changed():  gui  =%p\n"),gui);
+  g_print(_("abct_units_changed():  which=%d\n"),which);
 #endif
   abct_units_update(gui,which);
 }
@@ -899,8 +899,8 @@ static void len_units_changed( GtkWidget *w, gpointer data )
 
   which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
-  g_print("len_units_changed():  gui  =%p\n",gui);
-  g_print("len_units_changed():  which=%d\n",which);
+  g_print(_("len_units_changed():  gui  =%p\n"),gui);
+  g_print(_("len_units_changed():  which=%d\n"),which);
 #endif
   len_units_update(gui,which);
 
@@ -923,8 +923,8 @@ static void freq_units_changed( GtkWidget *w, gpointer data )
 
   which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
-  g_print("freq_units_changed():  gui  =%p\n",gui);
-  g_print("freq_units_changed():  which=%d\n",which);
+  g_print(_("freq_units_changed():  gui  =%p\n"),gui);
+  g_print(_("freq_units_changed():  which=%d\n"),which);
 #endif
   freq_units_update(gui,which);
 }
@@ -932,8 +932,8 @@ static void freq_units_changed( GtkWidget *w, gpointer data )
 static void freq_units_update( coax_gui *gui,int which)
 {
 #ifdef DEBUG
-  g_print("freq_units_update():  gui  =%p\n",gui);
-  g_print("freq_units_update():  which=%d\n",which);
+  g_print(_("freq_units_update():  gui  =%p\n"),gui);
+  g_print(_("freq_units_update():  which=%d\n"),which);
 #endif
 
   gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_freq_units), which);
@@ -950,8 +950,8 @@ static void rho_units_ohm_changed( GtkWidget *w, gpointer data )
 
   which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
-  g_print("rho_units_ohm_changed():  gui  =%p\n",gui);
-  g_print("rho_units_ohm_changed():  which=%d\n",which);
+  g_print(_("rho_units_ohm_changed():  gui  =%p\n"),gui);
+  g_print(_("rho_units_ohm_changed():  which=%d\n"),which);
 #endif
   rho_units_ohm_update(gui,which);
 }
@@ -959,8 +959,8 @@ static void rho_units_ohm_changed( GtkWidget *w, gpointer data )
 static void rho_units_ohm_update( coax_gui *gui,int which)
 {
 #ifdef DEBUG
-  g_print("rho_units_ohm_update():  gui  =%p\n",gui);
-  g_print("rho_units_ohm_update():  which=%d\n",which);
+  g_print(_("rho_units_ohm_update():  gui  =%p\n"),gui);
+  g_print(_("rho_units_ohm_update():  which=%d\n"),which);
 #endif
 
   gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_rho_units_ohm), which);
@@ -978,8 +978,8 @@ static void rho_units_m_changed( GtkWidget *w, gpointer data )
 
   which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
-  g_print("rho_units_m_changed():  gui  =%p\n",gui);
-  g_print("rho_units_m_changed():  which=%d\n",which);
+  g_print(_("rho_units_m_changed():  gui  =%p\n"),gui);
+  g_print(_("rho_units_m_changed():  which=%d\n"),which);
 #endif
   rho_units_m_update(gui,which);
 }
@@ -987,8 +987,8 @@ static void rho_units_m_changed( GtkWidget *w, gpointer data )
 static void rho_units_m_update( coax_gui *gui,int which)
 {
 #ifdef DEBUG
-  g_print("rho_units_m_update():  gui  =%p\n",gui);
-  g_print("rho_units_m_update():  which=%d\n",which);
+  g_print(_("rho_units_m_update():  gui  =%p\n"),gui);
+  g_print(_("rho_units_m_update():  which=%d\n"),which);
 #endif
 
   gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_rho_units_m), which);
@@ -1042,7 +1042,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) ); 
   gui->line->a=atof(vstr)*gui->line->a_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  a = %g m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  a = %g m (%g %s)\n"),
 	  gui->line->a,
 	  gui->line->a/gui->line->a_sf,
 	  gui->line->a_units);
@@ -1051,7 +1051,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) ); 
   gui->line->b=atof(vstr)*gui->line->b_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  b = %g m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  b = %g m (%g %s)\n"),
 	  gui->line->b,
 	  gui->line->b/gui->line->b_sf,
 	  gui->line->b_units);
@@ -1060,7 +1060,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_c) ); 
   gui->line->c=atof(vstr)*gui->line->c_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  c = %g m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  c = %g m (%g %s)\n"),
 	  gui->line->c,
 	  gui->line->c/gui->line->c_sf,
 	  gui->line->c_units);
@@ -1069,7 +1069,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_len) ); 
   gui->line->len=atof(vstr)*gui->line->len_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  len = %g m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  len = %g m (%g %s)\n"),
 	  gui->line->len,
 	  gui->line->len/gui->line->len_sf,
 	  gui->line->len_units);
@@ -1078,19 +1078,19 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
   gui->line->er=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  er = %g\n",gui->line->er);
+  g_print(_("coax_gui.c:calculate():  er = %g\n"),gui->line->er);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tand) ); 
   gui->line->tand=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  tand = %g\n",gui->line->tand);
+  g_print(_("coax_gui.c:calculate():  tand = %g\n"),gui->line->tand);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_emax) ); 
   gui->line->emax=atof(vstr)*gui->line->emax_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  emax = %g V/m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  emax = %g V/m (%g %s)\n"),
 	  gui->line->emax,
 	  gui->line->emax/gui->line->emax_sf,
 	  gui->line->emax_units);
@@ -1099,7 +1099,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tshield) ); 
   gui->line->tshield=atof(vstr)*gui->line->tshield_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  tshield = %g m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  tshield = %g m (%g %s)\n"),
 	  gui->line->tshield,
 	  gui->line->tshield/gui->line->tshield_sf,
 	  gui->line->tshield_units);
@@ -1108,19 +1108,19 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
   gui->line->z0=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  z0 = %g Ohms\n",gui->line->z0);
+  g_print(_("coax_gui.c:calculate():  z0 = %g Ohms\n"),gui->line->z0);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
   gui->line->elen=atof(vstr);
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  elen = %g Degrees\n",gui->line->elen);
+  g_print(_("coax_gui.c:calculate():  elen = %g Degrees\n"),gui->line->elen);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
   gui->line->freq=atof(vstr)*gui->line->freq_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  freq = %g Hz (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  freq = %g Hz (%g %s)\n"),
 	  gui->line->freq,
 	  gui->line->freq/gui->line->freq_sf,
 	  gui->line->freq_units);
@@ -1144,7 +1144,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_b) ); 
   gui->line->rho_b=atof(vstr)*gui->line->rho_b_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  rho_b = %g Ohm-m (%g %s)\n",
+  g_print(_("coax_gui.c:calculate():  rho_b = %g Ohm-m (%g %s)\n"),
 	  gui->line->rho_b,
 	  gui->line->rho_b/gui->line->rho_b_sf,
 	  gui->line->rho_b_units);
@@ -1168,12 +1168,12 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
     rslt=coax_syn(gui->line,gui->line->freq,COAXSYN_ER);
   }
   else{
-    g_print("error in coax callback.  data=\"%s\"",(char *)data);
+    g_print(_("error in coax callback.  data=\"%s\""),(char *)data);
     exit(1);
   }
   
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  finished calculation\n");
+  g_print(_("coax_gui.c:calculate():  finished calculation\n"));
 #endif
 
   update_display(gui);
@@ -1185,7 +1185,7 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   if (rslt==0)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "");
   else
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values out of\nrange.");
+    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values out of\nrange."));
 
 }
 
@@ -1317,23 +1317,23 @@ static void tooltip_init(coax_gui *gui)
 
   tips = gtk_tooltips_new();
 
-  gtk_tooltips_set_tip(tips, gui->text_a, "Radius of inner conductor", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_b, "Inner radius of outer conductor", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_c, "Offset of inner conductor", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_len, "Physical length of line", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_er, "Dielectric relative permitivitty", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tand, "Dielectric loss tangent", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_emax, "Breakdown field strength "
-		       "in the dielectric", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tshield, "Thickness of outer conductor", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_a, _("Radius of inner conductor"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_b, _("Inner radius of outer conductor"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_c, _("Offset of inner conductor"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_len, _("Physical length of line"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_er, _("Dielectric relative permitivitty"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tand, _("Dielectric loss tangent"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_emax, _("Breakdown field strength "
+		       "in the dielectric"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tshield, _("Thickness of outer conductor"), NULL);
 
-  gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length of line", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_fc, "Cutoff frequency for"
-		       " TE10 mode", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rho_a, "Resistivity of inner conductor", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rho_b, "Resistivity of outer conductor", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_z0, _("Characteristic impedance"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_elen, _("Electrical length of line"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_fc, _("Cutoff frequency for"
+		       " TE10 mode"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_rho_a, _("Resistivity of inner conductor"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_rho_b, _("Resistivity of outer conductor"), NULL);
 
   
 }
@@ -1345,14 +1345,14 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
   gui = WC_COAX_GUI(data);
 
   if(WC_WCALC(gui)->init_done)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
+    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
 }
 
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
 #ifdef DEBUG
-  g_print("coax_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n",
+  g_print(_("coax_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n"),
 	  wcalc,fp,name);
 #endif
   coax_save(WC_COAX_GUI(wcalc)->line,fp,name);

@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.6 2002/06/25 21:30:21 dan Exp $ */
+/* $Id: menus.c,v 1.7 2002/12/17 15:29:35 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -60,6 +60,8 @@ static void window_close (gpointer data,
 			  GtkWidget *widget);
 
 
+static gchar *wc_menu_translate(const gchar *path, gpointer data);
+
 /* This is the GtkItemFactoryEntry structure used to generate new menus.
    Item 1: The menu path. The letter after the underscore indicates an
            accelerator key once the menu is open.
@@ -115,6 +117,14 @@ static GtkItemFactoryEntry static_menu_items[] = {
                         NULL,          AWG_popup,0, NULL },
 };
 
+static gchar *wc_menu_translate(const gchar *path, gpointer data)
+{
+  gchar *str;
+  
+  str = _(path);
+  return str;
+}
+
 void get_main_menu( Wcalc *wcalc,
 		    GtkWidget  *window,
                     GtkWidget **menubar )
@@ -158,6 +168,11 @@ void get_main_menu( Wcalc *wcalc,
   item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", 
 				       accel_group);
 
+  gtk_item_factory_set_translate_func(item_factory,
+				      wc_menu_translate,
+				      NULL,
+				      NULL);
+
   /* This function generates the menu items. Pass the item factory,
      the number of items in the array, the array itself, and any
      callback data for the the menu items. */
@@ -182,8 +197,8 @@ static void  window_close (gpointer data,
   window = ( (Wcalc *) data)->window;
 
 #ifdef DEBUG
-  printf("window_close():  Called with input pointer %p\n",(void *) data);
-  printf("window_close():  I will destroy window %p\n",window);
+  printf(_("window_close():  Called with input pointer %p\n"),(void *) data);
+  printf(_("window_close():  I will destroy window %p\n"),window);
 #endif
 
   /* blow away the window */

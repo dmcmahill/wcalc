@@ -1,7 +1,7 @@
-/* $Id: air_coil_gui.c,v 1.6 2002/05/10 22:52:35 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.7 2002/06/12 11:30:09 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -108,7 +108,7 @@ air_coil_gui *air_coil_gui_new(void)
   new_gui = (air_coil_gui *) malloc(sizeof(air_coil_gui));
   if(new_gui == NULL)
     {
-      fprintf(stderr,"air_coil_gui_new: malloc() failed\n");
+      fprintf(stderr,_("air_coil_gui_new: malloc() failed\n"));
       exit(1);
     }
 
@@ -161,18 +161,18 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
   /* if this is an open from file calculator, then open the file */
   if (fp != NULL){
 #ifdef DEBUG
-    g_print("air_coil_gui.c:air_coil_gui_init():  calling air_coil_load\n");
+    g_print(_("air_coil_gui.c:air_coil_gui_init():  calling air_coil_load\n"));
 #endif
     if (air_coil_load(gui->coil,fp) != 0) {
-      alert("ERROR:  Could not load the air coil\n"
+      alert(_("ERROR:  Could not load the air coil\n"
 	    "data from the chosen file.  The values\n"
-	    "may be corrupted.\n");
+	    "may be corrupted.\n"));
     }
   }
   else{
     /* put any default values here */
 #ifdef DEBUG
-    g_print("air_coil_gui.c:air_coil_gui_init():  new using defaults\n");
+    g_print(_("air_coil_gui.c:air_coil_gui_init():  new using defaults\n"));
 #endif
   }
 
@@ -228,7 +228,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label( GTK_FRAME(frame), "Analysis/Synthesis Values" );
+  gtk_frame_set_label( GTK_FRAME(frame), _("Analysis/Synthesis Values") );
   gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
@@ -259,7 +259,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   FreqUnits = g_list_append(FreqUnits,"GHz");
 
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze");
+  button = gtk_button_new_with_label (_("Analyze"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -273,7 +273,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
    */
 
   /* N */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -283,7 +283,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show (button);
 
   /* I.D. */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -294,7 +294,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show (button);
 
   /* Len */
-  button = gtk_button_new_with_label ("<-Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -340,7 +340,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 
 
   /* Wire Size */
-  text = gtk_label_new( "Wire Dia." );
+  text = gtk_label_new( _("Wire Dia.") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -348,11 +348,11 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 0, 1, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gtk_widget_show(hbox);
-  text = gtk_label_new( "AWG" );
+  text = gtk_label_new( _("AWG") );
   gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Resistivity" );
+  text = gtk_label_new( _("Resistivity") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -412,7 +412,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 
   */
 
-  text = gtk_label_new( "Inductance" );
+  text = gtk_label_new( _("Inductance") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -443,7 +443,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show(combo);
 
 
-  text = gtk_label_new( "Frequency" );
+  text = gtk_label_new( _("Frequency") );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -561,7 +561,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 
   /* Coil length and units */
   
-  button = gtk_radio_button_new_with_label (NULL, "Len.");
+  button = gtk_radio_button_new_with_label (NULL, _("Len."));
   gtk_table_attach(GTK_TABLE(table), button, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(use_len_pressed),
@@ -633,7 +633,7 @@ static void outputs_init(air_coil_gui *gui, GtkWidget *parent)
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label( GTK_FRAME(frame), "Output Values" );
+  gtk_frame_set_label( GTK_FRAME(frame), _("Output Values") );
   gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
@@ -646,19 +646,19 @@ static void outputs_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Self Resonant Freq." );
+  text = gtk_label_new( _("Self Resonant Freq.") );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Closewound Inductance" );
+  text = gtk_label_new( _("Closewound Inductance") );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Len/Closewound Len" );
+  text = gtk_label_new( _("Len/Closewound Len") );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  gui->label_Qfreq = gtk_label_new( "@freq" );
+  gui->label_Qfreq = gtk_label_new( _("@freq") );
   gtk_table_attach(GTK_TABLE(table), gui->label_Qfreq, 2, 3, 0, 1,
 		   0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_Qfreq);
@@ -755,7 +755,7 @@ static void picture_init(air_coil_gui *gui, GtkWidget *window,GtkWidget *parent)
   gtk_widget_show( pixmapwid );
     
 
-  gui->text_status = gtk_label_new( "Values Out Of Sync" );
+  gui->text_status = gtk_label_new( _("Values Out Of Sync") );
   gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_status, FALSE, FALSE, 0);
   gtk_widget_show (gui->text_status);
   
@@ -791,43 +791,43 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Nf) ); 
   gui->coil->Nf=atof(vstr);
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  Nf = %g\n",gui->coil->Nf);
+  g_print(_("air_coil_gui.c:calculate():  Nf = %g\n"),gui->coil->Nf);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_dia) ); 
   gui->coil->dia=atof(vstr)*gui->coil->dia_sf;
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  I.D. = %g\n",gui->coil->dia);
+  g_print(_("air_coil_gui.c:calculate():  I.D. = %g\n"),gui->coil->dia);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_len) ); 
   gui->coil->len=atof(vstr)*gui->coil->len_sf;
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  len = %g\n",gui->coil->len);
+  g_print(_("air_coil_gui.c:calculate():  len = %g\n"),gui->coil->len);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fill) ); 
   gui->coil->fill=atof(vstr);
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  fill = %g\n",gui->coil->fill);
+  g_print(_("air_coil_gui.c:calculate():  fill = %g\n"),gui->coil->fill);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_AWGf) ); 
   gui->coil->AWGf=atof(vstr);
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  AWGf = %g\n",gui->coil->AWGf);
+  g_print(_("air_coil_gui.c:calculate():  AWGf = %g\n"),gui->coil->AWGf);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
   gui->coil->rho=atof(vstr);
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  rho = %g\n",gui->coil->rho);
+  g_print(_("air_coil_gui.c:calculate():  rho = %g\n"),gui->coil->rho);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_L) ); 
   gui->coil->L=atof(vstr)*gui->coil->L_sf;
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  L = %g\n",gui->coil->L);
+  g_print(_("air_coil_gui.c:calculate():  L = %g\n"),gui->coil->L);
 #endif
 
 
@@ -836,7 +836,7 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
   gui->coil->freq=atof(vstr)*gui->coil->freq_sf;
 
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  freq = %g\n",gui->coil->freq);
+  g_print(_("air_coil_gui.c:calculate():  freq = %g\n"),gui->coil->freq);
 #endif
 
   // XXX should use an enum and switch...
@@ -850,11 +850,11 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
     rslt=air_coil_syn(gui->coil,gui->coil->freq,AIRCOILSYN_NFIX);
   }
   else{
-    g_print("error in mstrip callback");
+    g_print(_("error in mstrip callback"));
   }
   
 #ifdef DEBUG
-  g_print("air_coil_gui.c:calculate():  finished calculation\n");
+  g_print(_("air_coil_gui.c:calculate():  finished calculation\n"));
 #endif
 
   update_display(gui);
@@ -866,7 +866,7 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
   if (rslt==0)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "");
   else
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values out of\nrange.");
+    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values out of\nrange."));
 
 }
 
@@ -930,16 +930,16 @@ static void tooltip_init(air_coil_gui *gui)
 
   tips = gtk_tooltips_new();
 
-  gtk_tooltips_set_tip(tips, gui->text_Nf, "Number of turns", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_dia, "Inside diameter of the coil", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_len, "Length of the coil", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_fill, "Ratio of the length of the coil"
-		       " to the length of a closewound coil",NULL);
-  gtk_tooltips_set_tip(tips, gui->text_AWGf, "Wire diameter", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_Nf, _("Number of turns"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_dia, _("Inside diameter of the coil"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_len, _("Length of the coil"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_fill, _("Ratio of the length of the coil"
+		       " to the length of a closewound coil"),NULL);
+  gtk_tooltips_set_tip(tips, gui->text_AWGf, _("Wire diameter"), NULL);
 
-  gtk_tooltips_set_tip(tips, gui->text_rho, "Resistivity of the wire", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_L, "Inductance of the coil", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_rho, _("Resistivity of the wire"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_L, _("Inductance of the coil"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
   
 }
 
@@ -950,7 +950,7 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
   gui = WC_AIR_COIL_GUI(data);
 
   if(WC_WCALC(gui)->init_done)
-    gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
+    gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
 }
 
 static void use_len_pressed(GtkWidget *widget, gpointer data )
@@ -985,7 +985,7 @@ static void dia_units_changed(GtkWidget *widget, gpointer data )
     gui->coil->dia_units = vstr;
     gui->coil->dia_sf = phys_units_get_sf(vstr);
 #ifdef DEBUG
-    g_print("air_coil_gui.c:dia_units_changed:  units=\"%s\", sf=%g\n",
+    g_print(_("air_coil_gui.c:dia_units_changed:  units=\"%s\", sf=%g\n"),
 	    gui->coil->dia_units, gui->coil->dia_sf);
 #endif
   }
@@ -1003,7 +1003,7 @@ static void len_units_changed(GtkWidget *widget, gpointer data )
     gui->coil->len_units = vstr;
     gui->coil->len_sf = phys_units_get_sf(vstr);
 #ifdef DEBUG
-    g_print("air_coil_gui.c:len_units_changed:  units=\"%s\", sf=%g\n",
+    g_print(_("air_coil_gui.c:len_units_changed:  units=\"%s\", sf=%g\n"),
 	    gui->coil->len_units, gui->coil->len_sf);
 #endif
   }
@@ -1022,7 +1022,7 @@ static void L_units_changed(GtkWidget *widget, gpointer data )
     gui->coil->L_sf = induct_units_get_sf(vstr);
     gtk_label_set_text(GTK_LABEL(gui->label_Lmax_units),vstr);
 #ifdef DEBUG
-    g_print("air_coil_gui.c:L_units_changed:  units=\"%s\", sf=%g\n",
+    g_print(_("air_coil_gui.c:L_units_changed:  units=\"%s\", sf=%g\n"),
 	    gui->coil->L_units, gui->coil->L_sf);
 #endif
   }
@@ -1045,7 +1045,7 @@ static void freq_units_changed(GtkWidget *widget, gpointer data )
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
 #ifdef DEBUG
-  g_print("air_coil_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n",
+  g_print(_("air_coil_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n"),
 	  wcalc,fp,name);
 #endif
   air_coil_save(WC_AIR_COIL_GUI(wcalc)->coil,fp,name);

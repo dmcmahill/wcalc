@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.8 2002/06/12 11:30:08 dan Exp $ */
+/* $Id: about.c,v 1.9 2002/06/25 21:30:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -38,6 +38,16 @@
 #include <gtk/gtk.h>
 
 #include "about.h"
+#include "gettext.h"
+#ifndef _
+#define _(String) gettext (String)
+#endif
+#ifndef gettext_noop
+#define gettext_noop(String) (String)
+#endif
+#ifndef N_
+#define N_(String) gettext_noop (String)
+#endif
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -81,11 +91,11 @@ void about_popup(void)
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "About WaveCalc");
+  gtk_window_set_title (GTK_WINDOW (window), _("About WaveCalc"));
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
+  button = gtk_button_new_with_label (_("Ok"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
@@ -153,11 +163,11 @@ void copyright_popup(void)
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "WaveCalc Copyright");
+  gtk_window_set_title (GTK_WINDOW (window), _("WaveCalc Copyright"));
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
+  button = gtk_button_new_with_label (_("Ok"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
@@ -193,7 +203,7 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), char *title)
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
+  button = gtk_button_new_with_label (_("Ok"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
@@ -217,35 +227,35 @@ void AWG_popup(void)
 {
   extern GtkWidget * AWG_table(void);
   asciitab_popup(AWG_table,
-		 "Table of Wire Diameter vs. A.W.G.");
+		 _("Table of Wire Diameter vs. A.W.G."));
 }
 
 void permeability_popup(void)
 {
   extern GtkWidget * permeability_table(void);
   asciitab_popup(permeability_table,
-		 "Permeabilities of Common Materials");
+		 _("Permeabilities of Common Materials"));
 }
 
 void permitivity_popup(void)
 {
   extern GtkWidget * permitivity_table(void);
   asciitab_popup(permitivity_table,
-		 "Permitivities of Common Materials");
+		 _("Permitivities of Common Materials"));
 }
 
 void resistivity_popup(void)
 {
   extern GtkWidget * resistivity_table(void);
   asciitab_popup(resistivity_table,
-		 "Resistivities of Common Materials");
+		 _("Resistivities of Common Materials"));
 }
 
 void units_popup(void)
 {
   extern GtkWidget * units_table(void);
   asciitab_popup(units_table,
-		 "Unit Conversion Factors");
+		 _("Unit Conversion Factors"));
 }
 
 

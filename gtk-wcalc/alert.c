@@ -1,7 +1,7 @@
-/* $Id: alert.c,v 1.2 2002/05/10 22:52:37 dan Exp $ */
+/* $Id: alert.c,v 1.3 2002/06/12 11:30:10 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,18 @@
 
 #include "alert.h"
 #include "pixmaps/alert_fig.xpm"
+
+#include "gettext.h"
+
+#ifndef _
+#define _(String) gettext (String)
+#endif
+#ifndef gettext_noop
+#define gettext_noop(String) (String)
+#endif
+#ifndef N_
+#define N_(String) gettext_noop (String)
+#endif
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -110,7 +122,7 @@ void alert(const char *fmt,...)
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "Wcalc:  Warning!");
+  gtk_window_set_title (GTK_WINDOW (window), _("Wcalc:  Warning!"));
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /*
@@ -149,7 +161,7 @@ void alert(const char *fmt,...)
    */
 
   /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
+  button = gtk_button_new_with_label (_("Ok"));
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
