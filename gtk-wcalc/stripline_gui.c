@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.2 2001/11/11 03:46:52 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.3 2001/11/11 15:54:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -755,7 +755,7 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
 
 #ifdef DEBUG
   g_print("stripline_gui.c:calculate():  calculation with \"%s\"\n",
-	  data);
+	  (char *) data);
 #endif
 
   /* XXX should use an enum and switch... */
