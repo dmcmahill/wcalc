@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.10 2002/01/14 22:03:06 dan Exp $ */
+/* $Id: coax.c,v 1.11 2002/01/14 23:18:07 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -662,6 +662,7 @@ coax_line *coax_new()
   newline->R_units = "Ohms/m";
   newline->C_units = "Farads/m";
   newline->G_units = "Siemens/m";
+  newline->fc_units = frequency_units[units_get_index(frequency_units,newline->fc_sf)].name;
   newline->freq_units = frequency_units[units_get_index(frequency_units,newline->freq_sf)].name;
   newline->delay_units = time_units[units_get_index(time_units,newline->delay_sf)].name;
 
