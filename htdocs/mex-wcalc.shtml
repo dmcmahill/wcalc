@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: mex-wcalc.shtml,v 1.1 2001/10/27 16:05:43 dan Exp $ -->
+<!-- $Id: mex-wcalc.shtml,v 1.2 2001/10/27 16:24:03 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -62,7 +62,7 @@ stripline synthesis,
     the mex-wcalc directory must be in your Matlab search path.  
     This is done by executing the following command at the Matlab
     prompt:<br>
-    <code>addpath /usr/local/libexec/wcalc/mex-wcalc</code><br>
+    <code>&nbsp;&nbsp;&nbsp;&gt;&gt; addpath /usr/local/libexec/wcalc/mex-wcalc</code><br>
     You will need to replace <code>/usr/local</code> with the
     installation prefix chosen when Wcalc was compiled.  If you want
     to always have access to Mex-Wcalc when you run Matlab, you can
@@ -75,7 +75,7 @@ stripline synthesis,
     If you want to try out Mex-Wcalc before it is installed in its
     final location, execute the following command at the Matlab
     prompt:<br>
-    <code>addpath /tmp/wcalc-0.2/mex-wcalc</code><br>
+    <code>&nbsp;&nbsp;&nbsp;&gt;&gt; addpath /tmp/wcalc-0.2/mex-wcalc</code><br>
     You will need to replace <code>/tmp/wcalc-0.2</code> with the
     path to the directory where Wcalc has been compiled.
     </p>
@@ -88,9 +88,9 @@ stripline synthesis,
     documentation on the various functions is available via Matlab's
     online help.  For a list of functions enter the following at the
     Matlab prompt:<br>
-    <code>help wcalc</code><br>
+    <code>&nbsp;&nbsp;&nbsp;&gt;&gt; help wcalc</code><br>
     For help on the individual functions use:<br>
-    <code>help function_name</code><br>
+    <code>&nbsp;&nbsp;&nbsp;&gt;&gt; help function_name</code><br>
     </p>
 
     <H2>Examples</H2>
