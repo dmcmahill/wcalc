@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: sci-wcalc.shtml,v 1.4 2001/10/27 16:43:27 dan Exp $ -->
+<!-- $Id: sci-wcalc.shtml,v 1.5 2001/10/27 17:12:10 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -94,8 +94,9 @@ stripline synthesis,
     <p>
     You can view the Scilab man pages for the Sci-Wcalc functions
     online:
-    <UL>
-    </UL>
+    <table>
+    <!--#include virtual="sci-man/whatis.incl"-->
+    </table>
     </p>
 
     </font>
