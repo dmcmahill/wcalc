@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2003/01/18 00:07:27 dan Exp $
+## $Id: Makefile.am,v 1.13 2004/08/11 13:04:38 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -49,24 +49,18 @@ MEXSFX=	@MEXSFX@
 # base directory for matlab installation
 MATLAB_DIR=	@MATLAB_DIR@
 
-pkglibexecdir=	${libexecdir}/${PACKAGE}-${VERSION}
+pkglibexecdir=	${libexecdir}/matlab/${PACKAGE}-${VERSION}
 pkglibexec_DATA=	${MEX_FILES} ${MEX_MANS}
 
 noinst_SCRIPTS=		runmatlab
 
-lib_LTLIBRARIES=	libmex-alert.la
-libmex_alert_la_SOURCES=	alert.c
 INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 
-AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
-
 # various MEX flags
-# XXX fixme:
-MEXLDFLAGS=	-L../libwcalc/.libs -lwcalc \
-		-L.libs -lmex-alert
+MEXLDFLAGS=	@WCALC_MEXLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I.. -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
@@ -86,7 +80,7 @@ EXTRA_DIST=	runmatlab.in copyright.m
 SUFFIXES= .c .${MEXSFX} .m .cat .man
 
 .c.${MEXSFX} :
-	$(MEX) $(MEXINCLUDES) $< $(MEXLDFLAGS)
+	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 .cat.m :
 	@echo "****************************************************"

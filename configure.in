@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.72 2004/11/11 01:32:20 dan Exp $
+dnl $Id: configure.in,v 1.73 2004/11/12 02:14:20 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -842,6 +842,7 @@ AC_MSG_RESULT([$MEXSFX])
 fi
 AC_SUBST(MEXSFX)
 
+WCALC_MEXLIBS=""
 if test "X$MEX_WCALC" != "X"; then
 	AC_MSG_CHECKING([if $MEX is matlab mex])
 	AC_LANG(C)
@@ -875,9 +876,9 @@ void mexFunction(
 )
 
 	wc_save_LIBS="$LIBS"
+	rpath=""
 	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
-	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
-	    LIBS="$wd_save_LIBS ${fl}path"
+	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $MEX accepts ${fl}path for runtime libraries])
 	    AC_LINK_IFELSE([
 #include "mex.h"
@@ -912,7 +913,37 @@ void mexFunction(
 	ac_exeext=$save_ac_exeext
 	AC_LANG(C)
 
+	# if we're building our own libwcalc, then 
+	# we don't have an installed place to link to yet
+	AC_MSG_CHECKING([for the matlab mex library arguments])
+	if test "X$WCALC_LIBS" = "X" ; then
+		if test "X$MEX_RPATH" = "X" ; then
+			WCALC_MEXLIBS="-L../libwcalc/.libs -lwcalc -lm"
+		else
+			WCALC_MEXLIBS="-L../libwcalc/.libs ${MEX_RPATH}\${libdir} -lwcalc -lm"
+		fi
+	else
+		for fl in $WCALC_LIBS ; do
+			case $fl in
+			-l* )
+				WCALC_MEXLIBS="$WCALC_MEXLIBS $fl"
+				;;
+			-L*)
+				WCALC_MEXLIBS="$WCALC_MEXLIBS $fl"
+				if test "X$MEX_RPATH" != "X" ; then
+					tmp=`echo $fl | sed 's/^-L//'`
+					WCALC_MEXLIBS="$WCALC_MEXLIBS ${MEX_RPATH}/${tmp}"
+				fi
+				;;
+			*)
+				AC_MSG_WARN([Skipping option $fl])
+				;;
+			esac
+		done
+	fi
+	AC_MSG_RESULT([$WCALC_MEXLIBS])
 fi
+AC_SUBST(WCALC_MEXLIBS)
 
 # ------------- end of matlab mex -------------------
 
