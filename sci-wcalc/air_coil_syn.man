@@ -1,4 +1,4 @@
-.\" $Id: air_coil_syn.man,v 1.1 2001/10/23 00:47:51 dan Exp $
+.\" $Id: air_coil_syn.man,v 1.2 2001/10/23 02:04:39 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -104,8 +104,7 @@ rho=1;            // not used yet
 dia=0.25*0.0254;  // 0.25 inches inside diameter
 f=10e6;           // 10 MHz operation
 flag=1;           // use fill to calculate length
-[L,Q,SRF,len_out,fill_out] = ...
-  air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
+[L,Q,SRF,len_out,fill_out] = air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
 printf("L=%g nH",L*1e9);
 printf("Q=%g at %g MHz",Q,f/1e6);
 printf("Self Resonant Freq=%g MHz",SRF/1e6);
