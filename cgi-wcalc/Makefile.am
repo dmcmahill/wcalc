@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.15 2002/01/07 10:42:19 dan Exp $
+## $Id: Makefile.am,v 1.16 2002/01/14 20:24:38 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -43,12 +43,20 @@ cgibinexec_PROGRAMS = \
 	microstrip.cgi \
 	stripline.cgi
 
+noinst_PROGRAMS = \
+	capture.cgi \
+	cookie.cgi
+
 # These are used by all programs:
 COMMON = alert.c cgic.c cgic.h cgi-units.c cgi-units.h
 
 air_coil_cgi_SOURCES = air_coil.cgi.c ${COMMON}
 
+capture_cgi_SOURCES = capture.c ${COMMON}
+
 coax_cgi_SOURCES = coax.cgi.c ${COMMON}
+
+cookie_cgi_SOURCES = cookie.cgi.c ${COMMON}
 
 coupled_microstrip_cgi_SOURCES = coupled_microstrip.cgi.c ${COMMON}
 
