@@ -1,0 +1,29 @@
+$Id$
+
+WARNING:  This is not finished yet....  But it needs to be so I can
+have a cleaner way to add new models.
+
+
+This file tries to document the procedure for adding a new model
+to the program.
+
+Each structure should have two files.  We will use microstrip as
+the example.
+
+microstrip.c	 =  GUI independent file which contains all of the
+		    model information and equations.
+
+microstrip_gui.c =  file which contains the methods to interface the
+		    main program to the microstrip calculations.
+
+
+The microstrip_gui.{c,h} should define an object of type
+'microstrip_gui' that provides the following methods:
+
+->load(FILE*)		loads the data from a file.
+->save(FILE*)		saves the data to a file.
+->analyze(void)		performs an analysis
+->synthesize(void)	performs a synthesis
+->display(void)		updates the display
+
+

@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.1 2001/02/11 19:26:24 dan Exp $ */
+/* $Id: menus.c,v 1.2 2001/02/12 18:00:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -39,12 +39,6 @@
 #include "about.h"
 #include "files.h"
 
-/* Obligatory basic callback */
-static void print_hello( GtkWidget *w,
-                         gpointer   data )
-{
-  g_message ("Hello, World!\n");
-}
 
 /* This is the GtkItemFactoryEntry structure used to generate new menus.
    Item 1: The menu path. The letter after the underscore indicates an
@@ -69,7 +63,7 @@ static void print_hello( GtkWidget *w,
            "<LastBranch>"     -> create a right justified branch 
 */
 
-
+#ifdef notdef /* XXX need to re-enable and add print, save,open... */
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",         NULL,         NULL, 0, "<Branch>" },
   { "/File/tearoff",  NULL,            0, 0, "<Tearoff>"},
@@ -84,8 +78,19 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/_Help/About",                  NULL, about_popup, 0, NULL },
   { "/_Help/Copyright",              NULL, copyright_popup, 0, NULL },
 };
-
-
+#else
+static GtkItemFactoryEntry menu_items[] = {
+  { "/_File",         NULL,         NULL, 0, "<Branch>" },
+  { "/File/tearoff",  NULL,            0, 0, "<Tearoff>"},
+  { "/File/sep1",     NULL,         NULL, 0, "<Separator>" },
+  { "/File/Quit",     "<control>Q", gtk_main_quit, 0, NULL },
+  { "/_Options",                     NULL,        NULL, 0, "<Branch>" },
+  { "/Options/tearoff",              NULL,           0, 0, "<Tearoff>"},
+  { "/_Help",                        NULL,        NULL, 0, "<LastBranch>" },
+  { "/_Help/About",                  NULL, about_popup, 0, NULL },
+  { "/_Help/Copyright",              NULL, copyright_popup, 0, NULL },
+};
+#endif
 
 void get_main_menu( GtkWidget  *window,
                     GtkWidget **menubar )

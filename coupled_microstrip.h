@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: coupled_microstrip.h,v 1.1 2001/02/11 19:26:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -58,7 +58,7 @@ typedef struct CMICROSTRIP_REC
 
   double keff,loss,losslen,skindepth;
 
-  mstrip_substrate *subs;
+  microstrip_subs *subs;
 
 } cmicrostrip_rec;
 

@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.1 2001/02/11 19:26:22 dan Exp $ */
+/* $Id: files.c,v 1.2 2001/02/12 18:00:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -73,10 +73,9 @@ void wcalc_save_as(void)
   /* made it modal */
   gtk_grab_add(filew);
 
-  /*  
   gtk_signal_connect (GTK_OBJECT (filew), "destroy",
-		      (GtkSignalFunc) destroy, &filew);
-		      */
+		      GTK_SIGNAL_FUNC (destroy),
+		      &filew);
 
   /* Connect the ok_button to file_ok_sel function */
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
@@ -99,6 +98,36 @@ void wcalc_save_as(void)
 
 void wcalc_open(void)
 {
+  GtkWidget *filew;
+    
+     
+  /* Create a new file selection widget */
+  filew = gtk_file_selection_new ("Open");
+
+  /* made it modal */
+  gtk_grab_add(filew);
+
+  gtk_signal_connect (GTK_OBJECT (filew), "destroy",
+		      GTK_SIGNAL_FUNC (destroy),
+		      &filew);
+
+  /* Connect the ok_button to file_ok_sel function */
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
+		      "clicked", (GtkSignalFunc) file_ok_sel, filew );
+    
+  /* Connect the cancel_button to destroy the widget */
+  gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
+		     "clicked", 
+		     (GtkSignalFunc) file_cancel_sel,
+		     GTK_OBJECT (filew));
+    
+  /* Lets set the filename, as if this were a save dialog, and we are giving
+     a default filename */
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
+				   "penguin.png");
+  
+  gtk_widget_show(filew);
+
 }
 
 void wcalc_save(void)

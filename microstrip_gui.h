@@ -33,40 +33,25 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MICROSTRIP_H_
-#define __MICROSTRIP_H_
+#ifndef __MICROSTRIP_GUI_H_
+#define __MICROSTRIP_GUI_H_
 
 
-typedef struct MICROSTRIP_SUBS
+typedef struct MICROSTRIP_GUI 
 {
-  double h,er,tmet,rho,rough,tand;
-} microstrip_subs;
+  /* Required public methods */
+  int (*load) (FILE *);
+  int (*save) (FILE *);
+  int (*analyze) (void);
+  int (*synthesize) (void);
+  int (*display) (void);
 
-typedef struct MICROSTRIP_LINE
-{
+  /* internals */
+  struct MICROSTRIP_REC line;
 
-  /* length and width */
-  double l;
-  double w;
+} microstrip_gui;
 
-  /* characteristic impedance (ohms) */
-  double z0;
-
-  /* electrical length (degrees) */
-  double len;
+microstrip_gui *microstrip_gui_new(void);
 
 
-  double keff,loss,losslen,skindepth;
-
-  microstrip_subs *subs;
-
-} microstrip_line;
-
-
-double microstrip_calc(microstrip_line *line, double f);
-int microstrip_syn(microstrip_line *line, double f);
-
-microstrip_line *microstrip_line_new(void);
-microstrip_subs *microstrip_subs_new(void);
-
-#endif /*__MICROSTRIP_H_*/
+#endif /*__MICROSTRIP_GUI_H_*/

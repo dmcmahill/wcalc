@@ -1,7 +1,7 @@
-/* $Id$ */
+/* $Id: microstrip.c,v 1.1 2001/02/11 19:26:25 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,12 +44,10 @@
 #define NOLOSS 0
 #define WITHLOSS 1
 
-static double microstrip_calc_int(microstrip_rec *line, double f, int flag);
+static double microstrip_calc_int(microstrip_line *line, double f, int flag);
 
-/* MLICALC    Analyze microstrip transmission line from physical parameters
+/* 
  *
- *  [z0,len,loss,eeff,depth]=mlicalc(w,l,f,subs)
- *  calculates:
  *    z0    = characteristic impedance (ohms)
  *    len   = electrical length (degrees)
  *    loss  = insertion loss (dB)
@@ -73,11 +71,6 @@ static double microstrip_calc_int(microstrip_rec *line, double f, int flag);
  *   ----------------------------------------------
  *   /////////////////ground///////////////////////
  *
- *  Part of the Filter Design Toolbox
- *  See Also:  TRSUBS, MLISYN, SLICALC, SLICALC, CMLICALC, CMLISYN
- *
- *  Dan McMahill, 7/14/97
- *  Copyright (c) 1997 by Dan McMahill.
  *
  *  Reference:
  *
@@ -116,7 +109,7 @@ static double microstrip_calc_int(microstrip_rec *line, double f, int flag);
  */
 
 /* function [z0,len,loss,eeff,depth]=mlicalc(w,l,f,subs,flag)*/
-double microstrip_calc(microstrip_rec *line, double f)
+double microstrip_calc(microstrip_line *line, double f)
 {
   double z;
   z=microstrip_calc_int(line, f, WITHLOSS);
@@ -127,7 +120,7 @@ double microstrip_calc(microstrip_rec *line, double f)
  * flag=1 enables loss calculations
  * flag=0 disables loss calculations
  */
-static double microstrip_calc_int(microstrip_rec *line, double f, int flag)
+static double microstrip_calc_int(microstrip_line *line, double f, int flag)
 {
   double wmil,w,lmil,l;
 
@@ -172,13 +165,17 @@ static double microstrip_calc_int(microstrip_rec *line, double f, int flag)
 
   /* Substrate relative permittivity */
   er = line->subs->er;
+
   /* Metal resistivity relative to copper */
   rho = line->subs->rho;
+
   /* Loss tangent of the dielectric material */
   tand = line->subs->tand;
+
   /* Metal thickness (mils) */
   tmil = line->subs->tmet;
   t = MIL2M(tmil);
+
   /*   subs(6) = Metalization roughness */
   roughmil = line->subs->rough;
   rough = MIL2M(roughmil);
@@ -483,15 +480,9 @@ static double microstrip_calc_int(microstrip_rec *line, double f, int flag)
    return (z0);
 }
 
-
-
-
-/*function [w,l,loss,eeff]=mlisyn(z0,len,f,subs) */
-
-
-/* MLISYN  Synthesize microstrip transmission line from electrical parameters
+/*
+ *  Synthesize microstrip transmission line from electrical parameters
  *
- *  [w,l,loss,eeff]=mlisyn(z0,len,f,subs)
  *  calculates:
  *    w     = microstrip line width (mils)
  *    l     = microstrip line length (mils)
@@ -514,16 +505,10 @@ static double microstrip_calc_int(microstrip_rec *line, double f, int flag)
  *   ----------------------------------------------
  *   /////////////////ground///////////////////////
  *
- *  Part of the Filter Design Toolbox
- *  See Also:  MLICALC, CMLICALC, SLICALC
- *
- *  Dan McMahill, 7/14/97
- *  Copyright (c) 1997 by Dan McMahill.
  */
 
-/*function [w,l,loss,eeff]=mlisyn(z0,len,f,subs) */
 
-int microstrip_syn(microstrip_rec *line, double f)
+int microstrip_syn(microstrip_line *line, double f)
 {
 
   double h,er,l,lmil,wmin,wmax,abstol,reltol;
@@ -542,14 +527,9 @@ int microstrip_syn(microstrip_rec *line, double f)
 
   /* Substrate dielectric thickness (mils) */
   h = line->subs->h;
+
   /* Substrate relative permittivity */
   er = line->subs->er;
-  /*
-   *subs(3) = Metal resistivity relative to copper
-   *subs(4) = Loss tangent of the dielectric material
-   *subs(5) = Metal thickness (mils)
-   *subs(6) = Metalization roughness
-   */
 
   /* temp value for l used while finding w */
   l = 1000.0;
@@ -591,9 +571,11 @@ int microstrip_syn(microstrip_rec *line, double f)
     }
 
   w = w_h * h;
+
 #ifdef DEBUG
   printf("\ninitial guess for w is %g mils, %g mm\n",w,MIL2MM(w));
 #endif
+
   initialw = w;
 
   if(w >= wmax)
@@ -607,7 +589,6 @@ int microstrip_syn(microstrip_rec *line, double f)
 
   wold = 1.01*w;
 
-  //[zold,ltmp,loss,eeff]=mlicalc(wold,l,f,subs,0);
   line->w=wold;
   /* dont need loss calculations here */
   zold = microstrip_calc_int(line,f,NOLOSS);
@@ -636,8 +617,8 @@ int microstrip_syn(microstrip_rec *line, double f)
 #endif
 
       /* check zo for this value of w */
-      //[zo,ltmp,loss,eeff]=mlicalc(w,l,f,subs,0);
       line->w=w;
+
       /* dont need loss calculations here */
       zo = microstrip_calc_int(line,f,NOLOSS);
 
@@ -652,6 +633,7 @@ int microstrip_syn(microstrip_rec *line, double f)
       if(fabs(zo - z0) < abstol)
 	{
 	  done = 1;
+
 #ifdef DEBUG
 printf("Z0 Converged\n");
 #endif
@@ -682,6 +664,7 @@ printf("W Converged\n");
        * if the newton iteration takes us out of the known range for w,
        * take a bisection step
        */
+
       if((w > wmax) | (w < wmin))
 	{
 #ifdef DEBUG
@@ -696,7 +679,7 @@ w = (wmin + wmax)/2;
 #endif
 
   /* speed of light */
-  c = 2.997925e8;
+  c = LIGHTSPEED;
 
   /* velocity on line */
   microstrip_calc(line,f);
@@ -711,8 +694,8 @@ w = (wmin + wmax)/2;
 
   line->w=w;
   line->l=lmil;
+
   /* recalculate using real length to find loss  */
-  //[zo,ltmp,loss,eeff]=mlicalc(w,l,f,subs);
   microstrip_calc(line,f);
   
 #ifdef DEBUG
@@ -725,18 +708,32 @@ w = (wmin + wmax)/2;
 }
 
 
+microstrip_line *microstrip_line_new()
+{
+  microstrip_line *newline;
 
+  newline = (microstrip_line *) malloc(sizeof(microstrip_line));
+  if(newline == NULL)
+    {
+      fprintf(stderr,"microstrip_line_new: malloc() failed\n");
+      exit(1);
+    }
 
+  newline->subs = microstrip_subs_new();
 
+  return(newline);
+}
 
+microstrip_subs *microstrip_subs_new(void)
+{
+  microstrip_subs *newsubs;
 
+  newsubs = (microstrip_subs *) malloc(sizeof(microstrip_subs));
+  if(newsubs == NULL)
+    {
+      fprintf(stderr,"microstrip_subs_new: malloc() failed\n");
+      exit(1);
+    }
 
-
-
-
-
-
-
-
-
-
+  return(newsubs);
+}

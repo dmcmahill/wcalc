@@ -48,9 +48,30 @@
 
 #include "wcalc.h"
 
-void wcalc_setup (void);
+microstrip_gui *microstrip_gui_new(void)
+{
+  microstrip_gui *new_gui;
+  
+  /* allocate memory */
+  new_gui = (microstrip_gui *) malloc(sizeof(microstrip_gui));
+  if(new_gui == NULL)
+    {
+      fprintf(stderr,"microstrip_gui_new: malloc() failed\n");
+      exit(1);
+    }
 
-void mscalc( GtkWidget *w, gpointer data );
+
+  /* initialize */
+  new_gui->load = &microstrip_gui_load;
+  new_gui->save = &microstrip_gui_save;
+  new_gui->analyze = &microstrip_gui_analyze;
+  new_gui->synthesize = &microstrip_gui_synthesize;
+  new_gui->display = &microstrip_gui_display;
+
+  new_gui->line = microstrip_line_new();
+
+}
+
 
 static void vals_changedCB( GtkWidget *widget, gpointer data );
 
@@ -748,8 +769,8 @@ static void picture_init(GtkWidget *window,GtkWidget *parent)
 void mscalc( GtkWidget *w, gpointer data )
 {
 
-  microstrip_subs subs;
-  microstrip_line mstr;
+  mstrip_substrate subs;
+  microstrip_rec mstr;
   double freq;
   char str[80];
   char *vstr;
