@@ -1,4 +1,10 @@
-$Id$
+$Id: COPYING,v 1.1 2001/02/11 19:26:14 dan Exp $
+
+A few of the files related to the build system ('missing' for example)
+are covered by the GPL.
+
+All of the actual wcalc code, unless otherwise noted, is covered by
+the following copyright:
 
  Copyright (c) 1999, 2000, 2001 Dan McMahill
  All rights reserved.
