@@ -1,9 +1,9 @@
-/* $Id: coax_syn.c,v 1.4 2002/05/10 22:53:02 dan Exp $ */
+/* $Id: coax_syn.c,v 1.5 2002/06/12 11:30:36 dan Exp $ */
 
-static char vcid[] = "$Id: coax_syn.c,v 1.4 2002/05/10 22:53:02 dan Exp $";
+static char vcid[] = "$Id: coax_syn.c,v 1.5 2002/06/12 11:30:36 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: coax_syn.c,v 1.4 2002/05/10 22:53:02 dan Exp $";
 #endif
 
 /*
- * [a,b,c,er,len,loss] = 
+ * [a,b,c,er,len] = 
  *    coax_syn(z0,elen,a,b,c,tshield,rho_a,rho_b,er,tand,freq,flag);
  */
 
@@ -76,7 +76,6 @@ static char vcid[] = "$Id: coax_syn.c,v 1.4 2002/05/10 22:53:02 dan Exp $";
 #define	C_OUT     plhs[2]
 #define	ER_OUT	  plhs[3]
 #define	LEN_OUT   plhs[4]
-#define	LOSS_OUT  plhs[5]
 
 
 
@@ -134,7 +133,6 @@ void mexFunction(
 
   /* outputs */
   double *a_out,*b_out,*c_out,*er_out,*len_out;
-  double *loss;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -168,10 +166,10 @@ void mexFunction(
 		   " (needs 12).");
     } 
 
-  if (nlhs > 6)
+  if (nlhs > 5)
     {
       mexErrMsgTxt("wrong number of output arguments to COAX_SYN"
-		   " (needs <= 6).");
+		   " (needs <= 5).");
     }
   
   
@@ -204,7 +202,6 @@ void mexFunction(
   C_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   ER_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LEN_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  LOSS_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   a_out   = mxGetPr(A_OUT);
@@ -212,7 +209,6 @@ void mexFunction(
   c_out   = mxGetPr(C_OUT);
   er_out  = mxGetPr(ER_OUT);
   len_out = mxGetPr(LEN_OUT);
-  loss    = mxGetPr(LOSS_OUT);
 
   /* the actual computation */
   line = coax_new();
@@ -248,7 +244,6 @@ void mexFunction(
     c_out[ind]    = line->c;
     er_out[ind]   = line->er;
     len_out[ind]  = line->len;
-    loss[ind]     = line->loss;
   }
 
   /* clean up */

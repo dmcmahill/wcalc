@@ -16,10 +16,9 @@ f=100e6;          // 100 MHz operation
 
 // Synthesize a
 flag=0; 
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
-disp(sprintf('loss = %8.4g dB',loss));
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
 disp(sprintf('b    = %8.4g mm',1e3*b_out));
 disp(sprintf('c    = %8.4g mm',1e3*c_out));
@@ -29,10 +28,9 @@ disp(sprintf('len  = %8.4g cm',100*len));
 
 // Synthesize b
 flag=1; 
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
-disp(sprintf('loss = %8.4g dB',loss));
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
 disp(sprintf('b    = %8.4g mm',1e3*b_out));
 disp(sprintf('c    = %8.4g mm',1e3*c_out));
@@ -42,10 +40,9 @@ disp(sprintf('len  = %8.4g cm',100*len));
 
 // Synthesize c
 flag=2; 
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
-disp(sprintf('loss = %8.4g dB',loss));
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
 disp(sprintf('b    = %8.4g mm',1e3*b_out));
 disp(sprintf('c    = %8.4g mm',1e3*c_out));
@@ -55,10 +52,9 @@ disp(sprintf('len  = %8.4g cm',100*len));
 
 // Synthesize er
 flag=3; 
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
-disp(sprintf('loss = %8.4g dB',loss));
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
 disp(sprintf('b    = %8.4g mm',1e3*b_out));
 disp(sprintf('c    = %8.4g mm',1e3*c_out));

@@ -1,6 +1,6 @@
-.\" $Id: coax_syn.man,v 1.4 2001/12/17 12:27:12 dan Exp $
+.\" $Id: coax_syn.man,v 1.5 2004/09/08 22:39:46 dan Exp $
 .\"
-.\" Copyright (c) 2001 Dan McMahill
+.\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
 .\"
 .\" This code is derived from software written by Dan McMahill
@@ -38,7 +38,7 @@
 coax_syn - Coaxial transmission line synthesis
 .SH CALLING SEQUENCE
 .nf
-[a_out,b_out,c_out,er_out,len,loss] = 
+[a_out,b_out,c_out,er_out,len] = 
   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 .fi
 .SH PARAMETERS
@@ -104,9 +104,6 @@ er_out
 .TP
 len
 : synthesized physical length of line (meters)
-.TP
-loss
-: resulting loss of line (dB)
 .SH DESCRIPTION
 function to synthesize the physical parameters of a
 coaxial transmission line to achieve a given set of
@@ -126,15 +123,15 @@ er=9.5;           // relative permitivitty of dielectric
 tand=0.01;        // dielectric loss tangent
 f=100e6;          // 100 MHz operation
 flag=1;           // synthesize b
-[a,b,c,er,len,loss] = ...
+[a,b,c,er,len] = ...
    coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
 disp(sprintf('z0   = %g Ohms',z0));
 disp(sprintf('elen = %g degrees',elen));
-disp(sprintf('loss = %g dB',loss));
 disp(sprintf('a    = %g m',a));
 disp(sprintf('b    = %g m',b));
 disp(sprintf('c    = %g m',c));
 disp(sprintf('er   = %g ',er));
+disp(sprintf('len  = %g m',len));
 .fi
 .SH SEE ALSO
 coax_calc

@@ -15,10 +15,8 @@ er=4.5;           // relative dielectric constant
 tand=0.01;        // loss tangent
 f=2.4e9;          // frequency
 flag=0;           // synthesize width
-[w_out,h_out,l_out,er_out,loss,deltal] = ...
+[w_out,h_out,l_out,er_out] = ...
     stripline_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
 disp(sprintf('w=%8.4g mils, l=%8.4g mils',w_out/sf,l_out/sf));
 disp(sprintf('er=%8.4g',er_out));
 disp(sprintf('z0=%8.4g ohms, length=%8.4g degrees',z0,elen));
-disp(sprintf('loss=%8.4g dB',loss));
-disp(sprintf('deltal=%8.4g (mils)',deltal/sf));

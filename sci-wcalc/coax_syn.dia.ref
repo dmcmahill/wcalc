@@ -35,7 +35,7 @@ f=100e6;          // 100 MHz operation
  
 flag=0;
  
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
  
 disp(sprintf('z0   = %8.4g Ohms',z0));
  
@@ -44,10 +44,6 @@ disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
  
  elen =       90 degrees   
- 
-disp(sprintf('loss = %8.4g dB',loss));
- 
- loss =  0.08091 dB   
  
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
  
@@ -75,7 +71,7 @@ disp(sprintf('len  = %8.4g cm',100*len));
  
 flag=1;
  
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
  
 disp(sprintf('z0   = %8.4g Ohms',z0));
  
@@ -84,10 +80,6 @@ disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
  
  elen =       90 degrees   
- 
-disp(sprintf('loss = %8.4g dB',loss));
- 
- loss =  0.08899 dB   
  
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
  
@@ -115,7 +107,7 @@ disp(sprintf('len  = %8.4g cm',100*len));
  
 flag=2;
  
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
  
 disp(sprintf('z0   = %8.4g Ohms',z0));
  
@@ -124,10 +116,6 @@ disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
  
  elen =       90 degrees   
- 
-disp(sprintf('loss = %8.4g dB',loss));
- 
- loss =  0.08788 dB   
  
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
  
@@ -155,7 +143,7 @@ disp(sprintf('len  = %8.4g cm',100*len));
  
 flag=3;
  
-[a_out, b_out, c_out, er_out, len, loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+[a_out, b_out, c_out, er_out, len] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
  
 disp(sprintf('z0   = %8.4g Ohms',z0));
  
@@ -164,10 +152,6 @@ disp(sprintf('z0   = %8.4g Ohms',z0));
 disp(sprintf('elen = %8.4g degrees',elen));
  
  elen =       90 degrees   
- 
-disp(sprintf('loss = %8.4g dB',loss));
- 
- loss =  0.08369 dB   
  
 disp(sprintf('a    = %8.4g mm',1e3*a_out));
  

@@ -1,9 +1,9 @@
-/* $Id: stripline_syn.c,v 1.3 2002/05/10 22:53:06 dan Exp $ */
+/* $Id: stripline_syn.c,v 1.4 2002/06/12 11:30:39 dan Exp $ */
 
-static char vcid[] = "$Id: stripline_syn.c,v 1.3 2002/05/10 22:53:06 dan Exp $";
+static char vcid[] = "$Id: stripline_syn.c,v 1.4 2002/06/12 11:30:39 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: stripline_syn.c,v 1.3 2002/05/10 22:53:06 dan Exp $";
 #endif
 
 /*
- * [w_out,h_out,l_out,er_out,loss,deltal] = 
+ * [w_out,h_out,l_out,er_out] = 
  *       stripline_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f);
  */
 
@@ -75,8 +75,6 @@ static char vcid[] = "$Id: stripline_syn.c,v 1.3 2002/05/10 22:53:06 dan Exp $";
 #define	H_OUT	   plhs[1]
 #define	L_OUT	   plhs[2]
 #define	ER_OUT	   plhs[3]
-#define	LOSS_OUT   plhs[4]
-#define	DELTAL_OUT plhs[5]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -129,7 +127,7 @@ void mexFunction(
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq,*ind_flag;
 
   /* outputs */
-  double *w_out,*l_out,*h_out,*er_out,*loss,*deltal;
+  double *w_out,*l_out,*h_out,*er_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -162,7 +160,7 @@ void mexFunction(
 		 " (needs 9).");
   } 
 
-  if (nlhs > 7) {
+  if (nlhs > 4) {
     mexErrMsgTxt("wrong number of output arguments to STRIPLINE_SYN"
 		 " (needs <= 4).");
   }
@@ -195,16 +193,12 @@ void mexFunction(
   L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   H_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   ER_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  LOSS_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  DELTAL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   w_out  = mxGetPr(W_OUT);
   l_out  = mxGetPr(L_OUT);
   h_out  = mxGetPr(H_OUT);
   er_out = mxGetPr(ER_OUT);
-  loss   = mxGetPr(LOSS_OUT);
-  deltal = mxGetPr(DELTAL_OUT);
 
   /* the actual computation */
   line = stripline_line_new();
@@ -241,8 +235,6 @@ void mexFunction(
     l_out[ind]  = line->l;
     h_out[ind]  = line->subs->h;
     er_out[ind] = line->subs->er;
-    loss[ind]   = line->loss;
-    deltal[ind] = line->deltal;
   }
 
   /* clean up */

@@ -4,9 +4,9 @@ exec test_wcalc.sce;
 shared archive loaded
  
  
-disp('**** ic_microstrip_calc ****');
+disp('**** coupled_microstrip_calc ****');
  
- **** ic_microstrip_calc ****   
+ **** coupled_microstrip_calc ****   
  
 sf=25.4e-6;       // mils to meters conversion factor
  
@@ -30,7 +30,7 @@ tand=0.01;        // loss tangent
  
 f=2.4e9;          // frequency
  
-[z0,k,z0e,z0o,kev,kodd] =0...
+[z0,k,z0e,z0o,kev,kodd,losse,losso,deltale,deltalo] =0...
   coupled_microstrip_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
  
 disp(sprintf('z0=%8.4g Ohms, k=%8.4g',z0,k));
@@ -44,5 +44,13 @@ disp(sprintf('z0e=%8.4g Ohms, z0o=%8.4g Ohms',z0e,z0o));
 disp(sprintf('kev=%8.4g, kodd=%8.4g',kev,kodd));
  
  kev=   3.546, kodd=   2.934   
+ 
+disp(sprintf('losse=%8.4g dB, losso=%8.4g dB',losse,losso));
+ 
+ losse=  0.1058 dB, losso=  0.0886 dB   
+ 
+disp(sprintf('deltale=%8.4g mils, deltalo=%8.4g mils', deltale/sf, deltalo/sf));
+ 
+ deltale=   6.716 mils, deltalo=   4.257 mils   
  
  

@@ -1,6 +1,6 @@
-.\" $Id: microstrip_syn.man,v 1.5 2001/11/03 19:21:49 dan Exp $
+.\" $Id: microstrip_syn.man,v 1.6 2001/12/13 22:45:29 dan Exp $
 .\"
-.\" Copyright (c) 2001 Dan McMahill
+.\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
 .\"
 .\" This code is derived from software written by Dan McMahill
@@ -38,7 +38,7 @@
 microstrip_syn - Microstrip transmission line synthesis
 .SH CALLING SEQUENCE
 .nf
-[w_out,h_out,l_out,er_out,keff,loss,deltal] = 
+[w_out,h_out,l_out,er_out] = 
     microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
 .fi
 .SH PARAMETERS
@@ -89,15 +89,6 @@ flag=2
 flag=3
 : synthesize the metal length
 .RE
-.TP
-keff
-: calculated effective relative permitivitty
-.TP
-loss
-: calculated loss of the line (dB)
-.TP
-deltal
-: calculated open circuit end correction (meters)
 .SH DESCRIPTION
 function to synthesize the physical dimenstions of a single
 microstrip transmission line to achieve a desired characteristic
@@ -136,14 +127,11 @@ er=4.5;           // relative dielectric constant
 tand=0.01;        // loss tangent
 f=2.4e9;          // frequency
 flag=0;           // synthesize width
-[w_out,h_out,l_out,er_out,keff,loss,deltal] = ...
+[w_out,h_out,l_out,er_out] = ...
     microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
 disp(sprintf('w=%g mils, l=%g mils',w_out/sf,l_out/sf));
 disp(sprintf('er=%g',er_out));
 disp(sprintf('z0=%g ohms, length=%g degrees',z0,elen));
-disp(sprintf('keff=%g',keff));
-disp(sprintf('loss=%g dB',loss));
-disp(sprintf('deltal=%g (mils)',deltal/sf));
 .fi
 .SH SEE ALSO
 microstrip_calc
