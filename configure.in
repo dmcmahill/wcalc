@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.51 2002/12/17 15:29:33 dan Exp $
+dnl $Id: configure.in,v 1.52 2002/12/17 16:00:02 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -473,7 +473,6 @@ AC_CHECK_FUNCS(rint)
 
 
 dnl gettext
-ALL_LINGUAS="es"
 AM_GNU_GETTEXT
 
 # ------------- GTK -------------------
