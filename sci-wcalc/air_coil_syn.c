@@ -1,6 +1,6 @@
-/* $Id: air_coil_syn.c,v 1.4 2001/12/22 00:26:39 dan Exp $ */
+/* $Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_syn.c,v 1.4 2001/12/22 00:26:39 dan Exp $";
+static char vcid[] = "$Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -18,7 +18,7 @@ static char vcid[] = "$Id: air_coil_syn.c,v 1.4 2001/12/22 00:26:39 dan Exp $";
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.1 2002/01/11 15:37:59 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.2 2002/02/21 02:09:48 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
@@ -75,6 +75,15 @@ typedef struct WC_UNITS_GUI
   GList *menu_num, *menu_den;
 
 } wc_units_gui;
+
+typedef struct WC_LABEL_UNITS
+{
+  wc_units_gui *units_gui;
+  GtkWidget *label;
+
+  double mks_val, disp_val;
+
+} wc_label_units;
 
 
 GtkWidget *units_menu_new(const units_data *units, 

@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.1 2002/01/10 17:28:28 dan Exp $ */
+/* $Id: cgi-units.c,v 1.2 2002/05/10 22:52:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

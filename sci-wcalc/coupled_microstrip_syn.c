@@ -1,6 +1,6 @@
-/* $Id: coupled_microstrip_syn.c,v 1.3 2001/12/22 00:26:40 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.4 2002/05/10 22:53:03 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.3 2001/12/22 00:26:40 dan Exp $";
+static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.4 2002/05/10 22:53:03 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -18,7 +18,7 @@ static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.3 2001/12/22 00:26:40 da
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.2 2001/10/06 23:51:40 dan Exp $
+dnl $Id: acinclude.m4,v 1.3 2002/05/10 22:52:24 dan Exp $
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
 dnl All rights reserved.
@@ -15,7 +15,7 @@ dnl    notice, this list of conditions and the following disclaimer in the
 dnl    documentation and/or other materials provided with the distribution.
 dnl 3. All advertising materials mentioning features or use of this software
 dnl    must display the following acknowledgement:
-dnl        This product includes software developed Dan McMahill
+dnl        This product includes software developed by Dan McMahill
 dnl 4. The name of the author may not be used to endorse or promote products
 dnl    derived from this software without specific prior written permission.
 dnl

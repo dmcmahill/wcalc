@@ -1,4 +1,4 @@
-/* $Id: coax_test.c,v 1.2 2002/01/19 03:05:21 dan Exp $ */
+/* $Id: coax_test.c,v 1.3 2002/05/09 23:49:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

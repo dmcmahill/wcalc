@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.6 2002/02/25 02:19:16 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.7 2002/05/10 22:52:29 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.4 2001/12/21 03:11:45 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.5 2002/05/10 22:52:46 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *

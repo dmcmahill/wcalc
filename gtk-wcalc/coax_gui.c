@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.8 2002/02/21 02:09:47 dan Exp $ */
+/* $Id: coax_gui.c,v 1.9 2002/05/10 22:51:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG */
+#define DEBUG
 
 #include "config.h"
 
@@ -594,6 +594,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_fc), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_set_sensitive(gui->text_fc,FALSE);
   gtk_widget_show(gui->text_fc);
 
   gui->text_freq = gtk_entry_new_with_max_length( ENTRYLENGTH );

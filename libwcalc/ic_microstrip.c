@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.8 2002/05/09 23:49:58 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.9 2002/05/12 15:18:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
@@ -113,7 +113,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
      gcc version 2.95.2 19991024 (release)
   */
 
-#if (defined(sparc) || defined(__sparc__)) && defined(__GNUC__)
+#if (defined(sparc) || defined(__sparc__)) && \
+     defined(__GNUC__) && (__GNUC__ < 3)
   static double mu0, e0;
 #else
   double mu0, e0;

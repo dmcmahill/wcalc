@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.15 2002/02/19 10:31:16 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.16 2002/05/09 23:50:04 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -16,7 +16,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *        This product includes software developed Dan McMahill
+ *        This product includes software developed by Dan McMahill
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
