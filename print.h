@@ -1,7 +1,7 @@
-/* $Id: menus.h,v 1.1 2001/02/11 19:26:25 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,13 +33,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __MENUS_H__
-#define __MENUS_H__
+#ifndef __PRINT_H__
+#define __PRINT_H__
 
-#include "wcalc.h"
+void print_popup(void);
 
-void get_main_menu( Wcalc *wcalc,
-		    GtkWidget  *window,
-                    GtkWidget **menubar );
-
-#endif /*__MENUS_H__*/
+#endif /*__PRINT_H__*/

@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.1 2001/02/11 19:26:31 dan Exp $ */
+/*      $Id: wcalc.h,v 1.2 2001/09/15 14:43:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -51,6 +51,11 @@ typedef struct WCALC
    * of certain callbacks which get triggered during initialization.
    */
   int init_done;
+
+  /*
+   * The main window
+   */
+  GtkWidget *window;
 
   /* 
    * Frequency/Units/Model vbox and its contents 

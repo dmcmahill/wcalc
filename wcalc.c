@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.5 2001/09/13 17:54:21 dan Exp $ */
+/* $Id: wcalc.c,v 1.6 2001/09/15 14:43:56 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,6 +33,7 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
 
 #include <gtk/gtk.h>
 
@@ -177,7 +178,6 @@ void wcalc_setup (void)
 {
   Wcalc *wcalc;
 
-  GtkWidget *window;
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GdkBitmap *icon_bitmap;
@@ -191,30 +191,34 @@ void wcalc_setup (void)
   wcalc = Wcalc_new();
 
   /* Create a new window */
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  wcalc->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  //  wcalc->window = gtk_window_new (GTK_WINDOW_DIALOG);
+#ifdef DEBUG
+  printf("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
+#endif
 
   /* Setup main window properties */
-  gtk_window_set_title (GTK_WINDOW (window), "WaveCalc");
-  gtk_container_set_border_width (GTK_CONTAINER (window), 0);
-  gtk_widget_set_usize (GTK_WIDGET(window), 600, 525);
+  gtk_window_set_title (GTK_WINDOW (wcalc->window), "WaveCalc");
+  gtk_container_set_border_width (GTK_CONTAINER (wcalc->window), 0);
+  gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 525);
 
 
   /* Setup pixmap for the icon */
-  gtk_widget_realize(window);
-  icon_bitmap = gdk_bitmap_create_from_data(window->window,
+  gtk_widget_realize(wcalc->window);
+  icon_bitmap = gdk_bitmap_create_from_data(wcalc->window->window,
 					    icon_bitmap_bits, 
 					    icon_bitmap_width, 
 					    icon_bitmap_height);
-  gdk_window_set_icon(window->window, NULL, icon_bitmap, NULL);
+  gdk_window_set_icon(wcalc->window->window, NULL, icon_bitmap, NULL);
 
 
 
 
   /* Setup main window callbacks */
-  gtk_signal_connect (GTK_OBJECT (window), "delete_event",
+  gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
 		      GTK_SIGNAL_FUNC (delete_event), NULL);
   
-  gtk_signal_connect (GTK_OBJECT (window), "destroy", 
+  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy", 
 		      GTK_SIGNAL_FUNC (gtk_main_quit), 
 		      "WM destroy");
 
@@ -223,14 +227,14 @@ void wcalc_setup (void)
   /*create the main vbox */
   main_vbox = gtk_vbox_new (FALSE, 1);
   gtk_container_border_width (GTK_CONTAINER (main_vbox), 1);
-  gtk_container_add (GTK_CONTAINER (window), main_vbox);
+  gtk_container_add (GTK_CONTAINER (wcalc->window), main_vbox);
   gtk_widget_show (main_vbox);
 
 
 
 
   /* set up the menu bar */
-  get_main_menu (window, &menubar);
+  get_main_menu (wcalc,wcalc->window, &menubar);
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, TRUE, 0);
   gtk_widget_show (menubar);
 
@@ -263,11 +267,11 @@ void wcalc_setup (void)
   values_init(wcalc,values_vbox);
   outputs_init(wcalc,outputs_vbox);
   substrate_init(wcalc,substrate_vbox);
-  picture_init(wcalc,window,picture_vbox);
+  picture_init(wcalc,wcalc->window,picture_vbox);
 
   tooltip_init(wcalc);
 
-  gtk_widget_show (window);
+  gtk_widget_show (wcalc->window);
 
   wcalc->init_done=1;
 }
@@ -1001,6 +1005,10 @@ static Wcalc *Wcalc_new(void)
 
   new->init_done=0;
   new->phys_units_text = NULL;
+
+#ifdef DEBUG
+  printf("Wcalc_new():  New pointer is %p\n",new);
+#endif
 
   return(new);
 }

@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.3 2001/02/17 16:56:35 dan Exp $ */
+/* $Id: menus.c,v 1.4 2001/09/15 14:43:55 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -38,8 +38,15 @@
 
 #include "about.h"
 #include "files.h"
+#include "print.h"
+#include "wcalc.h"
 
 extern void wcalc_setup (void);
+/*static void window_close(GtkWidget *widget,
+			 GdkEventAny *event,
+			 gpointer data);
+*/
+static void window_close(Wcalc *wcalc);
 
 
 /* This is the GtkItemFactoryEntry structure used to generate new menus.
@@ -66,22 +73,28 @@ extern void wcalc_setup (void);
 */
 
 static GtkItemFactoryEntry menu_items[] = {
-  { "/_File",         NULL,         NULL, 0, "<Branch>" },
-  { "/File/tearoff",  NULL,            0, 0, "<Tearoff>"},
-  { "/File/_New",    "<control>N", wcalc_setup, 0, NULL },
-  { "/File/_Open",    "<control>O", wcalc_open, 0, NULL },
-  { "/File/_Save",    "<control>S", wcalc_save, 0, NULL },
-  { "/File/Save _As", NULL,         wcalc_save_as, 0, NULL },
-  { "/File/sep1",     NULL,         NULL, 0, "<Separator>" },
-  { "/File/Quit",     "<control>Q", gtk_main_quit, 0, NULL },
-  { "/_Options",                     NULL,        NULL, 0, "<Branch>" },
-  { "/Options/tearoff",              NULL,           0, 0, "<Tearoff>"},
-  { "/_Help",                        NULL,        NULL, 0, "<LastBranch>" },
-  { "/_Help/About",                  NULL, about_popup, 0, NULL },
-  { "/_Help/Copyright",              NULL, copyright_popup, 0, NULL },
+  { "/_File",           NULL,          NULL,             0, "<Branch>" },
+  { "/File/_New",       "<control>N",  wcalc_setup,      0, NULL },
+  { "/File/sep1",       NULL,          NULL,             0, "<Separator>" },
+  { "/File/_Open",      "<control>O",  wcalc_open,       0, NULL },
+  { "/File/_Save",      "<control>S",  wcalc_save,       0, NULL },
+  { "/File/Save _As",   NULL,          wcalc_save_as,    0, NULL },
+  { "/File/sep2",       NULL,          NULL,             0, "<Separator>" },
+  { "/File/_Print",     "<control>P",  print_popup,      0, NULL },
+  { "/File/sep3",       NULL,          NULL,             0, "<Separator>" },
+  { "/File/Close",      "<control>W",  window_close,     0, NULL },
+  { "/File/Quit",       "<control>Q",  gtk_main_quit,    0, NULL },
+  { "/_Options",        NULL,          NULL,             0, "<Branch>" },
+  { "/Options/tearoff", NULL,          0,                0, "<Tearoff>"},
+  { "/_Window",         NULL,          NULL,             0, "<Branch>" },
+  { "/Window/tearoff",  NULL,          0,                0, "<Tearoff>"},
+  { "/_Help",           NULL,          NULL,             0, "<LastBranch>" },
+  { "/_Help/About",     NULL,          about_popup,      0, NULL },
+  { "/_Help/Copyright", NULL,          copyright_popup,  0, NULL },
 };
 
-void get_main_menu( GtkWidget  *window,
+void get_main_menu( Wcalc *wcalc,
+		    GtkWidget  *window,
                     GtkWidget **menubar )
 {
   GtkItemFactory *item_factory;
@@ -104,12 +117,24 @@ void get_main_menu( GtkWidget  *window,
   /* This function generates the menu items. Pass the item factory,
      the number of items in the array, the array itself, and any
      callback data for the the menu items. */
-  gtk_item_factory_create_items (item_factory, nmenu_items, menu_items, NULL);
+  gtk_item_factory_create_items (item_factory, nmenu_items, menu_items, wcalc);
 
   /* Attach the new accelerator group to the window. */
   gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
 
-  if (menubar)
+  if (menubar){
     /* Finally, return the actual menu bar created by the item factory. */ 
     *menubar = gtk_item_factory_get_widget (item_factory, "<main>");
+  }
+}
+
+#define DEBUG
+static void window_close(Wcalc *wcalc)
+{
+#ifdef DEBUG
+  printf("window_close():  Called with input pointer %p\n",wcalc);
+  printf("window_close():  I will destroy window %p\n",wcalc->window);
+#endif
+  /* blow away the window */
+  gtk_widget_destroy(wcalc->window);
 }
