@@ -1,4 +1,4 @@
-/* $Id: microstrip.cgi.c,v 1.3 2001/09/15 02:57:40 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.1 2001/10/05 01:28:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -37,7 +37,7 @@
  * a cgi interface to the microstrip calculator
  */
 
-//#define DEBUG
+/* #define DEBUG */
 
 #include <stdio.h>
 #include "cgic.h"
