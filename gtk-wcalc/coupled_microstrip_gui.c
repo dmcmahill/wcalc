@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.2 2004/07/29 22:39:28 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.3 2004/07/30 04:14:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1447,6 +1447,9 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(W) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->w/gui->line->units_lwst->sf,
 	  gui->line->units_lwst->name);
+  fprintf(fp,"(S) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->s/gui->line->units_lwst->sf,
+	  gui->line->units_lwst->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->subs->h/gui->line->units_lwst->sf,
 	  gui->line->units_lwst->name);
@@ -1467,24 +1470,77 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->subs->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->line->subs->tand);
+  fprintf(fp,"newline\n");
+
+  fprintf(fp,"(Keff-e) show tab1 (=) show tab2 ("
+	  WC_FMT_G ") show newline\n",
+	  gui->line->kev);
+  fprintf(fp,"(Keff-o) show tab1 (=) show tab2 ("
+	  WC_FMT_G ") show newline\n",
+	  gui->line->kodd);
+
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(freq) show tab1 (=) show tab2 ("
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->freq/gui->line->units_freq->sf,
+	  gui->line->units_freq->name);
+
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
   fprintf(fp,"(Z0) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
 	  gui->line->z0);
+  fprintf(fp,"(k) show tab1 (=) show tab2 (" WC_FMT_G " ) show newline\n",
+	  gui->line->k);
+  fprintf(fp,"(Z0e) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
+	  gui->line->z0e);
+  fprintf(fp,"(Z0o) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
+	  gui->line->z0o);
   fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
 	  gui->line->len);
-  /* XXX */
-#ifdef notdef
-  fprintf(fp,"(Loss) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->loss/gui->line->units_loss->sf,
+
+  fprintf(fp,"(Even Mode) show newlineclose "
+	  "(Loss) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->loss_ev/gui->line->units_loss->sf,
 	  gui->line->units_loss->name);
-  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->losslen/gui->line->units_losslen->sf,
+  fprintf(fp,"(Odd Mode) show newlineclose "
+	  "(Loss) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->loss_odd/gui->line->units_loss->sf,
+	  gui->line->units_loss->name);
+
+  fprintf(fp,"(Even Mode) show newlineclose "
+	  "(Loss/Len) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->losslen_ev/gui->line->units_losslen->sf,
 	  gui->line->units_losslen->name);
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+  fprintf(fp,"(Odd Mode) show newlineclose "
+	  "(Loss/Len) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->losslen_odd/gui->line->units_losslen->sf,
+	  gui->line->units_losslen->name);
+
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 ("
+	  WC_FMT_G " %s) show newline\n",
 	  gui->line->skindepth/gui->line->units_depth->sf,
 	  gui->line->units_depth->name);
+
+
+  fprintf(fp,"(Even Mode ) show newlineclose "
+	  "(D) symbolshow (l) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->deltale/gui->line->units_deltal->sf,
+	  gui->line->units_deltal->name);
+  fprintf(fp,"(Odd Mode ) show newlineclose "
+	  "(D) symbolshow (l) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->deltalo/gui->line->units_deltal->sf,
+	  gui->line->units_deltal->name);
+
+
+  /* XXX */
+#ifdef notdef
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->Ls/gui->line->units_L->sf,
