@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.14 2002/12/18 13:56:44 dan Exp $ */
+/* $Id: main.c,v 1.1 2004/01/10 04:45:30 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -57,15 +57,67 @@
 #include <dmalloc.h>
 #endif
 
+/* local prototypes */
+static void exec_ic_microstrip_calc(double *args)
+
 int main(int argc, char **argv)
 {
-	int line[256];
+  char line[256];
+  char *tok;
+  
+  while( fgets(line, sizeof(line), stdin) != NULL ) {
+    fprintf(stderr, "Processing: %s\n", line);
+    tok = strtok(line, " \t");
+    if(tok == NULL) {
+      fprintf(stderr, "stdio-wcalc: null token\n");
+      exit(1);
+    }
 
-	while( fgets(line, sizeof(line), stdin) != NULL ) {
-		printf("Processing: %s\n", line);
-	}
-
-	return 0;
+    if(strcmp(tok, "ic_microstrip_calc") ) {
+      fprintf(stderr, "ic_microstrip_calc\n");
+      narg = 11;
+      fn = &ic_microstrip_calc;
+    } else {
+      fprintf(stderr, "stdio-wcalc: unknown command \"%s\"\n", tok);
+      exit(1);
+    }
+  }
+  
+  return 0;
 }
 
+/*
+[z0,L,R,C,G] = 
+    ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
+*/
+static void exec_ic_microstrip_calc(double *args)
+{
+  /* our ic_microstrip for calculations */
+  ic_microstrip_line *line;
 
+  /* create the line and fill in the parameters */
+  line = ic_microstrip_line_new();
+  line->w           = args[0];
+  line->l           = args[1];
+  line->subs->tox   = args[2];
+  line->subs->eox   = args[3];
+  line->subs->h     = args[4];
+  line->subs->es    = args[5];
+  line->subs->sigmas= args[6];
+  line->subs->tmet  = args[7];
+  line->subs->rho   = args[8];
+  line->subs->rough = args[9];
+  line->freq        = args[10];
+
+  /* run the calculation */
+  ic_microstrip_calc(line, line->freq);
+  
+  /* print the outputs */
+  printf("%g %g %g %g %g %g\n", line->Ro, line->Xo,
+	 line->Lmis, line->Rmis, line->Cmis, line->Gmis);
+
+  /* clean up */
+  ic_microstrip_line_free(line);
+  
+  return;
+}
