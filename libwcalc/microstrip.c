@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.11 2004/07/27 20:58:17 dan Exp $ */
+/* $Id: microstrip.c,v 1.12 2004/07/28 03:49:47 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1000,7 +1000,7 @@ microstrip_line *microstrip_line_new()
   /* initialize the values to something */
   newline->l    = MIL2M(1000.0);
   newline->w    = MIL2M(110.0);
-  newline->freq = 1.0e9;
+  newline->freq = 2.4e9;
 
   newline->subs->h     = MIL2M(62.0);
   newline->subs->er    = 4.8;

@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.13 2004/07/26 11:12:41 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.14 2004/07/27 20:58:33 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -1098,7 +1098,7 @@ coupled_microstrip_line *coupled_microstrip_line_new()
   newline->subs->h     = MIL2M(62.0);
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
-  newline->subs->tmet  = MIL2M(1.4);
+  newline->subs->tmet  = MIL2M(2.8);
   newline->subs->rho   = 3e-8;
   newline->subs->rough = MIL2M(0.055);
 
