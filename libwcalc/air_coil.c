@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.12 2001/09/28 00:48:49 dan Exp $ */
+/* $Id: air_coil.c,v 1.1 2001/10/05 00:37:29 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -308,6 +308,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
     tmp_coil = *coil;
     tmp_coil.len  = INCH2M(lmin);
+    tmp_coil.use_fill = 0;
     if (air_coil_calc_int(&tmp_coil,freq,CALC_MIN) != 0)
       return -1;
     coil->Lmax = tmp_coil.L;
