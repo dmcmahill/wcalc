@@ -1,4 +1,4 @@
-.\" $Id: coax_calc.man,v 1.4 2001/10/24 01:29:02 dan Exp $
+.\" $Id: coax_calc.man,v 1.1 2001/12/09 15:14:41 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -38,7 +38,7 @@
 coax_calc - Coaxial transmission line analysis
 .SH CALLING SEQUENCE
 .nf
-[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,tshield,rho_a,rho_b,er,tand,len,freq);
+[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,f);
 .fi
 .SH PARAMETERS
 .TP 10
@@ -51,7 +51,7 @@ b
 c
 : offset of the inner conductor from the center (meters)
 .TP
-tshield
+t
 : thickness of shield (meters)
 .TP
 rho_a
@@ -93,17 +93,17 @@ elements are calculated.
 .SH EXAMPLE
 .nf
 sf=25.4e-6;       // mils to meters conversion factor
-a=5*sf;           // radius of inner conductor
-b=10*sf;          // inner radius of outer conductor
+a=.01*sf;         // radius of inner conductor
+b=.10*sf;         // inner radius of outer conductor
 c=0*sf;           // offset of inner conductor
-t=0*sf;           // thickness of outer conductor
-rho_a=1;          // resistivity of inner conductor
-rho_b=1;          // resistivity of outer conductor
+t=.005*sf;        // thickness of outer conductor
+rho_a=3.5e-8;     // resistivity of inner conductor
+rho_b=rho_a;      // resistivity of outer conductor
 er=9.5;           // relative permitivitty of dielectric
 tand=0.01;        // dielectric loss tangent
 len=100*sf;       // length of line
 f=100e6;          // 100 MHz operation
-[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,tshield,rho_a,rho_b,er,tand,len,freq);
+[z0,elen,loss,L,R,C,G] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,freq);
 disp(sprintf('z0   = %g Ohms',z0));
 disp(sprintf('elen = %g degrees',elen));
 disp(sprintf('loss = %g dB',loss));
