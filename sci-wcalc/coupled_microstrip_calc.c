@@ -1,9 +1,9 @@
-/* $Id: coupled_microstrip_calc.c,v 1.1 2001/11/04 18:30:26 dan Exp $ */
+/* $Id: coupled_microstrip_calc.c,v 1.2 2001/12/22 00:26:39 dan Exp $ */
 
-static char vcid[] = "$Id$";
+static char vcid[] = "$Id: coupled_microstrip_calc.c,v 1.2 2001/12/22 00:26:39 dan Exp $";
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,10 @@ static char vcid[] = "$Id$";
 #include "physconst.h"
 
 #include "mex.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*
  * function [z0,k,z0e,z0o,kev,kodd] = 

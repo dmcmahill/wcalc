@@ -1,4 +1,4 @@
-/* $Id: cgic.c,v 1.4 2002/01/25 12:26:29 dan Exp $ */
+/* $Id: cgic.c,v 1.5 2002/02/20 01:10:08 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \
@@ -22,6 +22,10 @@
 #endif /* NO_UNISTD */
 #include "cgic.h"
 #include "cookie.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define cgiStrEq(a, b) (!strcmp((a), (b)))
 

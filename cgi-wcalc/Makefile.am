@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.17 2002/01/18 14:27:01 dan Exp $
+## $Id: Makefile.am,v 1.18 2002/02/20 01:02:17 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -66,16 +66,18 @@ microstrip_cgi_SOURCES = microstrip.cgi.c ${COMMON}
 
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
-INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\"
+INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
 
 LDADD = ../libwcalc/libwcalc.la
 #LDFLAGS = -all-static
+LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 HTML_FILES= \
 	air_coil.html \
 	coax.html \
 	coupled_microstrip.html \
 	footer.html \
+	header.html \
 	ic_microstrip.html \
 	microstrip.html \
 	stripline.html 

@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.1 2002/01/11 15:37:58 dan Exp $ */
+/* $Id: gtk-units.c,v 1.2 2002/02/21 02:09:48 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -56,6 +56,9 @@
 #include "gtk-units.h"
 #include "wcalc.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
@@ -86,6 +89,7 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
   else {
     for (i=0; i<units->nnum; i++) {
       item = units_menu_new(units->num[i],0,gui,callback);
+
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
       /* add to our list of numerator menus */

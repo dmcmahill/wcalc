@@ -1,7 +1,7 @@
-/* $Id: alert.c,v 1.2 2001/09/28 00:25:21 dan Exp $ */
+/* $Id: alert.c,v 1.1 2001/10/05 00:50:22 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,10 @@
 
 #include "alert.h"
 #include "pixmaps/alert_fig.xpm"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ABOUT_TEXT \
 "WaveCalc\n" \

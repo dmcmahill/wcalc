@@ -1,7 +1,7 @@
-/* $Id: version.c,v 1.2 2001/02/12 18:00:45 dan Exp $ */
+/* $Id: version.c,v 1.1 2001/10/05 01:50:19 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -32,5 +32,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 char version[] = "Wcalc, version " VER;

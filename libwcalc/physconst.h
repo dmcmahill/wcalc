@@ -1,7 +1,7 @@
-/* $Id: physconst.h,v 1.3 2001/09/22 03:50:17 dan Exp $ */
+/* $Id: physconst.h,v 1.1 2001/10/05 00:37:35 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

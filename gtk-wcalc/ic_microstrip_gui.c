@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip_gui.c,v 1.1 2001/11/12 04:02:47 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.2 2001/11/12 12:42:13 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -56,6 +56,10 @@
 #include "physconst.h"
 
 #include "wcalc.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 

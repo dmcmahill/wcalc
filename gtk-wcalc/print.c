@@ -1,7 +1,7 @@
-/* $Id: print.c,v 1.3 2001/10/31 04:25:28 dan Exp $ */
+/* $Id: print.c,v 1.4 2002/01/03 03:54:50 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,9 @@
 #include "print.h"
 #include "wcalc.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*
  * File local variables

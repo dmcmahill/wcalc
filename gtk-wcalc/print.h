@@ -1,7 +1,7 @@
-/* $Id: print.h,v 1.1 2001/10/05 01:48:25 dan Exp $ */
+/* $Id: print.h,v 1.2 2001/10/17 02:41:06 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

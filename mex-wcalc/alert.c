@@ -1,7 +1,7 @@
-/* $Id$ */
+/* $Id: alert.c,v 1.1 2001/10/25 00:49:53 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,10 @@
 
 #include "alert.h"
 #include "mex.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define MSGMAX 500
 void alert(const char *fmt,...)

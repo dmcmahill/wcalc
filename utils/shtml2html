@@ -1,8 +1,8 @@
 #! /usr/bin/awk -f
 #
-# $Id: shtml2html,v 1.4 2001/10/20 12:29:49 dan Exp $
+# $Id: shtml2html,v 1.5 2001/10/23 01:04:43 dan Exp $
 #
-# Copyright (c) 2001 Dan McMahill
+# Copyright (c) 2001, 2002 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill

@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.7 2002/05/09 23:49:59 dan Exp $ */
+/* $Id: mathutil.c,v 1.8 2002/05/10 10:29:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -34,6 +34,8 @@
  */
 
 /* #define DEBUG_C_DIV */
+
+/* #define BESSEL_WARNINGS */
 
 #include "config.h"
 
@@ -842,8 +844,10 @@ complex c_bessel_Y0(complex x)
     if (REAL(x) < 0){
       REAL(x) = -REAL(x);
       neg = 1;
+#ifdef BESSEL_WARNINGS
       fprintf(stderr,"WARNING:  c_bessel_Y0 called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
+#endif
     }
     x2 = c_div(c_complex(3.0,0.0),x);
 
@@ -916,8 +920,10 @@ complex * c_bessel_Y0_p(complex *x, complex *Y0)
     if (x->re < 0){
       x->re = -x->re;
       neg = 1;
+#ifdef BESSEL_WARNINGS
       fprintf(stderr,"WARNING:  c_bessel_Y0_p called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
+#endif
     }
     c_complex_p(3.0,0.0,&k);
     c_div_p(&k,x,&x2);
@@ -1141,8 +1147,10 @@ complex c_bessel_Y1(complex x)
     if (REAL(x) < 0){
       REAL(x) = -REAL(x);
       neg = 1;
+#ifdef BESSEL_WARNINGS
       fprintf(stderr,"WARNING:  c_bessel_Y1 called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
+#endif
     }
     x2 = c_div(c_complex(3.0,0.0),x);
 
@@ -1217,8 +1225,10 @@ complex * c_bessel_Y1_p(complex *x, complex *Y1)
     if (x->re < 0){
       x->re = -x->re;
       neg = 1;
+#ifdef BESSEL_WARNINGS
       fprintf(stderr,"WARNING:  c_bessel_Y1_p called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
+#endif
     }
     c_complex_p(3.0,0.0,&k);
     c_div_p(&k,x,&x2);

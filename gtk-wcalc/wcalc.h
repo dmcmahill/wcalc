@@ -1,7 +1,7 @@
-/*      $Id: wcalc.h,v 1.3 2001/11/03 04:12:27 dan Exp $ */
+/*      $Id: wcalc.h,v 1.4 2002/01/03 03:54:51 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

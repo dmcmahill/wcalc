@@ -1,7 +1,7 @@
-/* $Id$ */
+/* $Id: cgi-units.c,v 1.1 2002/01/10 17:28:28 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,6 +50,10 @@
 #include "misc.h"
 
 #include "cgi-units.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 char * cgi_units_menu_show(const units_data *units, char *name, int ind)
 {

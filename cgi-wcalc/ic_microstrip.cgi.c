@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.cgi.c,v 1.4 2001/09/17 15:27:30 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.1 2001/10/05 01:28:30 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -41,6 +41,10 @@
 #include "cgic.h"
 #include "ic_microstrip.h"
 #include "ic_microstrip_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -294,6 +298,7 @@ int cgiMain(void){
 
 
   /* include the HTML output */
+#include "header_html.c"
 #include "ic_microstrip_html.c"
 #include "footer_html.c"
 	

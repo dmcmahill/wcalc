@@ -1,7 +1,7 @@
-/* $Id: about.c,v 1.4 2002/01/10 18:33:44 dan Exp $ */
+/* $Id: about.c,v 1.5 2002/01/11 12:07:45 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,6 +38,10 @@
 #include <gtk/gtk.h>
 
 #include "about.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ABOUT_TEXT \
 "WaveCalc\n" \

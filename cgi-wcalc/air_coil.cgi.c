@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.10 2002/02/23 18:43:29 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.11 2002/02/25 02:19:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -58,6 +58,10 @@
 
 /* ID's for this module */
 #include "air_coil_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -334,6 +338,7 @@ int cgiMain(void){
   units_autoscale(frequency_units,&coil->SRF_sf,&coil->SRF_units,coil->SRF);
 
   /* include the HTML output */
+#include "header_html.c"
 #include "air_coil_html.c"
 #include "footer_html.c"
 	

@@ -1,9 +1,9 @@
-/* $Id: air_coil_syn.c,v 1.3 2001/10/24 03:12:54 dan Exp $ */
+/* $Id: air_coil_syn.c,v 1.4 2001/12/22 00:26:39 dan Exp $ */
 
-static char vcid[] = "$Id$";
+static char vcid[] = "$Id: air_coil_syn.c,v 1.4 2001/12/22 00:26:39 dan Exp $";
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,10 @@ static char vcid[] = "$Id$";
 #include "physconst.h"
 
 #include "mex.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*
  * function [N,LEN,FILL,L,Q,SRF] = 

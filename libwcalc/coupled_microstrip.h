@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.h,v 1.1 2001/10/05 00:37:32 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.2 2001/11/07 04:50:54 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

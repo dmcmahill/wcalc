@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.14 2002/01/07 10:57:20 dan Exp $
+## $Id: Makefile.am,v 1.15 2002/01/11 12:07:45 dan Exp $
 
 ##
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -80,7 +80,9 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
 EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS}
 
-INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir)
+INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir) ${DMALLOC_CFLAGS}
+
+LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 wcalc_LDADD = ../libwcalc/libwcalc.la
 wcalc_LDFLAGS = @GTK_LIBS@  

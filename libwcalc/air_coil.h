@@ -1,7 +1,7 @@
-/* $Id: air_coil.h,v 1.1 2001/10/05 00:37:30 dan Exp $ */
+/* $Id: air_coil.h,v 1.2 2002/01/07 01:24:18 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

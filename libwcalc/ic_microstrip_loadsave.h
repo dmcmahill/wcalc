@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip_loadsave.h,v 1.1 2001/11/11 03:46:56 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.h,v 1.1 2001/11/12 04:02:50 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

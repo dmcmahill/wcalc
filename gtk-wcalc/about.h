@@ -1,7 +1,7 @@
-/* $Id: about.h,v 1.2 2002/01/03 03:54:47 dan Exp $ */
+/* $Id: about.h,v 1.3 2002/01/11 12:07:46 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

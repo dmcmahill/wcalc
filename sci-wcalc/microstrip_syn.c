@@ -1,9 +1,9 @@
-/* $Id: microstrip_syn.c,v 1.2 2001/11/02 01:23:27 dan Exp $ */
+/* $Id: microstrip_syn.c,v 1.3 2001/12/22 00:26:41 dan Exp $ */
 
-static char vcid[] = "$Id$";
+static char vcid[] = "$Id: microstrip_syn.c,v 1.3 2001/12/22 00:26:41 dan Exp $";
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,10 @@ static char vcid[] = "$Id$";
 #include "physconst.h"
 
 #include "mex.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*
  * function [z0,keff,loss,deltal] = 

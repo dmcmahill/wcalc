@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.8 2002/01/03 03:54:51 dan Exp $ */
+/* $Id: wcalc.c,v 1.9 2002/01/11 15:37:59 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -67,6 +67,9 @@
 #include "wcalc.h"
 #include "wcalc_loadsave.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 static gint wcalc_delete_event( GtkWidget *widget,
 				GdkEvent *event,

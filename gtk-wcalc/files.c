@@ -1,7 +1,7 @@
-/* $Id: files.c,v 1.5 2001/11/12 12:41:11 dan Exp $ */
+/* $Id: files.c,v 1.6 2001/11/25 16:34:34 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -50,6 +50,10 @@
 
 #include "files.h"
 #include "wcalc.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 static void file_ok_sel (GtkWidget *w, gpointer data[])
 {

@@ -1,7 +1,7 @@
-/* $Id: microstrip.cgi.c,v 1.1 2001/10/05 01:28:30 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.2 2002/02/20 01:07:31 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -43,6 +43,10 @@
 #include "cgic.h"
 #include "microstrip.h"
 #include "microstrip_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -326,6 +330,7 @@ int cgiMain(void){
   delay = elen /(360.0 * freq_Hz * 1e-9);
 
   /* include the HTML output */
+#include "header_html.c"
 #include "microstrip_html.c"
 #include "footer_html.c"
 	

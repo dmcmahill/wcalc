@@ -1,4 +1,4 @@
-/* $Id: mathutil_test.c,v 1.3 2002/05/09 23:50:00 dan Exp $ */
+/* $Id: mathutil_test.c,v 1.4 2002/05/10 10:30:20 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 
     if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
       fprintf(stderr,"c_bessel_J1(%g + 0.0 i) = %g + %g i !=",x,REAL(b),IMAG(b));
-      fprintf(stderr,"c_bessel_J1_p() = %g + %g i \n",x,bp->re,bp->im);
+      fprintf(stderr,"c_bessel_J1_p(%g + 0.0 i) = %g + %g i \n",x,bp->re,bp->im);
       exit(1);
     }
 

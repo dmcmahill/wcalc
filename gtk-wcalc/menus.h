@@ -1,7 +1,7 @@
-/* $Id: menus.h,v 1.2 2001/09/15 23:56:38 dan Exp $ */
+/* $Id: menus.h,v 1.1 2001/10/05 00:50:23 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

@@ -1,9 +1,9 @@
-/* $Id: coupled_microstrip_syn.c,v 1.2 2001/11/07 04:50:54 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.3 2001/12/22 00:26:40 dan Exp $ */
 
-static char vcid[] = "$Id$";
+static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.3 2001/12/22 00:26:40 dan Exp $";
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,10 @@ static char vcid[] = "$Id$";
 #include "physconst.h"
 
 #include "mex.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*
  * function [w_out,s_out,l_out,er_out,kev,kodd] = 
@@ -157,14 +161,14 @@ void mexFunction(
   }
 
   /* Check for proper number of arguments */
-  if (nrhs != 12) {
+  if (nrhs != 14) {
     mexErrMsgTxt("wrong number of input arguments to COUPLED_MICROSTRIP_SYN"
-		 " (needs 9).");
+		 " (needs 14).");
   } 
 
   if (nlhs > 7) {
     mexErrMsgTxt("wrong number of output arguments to COUPLED_MICROSTRIP_SYN"
-		 " (needs <= 4).");
+		 " (needs <= 7).");
   }
   
   

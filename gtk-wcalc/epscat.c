@@ -1,7 +1,7 @@
-/* $Id: epscat.c,v 1.1 2001/10/17 01:15:19 dan Exp $ */
+/* $Id: epscat.c,v 1.2 2001/10/17 02:41:05 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -47,6 +47,10 @@
 
 #define MAXLINELEN 80
 #define FIELDSEP " \t=\n"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 static int eps_isps(FILE *fp)
 {

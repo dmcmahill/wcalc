@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.1 2001/10/05 01:28:29 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.2 2002/02/20 01:10:11 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -43,6 +43,10 @@
 #include "cgic.h"
 #include "coupled_microstrip.h"
 #include "coupled_microstrip_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -409,6 +413,7 @@ int cgiMain(void){
   delay = elen /(360.0 * freq_Hz * 1e-9);
 
   /* include the HTML output */
+#include "header_html.c"
 #include "coupled_microstrip_html.c"
 #include "footer_html.c"
 	

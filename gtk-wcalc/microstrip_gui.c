@@ -1,7 +1,7 @@
-/* $Id: microstrip_gui.c,v 1.4 2001/11/03 16:47:22 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.5 2001/11/11 15:54:19 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,6 +33,7 @@
  * SUCH DAMAGE.
  */
 
+/* #define DEBUG */
 #include "config.h"
 
 #include <gtk/gtk.h>
@@ -52,6 +53,10 @@
 #include "physconst.h"
 
 #include "wcalc.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 

@@ -1,4 +1,4 @@
-/* $Id: cgi-common.c,v 1.2 2002/02/20 01:11:19 dan Exp $ */
+/* $Id: cgi-common.c,v 1.3 2002/02/23 18:50:21 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -46,6 +46,10 @@
 
 #include "cgic.h"
 #include "cgi-common.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 void printFormError(const char *fmt,...)
 {

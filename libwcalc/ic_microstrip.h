@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.h,v 1.3 2001/11/12 04:02:50 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.4 2002/05/10 10:30:04 dan Exp $ */
 
 /*
- * Copyright (c)  2001 Dan McMahill
+ * Copyright (c)  2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

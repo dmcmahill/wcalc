@@ -1,4 +1,4 @@
-/* $Id: cookie.cgi.c,v 1.1 2002/01/18 14:21:12 dan Exp $ */
+/* $Id: cookie.cgi.c,v 1.2 2002/02/20 01:10:10 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -46,6 +46,10 @@
 /* CGI specific */
 #include "cgic.h"
 #include "cookie.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN 20
 #define VAL_LEN 20

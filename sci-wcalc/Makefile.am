@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.16 2001/11/04 19:24:51 dan Exp $
+## $Id: Makefile.am,v 1.17 2001/11/05 01:29:11 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -38,6 +38,10 @@ include $(srcdir)/mex.mk
 
 scimandir=	${pkgdatadir}/sci-wcalc
 sciman_DATA=	${SCIMANS} ${SCICATS} whatis
+demodir=		${pkgdatadir}/sci-wcalc/demos
+demo_DATA=	${SCIDEMOS}
+
+SCIDEMOS=	wcalc-demo.dem
 
 lib_LTLIBRARIES= libsci_wcalc.la
 
@@ -52,10 +56,12 @@ libsci_wcalc_la_SOURCES = \
 libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la 
 libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
 
+LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
+
 # note, we mangle the function name because with matlab, our function will have
 # the same name as the filename, but in Scilab, we need to replace mexFunction with
 # a more unique name
-INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -DmexFunction=mex_$*
+INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -DmexFunction=mex_$* ${DMALLOC_CFLAGS}
 
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
@@ -128,9 +134,12 @@ load_wcalc.sce.in: $(srcdir)/mex.mk
 	@echo "" >> $@
 	@echo "%helps=[%helps; \"@manpath@\", \"Wcalc\"];" >> $@
 	@echo "" >> $@
+	@echo "demolist=[demolist ; 'Wcalc Demos' ..." >> $@
+	@echo "'@demopath@/wcalc-demo.dem'];" >> $@
 
 load_wcalc.sce:	load_wcalc.sce.in
 	sed     -e 's;@libpath@;${libdir}/;g' \
+		-e 's;@demopath@;${demodir};g' \
 		-e 's;@manpath@;${scimandir};g' $< > $@
 	@echo "****************************************************"
 	@echo "* To use the scilab interface after installation   *"
@@ -143,6 +152,7 @@ load_wcalc.sce:	load_wcalc.sce.in
 
 test_wcalc.sce:	load_wcalc.sce.in
 	sed     -e "s;@libpath@;`pwd`/.libs/;g" \
+		-e "s;@demopath@;`pwd`/;g" \
 		-e "s;@manpath@;`pwd`;g" $< > $@
 	@echo "****************************************************"
 	@echo "* To test the scilab interface before installation *"

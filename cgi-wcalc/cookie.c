@@ -1,4 +1,4 @@
-/* $Id: cookie.c,v 1.1 2002/01/25 12:26:30 dan Exp $ */
+/* $Id: cookie.c,v 1.2 2002/02/20 01:10:09 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -21,6 +21,10 @@
 
 #include "cgic.h"
 #include "cookie.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define cgiStrEq(a, b) (!strcmp((a), (b)))
 

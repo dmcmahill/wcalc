@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.5 2002/02/23 18:50:22 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.6 2002/02/25 02:19:16 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -57,6 +57,10 @@
 
 /* ID's for this module */
 #include "coax_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -441,6 +445,7 @@ int cgiMain(void){
   units_autoscale(frequency_units,&line->fc_sf,&line->fc_units,line->fc);
 
   /* include the HTML output */
+#include "header_html.c"
 #include "coax_html.c"
 #include "footer_html.c"
 	

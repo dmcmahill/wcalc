@@ -1,7 +1,7 @@
-/*      $Id: mathutil.h,v 1.5 2002/05/06 02:14:16 dan Exp $ */
+/*      $Id: mathutil.h,v 1.6 2002/05/08 10:37:25 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

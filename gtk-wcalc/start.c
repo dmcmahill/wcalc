@@ -1,7 +1,7 @@
-/* $Id: start.c,v 1.4 2001/12/04 11:59:13 dan Exp $ */
+/* $Id: start.c,v 1.5 2002/01/03 03:54:50 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,10 @@
 #include "files.h"
 #include "start.h"
 #include "wcalc.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ABOUT_TEXT \
 "WaveCalc\n" \

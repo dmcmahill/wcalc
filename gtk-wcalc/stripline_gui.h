@@ -1,7 +1,7 @@
-/* $Id: stripline_gui.h,v 1.2 2001/11/03 02:16:18 dan Exp $ */
+/* $Id: stripline_gui.h,v 1.2 2001/11/11 03:46:53 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

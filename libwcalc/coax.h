@@ -1,7 +1,7 @@
-/* $Id: coax.h,v 1.4 2002/01/03 03:54:53 dan Exp $ */
+/* $Id: coax.h,v 1.5 2002/01/14 16:01:32 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

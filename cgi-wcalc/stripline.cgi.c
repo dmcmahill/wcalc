@@ -1,4 +1,4 @@
-/* $Id: stripline.cgi.c,v 1.2 2001/11/12 11:55:49 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.3 2002/01/14 02:55:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -54,6 +54,10 @@
 
 /* ID's for this module */
 #include "stripline_id.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define ACTION_LEN  20
 
@@ -357,6 +361,7 @@ int cgiMain(void){
   units_autoscale(time_units,&line->delay_sf,&line->delay_units,line->delay);
 
   /* include the HTML output */
+#include "header_html.c"
 #include "stripline_html.c"
 #include "footer_html.c"
 	

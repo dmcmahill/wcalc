@@ -1,7 +1,7 @@
-/* $Id: menus.c,v 1.1 2001/10/05 00:50:22 dan Exp $ */
+/* $Id: menus.c,v 1.2 2002/01/03 03:54:49 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -46,6 +46,10 @@
 #include "files.h"
 #include "print.h"
 #include "wcalc.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*static void window_close(GtkWidget *widget,
 			 GdkEventAny *event,

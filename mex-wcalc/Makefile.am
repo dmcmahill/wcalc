@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.7 2001/10/24 02:59:58 dan Exp $
+## $Id: Makefile.am,v 1.8 2001/10/30 23:50:22 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -56,10 +56,12 @@ noinst_SCRIPTS=		runmatlab
 
 lib_LTLIBRARIES=	libmex-alert.la
 libmex_alert_la_SOURCES=	alert.c
-INCLUDES = -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include
+INCLUDES = -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
+
+LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 # various MEX flags
 MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \
