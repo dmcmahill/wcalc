@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.1 2001/11/28 07:18:55 dan Exp $ */
+/* $Id: coax_gui.c,v 1.2 2001/11/28 15:39:43 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -571,6 +571,10 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "s" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 0, 1, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "loss" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
@@ -583,11 +587,15 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "dB/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "Conductor loss" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "np/m" );
+  text = gtk_label_new( "dB/m" );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -595,7 +603,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "np/m" );
+  text = gtk_label_new( "dB/m" );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -656,6 +664,16 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_losslen, 
 		    1,2,2,3, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_losslen);
+
+  gui->label_closs = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_closs,
+		    1,2,3,4, 0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_closs);
+
+  gui->label_dloss = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_dloss,
+		    1,2,4,5, 0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_dloss);
 
 
   gui->label_L = gtk_label_new( OUTPUT_TEXT );
@@ -945,7 +963,13 @@ static void update_display(coax_gui *gui)
   
   sprintf(str,"%8.4g",gui->line->losslen/gui->line->losslen_sf);
   gtk_label_set_text( GTK_LABEL(gui->label_losslen), str );
+
+  sprintf(str,"%8.4g",gui->line->alpha_c/gui->line->loss_sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_closs), str );
   
+  sprintf(str,"%8.4g",gui->line->alpha_d/gui->line->loss_sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_dloss), str );
+    
   sprintf(str,"%8.4g",gui->line->L/gui->line->L_sf);
   gtk_label_set_text( GTK_LABEL(gui->label_L), str );
   
@@ -975,7 +999,7 @@ static void tooltip_init(coax_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_tand, "Dielectric loss tangent", NULL);
   gtk_tooltips_set_tip(tips, gui->text_emax, "Breakdown field strength "
 		       "in the dielectric", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tshield, "Thickenss of outer conductor", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tshield, "Thickness of outer conductor", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length of line", NULL);

@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.1 2001/11/28 07:18:56 dan Exp $ */
+/* $Id: coax_gui.h,v 1.2 2001/11/28 15:39:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -82,6 +82,7 @@ typedef struct COAX_GUI
    */
   GtkWidget *outputs_vbox;
   GtkWidget *label_delay,*label_loss,*label_losslen;
+  GtkWidget *label_closs, *label_dloss;
   GtkWidget *label_L,*label_R,*label_C,*label_G;
 
   /*
