@@ -1,4 +1,4 @@
-/*      $Id: stripline.h,v 1.2 2001/09/13 19:13:26 dan Exp $ */
+/*      $Id: stripline.h,v 1.1 2001/10/05 00:37:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -66,12 +66,15 @@ typedef struct STRIPLINE_LINE
   /* the actual characteristic impedance is Ro + j Xo */
   double Ro, Xo;
 
+  /* frequency of analysis (Hertz) */
+  double freq;
+
   stripline_subs *subs;
 
 } stripline_line;
 
 
-double stripline_calc(stripline_line *line, double f);
+int stripline_calc(stripline_line *line, double f);
 int stripline_syn(stripline_line *line, double f, int flag);
 
 void stripline_line_free(stripline_line * line);
