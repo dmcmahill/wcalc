@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.5 2002/05/14 00:45:59 dan Exp $ -->
+<!-- $Id: coax.shtml,v 1.6 2004/07/28 11:49:05 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -68,6 +68,16 @@ stripline synthesis,
       </LI>
       
     </OL>
+
+    <HR> 
+    <H2><A NAME="bugs">Known Issues</A></H2>
+    <OL>
+        <LI>The TE10 cutoff calculation is based on c=0 (center
+    conductor is not offset from center).  If anyone cares to offer a
+    suggestion on how to solve this, please let me know.  
+        </LI>
+    </OL>
+
     </font>
 
   </td>
