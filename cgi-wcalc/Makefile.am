@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2001/10/18 03:23:53 dan Exp $
+## $Id: Makefile.am,v 1.12 2001/10/30 23:54:54 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -43,7 +43,7 @@ cgibinexec_PROGRAMS = \
 	stripline.cgi
 
 # These are used by all programs:
-COMMON = alert.c cgic.c cgic.h
+COMMON = alert.c cgic.c cgic.h cgi-units.c
 
 air_coil_cgi_SOURCES = air_coil.cgi.c ${COMMON}
 

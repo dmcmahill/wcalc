@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.2 2001/11/28 15:39:44 dan Exp $ */
+/* $Id: coax_gui.h,v 1.3 2001/12/15 23:16:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -69,10 +69,20 @@ typedef struct COAX_GUI
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
-  GtkWidget *text_a,*text_b,*text_c,*text_len,*text_er,*text_tand,*text_emax;
-  GtkWidget *text_tshield;
-  GtkWidget *text_z0,*text_elen,*text_fc,*text_freq;
+  GtkWidget *text_a,*text_b,*text_c,*text_tshield;
+  GtkWidget *menu_abct_units;
+  GtkWidget *units_b,*units_c,*units_t;
+
+  GtkWidget *text_len,*menu_len_units;
+
+  GtkWidget *text_er,*text_tand,*text_emax;
+  GtkWidget *text_z0,*text_elen;
+
+  GtkWidget *text_fc,*units_fc;
+
+  GtkWidget *text_freq, *menu_freq_units;
   GtkWidget *text_rho_a,*text_rho_b;
+  GtkWidget *menu_rho_units_ohm,*menu_rho_units_m,*units_rho_b;
 
   /* the radio buttons for fill/length selection */
   GtkWidget *len_button,*fill_button;
@@ -81,7 +91,8 @@ typedef struct COAX_GUI
    * Outputs vbox and its contents
    */
   GtkWidget *outputs_vbox;
-  GtkWidget *label_delay,*label_loss,*label_losslen;
+  GtkWidget *label_delay,*units_delay;
+  GtkWidget *label_loss,*label_losslen;
   GtkWidget *label_closs, *label_dloss;
   GtkWidget *label_L,*label_R,*label_C,*label_G;
 
@@ -92,9 +103,9 @@ typedef struct COAX_GUI
   GtkWidget *text_status;
 
   /*
-   * list of labels which change when we change physical units
+   * units for resistivities
    */
-  GList *phys_units_text;
+  composite_units_data *rho_units;
 
 } coax_gui;
 

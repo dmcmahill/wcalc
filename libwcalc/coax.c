@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.6 2001/12/16 17:59:08 dan Exp $ */
+/* $Id: coax.c,v 1.7 2001/12/21 03:12:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -57,7 +57,7 @@
  */
 
 /* debug the coax_calc() function */
-/* #define DEBUG_CALC */
+#define DEBUG_CALC
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
 
@@ -111,8 +111,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   printf("coax_calc():  b     = %g meters\n",line->b);
   printf("coax_calc():  c     = %g meters\n",line->c);
   printf("coax_calc():  t     = %g meters\n",line->tshield);
-  printf("coax_calc():  rho_a = %g ohms/meter\n",line->rho_a);
-  printf("coax_calc():  rho_b = %g ohms/meter\n",line->rho_b);
+  printf("coax_calc():  rho_a = %g ohm-meter\n",line->rho_a);
+  printf("coax_calc():  rho_b = %g ohm-meter\n",line->rho_b);
   printf("coax_calc():  er    = %g \n",line->er);
   printf("coax_calc():  tand  = %g \n",line->tand);
   printf("coax_calc():  len   = %g meters\n",line->len);
@@ -532,6 +532,8 @@ int coax_syn(coax_line *line, double f, int flag)
 
 void coax_free(coax_line *line)
 {
+  resistivity_units_free(line->units_rhoa);
+  resistivity_units_free(line->units_rhob);
   free(line);
 }
 
@@ -546,6 +548,9 @@ coax_line *coax_new()
       fprintf(stderr,"coax.c:coax_new(): malloc() failed\n");
       exit(1);
     }
+
+  newline->units_rhoa = resistivity_units_new();
+  newline->units_rhob = resistivity_units_new();
 
   newline->a = 1.0;
   newline->b = 2.0;
@@ -580,11 +585,16 @@ coax_line *coax_new()
   newline->loss_sf = 1.0;
   newline->losslen_sf = 1.0;
 
-  newline->a_units = "m";
-  newline->b_units = "m";
-  newline->c_units = "m";
-  newline->tshield_units = "m";
-  newline->len_units = "m";
+  /* 
+   * XXX need to initialize the units and scale factors from 
+   * within the new units code.
+   */
+  newline->a_units = length_units[units_get_index(length_units,newline->a_sf)].name;
+  newline->b_units = length_units[units_get_index(length_units,newline->b_sf)].name;
+  newline->c_units = length_units[units_get_index(length_units,newline->c_sf)].name;
+  newline->tshield_units = length_units[units_get_index(length_units,newline->tshield_sf)].name;
+  newline->len_units = length_units[units_get_index(length_units,newline->len_sf)].name;
+
   newline->rho_a_units = "Ohm-m";
   newline->rho_b_units = "Ohm-m";
   newline->emax_units = "V/m";
@@ -592,12 +602,11 @@ coax_line *coax_new()
   newline->R_units = "Ohms/m";
   newline->C_units = "Farads/m";
   newline->G_units = "Siemens/m";
-  newline->freq_units="MHz";
+  newline->freq_units = frequency_units[units_get_index(frequency_units,newline->freq_sf)].name;
+  newline->delay_units = time_units[units_get_index(time_units,newline->delay_sf)].name;
 
-  newline->delay_units = "s";
   newline->loss_units = "dB";
   newline->losslen_units = "dB/m";
-
 
   /* get the rest of the entries in sync */
   coax_calc(newline,newline->freq);

@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.4 2001/09/27 23:10:02 dan Exp $ */
+/* $Id: misc.h,v 1.1 2001/10/05 00:37:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -45,7 +45,35 @@ typedef struct UNITS_DATA
   double sf;
 } units_data;
 
-  
+typedef struct COMPOSITE_UNITS_DATA
+{
+  /* the various units which appear in the numerator and denominator */
+  const units_data **num;
+  const units_data **den;
+
+  /* indices */
+  int *numi, *deni;
+
+  /* number of numerator and denominator terms */
+  int nnum, nden;
+
+  /* what sort of units are these? */
+  enum {UNITS_RESISTIVITY} type;
+
+} composite_units_data;
+
+extern const units_data capacitance_units[];
+extern const units_data frequency_units[];
+extern const units_data inductance_units[];
+extern const units_data length_units[];
+extern const units_data resistance_units[];
+extern const units_data time_units[];
+int units_get_index(const units_data *units, double sf);
+composite_units_data * resistivity_units_new(void);
+void resistivity_units_free(composite_units_data *u);
+void resistivity_units_set(composite_units_data *units,char *str);
+void units_update(composite_units_data *units, double *sf, char **name);
+
 double dia2awg(double dia);
 double awg2dia(double AWG);
 double phys_units_get_sf(char *str);

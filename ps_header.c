@@ -1,7 +1,4 @@
-/* $Id: ps_header.c,v 1.3 2001/09/20 20:32:53 dan Exp $ */
-
-/* ********* Automatically Generated.  Do not edit! ******** */
-/* *********         Created with html2c            ******** */
+/* $Id: ps_header.c,v 1.4 2001/09/22 03:50:17 dan Exp $ */
 
 fprintf(fp,"%%!PS-Adobe-3.0\n");
 fprintf(fp,"%%%%Creator: WaveCalc\n");
@@ -105,6 +102,13 @@ fprintf(fp,"  exch pop leftcol exch\n");
 fprintf(fp,"  moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
+fprintf(fp,"/newlineclose {\n");
+fprintf(fp,"  currentpoint\n");
+fprintf(fp,"  fsize 0.9 mul sub \n");
+fprintf(fp,"  exch pop leftcol exch\n");
+fprintf(fp,"  moveto\n");
+fprintf(fp,"} def\n");
+fprintf(fp,"\n");
 fprintf(fp,"%% newlinecenter command\n");
 fprintf(fp,"/newlinecenter {\n");
 fprintf(fp,"  currentpoint\n");
@@ -138,6 +142,22 @@ fprintf(fp,"    %g inch leftcol add exch \n",global_print_config->tab4);
 fprintf(fp,"    moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
+fprintf(fp,"\n");
+fprintf(fp,"/subshow {\n");
+fprintf(fp,"  currfont fsize 0.7 mul scalefont setfont\n");
+fprintf(fp,"  fsize 0.25 mul neg 0 exch rmoveto\n");
+fprintf(fp,"  show\n");
+fprintf(fp,"  fsize 0.25 mul 0 exch rmoveto\n");
+fprintf(fp,"  currfont fsize scalefont setfont\n");
+fprintf(fp,"} def\n");
+fprintf(fp,"\n");
+fprintf(fp,"/subsymbolshow {\n");
+fprintf(fp,"  /Symbol findfont fsize 0.7 mul scalefont setfont\n");
+fprintf(fp,"  fsize 0.25 mul neg 0 exch rmoveto\n");
+fprintf(fp,"  show\n");
+fprintf(fp,"  fsize 0.25 mul 0 exch rmoveto\n");
+fprintf(fp,"  currfont fsize scalefont setfont\n");
+fprintf(fp,"} def\n");
 fprintf(fp,"\n");
 fprintf(fp,"/symbolshow {\n");
 fprintf(fp,"  /Symbol findfont fsize scalefont setfont\n");

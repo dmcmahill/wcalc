@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.2 2001/10/17 02:41:06 dan Exp $ */
+/* $Id: print.c,v 1.3 2001/10/31 04:25:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,9 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+/* #define DEBUG */
+
+#include "config.h"
 
 #include <math.h>
 #include <stdio.h>

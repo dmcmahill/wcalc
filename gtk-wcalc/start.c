@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.3 2001/11/12 04:23:50 dan Exp $ */
+/* $Id: start.c,v 1.4 2001/12/04 11:59:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -187,7 +187,6 @@ void start_popup(void)
   GtkStyle *style;    
  
   /* create the initial window */
-  //  window = gtk_window_new(GTK_WINDOW_DIALOG);
   window = gtk_window_new(GTK_WINDOW_DIALOG);
   
   /* made it modal */
@@ -195,6 +194,8 @@ void start_popup(void)
 
   /* don't let the user grow or shrink this window */
   gtk_window_set_policy(GTK_WINDOW(window),FALSE,FALSE,TRUE);
+
+  gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW(window), "WaveCalc");

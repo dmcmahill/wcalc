@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.4 2001/11/07 05:48:19 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.5 2001/12/14 02:24:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -37,13 +37,23 @@
  * a cgi interface to the air_coil calculator
  */
 
-//#define DEBUG
+/* #define DEBUG */
+
+#include "config.h"
 
 #include <stdio.h>
+
+/* CGI specific */
 #include "cgic.h"
+#include "cgi-units.h"
+
+/* libwcalc */
 #include "air_coil.h"
-#include "air_coil_id.h"
+#include "misc.h"
 #include "physconst.h"
+
+/* ID's for this module */
+#include "air_coil_id.h"
 
 #define ACTION_LEN  20
 

@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.5 2001/09/27 23:10:01 dan Exp $ */
+/* $Id: misc.c,v 1.1 2001/10/05 00:37:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,10 +33,11 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -51,7 +52,7 @@
 #include "misc.h"
 
 
-static const units_data capacitance_units[]=
+const units_data capacitance_units[]=
 {
   {"fF", 1e-15},
   {"pF", 1e-12},
@@ -59,29 +60,42 @@ static const units_data capacitance_units[]=
   {"uF", 1e-6},
   {"mF", 1e-3},
   {"F", 1.0},
-  {"kF", 1e3}
+  {"kF", 1e3},
+  {NULL,0}
 };
 
-static const units_data frequency_units[]=
+const units_data conductance_units[]=
+{
+  {"uMho", 1e-6},
+  {"mMho", 1e-3},
+  {"Mho", 1.0},
+  {"kMho", 1e3},
+  {"MMho", 1e6},
+  {NULL,0}
+};
+
+const units_data frequency_units[]=
 {
   {"mHz", 1e-3},
   {"Hz", 1.0},
   {"kHz", 1e3},
-  {"MHz", 1e3},
-  {"GHz", 1e3}
+  {"MHz", 1e6},
+  {"GHz", 1e9},
+  {NULL,0}
 };
 
-static const units_data inductance_units[]=
+const units_data inductance_units[]=
 {
   {"pH", 1e-12},
   {"nH", 1e-9},
   {"uH", 1e-6},
   {"mH", 1e-3},
   {"H", 1.0},
-  {"kH", 1e3}
+  {"kH", 1e3},
+  {NULL,0}
 };
 
-static const units_data length_units[]=
+const units_data length_units[]=
 {
   {"nm", 1e-9},
   {"um", 1e-6},
@@ -89,10 +103,241 @@ static const units_data length_units[]=
   {"cm", 1e-2},
   {"m", 1.0},
   {"mil", 25.4e-6},
-  {"inch", 25.4e-3}
+  {"inch", 25.4e-3},
+  {NULL,0}
 };
 
+const units_data resistance_units[]=
+{
+  {"mOhm", 1e-3},
+  {"Ohm", 1.0},
+  {"kOhm", 1e3},
+  {"MOhm", 1e6},
+  {NULL,0}
+};
 
+const units_data time_units[]=
+{
+  {"ps", 1e-12},
+  {"ns", 1e-9},
+  {"us", 1e-6},
+  {"ms", 1e-3},
+  {"s", 1.0},
+  {NULL,0}
+};
+
+int units_get_index(const units_data *units, double sf)
+{
+  int i;
+  int found_sf=0;
+  
+  i=0;
+  while (units[i].name != NULL){
+#ifdef DEBUG
+    printf("units_get_index():  is %g == %g ?\n",
+	   sf,units[i].sf);
+#endif
+    if (units[i].sf == sf) {
+      found_sf=1;
+      break;
+    }
+    i++;
+  }  
+
+  if (!found_sf) {
+    fprintf(stderr,"units_get_index():  error.  could not locate sf=%g\n",sf);
+    exit(1);
+  }
+
+  /* set the menu */
+#ifdef DEBUG
+  printf("get_units_index():  units[%d] = %p , sf = %g)\n",
+	  i,(void *) units,sf);
+#endif
+
+  return i;
+}
+
+int units_get_index_name(const units_data *units, char *name)
+{
+  int i;
+  int found_it=0;
+  
+  i=0;
+  while (units[i].name != NULL){
+#ifdef DEBUG
+    printf("units_get_index():  \"%s\" ?= \"%s\"\n",
+	   name,units[i].name);
+#endif
+    if (strcmp(units[i].name,name)==0) {
+      found_it=1;
+      break;
+    }
+    i++;
+  }  
+
+  if (!found_it) {
+    fprintf(stderr,"units_get_index_name():  error.  could not locate name=\"%s\"\n",
+	    name);
+    exit(1);
+  }
+
+  /* set the menu */
+#ifdef DEBUG
+  printf("get_units_index_name():  units[%d] = %p , name = \"%s\")\n",
+	  i,(void *) units,name);
+#endif
+
+  return i;
+}
+
+/* ohm-meters */
+composite_units_data * resistivity_units_new(void)
+{
+  composite_units_data *u;
+  
+  if ( (u = malloc(sizeof(composite_units_data))) == NULL ) {
+    fprintf(stderr,"resistivity_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  u->type = UNITS_RESISTIVITY;
+
+  u->nnum = 2;
+  u->nden = 0;
+
+  u->den = NULL;
+  if ( (u->num = malloc(u->nnum*sizeof(units_data))) == NULL ) {
+    fprintf(stderr,"resistivity_units_new():  malloc failed.\n");
+    exit(1);
+  }
+
+  /* 
+   * allocate memory for the arrays that specify the current
+   * value of the units 
+   */
+  if ( (u->numi = malloc(u->nnum*sizeof(int))) == NULL ) {
+    fprintf(stderr,"resistivity_units_new():  malloc failed.\n");
+    exit(1);
+  }
+  u->deni=NULL;
+  
+  u->num[0] = resistance_units;
+  u->num[1] = length_units;
+
+  u->numi[0] = units_get_index(u->num[0], 1.0);
+  u->numi[1] = units_get_index(u->num[1], 1.0);
+
+  return u;
+}
+
+void resistivity_units_free(composite_units_data *u)
+{
+  free(u->num);
+  free(u->numi);
+  free(u);
+}
+
+/* initialize a resistivity composite units from a string */
+void resistivity_units_set(composite_units_data *units,char *str) 
+{
+  char *tok;
+  int i;
+
+  assert(units->type == UNITS_RESISTIVITY);
+
+  tok = strtok(str,"-");
+  i=units_get_index_name(resistance_units,tok);
+
+#ifdef DEBUG
+  printf("resistivity_units_set():  found \"%s\" at index %d\n",str,i);
+#endif
+  units->numi[0] = i;
+
+  tok = strtok(NULL,"-");
+  i=units_get_index_name(length_units,tok);
+
+#ifdef DEBUG
+  printf("resistivity_units_set():  found \"%s\" at index %d\n",str,i);
+#endif
+  units->numi[1] = i;
+
+}
+
+/* calculates the scale factor and string for the composite units */
+void units_update(composite_units_data *units, double *sf, char **name)
+{
+  double s=1.0;
+  char *str;
+
+  /* 
+   * we'll need 1 for the terminating null character and 1 for
+   * a '/' between numerator and denominator
+   */
+  size_t len=2;
+  int i;
+
+#ifdef DEBUG
+  printf("units_update():  units->nnum = %d\n",units->nnum);
+  printf("units_update():  units->nden = %d\n",units->nden);
+  printf("units->num[0][1].name = %s\n",units->num[0][1].name);
+#endif
+
+  for(i=0; i<units->nnum; i++) {
+#ifdef DEBUG
+    printf("units_update():  adding numerator # %d\n",i);
+    printf("                 units->numi[%d] = %d\n",i,
+	   units->numi[i]);
+    printf("                 sf = %.8g\tname = \"%s\"\n",
+	   units->num[i][units->numi[i]].sf,
+	   units->num[i][units->numi[i]].name);
+#endif
+    s = s * units->num[i][units->numi[i]].sf;
+    /* the 1 extra is for the '-' which seperates units.  Ie, "V-s" */
+    len += strlen(units->num[i][units->numi[i]].name) + 1;
+  }
+  
+  for(i=0; i<units->nden; i++) {
+    s = s / units->den[i][units->deni[i]].sf;
+    /* the 1 extra is for the '-' which seperates units.  Ie, "V-s" */
+    len += strlen(units->den[i][units->deni[i]].name) + 1;
+
+#ifdef DEBUG
+    printf("units_update():  adding denominator #%d\n",i);
+    printf("                 sf = %.8g\tname = \"%s\"\n",
+	   units->den[units->deni[i]]->sf,
+	   units->den[units->deni[i]]->name);
+#endif
+  }
+
+  if ( (str = malloc(len*sizeof(char))) == NULL ) {
+    fprintf(stderr,"units_update():  malloc() failed\n");
+    exit(1);
+  }
+
+  if (units->nnum > 0)
+    sprintf(str,"%s",units->num[0][units->numi[0]].name);
+  else
+    sprintf(str,"1");
+
+  for(i=1; i<units->nnum; i++)
+    sprintf(str,"%s-%s",str,units->num[i][units->numi[i]].name);
+
+  if (units->nden > 0)
+    sprintf(str,"%s/%s",str,units->den[0][units->deni[0]].name);
+
+  for(i=1; i<units->nden; i++)
+    sprintf(str,"%s-%s",str,units->den[i][units->deni[i]].name);
+
+#ifdef DEBUG
+    printf("units_update():  final sf    = %g\n",s);
+    printf("units_update():  final units = \"%s\"\n",str);
+#endif
+
+  *sf   = s;
+  /* XXX do I need to free() the old *name? */
+  *name = str;
+}
 
 /*
  * AWG2DIA    Calculate diameter of wire from A.W.G.

@@ -1,4 +1,4 @@
-/* $Id: coax.h,v 1.2 2001/11/28 07:18:58 dan Exp $ */
+/* $Id: coax.h,v 1.3 2001/11/28 15:39:46 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -35,6 +35,8 @@
 
 #ifndef __COAX_H__
 #define __COAX_H__
+
+#include "misc.h"
 
 typedef struct COAX_LINE
 {
@@ -111,6 +113,8 @@ typedef struct COAX_LINE
   char *fc_units,*freq_units;
   char *delay_units, *loss_units, *losslen_units;
 
+  composite_units_data *units_rhoa, *units_rhob;
+  
 } coax_line;
 
 

@@ -1,4 +1,4 @@
-/* $Id: about.h,v 1.2 2001/02/12 18:00:44 dan Exp $ */
+/* $Id: about.h,v 1.1 2001/10/05 00:50:21 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -38,5 +38,9 @@
 
 void about_popup(void);
 void copyright_popup(void);
+
+/* XXX should move this to a seperate help .c file */
+void permitivity_popup(void);
+void resistivity_popup(void);
 
 #endif /*__ABOUT_H__*/

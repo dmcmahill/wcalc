@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.2 2001/11/03 02:16:20 dan Exp $ */
+/*      $Id: wcalc.h,v 1.3 2001/11/03 04:12:27 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -46,6 +46,7 @@
 #include <string.h>
 #endif
 
+#include "misc.h"
 #include "print.h"
 
 /* Global list of the names of the various models */
@@ -146,6 +147,15 @@ Wcalc *Wcalc_new(void);
 
 void wcalc_save_needed(GtkWidget *widget, gpointer data );
 void wcalc_set_title(Wcalc * wcalc);
+
+GtkWidget *units_menu_new(const units_data *units, 
+			  int initial,
+			  Wcalc *gui,
+			  void (*callback)(GtkWidget *, gpointer));
+
+void  set_sf_menu(GtkWidget *menu,
+		  const units_data units[],
+		  double sf);
 
 #define WC_WCALC(x)      ((Wcalc *) (x))
 

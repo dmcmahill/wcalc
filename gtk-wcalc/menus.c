@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.12 2001/09/28 00:49:26 dan Exp $ */
+/* $Id: menus.c,v 1.1 2001/10/05 00:50:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -98,6 +98,11 @@ static GtkItemFactoryEntry static_menu_items[] = {
   { "/_Help",           NULL,          NULL,             0, "<LastBranch>" },
   { "/_Help/About",     NULL,          about_popup,      0, NULL },
   { "/_Help/Copyright", NULL,          copyright_popup,  0, NULL },
+  { "/_Help/_Material Properties", NULL,NULL,            0, "<Branch>" },
+  { "/_Help/_Material Properties/_Permitivities", 
+                        NULL,          permitivity_popup,0, NULL },
+  { "/_Help/_Material Properties/_Resistivities", 
+                        NULL,          resistivity_popup,0, NULL },
 };
 
 void get_main_menu( Wcalc *wcalc,

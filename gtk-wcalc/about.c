@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.2 2001/02/12 18:00:43 dan Exp $ */
+/* $Id: about.c,v 1.1 2001/10/05 00:50:21 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -165,6 +165,97 @@ void copyright_popup(void)
 
   /* add the text to the window */
   label = gtk_label_new (COPYRIGHT_TEXT);
+  gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+		      label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
+
+  /* show it */
+  gtk_widget_show (window);
+}
+
+void permitivity_popup(void)
+{
+  GtkWidget *button;
+  GtkWidget *label;
+  GtkWidget *window;
+ 
+  /* create the "Permitivities" window */
+  window = gtk_dialog_new();
+  
+  /* made it modal */
+  gtk_grab_add(window);
+
+  /* set other properties */
+  gtk_window_set_title (GTK_WINDOW (window), "Permitivities of Common Materials");
+  gtk_container_set_border_width(GTK_CONTAINER(window),10);
+
+  /* Add the "OK" button and set its action */
+  button = gtk_button_new_with_label ("Ok");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(ok_pressed),
+		     GTK_OBJECT(window));
+  
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+		      button, TRUE, FALSE, 0);
+  gtk_widget_show (button);
+  
+
+  /* add the text to the window */
+  label = gtk_label_new (
+			 "Silicon          (Si)   \n"
+			 "Silicon Dioxide  (SiO2) \n"
+			 );
+  gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+		      label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
+
+  /* show it */
+  gtk_widget_show (window);
+}
+
+void resistivity_popup(void)
+{
+  GtkWidget *button;
+  GtkWidget *label;
+  GtkWidget *window;
+ 
+  /* create the "Resistivities" window */
+  window = gtk_dialog_new();
+  
+  /* made it modal */
+  gtk_grab_add(window);
+
+  /* set other properties */
+  gtk_window_set_title (GTK_WINDOW (window), "Resistivities of Common Materials");
+  gtk_container_set_border_width(GTK_CONTAINER(window),10);
+
+  /* Add the "OK" button and set its action */
+  button = gtk_button_new_with_label ("Ok");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(ok_pressed),
+		     GTK_OBJECT(window));
+  
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+		      button, TRUE, FALSE, 0);
+  gtk_widget_show (button);
+  
+
+  /* add the text to the window */
+  label = gtk_label_new (
+			 "Aluminum (Al)   3.2e-8\n"
+			 "Bismuth  (Bi)   119e-8\n"
+			 "Brass    (??)   ??e-8\n"
+			 "Copper   (Cu)   1.72e-8\n"
+			 "Gold     (Au)   ??e-8\n"
+			 "Iron     (Fe)   15e-8\n"
+			 "Lead     (Pb)   ??e-8\n"
+			 "Mercury  (Hg)   94.1e-8\n"
+			 "Platinum (Pt)   11e-8\n"
+			 "Silver   (Ag)   1.05e-8\n"
+			 "Tungsten (W )   5.5e-8\n"
+			 );
   gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
 		      label, TRUE, TRUE, 0);

@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.6 2001/11/12 04:02:48 dan Exp $ */
+/* $Id: wcalc.c,v 1.7 2001/11/28 07:18:56 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -57,9 +57,11 @@
 #include "microstrip_gui.h"
 #include "stripline_gui.h"
 
-
+/* libwcalc related */
+#include "misc.h"
 #include "physconst.h"
 
+/* GTK-wcalc related */
 #include "about.h"
 #include "start.h"
 #include "wcalc.h"
@@ -455,3 +457,72 @@ void wcalc_set_title(Wcalc * wcalc)
   gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
 
 }
+
+
+
+GtkWidget *units_menu_new(const units_data *units, 
+			  int initial,
+			  Wcalc *gui,
+			  void (*callback)(GtkWidget *, gpointer))
+{
+  GtkWidget *opt_menu;
+  GtkWidget *menu;
+  GtkWidget *item;
+  int i;
+
+  opt_menu = gtk_option_menu_new();
+  menu = gtk_menu_new();
+
+  i=0;
+  while (units[i].name != NULL) {
+    item = gtk_menu_item_new_with_label(units[i].name);
+    gtk_signal_connect(GTK_OBJECT(item), "activate",
+		       GTK_SIGNAL_FUNC(callback), 
+		       (gpointer) gui);
+    gtk_object_set_user_data(GTK_OBJECT(item),GINT_TO_POINTER(i));
+    gtk_menu_append(GTK_MENU(menu), item);
+    gtk_widget_show(item);
+
+    i++;
+  }
+
+  /* attach our new menu to the options menu */
+  gtk_option_menu_set_menu(GTK_OPTION_MENU(opt_menu), menu);
+
+  /* pick the default (initial) selection */
+  gtk_option_menu_set_history(GTK_OPTION_MENU(opt_menu), initial);
+
+  gtk_widget_show_all(opt_menu);
+  
+  return(opt_menu);
+}
+
+void  set_sf_menu(GtkWidget *menu, const units_data units[],double sf)
+{
+  int i;
+  int found_sf=0;
+
+  i=0;
+  while (units[i].name != NULL){
+    if (units[i].sf == sf) {
+      found_sf=1;
+      break;
+    }
+    i++;
+  }  
+
+  if (!found_sf) {
+    fprintf(stderr,"set_sf_menu():  error.  could not locate sf=%g\n",sf);
+    exit(1);
+  }
+
+  /* set the menu */
+#ifdef DEBUG
+  g_print("set_sf_menu():  set menu (%p) to option %d (sf=%g)\n",
+	  (void *) menu,i,sf);
+#endif
+
+  gtk_option_menu_set_history(GTK_OPTION_MENU(menu), i);
+  
+}
+

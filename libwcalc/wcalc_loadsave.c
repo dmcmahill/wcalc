@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.6 2001/11/28 07:18:58 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.7 2001/12/09 21:53:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -156,10 +156,14 @@ char * file_read_val(FILE *fp, const char *section, const char *key)
     tok = strtok(line,FIELDSEP);
     
     if (tok != NULL){
+
+      /* XXX probably a bad idea to lowercase everything */
+      /*
       for (i=0 ; i<strlen(tok) ; i++){
 	tok[i] = tolower(tok[i]);
       }
-      
+      */
+
       /* process each token on the line, skipping comment lines */
       if ( (tok[0] != '#') &&
 	   (tok[0] != ';') &&
@@ -178,6 +182,10 @@ char * file_read_val(FILE *fp, const char *section, const char *key)
 #endif
 	      return NULL;
 	    }
+#ifdef DEBUG
+	    printf("wcalc_loadsave.c:file_read_val():  \"%s\" ?= \"%s\"\n",
+		   tok,key);
+#endif
 	    if (strcmp(tok,key) == 0){
 	      ret=strdup(val);
 	      rewind(fp);
@@ -228,8 +236,11 @@ fspec * fspec_add_key(fspec *list,
     exit(1);
   }
 
+
   for (i=0 ; i<strlen(name) ; i++){
-    new->key[i] = tolower(name[i]);
+    /* XXX probably a bad idea to lowercase it all*/
+    /*new->key[i] = tolower(name[i]); */
+    new->key[i] = name[i]; 
   }
   new->key[strlen(name)] = '\0';
 
@@ -469,9 +480,11 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
   while( fgets(line,MAXLINELEN,fp) != NULL ){
     tok = strtok(line,FIELDSEP);
     if (tok != NULL){
+      /*
       for (i=0 ; i<strlen(tok) ; i++){
-	tok[i] = tolower(tok[i]);
+	tok[i] = tolower(tok[i]); 
       }
+      */
 #ifdef DEBUG
 	    printf("fspec_read_file():  tok = \"%s\", length=%ld\n",tok,(long int) strlen(tok));
 #endif
