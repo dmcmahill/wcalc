@@ -1,4 +1,4 @@
-dnl $Id$
+dnl $Id: configure.in,v 1.1 2001/02/11 19:26:18 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -42,13 +42,37 @@ AC_PROG_INSTALL
 
 AC_HEADER_STDC
 
-dnl XXX need to check for gtk-config
+dnl GTK checks
+AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
+if test "x$GTK_CONFIG" = "xnone"; then
+	AC_MSG_ERROR("You must have gtk installed on your system")
+else
+	AC_MSG_CHECKING("if gtk is version 1.2 or later")
+	GTK_VER=`$GTK_CONFIG --version`
 
+	case $GTK_VER in
+	0.* )
+		AC_MSG_ERROR("you need at least version 1.2 of gtk")
+		;;
+	1.1* )
+		AC_MSG_ERROR("you need at least version 1.2 of gtk")
+		;;
+	* )
+		AC_MSG_RESULT("$GTK_VER")
+		GTK_CFLAGS=`$GTK_CONFIG --cflags`
+		GTK_LIBS=`$GTK_CONFIG --libs`
+		;;
+	esac	
+fi
+	
 dnl Only use -Wall if we have gcc
 if test "x$GCC" = "xyes"; then
 	if test -z "`echo "$CFLAGS" | grep "\-Wall" 2> /dev/null`" ; then
 		CFLAGS="$CFLAGS -Wall"
 	fi
 fi
+
+CFLAGS="$CFLAGS $GTK_CFLAGS"
+LIBS="$LIBS $GTK_LIBS"
 
 AC_OUTPUT(Makefile)

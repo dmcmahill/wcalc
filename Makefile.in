@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001/02/11 19:26:16 dan Exp $
+# $Id: Makefile.in,v 1.2 2001/02/12 11:32:37 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -35,7 +35,7 @@
 
 default: all
 
-SHELL = @SHELL@
+#SHELL = @SHELL@
 @SET_MAKE@
 
 VERSION = 0.1
@@ -56,9 +56,9 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 CC = @CC@
-CFLAGS = @CFLAGS@  `gtk-config --cflags`
+CFLAGS = @CFLAGS@ 
 LDFLAGS = @LDFLAGS@
-LIBS =  -lm `gtk-config --libs`
+LIBS = @LIBS@
 
 
 
