@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.24 2004/11/09 12:56:06 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.25 2004/11/22 22:36:23 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -232,13 +232,16 @@ int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    * is good.  This is given by (1) in Kirschning and Jansen (MTT)
    */
   if( (u  < 0.1) || (u  > 10.0) ) {
-    alert(_("Warning:  u=w/h=%g is outside the range for highly accurate results\n"),u);
+    alert(_("Warning:  u=w/h=%g is outside the range for highly accurate results.\n"
+	"For best accuracy 0.1 < u < 10.0\n"),u);
   }
   if( (g  < 0.1) || (g  > 10.0) ) {
-    alert(_("Warning:  g=s/h=%g is outside the range for highly accurate results\n"),g);
+    alert(_("Warning:  g=s/h=%g is outside the range for highly accurate results\n"
+	"For best accuracy 0.1 < g < 10.0 "),g);
   }
   if( (er < 1.0) || (er > 18.0) ) {
-    alert(_("Warning:  er=%g is outside the range for highly accurate results\n"),er);
+    alert(_("Warning:  er=%g is outside the range for highly accurate results\n"
+	"For best accuracy 1.0 < er < 18.0"),er);
   }
   
   if(t>0.0) {
@@ -811,6 +814,19 @@ int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* skin depth in m */
   line->skindepth =  depth;
 
+  /* incremental circuit model */
+  line->Lev = line->z0e * sqrt(line->kev) / LIGHTSPEED;
+  line->Cev = sqrt(line->kev) / (line->z0e * LIGHTSPEED);
+  line->Lodd = line->z0o * sqrt(line->kodd) / LIGHTSPEED;
+  line->Codd = sqrt(line->kodd) / (line->z0o * LIGHTSPEED);
+
+  /* XXX fix the loss */
+
+  line->Rev = 0.0;
+  line->Gev = 0.0;
+  line->Rodd = 0.0;
+  line->Godd = 0.0;
+
   return 0;
 }
 
@@ -1153,6 +1169,10 @@ void coupled_microstrip_line_free(coupled_microstrip_line * line)
 {
   free(line->subs);
   wc_units_free(line->units_lwst);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
   wc_units_free(line->units_len);
   wc_units_free(line->units_freq);
   wc_units_free(line->units_loss);
@@ -1181,6 +1201,10 @@ coupled_microstrip_line *coupled_microstrip_line_new()
 
   /* create the units */
   newline->units_lwst    = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
+  newline->units_R       = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
+  newline->units_C       = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
+  newline->units_G       = wc_units_new(WC_UNITS_CONDUCTANCE_PER_LEN);
   newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
   newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
   newline->units_loss    = wc_units_new(WC_UNITS_DB);
