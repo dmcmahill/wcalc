@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.7 2004/07/24 04:07:23 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.8 2004/07/24 17:39:06 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -201,6 +201,10 @@ void stripline_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
+
+  wc_units_menu_init( wcalc );
+  analyze(NULL, gui);
+
 }
 
 /*
@@ -212,6 +216,7 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
+  GtkWidget *lwht;
   GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *combo;
@@ -294,12 +299,26 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 1, 2, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
 
   /* ---------------- Height  -------------- */
 
   text = gtk_label_new( "Height (H)" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
 
   /* ---------------- Dielectric Constant -------------- */
 
@@ -331,6 +350,13 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "Tmet" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, 8, 9, 2, 3, 
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
 
   /* ---------------- Resistivity -------------- */
 
@@ -549,13 +575,38 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
 
   /* ----------------  Skin Depth -------------- */
   text = gtk_label_new( "Skin Depth" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
+
+  gui->label_depth = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_depth, 
+		    1,2,3,4, 0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_depth);
+
+  text = wc_units_menu_new(gui->line->units_depth, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 3, 4, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth), 
+			NULL, NULL, "%8.4g", 1);
+
 
   /* ----------------  End correction -------------- */
   text = gtk_label_new( "Delta L" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
+
+  gui->label_deltal = gtk_label_new( OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_deltal, 
+		    1,2,4,5, 0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_deltal);
+
+  text = wc_units_menu_new(gui->line->units_deltal, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   3, 4, 4, 5, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+
+  wc_units_attach_label(ug, gui->label_deltal, &(gui->line->deltal), 
+			NULL, NULL, "%8.4g", 1);
 
   /* ---------------- L -------------- */
   text = gtk_label_new( "L" );
@@ -633,18 +684,6 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
 		   XPAD,YPAD);
   gtk_widget_show(text);
 
-
-
-
-  gui->label_depth = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_depth, 
-		    1,2,3,4, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_depth);
-
-  gui->label_deltal = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_deltal, 
-		    1,2,4,5, 0,0,XPAD,YPAD);
-  gtk_widget_show(gui->label_deltal);
 
 
 #undef OUTPUT_TEXT
@@ -742,49 +781,49 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
   gui->line->l=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  l = %g\n",gui->line->l);
+  g_print("stripline_gui.c:calculate():  l = %g\n", gui->line->l);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) ); 
   gui->line->subs->h=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  h = %g\n",gui->line->subs->h);
+  g_print("stripline_gui.c:calculate():  h = %g\n", gui->line->subs->h);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
   gui->line->subs->er=atof(vstr);
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  er = %g\n",gui->line->subs->er);
+  g_print("stripline_gui.c:calculate():  er = %g\n", gui->line->subs->er);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tand) ); 
   gui->line->subs->tand=atof(vstr);
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  tand = %g\n",gui->line->subs->tand);
+  g_print("stripline_gui.c:calculate():  tand = %g\n", gui->line->subs->tand);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
   gui->line->Ro=atof(vstr);
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  z0 = %g\n",gui->line->z0);
+  g_print("stripline_gui.c:calculate():  z0 = %g\n", gui->line->z0);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
   gui->line->len=atof(vstr);
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  elen = %g\n",gui->line->len);
+  g_print("stripline_gui.c:calculate():  elen = %g\n", gui->line->len);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) ); 
   gui->line->subs->tmet=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  tmet = %g\n",gui->line->subs->tmet);
+  g_print("stripline_gui.c:calculate():  tmet = %g\n", gui->line->subs->tmet);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
   gui->line->subs->rho=atof(vstr)*gui->line->units_rho->sf;
 #ifdef DEBUG
-  g_print("stripline_gui.c:calculate():  rho = %g\n",gui->line->subs->rho);
+  g_print("stripline_gui.c:calculate():  rho = %g\n", gui->line->subs->rho);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
@@ -811,19 +850,19 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
 
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
-    rslt=stripline_calc(gui->line,gui->line->freq);
+    rslt=stripline_calc(gui->line, gui->line->freq);
   }
   else if( strcmp(data,"synthesize_w")==0) {
-    rslt=stripline_syn(gui->line,gui->line->freq,SLISYN_W);
+    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_W);
   }
   else if( strcmp(data,"synthesize_l")==0) {
-    rslt=stripline_syn(gui->line,gui->line->freq,SLISYN_L);
+    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_L);
   }
   else if( strcmp(data,"synthesize_h")==0) {
-    rslt=stripline_syn(gui->line,gui->line->freq,SLISYN_H);
+    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_H);
   }
   else if( strcmp(data,"synthesize_er")==0) {
-    rslt=stripline_syn(gui->line,gui->line->freq,SLISYN_ER);
+    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_ER);
   }
   else{
     fprintf(stderr,"stripline_gui.c:  error in stripline callback\n"
@@ -892,31 +931,31 @@ static void update_display(stripline_gui *gui)
 
   /* the labels */
 
-  sprintf(str,"%.4g",gui->line->len/gui->line->freq);
+  sprintf(str,"%.4g", gui->line->delay/gui->line->units_delay->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_delay), str );
   
-  sprintf(str,"%8.4g",gui->line->loss);
+  sprintf(str,"%8.4g", gui->line->loss/gui->line->units_loss->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_loss), str );
     
-  sprintf(str,"%8.4g",gui->line->losslen);
+  sprintf(str,"%8.4g", gui->line->losslen/gui->line->units_losslen->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_losslen), str );
     
-  sprintf(str,"%8.4g",gui->line->skindepth);
+  sprintf(str,"%8.4g", gui->line->skindepth/gui->line->units_depth->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_depth), str );
     
-  sprintf(str,"%8.4g",gui->line->deltal);
+  sprintf(str,"%8.4g", gui->line->deltal/gui->line->units_deltal->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_deltal), str );
     
-  sprintf(str,"%8.4g",gui->line->Ls);
+  sprintf(str,"%8.4g", gui->line->Ls/gui->line->units_L->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Ls), str );
     
-  sprintf(str,"%8.4g",gui->line->Rs);
+  sprintf(str,"%8.4g", gui->line->Rs/gui->line->units_R->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Rs), str );
     
-  sprintf(str,"%8.4g",gui->line->Cs);
+  sprintf(str,"%8.4g", gui->line->Cs/gui->line->units_C->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Cp), str );
     
-  sprintf(str,"%8.4g",gui->line->Gs);
+  sprintf(str,"%8.4g", gui->line->Gs/gui->line->units_G->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Gp), str );
     
 
