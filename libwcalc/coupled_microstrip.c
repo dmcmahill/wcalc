@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.8 2003/01/10 03:09:00 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.9 2003/01/11 00:59:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
@@ -284,7 +284,6 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    */
   EFO0 = ((er+1.0)/2.0 + AO - EF)*exp(-CO*(pow(g,DO))) + EF;
 
-
   /* normalized frequency  (2) from Kirschning and Jansen (MTT) */
   fn = 1e-6 * f * h;
 
@@ -322,7 +321,24 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   P15 = fabs(1.0 - 0.8928*(1.0 + P11)*P12*exp(-P13*(pow(g,1.092)))/P14);
   FOF = P1*P2*pow(((P3*P4 + 0.1844)*fn*P15),1.5763);
 
-  
+ #ifdef DEBUG_CALC
+  printf("P1 = %g\n",P1);
+  printf("P2 = %g\n",P2);
+  printf("P3 = %g\n",P3);
+  printf("P4 = %g\n",P4);
+  printf("P5 = %g\n",P5);
+  printf("P6 = %g\n",P6);
+  printf("P7 = %g\n",P7);
+  printf("P8 = %g\n",P8);
+  printf("P9 = %g\n",P9);
+  printf("P10 = %g\n",P10);
+  printf("P11 = %g\n",P11);
+  printf("P12 = %g\n",P12);
+  printf("P13 = %g\n",P13);
+  printf("P14 = %g\n",P14);
+  printf("P15 = %g\n",P15);
+ #endif
+
   /*
    * relative permittivities including dispersion via generalization
    * of Getsinger's dispersion relation.  This is (5) in Kirschning
@@ -370,8 +386,21 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   Q10 = (Q2*Q4 - Q5*exp(log(u)*Q6*(pow(u,-Q9))))/Q2;
   z0o0 = ZL0 * sqrt(EF/EFO0) / (1.0 - (ZL0/377.0)*sqrt(EF)*Q10);
 
-
-
+#ifdef DEBUG_CALC
+  printf("Q1 = %g\n",Q1);
+  printf("Q2 = %g\n",Q2);
+  printf("Q3 = %g\n",Q3);
+  printf("Q4 = %g\n",Q4);
+  printf("Q5 = %g\n",Q5);
+  printf("Q6 = %g\n",Q6);
+  printf("Q7 = %g\n",Q7);
+  printf("Q8 = %g\n",Q8);
+  printf("Q9 = %g\n",Q9);
+  printf("Q10 = %g\n",Q10);
+  printf("ZL0 = %g\n",ZL0);
+  printf("static even mode z0 = %g\n",z0e0);
+  printf("static odd mode z0 = %g\n",z0o0);
+#endif
 
   /*
    * relative permittivity including dispersion
@@ -485,10 +514,12 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /*
    * EFF is the single microstrip effective dielectric constant from 
    * Kirschning and Jansen (EL).
+   * Note:  This line contains one of the published corrections.
+   * The second EFF from the original paper is replaced by EF.
    */
   z0ef = z0e0 
     * (pow((0.9408*pow(EFF,CE) - 0.9603),Q0))
-    /(pow(((0.9408 - DE)*pow(EFF,CE) - 0.9603),Q0));
+    /(pow(((0.9408 - DE)*pow(EF,CE) - 0.9603),Q0));
 
 
   /*
@@ -507,7 +538,8 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
     *(1.0 + 2.333*(pow((er-1.0),2.0))/(5.0 + pow((er-1.0),2.0)));
   Q24 = 2.506*Q28*pow(u,0.894)
     *(pow(((1.0 + 1.3*u)*fn/99.25),4.29))/(3.575 + pow(u,0.894));
-  Q23 = 1.0 + 0.005*fn*Q27/((1.0 + 0.812*pow((fn/15.0),1.9))/(1.0 + 0.025*u*u));
+  Q23 = 1.0 + 0.005*fn*Q27/((1.0 + 0.812*pow((fn/15.0),1.9))*
+			    (1.0 + 0.025*u*u));
   Q22 = 0.925*(pow((fn/Q26),1.536))/(1.0 + 0.3*pow((fn/30.0),1.536));
   
   /*
@@ -515,6 +547,34 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    * microstrip characteristic impedance from Jansen and Kirschning.
    */
   z0of = ZLF + (z0o0*pow((EFOF/EFO0),Q22) - ZLF*Q23)/(1.0 + Q24 + (pow((0.46*g),2.2))*Q25);
+
+#ifdef DEBUG_CALC
+  printf("1.0 + 0.812*pow((fn/15.0),1.9) = %g\n",
+	 1.0 + 0.812*pow((fn/15.0),1.9));
+  printf("1.0 + 0.025*u*u = %g\n",1.0 + 0.025*u*u);
+  
+  printf("fn = %g, u = %g\n",fn,u);
+  printf("Q11 = %g\n",Q11);
+  printf("Q12 = %g\n",Q12);
+  printf("Q13 = %g\n",Q13);
+  printf("Q14 = %g\n",Q14);
+  printf("Q15 = %g\n",Q15);
+  printf("Q16 = %g\n",Q16);
+  printf("Q17 = %g\n",Q17);
+  printf("Q18 = %g\n",Q18);
+  printf("Q19 = %g\n",Q19);
+  printf("Q20 = %g\n",Q20);
+  printf("Q21 = %g\n",Q21);
+  printf("Q22 = %g\n",Q22);
+  printf("Q23 = %g\n",Q23);
+  printf("Q24 = %g\n",Q24);
+  printf("Q25 = %g\n",Q25);
+  printf("Q26 = %g\n",Q26);
+  printf("Q27 = %g\n",Q27);
+  printf("Q28 = %g\n",Q28);
+  printf("Q29 = %g\n",Q29);
+  printf("Z0 single line with dispersion = %g\n",ZLF);
+#endif
 
   /* accuracy check from page 87 in Kirschning and Jansen (MTT) */
   if( fn > 20.0 ) {
@@ -843,6 +903,10 @@ static double ee_HandJ(double u, double er)
    */
   E0 = (er+1.0)/2.0 + ((er-1.0)/2.0)*pow((1.0 + 10.0/u),(-A*B));
 
+#ifdef DEBUG_CALC
+  printf("ee_HandJ():  A = %g, B = %g, E0 = %g\n", A, B, E0);
+#endif
+
   return E0;
 }
 
@@ -858,7 +922,9 @@ static double z0_HandJ(double u)
   F = 6.0 + (2.0*M_PI - 6.0)*exp(-pow((30.666/u),0.7528));
 
   /* (1) from Hammerstad and Jensen */
+  /* XXX decide on which to use here */
   z01 = (FREESPACEZ0/(2*M_PI)) * log(F/u + sqrt(1.0 + pow((2/u),2.0)));
+  z01 = (377.0/(2*M_PI)) * log(F/u + sqrt(1.0 + pow((2/u),2.0)));
 
 #ifdef DEBUG_CALC
   printf("microstrip.c: z0_HandJ(%g) = %g Ohms. FREESPACEZ0=%g Ohms\n",
