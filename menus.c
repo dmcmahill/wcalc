@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.10 2001/09/20 02:02:56 dan Exp $ */
+/* $Id: menus.c,v 1.11 2001/09/20 03:01:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -34,6 +34,9 @@
  */
 
 //#define DEBUG
+
+#include "config.h"
+
 #include <gtk/gtk.h>
 #ifdef HAVE_STRING_H
 #include <string.h>
