@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.8 2002/06/12 11:30:31 dan Exp $ */
+/*      $Id: stripline.c,v 1.9 2004/07/24 03:47:32 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -752,6 +752,8 @@ stripline_line *stripline_line_new()
   newline->units_rho     = wc_units_new(WC_UNITS_RESISTIVITY);
   newline->units_rough   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_delay   = wc_units_new(WC_UNITS_TIME);
+  newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   /* and do a calculation to finish the initialization */
   stripline_calc(newline, newline->freq);

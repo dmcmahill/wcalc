@@ -1,4 +1,4 @@
-/*      $Id: stripline.h,v 1.5 2002/06/12 11:30:32 dan Exp $ */
+/*      $Id: stripline.h,v 1.6 2004/07/24 03:47:33 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -82,6 +82,8 @@ typedef struct STRIPLINE_LINE
   wc_units *units_rho;
   wc_units *units_rough;
   wc_units *units_delay;
+  wc_units *units_depth;
+  wc_units *units_deltal;
 
   stripline_subs *subs;
 

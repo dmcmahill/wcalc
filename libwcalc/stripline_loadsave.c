@@ -1,4 +1,4 @@
-/* $Id: stripline_loadsave.c,v 1.5 2002/06/12 11:30:32 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.6 2004/07/24 03:47:33 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -91,35 +91,50 @@ static fspec * get_fspec(int which_one)
      */
     fspec_add_comment(linespec, "User units");
 
-    fspec_add_key(linespec, "units_lwht", "Length, width, substrate and metal thickness units",
+    fspec_add_key(linespec, 
+		  "units_lwht", "Length, width, substrate and metal thickness units",
 		  'u', &line->units_lwht);
 
-    fspec_add_key(linespec, "units_L", "Incremental inductance units",  'u', &line->units_L);
-    fspec_add_key(linespec, "units_R", "Incremental resistance units",  'u', &line->units_R);
-    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 'u', &line->units_C);
-    fspec_add_key(linespec, "units_G", "Incremental conductance units", 'u', &line->units_G);
-    fspec_add_key(linespec, "units_len", "Line physical length units",  'u', &line->units_len);
-    fspec_add_key(linespec, "units_freq", "Frequency units",  'u', &line->units_freq);
-    fspec_add_key(linespec, "units_loss", "Loss units",  'u', &line->units_loss);
-    fspec_add_key(linespec, "units_losslen", "Loss/length units",  'u', &line->units_losslen);
-    fspec_add_key(linespec, "units_rho", "Resistivity units",  'u', &line->units_rho);
+    fspec_add_key(linespec, "units_L", "Incremental inductance units",  
+		  'u', &line->units_L);
+    fspec_add_key(linespec, "units_R", "Incremental resistance units",  
+		  'u', &line->units_R);
+    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 
+		  'u', &line->units_C);
+    fspec_add_key(linespec, "units_G", "Incremental conductance units", 
+		  'u', &line->units_G);
+    fspec_add_key(linespec, "units_len", "Line physical length units",  
+		  'u', &line->units_len);
+    fspec_add_key(linespec, "units_freq", "Frequency units",  
+		  'u', &line->units_freq);
+    fspec_add_key(linespec, "units_loss", "Loss units",  
+		  'u', &line->units_loss);
+    fspec_add_key(linespec, "units_losslen", "Loss/length units",  
+		  'u', &line->units_losslen);
+    fspec_add_key(linespec, "units_rho", "Resistivity units",  
+		  'u', &line->units_rho);
     fspec_add_key(linespec, "units_rough", "Surface roughness units (RMS)",  
 		  'u', &line->units_rough);
-    fspec_add_key(linespec, "units_delay", "Delay units",  'u', &line->units_delay);
+    fspec_add_key(linespec, "units_delay", "Delay units",
+		  'u', &line->units_delay);
+    fspec_add_key(linespec, "units_depth", "Skin depth units",  
+		  'u', &line->units_depth);
+    fspec_add_key(linespec, "units_deltal", "End correction units",  
+		  'u', &line->units_deltal);
     
   }
 
   if (subspec == NULL) {
     /* Build up the list which describes the file format */
 
-    subspec=fspec_add_sect(NULL,"substrate");
+    subspec=fspec_add_sect(NULL, "substrate");
 
-    fspec_add_key(subspec,"H","Height (meters)",'d',&subs->h);
-    fspec_add_key(subspec,"ER","Relative dielectric constant",'d',&subs->er);
-    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",'d',&subs->tmet);
-    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",'d',&subs->rho);
-    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
-    fspec_add_key(subspec,"TAND","Dielectric loss tangent",'d',&subs->tand);
+    fspec_add_key(subspec, "H", "Height (meters)",'d',&subs->h);
+    fspec_add_key(subspec, "ER", "Relative dielectric constant",'d',&subs->er);
+    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)",'d',&subs->tmet);
+    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper",'d',&subs->rho);
+    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)",'d',&subs->rough);
+    fspec_add_key(subspec, "TAND", "Dielectric loss tangent",'d',&subs->tand);
 
   }
 
