@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.47 2002/06/18 00:44:41 dan Exp $
+dnl $Id: configure.in,v 1.48 2002/06/18 01:25:10 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -104,7 +104,17 @@ The scilab interface will not be built.])
 	fi
 fi
 
+if test "X$SCI_WCALC" != "X"; then
+	AC_MSG_CHECKING([for the scilab version])
+	[SCI_VER=`$AWK  '/^[ \t]*VERSION[ \t]*=/ {print;}' $SCILAB | \
+		sed -e 's;.*VERSION.*=;;g' -e 's;\";;g' -e 's;scilab-;;g'`]
+	AC_MSG_RESULT([$SCI_VER])
+else
+	SCI_VER=""
+fi
+
 AC_SUBST(SCI)
+AC_SUBST(SCI_VER)
 AC_SUBST(SCI_WCALC)
 
 # ------------- done with scilab tests -------------------

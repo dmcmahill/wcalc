@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.19 2002/05/14 00:41:30 dan Exp $
+## $Id: Makefile.am,v 1.20 2002/05/16 21:01:20 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -36,16 +36,18 @@
 # list of all the mex files
 include $(srcdir)/mex.mk
 
-scimandir=	${pkgdatadir}/sci-wcalc
+scimandir=	${datadir}/${PACKAGE}-${VERSION}/man
 sciman_DATA=	${SCIMANS} ${SCICATS} whatis
-demodir=		${pkgdatadir}/sci-wcalc/demos
+demodir=		${datadir}/${PACKAGE}-${VERSION}/demos
 demo_DATA=	${SCIDEMOS}
 
 SCIDEMOS=	wcalc-demo.dem
 
-lib_LTLIBRARIES= libsci_wcalc.la
+SCI_VER=		@SCI_VER@
+scilibdir=	${libdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}
+scilib_LTLIBRARIES= libsci_wcalc.la
 
-pkglibexecdir=  ${libexecdir}/${PACKAGE}
+pkglibexecdir=  ${libexecdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}
 pkglibexec_SCRIPTS=	load_wcalc.sce
 
 libsci_wcalc_la_SOURCES = \
@@ -134,11 +136,13 @@ load_wcalc.sce.in: $(srcdir)/mex.mk  $(srcdir)/Makefile.am
 	@echo "" >> $@
 	@echo "%helps=[%helps; \"@manpath@\", \"Wcalc\"];" >> $@
 	@echo "" >> $@
+	@echo "// demolist isn't defined in versions of scilab before 2.6" >> $@
+	@echo "if (exists('demolist') == 0), demolist=[]; end" >> $@
 	@echo "demolist=[demolist ; 'Wcalc Demos' ..." >> $@
 	@echo "'@demopath@/wcalc-demo.dem'];" >> $@
 
 load_wcalc.sce:	load_wcalc.sce.in
-	sed     -e 's;@libpath@;${libdir}/;g' \
+	sed     -e 's;@libpath@;${scilibdir}/;g' \
 		-e 's;@demopath@;${demodir};g' \
 		-e 's;@manpath@;${scimandir};g' $< > $@
 	@echo "****************************************************"
