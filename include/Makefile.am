@@ -33,16 +33,3 @@
 ##  SUCH DAMAGE.
 ##
 
-lib_LTLIBRARIES = libwcalc.la
-
-libwcalc_la_SOURCES = \
-	air_coil.c \
-	air_coil_loadsave.c \
-	coupled_microstrip.c \
-	ic_microstrip.c \
-	mathutil.c \
-	microstrip.c \
-	misc.c \
-	stripline.c
-
-INCLUDES = -I$(top_srcdir)/include
