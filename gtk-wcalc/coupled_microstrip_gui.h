@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.h,v 1.4 2004/07/30 04:14:48 dan Exp $ */
+/* $Id: coupled_microstrip_gui.h,v 1.5 2004/08/30 22:59:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -75,7 +75,8 @@ typedef struct COUPLED_MICROSTRIP_GUI
   GtkWidget *label_loss_od, *label_losslen_od;
   GtkWidget *label_depth;
   GtkWidget *label_deltal_ev, *label_deltal_od;
-  GtkWidget *label_Ls,*label_Rs,*label_Cp,*label_Gp;
+  GtkWidget *label_Lev, *label_Rev, *label_Cev, *label_Gev;
+  GtkWidget *label_Lodd, *label_Rodd, *label_Codd, *label_Godd;
   GtkWidget *label_keffe, *label_keffo;
 
   /*

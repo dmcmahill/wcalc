@@ -1,7 +1,6 @@
-# $Id: coupled_microstrip.wc,v 1.2 2004/07/30 04:14:49 dan Exp $
 #
-# File:      /export/disk1/dan/wcalc/gtk-wcalc/coupled_microstrip.wc
-# Modified:  Fri Jul 30 00:13:27 2004
+# File:      /sim/mcmahill/tmp/localsrc/cad/wcalc/gtk-wcalc/coupled_microstrip.wc
+# Modified:  Thu Jan  6 13:40:04 2005
 # Wcalc Version 0.6
 
 [wcalc]
@@ -24,22 +23,22 @@ W = 0.00127
 S = 0.000381
 
 # Characteristic Impedance (ohms)
-Z0 = 68.419979053794
+Z0 = 68.243013133795
 
 # Coupling coefficient
-k = 0.350372514208292
+k = 0.352278480901007
 
 # Even Mode Characteristic Impedance (ohms)
-Z0e = 98.6455584761846
+Z0e = 98.6045827380111
 
 # Odd Mode Characteristic Impedance (ohms)
-Z0o = 47.4556949753778
+Z0o = 47.2301460263068
 
 # Flag to use z0/k vs z0e/z0o for synthesis
 use_z0k = 1
 
 # Electrical Length (degrees)
-Elen = 0.00252088176481094
+Elen = 99.5878214675151
 
 # Frequency of operation
 freq = 1800000000
@@ -49,6 +48,22 @@ freq = 1800000000
 # Length, width, substrate and metal thickness units
 units_lwht = 5
 # [mil]
+
+# Incremental inductance units
+units_L = 1-6
+# [nH/inch]
+
+# Incremental resistance units
+units_R = 1-6
+# [mOhm/inch]
+
+# Incremental capacitance units
+units_C = 1-6
+# [pF/inch]
+
+# Incremental conductance units
+units_G = 0-6
+# [uMho/inch]
 
 # Line physical length units
 units_len = 0
@@ -98,7 +113,7 @@ ER = 4.8
 # Metalization thickness (meters)
 TMET = 7.112e-05
 
-# Metalization resistivity relative to copper
+# Metalization resistivity (ohm-meters)
 RHO = 3e-08
 
 # Metalization surface roughness (meters-RMS)

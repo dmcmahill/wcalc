@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.7 2004/08/05 13:20:11 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.8 2004/08/30 22:59:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -815,7 +815,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->label_deltal_ev);
 
   text = wc_units_menu_new(gui->line->units_deltal, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_deltal_ev, &(gui->line->deltale), 
@@ -837,7 +837,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   gtk_widget_show(text);
@@ -845,6 +845,139 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   y++;
 
+  /* ----------------  Incremental circuit model -------------- */
+
+  /* ---------------- L ----------------- */
+  text = gtk_label_new( "Lev" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Lev = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Lev, x+1, x+2, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Lev);
+
+  text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Lev, &(gui->line->Lev), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  text = gtk_label_new( "Lodd" );
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Lodd = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Lodd, x+3, x+4, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Lodd);
+
+  wc_units_attach_label(ug, gui->label_Lodd, &(gui->line->Lodd), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  y++;
+
+  /* ---------------- R ----------------- */
+  text = gtk_label_new( "Rev" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Rev = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Rev, x+1, x+2, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Rev);
+
+  text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Rev, &(gui->line->Rev), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  text = gtk_label_new( "Rodd" );
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Rodd = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Rodd, x+3, x+4, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Rodd);
+
+  wc_units_attach_label(ug, gui->label_Rodd, &(gui->line->Rodd), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  y++;
+
+  /* ---------------- C ----------------- */
+  text = gtk_label_new( "Cev" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Cev = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Cev, x+1, x+2, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Cev);
+
+  text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Cev, &(gui->line->Cev), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  text = gtk_label_new( "Codd" );
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Codd = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Codd, x+3, x+4, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Codd);
+
+  wc_units_attach_label(ug, gui->label_Codd, &(gui->line->Codd), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  y++;
+
+  /* ---------------- G ----------------- */
+  text = gtk_label_new( "Gev" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Gev = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Gev, x+1, x+2, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Gev);
+
+  text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_Gev, &(gui->line->Gev), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  text = gtk_label_new( "Godd" );
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_Godd = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Godd, x+3, x+4, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_Godd);
+
+  wc_units_attach_label(ug, gui->label_Godd, &(gui->line->Godd), 
+			NULL, NULL, WC_FMT_G, 1);
+
+  y++;
   
   /* XXX */
 #ifdef notdef
@@ -865,23 +998,6 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
 			NULL, NULL, WC_FMT_G, 1);
 
-
-  /* ---------------- L -------------- */
-  text = gtk_label_new( "L" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_Ls = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
-		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_Ls);
-
-  text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_Ls, &(gui->line->Ls), 
-			NULL, NULL, WC_FMT_G, 1);
 
   /* ---------------- R -------------- */
   text = gtk_label_new( "R" );
@@ -1361,7 +1477,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"newline\n");
   fprintf(fp,"newline\n");
   fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n",global_print_config->paperwidth);
+  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
   fprintf(fp,"/coly currentpoint exch pop def\n");
   fprintf(fp,"/linespace 1.5 def\n");
   fprintf(fp,"\n");
@@ -1408,6 +1524,23 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->freq/gui->line->units_freq->sf,
 	  gui->line->units_freq->name);
+
+
+  fprintf(fp,"newline\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(Lev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Lev/gui->line->units_L->sf,
+	  gui->line->units_L->name);
+  fprintf(fp,"(Rev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Rev/gui->line->units_R->sf,
+	  gui->line->units_R->name);
+  fprintf(fp,"(Cev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Cev/gui->line->units_C->sf,
+	  gui->line->units_C->name);
+  fprintf(fp,"(Gev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Gev/gui->line->units_G->sf,
+	  gui->line->units_G->name);
+
 
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
@@ -1462,23 +1595,20 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->deltalo/gui->line->units_deltal->sf,
 	  gui->line->units_deltal->name);
 
-
-  /* XXX */
-#ifdef notdef
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Ls/gui->line->units_L->sf,
+  fprintf(fp,"newline newlineclose\n");
+  fprintf(fp,"(Lodd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Lodd/gui->line->units_L->sf,
 	  gui->line->units_L->name);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Rs/gui->line->units_R->sf,
+  fprintf(fp,"(Rodd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Rodd/gui->line->units_R->sf,
 	  gui->line->units_R->name);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Cs/gui->line->units_C->sf,
+  fprintf(fp,"(Codd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Codd/gui->line->units_C->sf,
 	  gui->line->units_C->name);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Gs/gui->line->units_G->sf,
+  fprintf(fp,"(Godd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->Godd/gui->line->units_G->sf,
 	  gui->line->units_G->name);
-#endif
+
 
 }
 
