@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.22 2004/11/14 02:15:28 dan Exp $ */
+/* $Id: wcalc.c,v 1.23 2005/02/12 01:39:01 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -452,10 +452,10 @@ void wcalc_setup (gpointer data,
    * right size, but then not have it change while running.
    * Unfortunately, we don't know the correct size at compile time. 
    */
-  //gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550);
+  /* gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550); */
 
   /* don't let the user grow or shrink this window */
-  //gtk_window_set_policy(GTK_WINDOW(wcalc->window),FALSE,FALSE,TRUE);
+  /* gtk_window_set_policy(GTK_WINDOW(wcalc->window),FALSE,FALSE,TRUE); */
 
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);

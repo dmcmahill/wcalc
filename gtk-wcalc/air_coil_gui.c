@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.13 2004/08/05 12:12:26 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.14 2004/08/30 22:59:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -729,7 +729,7 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 	  gui->coil->units_freq->name);
 #endif
 
-  // XXX should use an enum and switch...
+  /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
     rslt = air_coil_calc(gui->coil, gui->coil->freq);
   }

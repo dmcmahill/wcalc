@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.8 2002/06/12 11:30:12 dan Exp $ */
+/* $Id: files.c,v 1.9 2004/08/05 13:20:12 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -144,7 +144,7 @@ static void file_open_ok_sel (GtkWidget *w, gpointer data)
 
 static  void destroy (GtkWidget *widget, gpointer data)
 {
-  //gtk_main_quit ();
+  /* gtk_main_quit (); */
 }
 
 static void file_cancel_sel (GtkWidget *w, GtkWidget *window)

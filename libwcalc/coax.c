@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.26 2004/11/24 06:29:56 dan Exp $ */
+/* $Id: coax.c,v 1.27 2004/12/04 00:27:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -59,7 +59,7 @@
  */
 
 /* debug the coax_calc() function */
-#define DEBUG_CALC
+/* #define DEBUG_CALC */
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
 
@@ -297,7 +297,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      * subtract the skin depth in the center conductor.  Instead of
      * the true skin depth, use 1/1000 of the conductor size
      */
-    tmp_line.a = line->a - 0.5*delta_c;
+    if( line->a > 6.0*delta_c) {
+      tmp_line.a = line->a - 0.5*delta_c;
 #ifdef DEBUG_CALC
     printf("\ncoax_calc_int():  ********** Starting Wheelers Incremental Inductance #2 **********\n");
 #endif
@@ -309,11 +310,15 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     
     /* high frequency resistance */
     RcHF = lc*2*line->z0;
+    } else {
+      RcHF = 0.0;
+    }
 
     /* 
      * Shield conductor.  Note that "b" is a diameter so we need to
      * add the skin depth in the shield conductor 
      */
+    if( 3.0*delta_s < line->tshield ) {
     tmp_line.a = line->a;
     tmp_line.b = line->b + 0.5*delta_s;
 #ifdef DEBUG_CALC
@@ -326,7 +331,11 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     z2 = tmp_line.z0;
     lc = (M_PI*line->freq/LIGHTSPEED)*(z2 - z1)/line->z0;
     RsHF = lc*2*line->z0;
-        
+    } else {
+      RsHF = 0.0;
+    }
+
+
     /*
      * Now we have to figure out how to interpolate between our two
      * data points.

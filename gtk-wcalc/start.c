@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.12 2004/08/05 12:12:12 dan Exp $ */
+/* $Id: start.c,v 1.13 2005/02/12 01:39:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -198,8 +198,8 @@ void start_popup(void)
   GtkStyle *style;    
  
   /* create the initial window */
-  // XXX this was for gtk-1.2
-  //window = gtk_window_new(GTK_WINDOW_DIALOG);
+  /* XXX this was for gtk-1.2 */
+  /* window = gtk_window_new(GTK_WINDOW_DIALOG); */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   
   /* made it modal */
