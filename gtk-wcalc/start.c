@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.2 2001/10/11 02:23:14 dan Exp $ */
+/* $Id: start.c,v 1.3 2001/11/12 04:23:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -83,7 +83,7 @@ static gint destroy_event (GtkWidget *widget,
 }
 
 
-static void ok_pressed (GtkWidget *w, GtkWidget *window)
+static void new_pressed (GtkWidget *w, GtkWidget *window)
 {
   guint ind;
   guint len;
@@ -101,7 +101,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   for(ind=0; ind<len; ind++){
     if(strcmp(g_list_nth_data(global_model_names,ind),name) == 0){
 #ifdef DEBUG
-      g_print("ok_pressed():  Found entry at index %d\n",ind);
+      g_print("new_pressed():  Found entry at index %d\n",ind);
 #endif
       foundit = 1;
       break;
@@ -109,16 +109,16 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   }
 
   if(!foundit){
-    g_print("start.c:ok_pressed():  could not find \"%s\" in the model list\n",
+    g_print("start.c:new_pressed():  could not find \"%s\" in the model list\n",
 	    name);
   }
 
 #ifdef DEBUG
-  g_print("start.c:ok_pressed():  length of global_model_names is %d\n",
+  g_print("start.c:new_pressed():  length of global_model_names is %d\n",
 	  g_list_length(global_model_names));
-  g_print("start.c:ok_pressed():  Model \"Microstrip\" is entry # %d\n",
+  g_print("start.c:new_pressed():  Model \"Microstrip\" is entry # %d\n",
 	  g_list_index(global_model_names,"Microstrip"));
-  g_print("start.c:ok_pressed():  Model \"%s\" is entry # %d\n",
+  g_print("start.c:new_pressed():  Model \"%s\" is entry # %d\n",
 	  name, ind);
 #endif
 
@@ -126,7 +126,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   new_cmd = (void *) g_list_nth_data(global_model_new,ind);
 
   if(new_cmd == NULL){
-    g_print("start.c:ok_pressed():  Sorry, I don't know how to create \"%s\"\n",
+    g_print("start.c:new_pressed():  Sorry, I don't know how to create \"%s\"\n",
 	    name);
     return ;
   }
@@ -156,6 +156,16 @@ static void open_pressed (GtkWidget *w, GtkWidget *window)
   /* blow away the window */
   gtk_widget_destroy(window);
 
+}
+
+static void quit_pressed (GtkWidget *w, GtkWidget *window)
+{
+
+#ifdef DEBUG
+  g_print("start.c:quit_pressed():\n");
+#endif
+
+  gtk_main_quit();
 }
 
  
@@ -213,7 +223,7 @@ void start_popup(void)
    * The Action Area
    */
 
-  action_area = gtk_hbox_new (TRUE, 5);
+  action_area = gtk_hbox_new (FALSE, 5);
   gtk_container_set_border_width (GTK_CONTAINER (action_area), 10);
   gtk_box_pack_end (GTK_BOX (main_vbox), action_area, FALSE, TRUE, 0);
   gtk_widget_show(action_area);
@@ -232,10 +242,10 @@ void start_popup(void)
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
 
-  /* Add the "OK" button and set its action */
-  button = gtk_button_new_with_label ("Ok");
+  /* Add the "New" button and set its action */
+  button = gtk_button_new_with_label ("New");
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
+		     GTK_SIGNAL_FUNC(new_pressed),
 		     GTK_OBJECT(window));
   
   gtk_box_pack_start (GTK_BOX (action_area),
@@ -250,6 +260,18 @@ void start_popup(void)
   gtk_box_pack_start (GTK_BOX (action_area), combo_model, FALSE, FALSE, 0);
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo_model)->entry), FALSE);
   gtk_widget_show( combo_model );
+
+  /* Add the "Quit" button and set its action */
+  button = gtk_button_new_with_label ("Quit");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(quit_pressed),
+		     GTK_OBJECT(window));
+  
+  gtk_box_pack_end (GTK_BOX (action_area),
+		      button, TRUE, FALSE, 0);
+  gtk_window_set_focus(GTK_WINDOW(window),button);
+  gtk_widget_show (button);
+
 
   /*
    * The info Area
