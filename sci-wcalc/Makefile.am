@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.26 2004/08/11 13:04:39 dan Exp $
+## $Id: Makefile.am,v 1.27 2004/09/02 05:23:23 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -69,13 +69,22 @@ SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 SCIHTML=	${SCIMANS:.man=.htm}
 
-all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce 
+all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
 
 DISTCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
 
-EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS}
+EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
+	${RUN_TESTS} ${REF_FILES}
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
+
+RUN_TESTS=	run_tests.sh
+check_SCRIPTS=	${RUN_TESTS}
+
+TESTS=	${RUN_TESTS}
+
+wcalc_test.sci: $(srcdir)/wcalc_test.sci.in
+	cp $< $@
 
 #
 # Generate the entry point function that scilab uses to access the

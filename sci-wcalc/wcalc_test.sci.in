@@ -1,0 +1,38 @@
+// $Id$
+//
+// This testsuite script is heaviliy based on the following file which
+// came with scilab:  scilab-2.7/tests/maketests.sci
+//
+
+function tests=testslist()
+  tests = [...
+      'air_coil_calc.tst'; ...
+      'air_coil_syn.tst'; ...
+      ];
+endfunction
+
+function wcalc_test(job)
+lines(0);
+if argn(2)<1 then job='tests',end
+if job=='clean' then //remove .dia files
+  cleantests()
+else
+  tests=testslist()
+  for k1=1:size(tests,'*')  // loop on .tst files
+    scitest(tests(k1))
+  end
+end
+endfunction
+
+
+function cleantests()
+if MSDOS then
+  path=SCI+'\tests\'
+  file_to_clean=path+strsubst(testslist(),'.tst','.dia')
+  unix_s('del '+strcat(file_to_clean,' '))
+else
+  path=SCI+'/tests/'
+  file_to_clean=path+strsubst(testslist(),'.tst','.dia')
+  unix_s('rm -f '+strcat(file_to_clean,' '))
+end
+endfunction
