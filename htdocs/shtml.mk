@@ -1,4 +1,4 @@
-## $Id$
+## $Id: shtml.mk,v 1.1 2001/10/28 22:51:43 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -41,7 +41,7 @@ SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_P
 SUFFIXES+= .shtml .html
 
 .shtml.html :
-	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml | sed 's;/cgi-bin/;/${CGIPATH}/;g' > $*.html
+	@AWK_GENSUB_YES@$(SHTML2HTML) $*.shtml | sed 's;/cgi-bin/;${CGIPATH};g' > $*.html
 	@@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
 	@@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
 	@@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
