@@ -314,13 +314,6 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *  H0,2(jbb) H1,1(jba)  -  H1,2(jba) H0,1(jbb)      den
    *
    */
-<<<<<<< ic_microstrip.c
-#ifdef DEBUG_CALC
-  num=c_hankel0_2(jbb);
-  printf("ic_microstrip_calc():  H0,2(jbb) = %g + %gi\n",REAL(num),IMAG(num));
-  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",REAL(jbb),IMAG(jbb));
-#endif
-=======
   tmpc1 = c_hankel0_2_p(jbb,tmpc1);
 #ifdef DEBUG_CALC
   printf("ic_microstrip_calc():  H0,2(jbb) = %g + %gi\n",REAL_P(tmpc1),IMAG_P(tmpc1));
@@ -341,16 +334,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   tmpc2 = c_hankel0_1_p(jbb,tmpc2);
   tmpc1 = c_mul_p(tmpc1,tmpc2,tmpc1);
   den   = c_sub_p(den,tmpc1,den);
->>>>>>> 1.10
 
-<<<<<<< ic_microstrip.c
-  num = c_sub(c_mul(c_hankel0_2(jbb),c_hankel0_1(jba)),
-	      c_mul(c_hankel0_2(jba),c_hankel0_1(jbb)));
-=======
->>>>>>> 1.10
-
-  den = c_sub(c_mul(c_hankel0_2(jbb),c_hankel1_1(jba)),
-	      c_mul(c_hankel1_2(jba),c_hankel0_1(jbb)));
 
   /* multiply into our expression for Zsemi.  This is the final answer */
 #ifdef DEBUG_CALC
