@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.43 2002/05/13 01:28:20 dan Exp $
+dnl $Id: configure.in,v 1.44 2002/06/12 11:29:58 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -61,7 +61,9 @@ fi
 AC_SUBST(TGIF_NO)
 AC_SUBST(TGIF_YES)
 
-# scilab
+#
+# ------------- scilab tests -------------------
+#
 SCI_WCALC=sci-wcalc
 
 AC_ARG_WITH([scilab],
@@ -106,6 +108,54 @@ AC_SUBST(SCI)
 AC_SUBST(SCI_WCALC)
 
 # ------------- done with scilab tests -------------------
+
+#
+# ------------- octave tests -------------------
+#
+OCT_WCALC=octave-wcalc
+
+AC_ARG_WITH([octave],
+[  --with-octave=octdir    Use the specified octave installation.  
+                          The specified directory should be the base of
+                          your octave installation.  For example,
+                          /opt/octave-2.6.  [default = search for
+                          an installed octave]],
+[
+if test "X$with_octave" = "Xno" ; then
+	OCT_WCALC=""
+else
+	OCT=$with_octave
+fi
+],
+[
+AC_PATH_PROG(OCTAVE,octave)
+if test "X$OCTAVE" != "X" ; then
+	AC_MSG_CHECKING([for the octave base directory])
+	[OCT=`$AWK  '/^[ \t]*OCT[ \t]*=/ {print;}' $OCTAVE | sed -e 's;.*OCT.*=;;g' -e 's;\";;g'`]
+	AC_MSG_RESULT([$OCT])
+else
+	OCT_WCALC=""
+fi
+])
+
+
+if test "X$OCT_WCALC" != "X"; then
+	AC_MSG_CHECKING([for the octave stack header])
+	if test -f $OCT/routines/stack-c.h ; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		AC_MSG_WARN([The directory $OCT does not appear to be the root
+of a complete (and working) octave installation.
+The octave interface will not be built.])
+		OCT_WCALC=""
+	fi
+fi
+
+AC_SUBST(OCT)
+AC_SUBST(OCT_WCALC)
+
+# ------------- done with octave tests -------------------
 
 # ------------- enable/disable web pages  -------------------
 
@@ -553,6 +603,7 @@ AC_OUTPUT(
 	htdocs/mex-man/Makefile
 	htdocs/sci-man/Makefile
 	mex-wcalc/Makefile
+	octave-wcalc/Makefile
 	sci-wcalc/Makefile
 	pixmaps/Makefile
 	utils/Makefile
