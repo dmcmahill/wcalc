@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.5 2004/07/30 22:35:53 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.6 2004/07/31 03:56:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1009,7 +1009,7 @@ static void synthesize( GtkWidget *w, gpointer data )
 
 static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data )
 {
-  char *vstr;
+  const char *vstr;
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.7 2004/07/29 00:02:16 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.8 2004/07/31 03:57:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -812,7 +812,7 @@ static void synthesize_tox( GtkWidget *w, gpointer data )
 
 static void calculate( ic_microstrip_gui *gui, GtkWidget *w, gpointer data )
 {
-  char *vstr;
+  const char *vstr;
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 

@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.6 2002/06/12 11:30:16 dan Exp $ */
+/* $Id: print.c,v 1.7 2004/08/02 21:09:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -376,7 +376,7 @@ static void to_file_pressed (GtkWidget *w, gpointer data)
 /* "Ok" button pressed */
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
-  char *str;
+  const char *str;
 
   if (stop_sig)
     return;
@@ -426,7 +426,7 @@ static void cancel_pressed (GtkWidget *w, GtkWidget *window)
 /* remeber the print file name and print command for next time */
 static void save_state()
 {
-  char *str;
+  const char *str;
 
   str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
   g_string_assign(print_cmd,str);
@@ -497,7 +497,7 @@ static void do_print(GtkWidget *w, gpointer data)
 {
   Wcalc *wcalc;
   FILE *fp;
-  char *str;
+  const char *str;
 
   wcalc = WC_WCALC(data);
 

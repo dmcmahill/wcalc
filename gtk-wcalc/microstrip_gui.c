@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.13 2004/07/30 04:37:22 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.14 2004/08/02 21:09:25 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -760,7 +760,7 @@ static void synthesize_er( GtkWidget *w, gpointer data )
 
 static void calculate( microstrip_gui *gui, GtkWidget *w, gpointer data )
 {
-  char *vstr;
+  const char *vstr;
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 

@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.7 2002/05/10 22:52:39 dan Exp $ */
+/* $Id: files.c,v 1.8 2002/06/12 11:30:12 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -57,7 +57,7 @@
 
 static void file_ok_sel (GtkWidget *w, gpointer data[])
 {
-  char *fname;
+  const char *fname;
   Wcalc *wcalc;
   GtkFileSelection *fs;
   struct stat sb;
@@ -117,7 +117,8 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
 
 static void file_open_ok_sel (GtkWidget *w, gpointer data)
 {
-  char *fname,*ret;
+  char *fname;
+  const char *ret;
   GtkFileSelection *fs;
 
   fs = data;
