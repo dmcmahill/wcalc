@@ -1,6 +1,6 @@
-dnl $Id: acinclude.m4,v 1.5 2004/09/02 00:52:51 dan Exp $
+dnl $Id: acinclude.m4,v 1.6 2004/09/09 22:05:52 dan Exp $
 dnl
-dnl Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+dnl Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -35,7 +35,7 @@ dnl
 dnl This is just like the AC_PROG_AWK that comes with autoconf
 dnl except it gets the path as well.  Note that we go ahead and
 dnl say that we provide AC_PROG_AWK since we did one better.
-AC_DEFUN(AC_PATH_AWK,
+AC_DEFUN([AC_PATH_AWK],
   [AC_PATH_PROGS(AWK, mawk gawk nawk awk, )
   AC_PROVIDE([AC_PROG_AWK])dnl
 ])
@@ -44,7 +44,7 @@ dnl Now for various awk checks.
 dnl
 
 dnl AC_TRY_AWK(PROGRAM, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
-AC_DEFUN(AC_TRY_AWK,
+AC_DEFUN([AC_TRY_AWK],
 [AC_REQUIRE([AC_PROG_AWK])dnl
 cat > conftest.awk <<EOF
 [#]line __oline__ "configure"
@@ -75,7 +75,7 @@ rm -fr conftest*])
 # see if AWK has the 'gensub' function
 # AC_AWK_GENSUB(ACTION-IF-TRUE [, ACTION-IF-FALSE])
 #
-AC_DEFUN(AC_AWK_GENSUB,
+AC_DEFUN([AC_AWK_GENSUB],
 [AC_MSG_CHECKING([whether awk ($AWK) has gensub])
 AC_TRY_AWK([{gensub(/foo/,"bar","g");}] ,[$1] ,[$2])
 ])dnl
@@ -83,7 +83,7 @@ AC_TRY_AWK([{gensub(/foo/,"bar","g");}] ,[$1] ,[$2])
 # see if AWK has the 'strftime' function
 # AC_AWK_STRFTIME(ACTION-IF-TRUE [, ACTION-IF-FALSE])
 #
-AC_DEFUN(AC_AWK_STRFTIME,
+AC_DEFUN([AC_AWK_STRFTIME],
 [AC_MSG_CHECKING([whether awk ($AWK) has strftime])
 AC_TRY_AWK([{print strftime()}] ,[$1] ,[$2])
 ])dnl
@@ -97,7 +97,7 @@ AC_TRY_AWK([{print strftime()}] ,[$1] ,[$2])
 dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
 dnl also defines GSTUFF_PKG_ERRORS on error
-AC_DEFUN(PKG_CHECK_MODULES, [
+AC_DEFUN([PKG_CHECK_MODULES], [
   succeeded=no
 
   if test -z "$PKG_CONFIG"; then
