@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.2 2001/09/22 04:46:50 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.3 2001/09/22 05:49:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -48,6 +48,7 @@
 
 #include "air_coil.h"
 #include "air_coil_gui.h"
+#include "air_coil_loadsave.h"
 #include "physconst.h"
 
 #include "wcalc.h"
@@ -65,6 +66,8 @@ static void synthesize_dia( GtkWidget *w, gpointer data );
 static void synthesize_len( GtkWidget *w, gpointer data );
 static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( air_coil_gui *gui);
+
+static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void vals_changedCB( GtkWidget *widget, gpointer data );
 
@@ -110,7 +113,7 @@ air_coil_gui *air_coil_gui_new(void)
   wcalc->init = air_coil_gui_init;
   wcalc->print_ps = print_ps;
   wcalc->load = NULL;
-  wcalc->save = NULL;
+  wcalc->save = gui_save;
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
@@ -807,6 +810,14 @@ static void freq_units_changed(GtkWidget *widget, gpointer data )
   }
 }
 
+static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
+{
+#ifdef DEBUG
+  g_print("air_coil_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n",
+	  wcalc,fp,name);
+#endif
+  air_coil_save(WC_AIR_COIL_GUI(wcalc)->coil,fp,name);
+}
 
   /* XXX this is not the way to include this.... */
 #include "pixmaps/air_coil.c"

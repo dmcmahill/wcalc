@@ -1,7 +1,7 @@
-/* $Id: files.h,v 1.2 2001/02/12 18:00:44 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,15 +33,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __FILES_H__
-#define __FILES_H__
+#ifndef __WCALC_LOADSAVE_H__
+#define __WCALC_LOADSAVE_H__
 
-void wcalc_save_as(gpointer data,
-		   guint action,
-		   GtkWidget *widget);
-void wcalc_save(gpointer data,
-		guint action,
-		GtkWidget *widget);
-void wcalc_open(void);
+#define WCALC_FILE_VERSION "0.1"
 
-#endif /*__FILES_H__*/
+#endif /*__WCALC_LOADSAVE_H__*/

@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.2 2001/02/12 18:00:44 dan Exp $ */
+/* $Id: files.c,v 1.3 2001/02/17 16:56:35 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,23 +33,86 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
+
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+/* for stat(2) */
+#include <sys/types.h>
+#include <sys/stat.h>
+
+/* for open(2) */
+#include <fcntl.h>
+
 #include "files.h"
+#include "wcalc.h"
+
 /* Get the selected filename and print it to the console */
-static void file_ok_sel (GtkWidget *w, GtkFileSelection *fs)
+static void file_ok_sel (GtkWidget *w, gpointer data[])
 {
-    g_print ("%s\n", 
-	     gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
+  char *fname;
+  Wcalc *wcalc;
+  GtkFileSelection *fs;
+  struct stat sb;
+  FILE *fp;
 
+  wcalc = data[0];
+  fs = data[1];
+
+#ifdef DEBUG
+  g_print("files.c:file_ok_sel():  got cbdata[0] (wcalc) = %p\n",data[0]);
+  g_print("                        got cbdata[1] (filew) = %p\n",data[1]);
+#endif
+
+  fname = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
+
+#ifdef DEBUG
+  g_print ("files.c:file_ok_sel():  \"%s\" selected\n", fname);
+#endif
+
+  /*
+   * XXX should use open(2) with O_EXCL to avoid a race condition
+   * where we check for the file, but then it gets created before we
+   * open it.
+   */
+  /* see if the selected file already exists */
+  if( stat(fname, &sb)==0 ){
+    g_print("files.c:file_ok_sel():  warning: \"%s\" already exists\n", fname);
+  }
+
+  /* open the file */
+  if ( (fp = fopen(fname,"w")) == NULL){
+    g_print("files.c:file_ok_sel():  could not open \"%s\"\n", fname);
+    return;
+  }
+
+  /* store the filename in the wcalc */
+  wcalc->file_name = strdup(fname);
+
+  /* actually do the save (model dependent) */
+  if (wcalc->save != NULL){
+    wcalc->save(wcalc,fp,fname);
+  }
+  else{
+    g_print("files.c:file_ok_sel():  no ->save function available for"
+	    "this model");
+  }
+
+  /* close the file */
+  fclose(fp);
+
+  /* close the print window */
+  gtk_grab_remove(GTK_WINDOW(fs));
+  gtk_widget_destroy(GTK_WINDOW(fs));
 }
-
 
 static  void destroy (GtkWidget *widget, gpointer data)
 {
-    gtk_main_quit ();
+  //gtk_main_quit ();
 }
 
 static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
@@ -62,10 +125,21 @@ static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
 }
 
 
-void wcalc_save_as(void)
+/* 
+ * the "Save As..." dialog box 
+ *
+ * The data will point to the  (Wcalc *wcalc)
+ */
+
+void wcalc_save_as(gpointer data,
+		   guint action,
+		   GtkWidget *widget)
 {
   GtkWidget *filew;
-    
+  Wcalc *wcalc;
+  static gpointer cbdata[2];
+  
+  wcalc = WC_WCALC(data);
      
   /* Create a new file selection widget */
   filew = gtk_file_selection_new ("Save As...");
@@ -73,27 +147,34 @@ void wcalc_save_as(void)
   /* made it modal */
   gtk_grab_add(filew);
 
-  gtk_signal_connect (GTK_OBJECT (filew), "destroy",
-		      GTK_SIGNAL_FUNC (destroy),
-		      &filew);
+  cbdata[0] = data;
+  cbdata[1] = filew;
+
+#ifdef DEBUG
+  g_print("files.c:wcalc_save_as():  set cbdata[0] (wcalc) = %p\n",cbdata[0]);
+  g_print("                          set cbdata[1] (filew) = %p\n",cbdata[1]);
+#endif
 
   /* Connect the ok_button to file_ok_sel function */
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-		      "clicked", (GtkSignalFunc) file_ok_sel, filew );
+		      "clicked",
+		      (GtkSignalFunc) file_ok_sel, 
+		      cbdata );
     
   /* Connect the cancel_button to destroy the widget */
   gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
 		     "clicked", 
 		     (GtkSignalFunc) file_cancel_sel,
-		     GTK_OBJECT (filew));
+		     filew);
     
-  /* Lets set the filename, as if this were a save dialog, and we are giving
-     a default filename */
+  /* 
+   * choose default filename.  XXX this should be extracted from
+   * the wcalc->filename.
+   */
   gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
-				   "penguin.png");
+				   "wcalc.wc");
   
   gtk_widget_show(filew);
-
 }
 
 void wcalc_open(void)
@@ -130,39 +211,39 @@ void wcalc_open(void)
 
 }
 
-void wcalc_save(void)
+void wcalc_save(gpointer data,
+		guint action,
+		GtkWidget *widget)
 {
-  GtkWidget *filew;
-    
-     
-  /* Create a new file selection widget */
-  filew = gtk_file_selection_new ("Save As...");
+  FILE *fp;
+  Wcalc *wcalc;
 
-  /* made it modal */
-  gtk_grab_add(filew);
+  wcalc = WC_WCALC(data);
 
-  /*  
-  gtk_signal_connect (GTK_OBJECT (filew), "destroy",
-		      (GtkSignalFunc) destroy, &filew);
-		      */
+  /* if there is no filename stored, then do "Save As..." instead */
+  if(wcalc->file_name == NULL){
+    wcalc_save_as(data,action,widget);
+    return;
+  }
 
-  /* Connect the ok_button to file_ok_sel function */
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-		      "clicked", (GtkSignalFunc) file_ok_sel, filew );
-    
-  /* Connect the cancel_button to destroy the widget */
-  gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked", 
-		     (GtkSignalFunc) file_cancel_sel,
-		     GTK_OBJECT (filew));
-    
-  /* Lets set the filename, as if this were a save dialog, and we are giving
-     a default filename */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
-				   "penguin.png");
-  
-  gtk_widget_show(filew);
+  /* open the file */
+  if ( (fp = fopen(wcalc->file_name,"w")) == NULL){
+    g_print("files.c:wcalc_save():  could not open \"%s\"\n", 
+	    wcalc->file_name);
+    return;
+  }
 
+  /* actually do the save (model dependent) */
+  if (wcalc->save != NULL){
+    wcalc->save(wcalc,fp,wcalc->file_name);
+  }
+  else{
+    g_print("files.c:wcalc_save():  no ->save function available for"
+	    "this model");
+  }
+
+  /* close the file */
+  fclose(fp);
 }
 
 

@@ -12,6 +12,8 @@ air_coil.c
 air_coil.h
 air_coil_gui.c
 air_coil_gui.h
+air_coil_loadsave.c
+air_coil_loadsave.h
 config.h.in
 config.guess
 config.sub
@@ -42,6 +44,7 @@ microstrip.h
 microstrip_gui.c
 microstrip_gui.h
 microstrip_loadsave.c
+microstrip_loadsave.h
 mkinstalldirs
 physconst.h
 print.c
@@ -58,6 +61,8 @@ stripline_gui.h
 version.c
 wcalc.c
 wcalc.h
+wcalc_loadsave.c
+wcalc_loadsave.h
 cgi/Makefile.in
 cgi/TODO
 cgi/air_coil.cgi.c

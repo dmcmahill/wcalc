@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 2001/09/20 12:40:31 dan Exp $
+# $Id: Makefile.in,v 1.24 2001/09/22 03:50:13 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -67,6 +67,7 @@ CFILES = \
 	about.c \
 	air_coil.c \
 	air_coil_gui.c \
+	air_coil_loadsave.c \
 	coupled_microstrip.c \
 	files.c \
 	ic_microstrip.c \

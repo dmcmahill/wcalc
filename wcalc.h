@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.9 2001/09/20 12:40:34 dan Exp $ */
+/*      $Id: wcalc.h,v 1.10 2001/09/20 20:32:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -85,8 +85,8 @@ typedef struct WCALC
    */
   void (*init) (struct WCALC *, GtkWidget *);
   void (*print_ps) (struct WCALC *, FILE *);
-  int (*load) (FILE *);
-  int (*save) (FILE *);
+  int (*load) (struct WCALC *, FILE *);
+  void (*save) (struct WCALC *, FILE *, char *);
   int (*analyze) (void);
   int (*synthesize) (void);
   int (*display) (void);
