@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.4 2001/09/22 03:50:14 dan Exp $ */
+/* $Id: air_coil.c,v 1.5 2001/09/22 04:46:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -52,7 +52,7 @@
 #define TINSUL 0.0015
 
 
-static int air_coil_calc_int(air_coil *coil, double freq, int flag);
+static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag);
 
 /* air_coil_calc_int flags */
 #define CALC_ALL  0  /* all calculation (calculate everything) */ 
@@ -98,7 +98,7 @@ static int air_coil_calc_int(air_coil *coil, double freq, int flag);
  *
  */
 
-int air_coil_calc(air_coil *coil, double freq)
+int air_coil_calc(air_coil_coil *coil, double freq)
 {
   int rslt;
 
@@ -109,7 +109,7 @@ int air_coil_calc(air_coil *coil, double freq)
   return rslt;
 }
 
-static int air_coil_calc_int(air_coil *coil, double freq, int flag)
+static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 {
   double pitch;
   double wirediam;
@@ -137,7 +137,7 @@ static int air_coil_calc_int(air_coil *coil, double freq, int flag)
   double len, lmin;
 
   /* temp storage */
-  air_coil tmp_coil;
+  air_coil_coil tmp_coil;
 
   pitch = M2INCH(coil->len) / coil->Nf;
 
@@ -300,7 +300,7 @@ static int air_coil_calc_int(air_coil *coil, double freq, int flag)
  * 
  */
 
-int air_coil_syn(air_coil *coil, double f, int flag)
+int air_coil_syn(air_coil_coil *coil, double f, int flag)
 {
   double N=0;
   double N1=0;
@@ -449,17 +449,17 @@ int air_coil_syn(air_coil *coil, double f, int flag)
 }
 
 
-void air_coil_free(air_coil *coil)
+void air_coil_free(air_coil_coil *coil)
 {
   free(coil);
 }
 
 
-air_coil *air_coil_new()
+air_coil_coil *air_coil_new()
 {
-  air_coil *newcoil;
+  air_coil_coil *newcoil;
 
-  newcoil = (air_coil *) malloc(sizeof(air_coil));
+  newcoil = (air_coil_coil *) malloc(sizeof(air_coil_coil));
   if(newcoil == NULL)
     {
       fprintf(stderr,"air_coil_new: malloc() failed\n");

@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.2 2001/09/15 02:57:38 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.3 2001/09/22 04:53:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -76,7 +76,7 @@ int cgiMain(void){
   int input_err = 0;
 
   /* air_coil variables */
-  air_coil *coil;
+  air_coil_coil *coil;
   double freq, freq_Hz;
 
   double N,AWG,rho,dia,len,L;

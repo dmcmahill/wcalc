@@ -1,4 +1,4 @@
-/* $Id: air_coil.h,v 1.2 2001/09/14 01:59:03 dan Exp $ */
+/* $Id: air_coil.h,v 1.3 2001/09/22 03:50:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,10 +33,10 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __AIR_COIL_H_
-#define __AIR_COIL_H_
+#ifndef __AIR_COIL_H__
+#define __AIR_COIL_H__
 
-typedef struct AIR_COIL
+typedef struct AIR_COIL_COIL
 {
 
   /* Number of turns */
@@ -83,14 +83,14 @@ typedef struct AIR_COIL
   double len_sf, dia_sf, L_sf, SRF_sf, freq_sf;
   char *len_units, *dia_units, *L_units, *SRF_units, *freq_units;
 
-} air_coil;
+} air_coil_coil;
 
 
-int air_coil_calc(air_coil *coil, double f);
-int air_coil_syn(air_coil *coil, double f, int flag);
+int air_coil_calc(air_coil_coil *coil, double f);
+int air_coil_syn(air_coil_coil *coil, double f, int flag);
 
-void air_coil_free(air_coil * line);
-air_coil *air_coil_new(void);
+void air_coil_free(air_coil_coil * coil);
+air_coil_coil *air_coil_new(void);
 
 
 /*
@@ -101,4 +101,4 @@ air_coil *air_coil_new(void);
 #define AIRCOILSYN_NFIX    1    /* Synthesize length with fixed N   */
 
 
-#endif /*__AIR_COIL_H_*/
+#endif /*__AIR_COIL_H__*/

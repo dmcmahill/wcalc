@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil_gui.h,v 1.1 2001/09/22 03:50:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __AIR_COIL_GUI_H_
-#define __AIR_COIL_GUI_H_
+#ifndef __AIR_COIL_GUI_H__
+#define __AIR_COIL_GUI_H__
 
 #include "air_coil.h"
 #include "wcalc.h"
@@ -49,7 +49,7 @@ typedef struct AIR_COIL_GUI
   /*
    * the air_coil  which is being analyzed
    */
-  air_coil *coil;
+  air_coil_coil *coil;
 
   /* 
    * Frequency/Units/Model vbox and its contents 
@@ -100,5 +100,5 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox);
 
 #define WC_AIR_COIL_GUI(x)      ((air_coil_gui *) (x))
 
-#endif /*__AIR_COIL_GUI_H_*/
+#endif /*__AIR_COIL_GUI_H__*/
 
