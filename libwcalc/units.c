@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.9 2004/07/26 22:22:30 dan Exp $ */
+/* $Id: units.c,v 1.10 2004/07/30 22:32:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -127,6 +127,7 @@ const wc_units_data wc_units_length[]=
 
 const wc_units_data wc_units_resistance[]=
 {
+  {"uOhm", 1e-6},
   {"mOhm", 1e-3},
   {"Ohm", 1.0},
   {"kOhm", 1e3},

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: coupled_microstrip.wc,v 1.2 2004/07/30 04:14:49 dan Exp $
 #
 # File:      /export/disk1/dan/wcalc/gtk-wcalc/coupled_microstrip.wc
 # Modified:  Fri Jul 30 00:13:27 2004
@@ -67,7 +67,7 @@ units_losslen = 0-6
 # [dB/inch]
 
 # Resistivity units
-units_rho = 1-4
+units_rho = 2-4
 # [Ohm-m]
 
 # Surface roughness units (RMS)

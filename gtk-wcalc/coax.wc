@@ -1,4 +1,4 @@
-# $Id$
+# $Id: coax.wc,v 1.1 2004/07/28 02:28:45 dan Exp $
 #
 # File:      /export/disk1/dan/wcalc/gtk-wcalc/coax.wc
 # Modified:  Tue Jul 27 22:10:42 2004
@@ -89,7 +89,7 @@ wc_units_freq = 3
 # [MHz]
 
 # Resistivity units
-wc_units_rho = 1-4
+wc_units_rho = 2-4
 # [Ohm-m]
 
 # Incremental inductance units
@@ -97,7 +97,7 @@ wc_units_L = 1-4
 # [nH/m]
 
 # Incremental resistance units
-wc_units_R = 0-4
+wc_units_R = 1-4
 # [mOhm/m]
 
 # Incremental capacitance units

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: microstrip.wc,v 1.2 2004/07/29 22:17:07 dan Exp $
 #
 # File:      /export/disk1/dan/wcalc/gtk-wcalc/microstrip.wc
 # Modified:  Tue Jul 28 22:15:09 2004
@@ -40,7 +40,7 @@ units_L = 1-6
 # [nH/inch]
 
 # Incremental resistance units
-units_R = 0-6
+units_R = 1-6
 # [mOhm/inch]
 
 # Incremental capacitance units
@@ -68,7 +68,7 @@ units_losslen = 0-6
 # [dB/inch]
 
 # Resistivity units
-units_rho = 1-4
+units_rho = 2-4
 # [Ohm-m]
 
 # Surface roughness units (RMS)

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: ic_microstrip.wc,v 1.1 2004/07/29 00:02:15 dan Exp $
 #
 # File:      /export/disk1/dan/wcalc/gtk-wcalc/ic_microstrip.wc
 # Modified:  Tue Jul 27 23:12:19 2004
@@ -41,7 +41,7 @@ units_L = 1-2
 # [nH/mm]
 
 # Incremental resistance units
-units_R = 0-2
+units_R = 1-2
 # [mOhm/mm]
 
 # Incremental capacitance units
@@ -69,7 +69,7 @@ units_losslen = 0-2
 # [dB/mm]
 
 # Metal resistivity units
-units_rho = 1-4
+units_rho = 2-4
 # [Ohm-m]
 
 # Substrate conductivity units
