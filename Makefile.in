@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.25 2001/09/23 17:38:04 dan Exp $
+# $Id: Makefile.in,v 1.26 2001/09/27 21:35:44 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -81,7 +81,8 @@ CFILES = \
 	start.c \
 	stripline.c \
 	version.c \
-	wcalc.c
+	wcalc.c \
+	wcalc_loadsave.c 
 
 OFILES = $(CFILES:.c=.o)
 

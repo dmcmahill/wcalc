@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: wcalc_loadsave.h,v 1.1 2001/09/23 17:38:11 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -37,5 +37,15 @@
 #define __WCALC_LOADSAVE_H__
 
 #define WCALC_FILE_VERSION "0.1"
+
+void wcalc_save_header(FILE *fp, char *fname, char *model_name);
+
+
+/* Model types.  Used to identify models in the file */
+#define FILE_AIR_COIL            "air_coil"
+#define FILE_COUPLED_MICROSTRIP  "coupled_microstrip"
+#define FILE_IC_MICROSTRIP       "ic_microstrip"
+#define FILE_MICROSTRIP          "microstrip"
+#define FILE_STRIPLINE           "stripline"
 
 #endif /*__WCALC_LOADSAVE_H__*/

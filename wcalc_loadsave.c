@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: wcalc_loadsave.c,v 1.1 2001/09/23 17:38:11 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,143 +33,72 @@
  * SUCH DAMAGE.
  */
 
+#include "config.h"
+
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 #include <sys/types.h>
 #include <time.h>
  
-
-#define WCALC_FILE_VERSION      "v1"
-
-void wcalc_open(char * fname);
+#include "wcalc_loadsave.h"
 
 
 /*
+ * Prints out the required header to a file.  
+ *   fp         = a valid, open, file pointer where the data should be 
+ *                written to. 
+ *   fname      = if not NULL, then the string in fname (the file
+ *                name) is written to a comment line in the output
+ *                file. 
+ *   model_name = Unique name for the particular model being saved in
+ *                the file.  This must be in the list given in
+ *                wcalc_loadsave.h 
  */
-void wcalc_save_header(wcalc_line *mymstrip, char *fname, char *id);
-
-
-/*
- * Loads the data contained in 
- */
-void wcalc_open(FILE *fp);
-
-/* 
- * fp needs to be a valid file pointer to an open FILE.  if non-NULL,
- * the file name in 'fname' is also printed out.
- * 
- * prints the wcalc data to the stream 'fp'.  Can be 'stdout' for
- * debugging or a file pointer to save to a file.
- */
-static void wcalc_cat(wcalc_line *mymstrip, FILE *fp, char *fname);
-
-int main(int argc, char **argv)
+void wcalc_save_header(FILE *fp, char *fname, char *model_name)
 {
-  wcalc_subs mysubs;
-  wcalc_line mymstrip;
+  time_t now;
 
-  mymstrip.l=100.0;
-  mymstrip.w=100.0;
-  mymstrip.z0=100.0;
-  mymstrip.len=100.0;
-
-  mymstrip.subs=&mysubs;
-
-  mysubs.h=62;
-  mysubs.er=4.8;
-  mysubs.tmet=1.4;
-  mysubs.rho=1.0;
-  mysubs.rough=0.055;
-  mysubs.tand=0.001;
-
-
-  wcalc_save(&mymstrip,"test.wc","# wcalc:v1");
-  
-  printf("Loading wcalc from test2.wc\n");
-
-  wcalc_load(&mymstrip,"test2.wc");
-  wcalc_cat(&mymstrip,stdout,"");
-  
-  wcalc_open("test.wc");
-  wcalc_open("test3.wc");
-
-  return 0;
-
-}
-
-void wcalc_save(wcalc_line *mymstrip, char *fname, char *id)
-{
-  FILE *fp;
-
-  if ( (fp = fopen(fname,"w")) == NULL){
-    fprintf(stderr,"wcalc_save:  could not open \"%s\"\n",fname);
-    exit(1);
-  }
+  now = time(NULL);
  
-  if (id != NULL){
-    fprintf(fp,"%s\n",id);
-  }
-  wcalc_cat(mymstrip, fp, fname);
+  assert(fp != NULL);
 
-  fclose(fp);
+  fprintf(fp,"#\n");
+  if (fname != NULL){
+    fprintf(fp,"# File:      %s\n",fname);
+  }
+  fprintf(fp,"# Modified:  %s",ctime(&now));
+  fprintf(fp,"# Wcalc Version %s\n",VER);
+  fprintf(fp,"\n");
+
+  fprintf(fp,"[wcalc]\n");
+  fprintf(fp,"wcalc_file_version %s\n",WCALC_FILE_VERSION);
+  fprintf(fp,"model_name %s\n",model_name);
+
+  fprintf(fp,"\n");
 
 }
+  
 
 
 #define MAXLINELEN 80
-#define FIELDSEP " \t=\n"
 
-#define SEC_OTHER 0
-#define SEC_STRIP 1
-#define SEC_SUBS  2
+#define SEC_WCALC 0
+#define SEC_OTHER 1
 
-void wcalc_load(wcalc_line *mymstrip, char *fname)
+void wcalc_load(FILE *fp)
 {
-  FILE *fp;
   char line[MAXLINELEN];
   char *tok, *val;
   int section=SEC_OTHER;
-
   int i;
 
-  int got_l=0;
-  int got_w=0;
-
-  const char fsep[]=" \t:\n";
-
-  if ( (fp = fopen(fname,"r")) == NULL){
-    fprintf(stderr,"wcalc_load:  could not open \"%s\"\n",fname);
-    exit(1);
-  }
- 
-  /* read the wcalc file version */
-  fgets(line,MAXLINELEN,fp);
-
-  /* read the model type and version line */
-  fgets(line,MAXLINELEN,fp);
-  
-  tok = strtok(line,fsep);
-  if ( (tok = strtok(NULL,fsep)) == NULL){
-    fprintf(stderr,"wcalc_load:  could not read wcalc version\n");
-    exit(1);
-  }
-
-  if(strcmp(tok,"wcalc") != 0){
-    fprintf(stderr,"wcalc_load:  Unknown file type: \"%s\"\n",tok);
-    exit(1);
-  }
-  tok = strtok(NULL,fsep);
-  if(strcmp(tok,WCALC_FILE_VERSION) != 0){
-    fprintf(stderr,"wcalc_load:  unknown file version: \"%s\"\n",tok);
-    exit(1);
-  }
-
-  /* 
-   * If the file format changes, this is where we would call legacy
-   * routines to read old style file formats.
-   */
+  /* we should never be given a NULL file pointer */
+  assert(fp != NULL);
 
   while( fgets(line,MAXLINELEN,fp) != NULL ){
     tok = strtok(line,FIELDSEP);
@@ -235,101 +164,6 @@ void wcalc_load(wcalc_line *mymstrip, char *fname)
   fclose(fp);
 }
 
-
-static void wcalc_cat(wcalc_line *mymstrip, FILE *fp, char *fname)
-{
-  time_t now;
-
-  now = time(NULL);
- 
-  fprintf(fp,"# wcalc:%s\n",WCALC_FILE_VERSION);
-  fprintf(fp,"#\n");
-  if (fname != NULL){
-    fprintf(fp,"# File:      %s\n",fname);
-  }
-  fprintf(fp,"# Modified:  %s",ctime(&now));
-  fprintf(fp,"#\n");
-  fprintf(fp,"\n");
-
-  fprintf(fp,"[wcalc]\n");
-  fprintf(fp,"# Length (mils)\n");
-  fprintf(fp,"L = %g\n",mymstrip->l);
-
-
-  fprintf(fp,"\n");
-
-}
-
-void wcalc_open(char * fname)
-{
-  FILE *fp;
-  char line[MAXLINELEN];
-  char *tok;
- 
-  const char fsep[]=" \t:\n";
-
-  if ( (fp = fopen(fname,"r")) == NULL){
-    fprintf(stderr,"wcalc_open:  could not open \"%s\"\n",fname);
-    exit(1);
-  }
- 
-  /* read the wcalc file version */
-  fgets(line,MAXLINELEN,fp);
-
-  tok = strtok(line,fsep);
-  if ( (tok = strtok(NULL,fsep)) == NULL){
-    fprintf(stderr,"wcalc_open:  could not read version and file type\n");
-    exit(1);
-  }
-
-  if(strcmp(tok,"wcalc") != 0){
-    fprintf(stderr,"wcalc_open:  Unknown file type: \"%s\"\n",tok);
-    exit(1);
-  }
-
-  tok = strtok(NULL,fsep);
-  if(strcmp(tok,WCALC_FILE_VERSION) != 0){
-    fprintf(stderr,"wcalc_open:  unknown file version: \"%s\"\n",tok);
-    exit(1);
-  }
-  
-  /* 
-   * If the file format changes, this is where we would call legacy
-   * routines to read old style file formats.
-   */
-
-  /* read the model type and version */
-  fgets(line,MAXLINELEN,fp);
-  fclose(fp);
-
-  tok = strtok(line,fsep);
-  if ( (tok = strtok(NULL,fsep)) == NULL){
-    fprintf(stderr,"wcalc_open:  could not determine model type/version\n");
-    exit(1);
-  }
-
-  /* figure out what model is in this file */
-  if(strcmp(tok,"wcalc") == 0){
-    printf("wcalc_open:  wcalc file, ");
-  }
-  else if(strcmp(tok,"coupled_wcalc") == 0){
-    printf("wcalc_open:  wcalc file, ");
-  }
-  else if(strcmp(tok,"stripline") == 0){
-    printf("wcalc_open:  stripline file, ");
-  }
-  else {
-    fprintf(stderr,"wcalc_open:  Unknown file type: \"%s\"\n",tok);
-    exit(1);
-  }
-
-  if ( (tok = strtok(NULL,fsep)) == NULL){
-    fprintf(stderr,"wcalc_open:  could not determine model version\n");
-    exit(1);
-  }
-  printf("version %s\n",tok);
-
-}
 
 
 
