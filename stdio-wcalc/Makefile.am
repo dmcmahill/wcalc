@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.5 2004/08/03 02:03:19 dan Exp $
+## $Id: Makefile.am,v 1.6 2004/08/11 13:04:40 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -40,6 +40,11 @@ stdio_wcalc_SOURCES =  alert.c main.c
 
 man_MANS=	stdio-wcalc.1
 
+RUN_TESTS=	run_tests.sh
+check_SCRIPTS=	${RUN_TESTS}
+
+TESTS= ${RUN_TESTS}
+
 DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
 
 LIBS= @LIBINTL@ @LIBS@ @WCALC_LIBS@
@@ -60,5 +65,10 @@ TEST_INPUTS= \
 	microstrip.dat \
 	stripline.dat
 
-EXTRA_DIST= ${man_MANS} ${TEST_INPUTS}
+REF_FILES=	${TEST_INPUTS:.dat=.ref}
+DIA_FILES=	${TEST_INPUTS:.dat=.dia}
+
+EXTRA_DIST= ${man_MANS} ${TEST_INPUTS} ${RUN_TESTS} ${REF_FILES}
+
+DISTCLEANFILES= ${DIA_FILES} 
 

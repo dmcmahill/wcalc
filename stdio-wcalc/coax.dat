@@ -1,11 +1,14 @@
-# $Id: coax.dat,v 1.2 2004/08/03 02:54:40 dan Exp $
+# $Id: coax.dat,v 1.3 2004/08/03 21:10:29 dan Exp $
 #
 # coax test data
 #
 #
-# [z0, elen, loss, L, R, C, G] = 
-#   coax_calc(a, b, c, t, rho_a, rho_b, er, tand, len, f);
-#
+
+
+*
+* [z0, elen, loss, L, R, C, G] = 
+*   coax_calc(a, b, c, t, rho_a, rho_b, er, tand, len, f);
+*
 
 * Coax calculation output gives
 * z0, elen, loss, L, R, C, G
@@ -34,6 +37,7 @@ coax_calc 1.520e-3 3.5e-3 3.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
 *
 *************** From LineCalc ************
 * a=18.5 mil, b=45mil, c=0, L=1000mil, tshield=10mil
+* freq=10 GHz
 * LineCalc gives Z0=36.77816704468, E.Len=442.0029187514 deg
 * Atten (dB) = 0.047486652400
 coax_calc 0.4699e-3 1.143e-3 0.0 0.254e-3 1.72e-8 1.72e-8 2.1 0.0003 25.4e-3 10e9
