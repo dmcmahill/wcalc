@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: microstrip_test.c,v 1.1 2002/08/19 11:30:57 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -57,11 +57,13 @@ int main(int argc, char **argv)
 {
   /* inches to meters */
   double sf=0.0254;
+#ifdef notdef
   double a=7;
   double b[]={3.040,3.038,3.026,3.040,3.040,3.040};
   double c[]={0,1,2,1,2,3};
   int i;
   int npts = sizeof(b)/sizeof(double);
+#endif
   double freq;
 
   char rline[MAXLINELEN];

@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_test.c,v 1.3 2004/07/30 22:33:51 dan Exp $ */
+/* $Id: coupled_microstrip_test.c,v 1.4 2004/07/31 06:04:25 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -61,7 +61,6 @@ enum {ACTION_NONE, ACTION_CALC, ACTION_SYN} action;
 int main(int argc, char **argv)
 {
   double sf;
-  int flag;
 
   char rline[MAXLINELEN];
   char *save_line;
