@@ -1,4 +1,4 @@
-/* $Id: coax_calc.c,v 1.1 2001/12/09 15:14:40 dan Exp $ */
+/* $Id: coax_calc.c,v 1.2 2001/12/09 15:41:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -217,8 +217,8 @@ void mexFunction(
     line->tshield = t[*ind_t];
     line->rho_a   = rho_a[*ind_rho_a];
     line->rho_b   = rho_a[*ind_rho_b];
-    line->er      = len[*ind_er];
-    line->tand    = len[*ind_tand];
+    line->er      = er[*ind_er];
+    line->tand    = tand[*ind_tand];
     line->len     = len[*ind_len];
     line->freq    = freq[*ind_freq];
 
