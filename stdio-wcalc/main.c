@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.2 2004/01/10 05:42:13 dan Exp $ */
+/* $Id: main.c,v 1.3 2004/01/10 05:43:01 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -74,13 +74,19 @@
 #endif
 
 /* local prototypes */
-static void exec_ic_microstrip_calc(double *args)
+static void exec_ic_microstrip_calc(double *args);
+static void exec_microstrip_calc(double *args);
 
 int main(int argc, char **argv)
 {
   char line[256];
   char *tok;
-  
+  int narg;
+  int cnt;
+  void *fn;
+  double params[15];
+  int lineno = 1;
+
   while( fgets(line, sizeof(line), stdin) != NULL ) {
     fprintf(stderr, "Processing: %s\n", line);
     tok = strtok(line, " \t");
@@ -92,20 +98,43 @@ int main(int argc, char **argv)
     if(strcmp(tok, "ic_microstrip_calc") ) {
       fprintf(stderr, "ic_microstrip_calc\n");
       narg = 11;
-      fn = &ic_microstrip_calc;
+      fn = &exedic_microstrip_calc;
+    } else if(strcmp(tok, "microstrip_calc") ) {
+      fprintf(stderr, "microstrip_calc\n");
+      narg = 9;
+      fn = &exec_microstrip_calc;
     } else {
       fprintf(stderr, "stdio-wcalc: unknown command \"%s\"\n", tok);
       exit(1);
     }
+
+    cnt = 0;
+    while( ((tok = strtok(NULL, " \t")) != NULL ) && 
+	   (cnt < sizeof(params)/sizeof(double)) ) {
+      if( cnt >= narg ) 
+	fprintf(stderr, "Ignoring extra argument: \"%s\"\n", tok);
+      else 
+	params[cnt] = strtod(tok);
+
+      cnt++;
+    }
+    
+    if( cnt < narg ) 
+      fprintf(stderr, "Not enough arguments.  Needed %d, got %d on line %d\n",
+	      narg, cnt, lineno);
+    else
+      *fn(params);
+
+    lineno++;
   }
   
   return 0;
 }
 
 /*
-[z0,L,R,C,G] = 
-    ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
-*/
+ * [z0,L,R,C,G] = 
+ *  ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
+ */
 static void exec_ic_microstrip_calc(double *args)
 {
   /* our ic_microstrip for calculations */
@@ -137,3 +166,38 @@ static void exec_ic_microstrip_calc(double *args)
   
   return;
 }
+
+/* 
+ * [z0,keff,loss,deltal] =
+ *   microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
+ */
+static void exec_microstrip_calc(double *args)
+{
+  /* our ic_microstrip for calculations */
+  microstrip_line *line;
+
+  /* create the line and fill in the parameters */
+  line = microstrip_line_new();
+  line->w           = args[0];
+  line->l           = args[1];
+  line->subs->h     = args[2];
+  line->subs->tmet  = args[3];
+  line->subs->rho   = args[4];
+  line->subs->rough = args[5];
+  line->subs->er    = args[6];
+  line->subs->tand  = args[7];
+  line->freq        = args[8];
+
+  /* run the calculation */
+  microstrip_calc(line, line->freq);
+  
+  /* print the outputs */
+  printf("%g %g %g %g\n", line->z0, line->keff,
+	 line->loss, line->deltal;
+
+  /* clean up */
+  microstrip_line_free(line);
+  
+  return;
+}
+
