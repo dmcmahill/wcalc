@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml,v 1.2 2001/10/16 13:11:07 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml.in,v 1.1 2001/10/18 03:29:45 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -50,11 +50,11 @@ stripline synthesis,
     <!-- Links to the individual CGI pages  -->
     <font face="helvetica, arial" size="+0">
     <ul>
-    <LI><A HREF="/cgi-bin/air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
-    <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
-    <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
-    <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
-    <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
+    <LI><A HREF="@CGIPATH@air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
+    <LI><A HREF="@CGIPATH@ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
+    <LI><A HREF="@CGIPATH@coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
+    <LI><A HREF="@CGIPATH@microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
+    <LI><A HREF="@CGIPATH@stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
     </ul>
     </font>
 

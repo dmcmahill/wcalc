@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.22 2001/10/17 03:41:48 dan Exp $
+dnl $Id: configure.in,v 1.23 2001/10/17 03:56:17 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -164,10 +164,28 @@ CGIBINDIR='${libexecdir}/cgi-bin'
 
 AC_SUBST(CGIBINDIR)
 
+# path to the CGI programs on the webserver
+
+AC_ARG_WITH([cgibin],
+[  --with-cgipath=cgipath  Path used by the web server to access
+                          the CGI programs. [default = /cgi-bin/]],
+[
+if test "X$with_cgipath" = "Xno" ; then
+	AC_ERROR([--without-cgipath is not allowed])
+else
+	CGIBINDIR=$with_cgipath
+fi
+],
+[
+CGIPATH='/cgi-bin/'
+])
+
+AC_SUBST(CGIPATH)
+
 # where to install the HTML pages and .PNG files:
 
 AC_ARG_WITH([htmldir],
-[  --with-htmldir=htmldir    Install the HTML files and PNG images needed
+[  --with-htmldir=htmldir  Install the HTML files and PNG images needed
                           for the web page and the the CGI interface to
                           this directory.  The specified directory must
                           be accessible to the web server.
@@ -309,6 +327,7 @@ AC_OUTPUT(
 	cgi-wcalc/Makefile
 	gtk-wcalc/Makefile
 	htdocs/Makefile
+	htdocs/cgi-wcalc.shtml
 	sci-wcalc/Makefile
 	pixmaps/Makefile
 )
