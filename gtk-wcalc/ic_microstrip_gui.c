@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.6 2004/07/28 03:25:26 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.7 2004/07/29 00:02:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1065,7 +1065,7 @@ static void tooltip_init(ic_microstrip_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_h, "Substrate thickness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_es, "Substrate relative"
 		       " dielectric constant",NULL);
-  gtk_tooltips_set_tip(tips, gui->text_sigmas, "Substrate conductivityt", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_sigmas, "Substrate conductivity", NULL);
   gtk_tooltips_set_tip(tips, gui->text_eox, "Oxide relative"
 		       " dielectric constant",NULL);
   gtk_tooltips_set_tip(tips, gui->text_tox, "Oxide thickness", NULL);
