@@ -1,0 +1,11 @@
+$Id$
+
+TODO
+
+
+--------------------------------------------------------------
+need to fix the build system to extract the sizes of the PNG files and insert them in
+the HTML files somehow so I don't have to always remember to do it by hand.
+--------------------------------------------------------------
+
+
