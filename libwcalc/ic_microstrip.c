@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.2 2001/11/03 02:13:30 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.3 2001/11/12 04:02:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -397,6 +397,13 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   line->Gmis = Gmis;
   line->Ro   = REAL(Zo_mis);
   line->Xo   = IMAG(Zo_mis);
+
+  /* XXX I probably should avoid 'keff' unless I can show 'mueff' = 1
+   */
+  line->keff = slowwave;
+
+  /* electrical length */
+  line->len  = 360*line->l/lambda_mis;
 
   return 0;
 }

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.3 2001/11/11 15:54:20 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.1 2001/11/12 04:02:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -933,10 +933,13 @@ static void tooltip_init(ic_microstrip_gui *gui)
 
   gtk_tooltips_set_tip(tips, gui->text_w, "Width of ic_microstrip", NULL);
   gtk_tooltips_set_tip(tips, gui->text_l, "Length of ic_microstrip", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_h, "Total substrate thickness", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_h, "Substrate thickness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_es, "Substrate relative"
 		       " dielectric constant",NULL);
   gtk_tooltips_set_tip(tips, gui->text_sigmas, "Substrate loss tangent", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_eox, "Oxide relative"
+		       " dielectric constant",NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tox, "Oxide thickness", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_Ro, "Characteristic impedance", NULL);
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length", NULL);
