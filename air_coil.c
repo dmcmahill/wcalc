@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.6 2001/09/23 01:44:43 dan Exp $ */
+/* $Id: air_coil.c,v 1.7 2001/09/27 02:01:46 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -45,8 +45,6 @@
 #include "air_coil.h"
 #include "misc.h"
 
-/* XXX need to deal with alert() properly */
-#define alert(x)  printf(x)
 
 /* estimate of the enamel insulation thickness (inches) */
 #define TINSUL 0.0015
@@ -173,9 +171,9 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
    * the lower limit should be 0.2, but I'm pushing it a little
    */
   if ( (x>5.0) || (x <= 0.1) ){
-    printf("air_coil_calc():  Maximum len/turndiam, x = %g\n",x);
-    printf("air_coil_calc():  Minimum len/turndiam, x = %g\n",x);
-    printf("air_coil_calc():  x is outside the range 0.1 <= x <= 5\n");
+    alert("The length/diameter ratio, x, = %g\n"
+	  "is outside the range 0.1 <= x <= 5\n"
+	  "over which the analysis is accurate",x);
     return -1;
   }
 
@@ -247,7 +245,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
     A = ((0.751186*x - 9.49018)*x + 42.5060)*x + 68.11910;
   }
   else{
-    fprintf(stderr,"air_coil_calc():  x=%g which is outside the allowed range\n",x);
+    alert("air_coil_calc():  x=%g which is outside the allowed range\n",x);
     return -1;
   }
 
@@ -453,9 +451,9 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
 
   if (flag == AIRCOILSYN_NFIX){
     if (len < N*lenPerTurn){
-      fprintf(stderr,"air_coil_syn():  WARNING:  the specified value of N=%g is\n",N);
-      fprintf(stderr,"air_coil_syn():  too low.  You CAN NOT fit the desired\n");
-      fprintf(stderr,"air_coil_syn():  number of turns into the required length\n");
+      alert("WARNING:  the specified value of N=%g is\n",
+	    "too low.  You CAN NOT fit the desired\n"
+	    "number of turns into the required length\n",N);
       return -1;
     }
   }
@@ -480,7 +478,7 @@ air_coil_coil *air_coil_new()
   newcoil = (air_coil_coil *) malloc(sizeof(air_coil_coil));
   if(newcoil == NULL)
     {
-      fprintf(stderr,"air_coil_new: malloc() failed\n");
+      fprintf(stderr,"air_coil.c:air_coil_new(): malloc() failed\n");
       exit(1);
     }
 
