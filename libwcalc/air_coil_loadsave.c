@@ -1,7 +1,7 @@
-/* $Id: air_coil_loadsave.c,v 1.6 2001/11/25 16:33:28 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.7 2002/02/23 18:43:28 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,10 @@
 #include "air_coil_loadsave.h"
 #include "alert.h"
 #include "wcalc_loadsave.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define FILE_VERSION "0.1"
 

@@ -1,7 +1,7 @@
-/* $Id: air_coil.c,v 1.3 2002/01/07 01:24:17 dan Exp $ */
+/* $Id: air_coil.c,v 1.4 2002/02/16 15:42:09 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,9 @@
 #include "alert.h"
 #include "misc.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /* estimate of the enamel insulation thickness (inches) */
 #define TINSUL 0.0015

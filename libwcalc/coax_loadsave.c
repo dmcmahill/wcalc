@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.6 2002/02/16 15:50:03 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.7 2002/02/21 02:07:31 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -51,6 +51,10 @@
 #include "coax_loadsave.h"
 #include "alert.h"
 #include "wcalc_loadsave.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define FILE_VERSION "0.1"
 

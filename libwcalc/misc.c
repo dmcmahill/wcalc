@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.4 2002/01/11 15:36:44 dan Exp $ */
+/* $Id: misc.c,v 1.5 2002/02/19 10:32:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -51,6 +51,9 @@
 
 #include "misc.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 const units_data capacitance_units[]=
 {

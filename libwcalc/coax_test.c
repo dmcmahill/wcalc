@@ -1,7 +1,7 @@
-/* $Id: coax_test.c,v 1.1 2001/11/27 04:46:32 dan Exp $ */
+/* $Id: coax_test.c,v 1.2 2002/01/19 03:05:21 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -39,6 +39,9 @@
 #include "coax.h"
 #include "coax_loadsave.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 int main(int argc, char **argv)
 {

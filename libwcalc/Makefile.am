@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.9 2001/11/27 04:46:31 dan Exp $
+## $Id: Makefile.am,v 1.10 2002/02/16 15:42:35 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -44,6 +44,9 @@ ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 
 LDADD = libwcalc.la
+# uncomment with gcc on sparc to make ic_microstrip not crash:
+#LDFLAGS = -all-static
+LDFLAGS=${DMALLOC_LIBS}
 
 libwcalc_la_SOURCES = \
 	air_coil.c \
@@ -76,4 +79,4 @@ libwcalc_la_SOURCES = \
 	wcalc_loadsave.c \
 	wcalc_loadsave.h
 
-INCLUDES = -I$(top_srcdir)/include -DVER=\"@VERSION@\" 
+INCLUDES = -I$(top_srcdir)/include -DVER=\"@VERSION@\" ${DMALLOC_CFLAGS}

@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.5 2002/01/14 02:50:37 dan Exp $ */
+/*      $Id: stripline.c,v 1.6 2002/01/14 20:23:51 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -64,6 +64,9 @@
 #include "physconst.h"
 #include "stripline.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /* flags for stripline_calc_int() */
 #define NOLOSS   0

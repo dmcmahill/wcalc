@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_test.c,v 1.1 2002/02/16 15:50:43 dan Exp $ */
+/* $Id: ic_microstrip_test.c,v 1.2 2002/05/08 10:38:33 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -45,6 +45,9 @@
 #include "ic_microstrip.h"
 #include "ic_microstrip_loadsave.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 int main(int argc, char **argv)
 {
@@ -181,6 +184,9 @@ int main(int argc, char **argv)
     w=1.2*w;
   }
   }
+
+  ic_microstrip_line_free(line);
+
   return 0;
 }
 

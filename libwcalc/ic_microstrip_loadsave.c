@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.1 2001/11/12 04:02:50 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.2 2001/11/25 16:33:29 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,10 @@
 #include "ic_microstrip.h"
 #include "ic_microstrip_loadsave.h"
 #include "wcalc_loadsave.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define FILE_VERSION "0.1"
 

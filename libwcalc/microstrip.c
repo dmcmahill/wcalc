@@ -1,7 +1,7 @@
-/* $Id: microstrip.c,v 1.3 2001/11/25 16:32:18 dan Exp $ */
+/* $Id: microstrip.c,v 1.4 2002/02/16 15:38:40 dan Exp $ */
 
 /*
- * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,10 @@
 #include "mathutil.h"
 #include "physconst.h"
 #include "microstrip.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /* flags for microstrip_calc_int() */
 #define NOLOSS   0

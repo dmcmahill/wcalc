@@ -1,7 +1,7 @@
-/* $Id: coax.c,v 1.11 2002/01/14 23:18:07 dan Exp $ */
+/* $Id: coax.c,v 1.12 2002/01/19 02:47:12 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -76,7 +76,9 @@
 #include "alert.h"
 #include "misc.h"
 
-
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /* finds the error in the TE10 boundary condition.  Error should be 0 */
 static double coax_TE10_err(coax_line *line, double k)

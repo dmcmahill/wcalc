@@ -1,4 +1,4 @@
-/* $Id: mathutil_test.c,v 1.1 2002/02/16 15:50:44 dan Exp $ */
+/* $Id: mathutil_test.c,v 1.2 2002/05/08 10:39:17 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -43,6 +43,10 @@
 #endif
 
 #include "mathutil.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 int main(int argc, char **argv)
 {

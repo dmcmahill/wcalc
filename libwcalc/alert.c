@@ -1,7 +1,7 @@
-/* $Id: alert.c,v 1.1 2001/10/05 01:28:29 dan Exp $ */
+/* $Id: alert.c,v 1.1 2001/11/27 04:44:58 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -43,6 +43,10 @@
 #endif
 
 #include "alert.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 void alert(const char *fmt,...)
 {

@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.c,v 1.6 2002/02/16 13:43:51 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.7 2002/05/08 10:38:17 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -47,6 +47,10 @@
 #include "mathutil.h"
 #include "physconst.h"
 #include "ic_microstrip.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 #define NOLOSS 0
 #define WITHLOSS 1

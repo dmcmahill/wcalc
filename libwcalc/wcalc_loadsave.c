@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.14 2002/02/19 10:27:16 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.15 2002/02/19 10:31:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -49,6 +49,10 @@
  
 #include "alert.h"
 #include "wcalc_loadsave.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 
 /*

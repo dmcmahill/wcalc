@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.5 2002/05/06 02:14:14 dan Exp $ */
+/* $Id: mathutil.c,v 1.6 2002/05/08 10:37:23 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -41,7 +41,12 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "mathutil.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 double coth(double x)
 {

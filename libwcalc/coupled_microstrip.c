@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.c,v 1.2 2001/11/07 04:50:53 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.3 2002/02/16 15:44:31 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -44,6 +44,9 @@
 #include "physconst.h"
 #include "coupled_microstrip.h"
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
 
 /*function [z0e,z0o,len,loss,kev,kodd,deltale,deltalo]=cmlicalc(w,l,s,f,subs,flag)*/
 /* CMLICALC   Analyze coupled microstrip transmission line from physical parameters
