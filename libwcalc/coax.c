@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.22 2004/08/28 05:25:49 dan Exp $ */
+/* $Id: coax.c,v 1.23 2004/08/31 21:38:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -209,7 +209,9 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      *
      * XXX 
      * Current crowding more to one side of the conductor than another
-     * when  c != 0 breaks these equations.
+     * when  c != 0 breaks these equations.  Should be using Wheelers
+     * incremental inductance rule here anyway with some sort of
+     * smoothing fudge factor during the DC -> RF transition
      */
 
     if (omega > 0) {
@@ -257,8 +259,15 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     }
     else {
       /* frequency dependent case */
-      Gc = ( (2.0 * M_PI) / line->rho_a ) *
-	( line->a*delta_c - delta_c*delta_c*(1-exp(-line->a/delta_c)) );
+
+      /* avoid exp(-very large number) -> floating exception */
+      if( line->a / delta_c > 10.0 ) {
+	Gc = ( (2.0 * M_PI) / line->rho_a ) *
+	  ( line->a*delta_c - delta_c*delta_c );
+      } else {
+	Gc = ( (2.0 * M_PI) / line->rho_a ) *
+	  ( line->a*delta_c - delta_c*delta_c*(1-exp(-line->a/delta_c)) );
+      }
       Rc = 1/Gc;
     }
 
