@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil_gui.c,v 1.1 2001/09/22 03:50:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -58,7 +58,6 @@ static void dia_units_changed(GtkWidget *w, gpointer data );
 static void len_units_changed(GtkWidget *widget, gpointer data );
 static void L_units_changed(GtkWidget *widget, gpointer data );
 static void freq_units_changed(GtkWidget *widget, gpointer data );
-static void entry_to_label(GtkWidget *widget, gpointer data );
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_N( GtkWidget *w, gpointer data );
@@ -69,15 +68,12 @@ static void update_display( air_coil_gui *gui);
 
 static void vals_changedCB( GtkWidget *widget, gpointer data );
 
-static void units_init(air_coil_gui *gui, GtkWidget *parent);
 static void values_init(air_coil_gui *gui, GtkWidget *parent);
 static void outputs_init(air_coil_gui *gui, GtkWidget *parent);
-static void substrate_init(air_coil_gui *gui, GtkWidget *parent);
-static void picture_init(air_coil_gui *gui, GtkWidget *window, GtkWidget *parent);
+static void picture_init(air_coil_gui *gui,
+			 GtkWidget *window,
+			 GtkWidget *parent);
 static void tooltip_init(air_coil_gui *gui);
-
-static void cb_punits_menu_select( GtkWidget *item,
-				   gpointer data);
 
 
 #define ENTRYLENGTH  8
@@ -169,101 +165,13 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
   gtk_widget_show (wcalc->window);
 
   wcalc->init_done=1;
+
+  update_display(gui);
 }
 
 /*
  * Private Functions
  */
-#ifdef notdef /*XXX*/
-static void units_init(air_coil_gui *gui,GtkWidget *parent)
-{
-  GtkWidget *text;
-  GtkWidget *my_hbox;
-  GtkWidget *my_vbox;
-  GList *glist=NULL;
-  GList *glist2=NULL;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_vbox = gtk_vbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_vbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_vbox);
-  gtk_widget_show (my_vbox);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_box_pack_start (GTK_BOX (my_vbox), my_hbox, TRUE, FALSE, 1);
-  gtk_widget_show (my_hbox);
-
-
-  text = gtk_label_new( "Frequency:" );
-  gtk_box_pack_start (GTK_BOX (my_hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-
-  gui->text_freq = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->text_freq, FALSE, FALSE, 0);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),60,0);
-  gtk_widget_show(gui->text_freq);
-
-  
-  glist = g_list_append(glist,"kHz");
-  glist = g_list_append(glist,"MHz");
-  glist = g_list_append(glist,"GHz");
-
-  gui->combo_funits =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(gui->combo_funits), glist);
-  gtk_combo_set_use_arrows( GTK_COMBO(gui->combo_funits), 1);
-  gtk_box_pack_start (GTK_BOX (my_hbox), gui->combo_funits, FALSE, FALSE, 0);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(gui->combo_funits)->entry), FALSE);
-  //gdk_string_width()
-  gtk_widget_set_usize(GTK_WIDGET( gui->combo_funits),60,0);
-  gtk_widget_show( gui->combo_funits );
-
-
-  /* 
-   * Note, these strings are the same length so the window layout
-   * won't change as we select different physical units.
-   */
-
-  glist2 = NULL;
-  glist2 = g_list_append(glist2,MILSTR);
-  glist2 = g_list_append(glist2,UMSTR);
-  glist2 = g_list_append(glist2,MMSTR);
-  glist2 = g_list_append(glist2,CMSTR);
-  glist2 = g_list_append(glist2,MSTR);
-
-
-  gui->combo_punits =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(gui->combo_punits), glist2);
-  gtk_combo_set_use_arrows( GTK_COMBO(gui->combo_punits), 1);
-  gtk_box_pack_end (GTK_BOX (my_hbox), gui->combo_punits, FALSE, FALSE, 0);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(gui->combo_punits)->entry), FALSE);
-  gtk_widget_set_usize(GTK_WIDGET( gui->combo_punits),100,0);
-  gtk_signal_connect (GTK_OBJECT (GTK_COMBO(gui->combo_punits)->entry), "changed",
-		      GTK_SIGNAL_FUNC (cb_punits_menu_select),
-		      (gpointer) gui);
-  gtk_widget_show( gui->combo_punits );
-  
-
-  text = gtk_label_new( "Physical Units:" );
-  gtk_box_pack_end (GTK_BOX (my_hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-
-
-  gtk_entry_set_text( GTK_ENTRY(gui->text_freq),"1.88" );
-  gtk_entry_set_text( GTK_ENTRY(GTK_COMBO(gui->combo_funits)->entry),"GHz" );
-
-}
-#endif
 
 static void values_init(air_coil_gui *gui, GtkWidget *parent)
 {
@@ -352,6 +260,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+
+  /* Coil diameter and units */
   text = gtk_label_new( "I.D." );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
@@ -362,6 +272,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
   gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->dia_units);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (dia_units_changed), 
@@ -373,6 +285,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show(combo);
 
 
+  /* Coil length and units */
   text = gtk_label_new( "Len." );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
@@ -383,6 +296,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
   gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->len_units);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (len_units_changed), 
@@ -412,6 +327,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
   gtk_table_attach(GTK_TABLE(table), combo, 7, 8, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->L_units);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (L_units_changed), 
@@ -434,6 +351,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
   gtk_table_attach(GTK_TABLE(table), combo, 7, 8, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->freq_units);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (freq_units_changed), 
@@ -574,19 +493,23 @@ static void outputs_init(air_coil_gui *gui, GtkWidget *parent)
 
 #define OUTPUT_TEXT "     "
   gui->label_Q = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Q, 1,2,0,1, 0,0,XPAD,YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_Q, 
+		    1,2,0,1, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_Q);
 
   gui->label_SRF = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_SRF, 1,2,1,2, 0,0,XPAD,YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_SRF, 
+		    1,2,1,2, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_SRF);
 
   gui->label_Lmax = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Lmax, 5,6,0,1, 0,0,XPAD,YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_Lmax, 
+		    5,6,0,1, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_Lmax);
 
-  gui->label_Lmax_units = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Lmax_units, 6,7,0,1, 0,0,XPAD,YPAD);
+  gui->label_Lmax_units = gtk_label_new( gui->coil->L_units );
+  gtk_table_attach (GTK_TABLE(table), gui->label_Lmax_units, 
+		    6,7,0,1, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_Lmax_units);
 
 
@@ -671,7 +594,6 @@ static void synthesize_len( GtkWidget *w, gpointer data )
 
 static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 {
-  char str[80];
   char *vstr;
   int rslt=0;
 
@@ -767,6 +689,13 @@ static void update_display(air_coil_gui *gui)
   sprintf(str,"%8f",gui->coil->L/gui->coil->L_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
   
+  sprintf(str,"%8f",gui->coil->rho);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
+  
+  sprintf(str,"%8f",gui->coil->AWGf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
+  
+
   sprintf(str,"%8f",gui->coil->Q);
   gtk_label_set_text( GTK_LABEL(gui->label_Q), str );
   
@@ -799,39 +728,6 @@ static void tooltip_init(air_coil_gui *gui)
   
 }
 
-static void change_units_text(void * , char *);
-
-static void cb_punits_menu_select( GtkWidget *item,
-				   gpointer data)
-{
-  char *units;
-  air_coil_gui *gui;
-
-  gui = WC_AIR_COIL_GUI(data);
-
-  units = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(gui->combo_punits)->entry));
-
-  /* Set the value position on both scale widgets */
-  /*
-  g_sf = sf; 
-  g_print("set global physical scale factor to %g\n",sf);
-  g_print("set global physical units to \"%s\"\n",punit);
-  g_print("cb_punits_menu_select():  \n");
-  */
-
-  g_list_foreach( gui->phys_units_text,
-		  (GFunc) change_units_text,
-		  units );
-}
-
-
-static void change_units_text(void * text, char * label)
-{
-  gtk_label_set_text(GTK_LABEL(text),label);
-}
-
-
-
 static void vals_changedCB(GtkWidget *widget, gpointer data )
 {
   air_coil_gui *gui;
@@ -840,13 +736,6 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
 
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
-}
-
-static void entry_to_label(GtkWidget *widget, gpointer data )
-{
-  char *vstr;
-  vstr = gtk_entry_get_text( GTK_ENTRY(widget) ); 
-  //gtk_label_set_text(GTK_LABEL(*data),vstr);
 }
 
 static void dia_units_changed(GtkWidget *widget, gpointer data )
@@ -951,10 +840,12 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
   fprintf(fp,"(N) show tab1 (=) show tab2 (%g turns) show newline\n",
 	  gui->coil->Nf);
-  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (%g inches) show newline\n",
-	  gui->coil->dia);
-  fprintf(fp,"(Len.) show tab1 (=) show tab2 (%g inches) show newline\n",
-	  gui->coil->len);
+  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->coil->dia/gui->coil->dia_sf,
+	  gui->coil->dia_units);
+  fprintf(fp,"(Len.) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->coil->len/gui->coil->len_sf,
+	  gui->coil->len_units);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (%g AWG) show newline\n",
 	  gui->coil->AWGf);
@@ -963,16 +854,20 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(L) show tab1 (=) show tab2 (%g nH) show newline\n",
-	  gui->coil->L*1e9);
-  fprintf(fp,"(Q) show tab1 (=) show tab2 (%g at %g MHz) show newline\n",
-	  gui->coil->Q,gui->coil->freq*1e-6);
-  fprintf(fp,"(SRF) show tab1 (=) show tab2 (%g MHz) show newline\n",
-	  gui->coil->SRF*1e-6);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->coil->L/gui->coil->L_sf,
+	  gui->coil->L_units);
+  fprintf(fp,"(Q) show tab1 (=) show tab2 (%g at %g %s) show newline\n",
+	  gui->coil->Q,gui->coil->freq/gui->coil->freq_sf,
+	  gui->coil->freq_units);
+  fprintf(fp,"(SRF) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->coil->SRF/gui->coil->freq_sf,
+	  gui->coil->freq_units);
   fprintf(fp,"(Closewound) show\n");
   fprintf(fp,"linespace /linespace 1.0 def newline /linespace exch def \n");
-  fprintf(fp,"(inductance) show tab1 (=) show tab2 (%g nH) show newline\n",
-	  gui->coil->Lmax*1e9);
+  fprintf(fp,"(inductance) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->coil->Lmax/gui->coil->L_sf,
+	  gui->coil->L_units);
   fprintf(fp,"(fill) show tab1 (=) show tab2 (%g) show newline\n",
 	  gui->coil->fill);
   fprintf(fp,"newline\n");

@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.3 2001/09/17 15:27:26 dan Exp $ */
+/* $Id: air_coil.c,v 1.4 2001/09/22 03:50:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -335,6 +335,9 @@ int air_coil_syn(air_coil *coil, double f, int flag)
   if (flag == AIRCOILSYN_NMIN){
     N = L*awg2dia(coil->AWGf)/(M_PI*M_PI*M2INCH(coil->dia)*M2INCH(coil->dia)*2.54e-9);
     N2 = N + 1;
+#ifdef DEBUG_SYN
+    printf("air_coil_syn():  Initial guess for N = %g\n",N);
+#endif
   }
 
   /*
@@ -361,12 +364,14 @@ int air_coil_syn(air_coil *coil, double f, int flag)
 
       coil->Nf  = N1;
       coil->len = INCH2M(len1);
-      air_coil_calc_int(coil,f,CALC_MIN);
+      if (air_coil_calc_int(coil,f,CALC_MIN) != 0)
+	return -1;
       Lsyn1     = coil->L;
 
       coil->Nf  = N2;
       coil->len = INCH2M(len2);
-      air_coil_calc_int(coil,f,CALC_MIN);
+      if (air_coil_calc_int(coil,f,CALC_MIN) != 0)
+	return -1;
       Lsyn2     = coil->L;
   
       N = N2 + (L - Lsyn2)*(N2-N1)/(Lsyn2-Lsyn1);
@@ -405,11 +410,13 @@ int air_coil_syn(air_coil *coil, double f, int flag)
     len2 = len;
     
     coil->len = INCH2M(len1);
-    air_coil_calc_int(coil,f,CALC_MIN);
+    if (air_coil_calc_int(coil,f,CALC_MIN) != 0)
+      return -1;
     Lsyn1     = coil->L;
     
     coil->len = INCH2M(len2);
-    air_coil_calc_int(coil,f,CALC_MIN);
+    if (air_coil_calc_int(coil,f,CALC_MIN) != 0)
+      return -1;
     Lsyn2     = coil->L;
     
   
@@ -459,24 +466,24 @@ air_coil *air_coil_new()
       exit(1);
     }
 
-  newcoil->Nf = 4.0;
-  newcoil->len = INCH2M(0.5);
+  newcoil->Nf = 7.0;
+  newcoil->len = INCH2M(0.2);
   newcoil->AWGf = 22.0;
   newcoil->rho = 1.0;
-  newcoil->dia = INCH2M(0.25);
+  newcoil->dia = INCH2M(0.14);
   newcoil->freq = 10e6;
   
-  newcoil->len_sf = 1.0;
-  newcoil->dia_sf = 1.0;
-  newcoil->L_sf = 1.0;
-  newcoil->SRF_sf = 1.0;
-  newcoil->freq_sf = 1.0;
+  newcoil->len_sf = 25.4e-3;
+  newcoil->dia_sf = 25.4e-3;
+  newcoil->L_sf = 1.0e-9;
+  newcoil->SRF_sf = 1.0e6;
+  newcoil->freq_sf = 1.0e6;
 
-  newcoil->len_units="m";
-  newcoil->dia_units="m";
-  newcoil->L_units="H";
-  newcoil->SRF_units="Hz";
-  newcoil->freq_units="Hz";
+  newcoil->len_units="inches";
+  newcoil->dia_units="inches";
+  newcoil->L_units="nH";
+  newcoil->SRF_units="MHz";
+  newcoil->freq_units="MHz";
 
   /* get the rest of the entries in sync */
   air_coil_calc(newcoil,newcoil->freq);
