@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id$
+# $Id: wcalc-config.in,v 1.1 2004/08/06 12:24:25 dan Exp $
 #
 
 # directories from the configure script
@@ -10,10 +10,8 @@ libdir=@libdir@
 includedir=@includedir@
 bindir=@bindir@
 
-pkgincludedir=${includedir}/@PACKAGE@
-
 # other stuff from the configure script
-cflags="-I${pkgincludedir}"
+cflags="-I${includedir}"
 libs="-L${libdir} -Wl,-R${libdir} -lwcalc @LIBS@"
 
 usage() {

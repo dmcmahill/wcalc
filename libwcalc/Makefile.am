@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.19 2004/07/26 22:22:26 dan Exp $
+## $Id: Makefile.am,v 1.20 2004/08/06 12:24:25 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
@@ -37,6 +37,25 @@
 lib_LTLIBRARIES = libwcalc.la
 
 bin_SCRIPTS = wcalc-config
+pkginclude_DATA =  \
+	air_coil.h \
+	air_coil_loadsave.h \
+	coax.h \
+	coax_loadsave.h \
+	coupled_microstrip.h \
+	coupled_microstrip_loadsave.h \
+	ic_microstrip.h \
+	ic_microstrip_loadsave.h \
+	libwcalc.h \
+	mathutil.h \
+	microstrip.h \
+	microstrip_loadsave.h \
+	misc.h \
+	physconst.h \
+	stripline.h \
+	stripline_loadsave.h \
+	units.h \
+	wcalc_loadsave.h \
 
 pkgconfigdir            = $(libdir)/pkgconfig
 pkgconfig_DATA          = wcalc.pc
@@ -92,3 +111,4 @@ libwcalc_la_SOURCES = \
 	wcalc_loadsave.h
 
 INCLUDES = -I$(top_srcdir)/include -DVER=\"@VERSION@\" ${DMALLOC_CFLAGS}
+
