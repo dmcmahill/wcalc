@@ -1,4 +1,4 @@
-/* $Id: mathutil_test.c,v 1.2 2002/05/08 10:39:17 dan Exp $ */
+/* $Id: mathutil_test.c,v 1.3 2002/05/09 23:50:00 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -64,7 +64,11 @@ int main(int argc, char **argv)
 
   printf("%s c_div %s\n",sep,sep);
   c=c_div(c_complex(w,x),c_complex(y,z));
+  ap = c_complex_p(w,x,ap);
+  bp = c_complex_p(y,z,bp);
+  cp = c_div_p(ap,bp,cp);
   printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,REAL(c),IMAG(c));
+  printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,REAL_P(cp),IMAG_P(cp));
 
   printf("%s c_bessel_* %s\n",sep,sep);
   for(x = -10; x<10; x=x+0.05) {
@@ -96,6 +100,7 @@ int main(int argc, char **argv)
       exit(1);
     }
 
+
     b  = c_bessel_Y1(a);
     bp = c_bessel_Y1_p(ap,bp);
 
@@ -105,10 +110,12 @@ int main(int argc, char **argv)
       exit(1);
     }
 
-
   }
-
   printf("Pass\n");
+
+  free(ap);
+  free(bp);
+  free(cp);
   return 0;
 }
 

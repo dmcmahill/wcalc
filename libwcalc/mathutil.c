@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.6 2002/05/08 10:37:23 dan Exp $ */
+/* $Id: mathutil.c,v 1.7 2002/05/09 23:49:59 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -724,35 +724,38 @@ complex c_bessel_J0(complex x)
 }
 
 #define C_BESSEL_POLY(J,x,k,c) {\
-    (k) = c_complex_p((c),0.0,(k)); \
-    (J) = c_mul_p((J),(x),(J)); \
-    (J) = c_add_p((J),(k),(J));}
+    c_complex_p((c),0.0,(k)); \
+    c_mul_p((J),(x),(J)); \
+    c_add_p((J),(k),(J));}
+
+#define C_BESSEL_POLY2(J,x,k,c) {\
+    c_complex_p((c),0.0,(k)); \
+    c_mul_p((J),(x),(J)); \
+    c_add_p((J),(k),(J));}
 
 complex * c_bessel_J0_p(complex *x, complex *J0)
 {
-  complex *x2=NULL;
-  complex *f0=NULL;
-  complex *t0=NULL;
-  complex *k=NULL;
+  complex x2;
+  complex f0;
+  complex t0;
+  complex k;
   int neg=0;
 
-  x2=c_complex_new();
-  k=c_complex_new();
   
   if (fabs(x->re) <= 3.0){
     /* find (x/3)^2 */
-    x2->re = x->re/3.0;
-    x2->im = x->im/3.0;
-    x2 = c_mul_p(x2,x2,x2);
+    REAL(x2) = x->re/3.0;
+    IMAG(x2) = x->im/3.0;
+    c_mul_p(&x2,&x2,&x2);
     
     J0 = c_complex_p(0.0002100,0.0, J0);
 
-    C_BESSEL_POLY(J0,x2,k,-0.0039444);
-    C_BESSEL_POLY(J0,x2,k, 0.0444479);
-    C_BESSEL_POLY(J0,x2,k,-0.3163866);
-    C_BESSEL_POLY(J0,x2,k, 1.2656208);
-    C_BESSEL_POLY(J0,x2,k,-2.2499997);
-    C_BESSEL_POLY(J0,x2,k, 1.0000000);
+    C_BESSEL_POLY2(J0,&x2,&k,-0.0039444);
+    C_BESSEL_POLY2(J0,&x2,&k, 0.0444479);
+    C_BESSEL_POLY2(J0,&x2,&k,-0.3163866);
+    C_BESSEL_POLY2(J0,&x2,&k, 1.2656208);
+    C_BESSEL_POLY2(J0,&x2,&k,-2.2499997);
+    C_BESSEL_POLY2(J0,&x2,&k, 1.0000000);
   }
   else{
     
@@ -760,38 +763,39 @@ complex * c_bessel_J0_p(complex *x, complex *J0)
       x->re = -x->re;
       neg = 1;
     }
-    k=c_complex_p(3.0,0.0,k);
-    x2 = c_div_p(k,x,x2);
+    c_complex_p(3.0,0.0,&k);
+    c_div_p(&k,x,&x2);
 
-    f0 = c_complex_p(0.00014476,0.0,f0);
+    c_complex_p(0.00014476,0.0,&f0);
 
-    C_BESSEL_POLY(f0,x2,k,-0.00072805);
-    C_BESSEL_POLY(f0,x2,k, 0.00137237);
-    C_BESSEL_POLY(f0,x2,k,-0.00009512);
-    C_BESSEL_POLY(f0,x2,k,-0.00552740);
-    C_BESSEL_POLY(f0,x2,k,-0.00000077);
-    C_BESSEL_POLY(f0,x2,k, 0.79788456);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00072805);
+    C_BESSEL_POLY2(&f0,&x2,&k, 0.00137237);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00009512);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00552740);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00000077);
+    C_BESSEL_POLY2(&f0,&x2,&k, 0.79788456);
 
-    t0 = c_complex_p(0.00013558,0.0,t0);
-    C_BESSEL_POLY(t0,x2,k,-0.00029333);
-    C_BESSEL_POLY(t0,x2,k,-0.00054125);
-    C_BESSEL_POLY(t0,x2,k, 0.00262373);
-    C_BESSEL_POLY(t0,x2,k,-0.00003954);
-    C_BESSEL_POLY(t0,x2,k,-0.04166397);
-    C_BESSEL_POLY(t0,x2,k,-0.78539816);
-    t0 = c_add_p(x, t0, t0);
+    c_complex_p(0.00013558,0.0,&t0);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00029333);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00054125);
+    C_BESSEL_POLY2(&t0,&x2,&k, 0.00262373);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00003954);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.04166397);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.78539816);
+    c_add_p(x, &t0, &t0);
 
 
-    k = c_cos_p(t0,k);
-    J0 = c_mul_p(f0,k,J0);
-    k = c_sqrt_p(x,k);
-    J0 = c_div_p(J0,k,J0);
+    c_cos_p(&t0,&k);
+    J0 = c_mul_p(&f0,&k,J0);
+    c_sqrt_p(x,&k);
+    J0 = c_div_p(J0,&k,J0);
 
     if(neg) {
       J0->im = -J0->im;
       x->re = -x->re;
     }
   }
+
   return J0;
 }
 
@@ -875,37 +879,36 @@ complex c_bessel_Y0(complex x)
 
 complex * c_bessel_Y0_p(complex *x, complex *Y0)
 {
-  complex *x2=NULL, *k=NULL;
-  complex *f0=NULL, *t0=NULL;
+  complex x2, k;
+  complex f0, t0;
   int neg=0;
 
-  x2 = c_complex_new();
 
   if (fabs(x->re) <= 3.0){
     /* find (x/3)^2 */
-    x2->re = x->re/3.0;
-    x2->im = x->im/3.0;
-    x2 = c_mul_p(x2,x2,x2);
+    REAL(x2) = x->re/3.0;
+    IMAG(x2) = x->im/3.0;
+    c_mul_p(&x2,&x2,&x2);
     
     /* the polynomial in (x/3)^2 */
     Y0 = c_complex_p(-0.00024846, 0.0, Y0);
 
-    C_BESSEL_POLY(Y0,x2,k, 0.00427916);
-    C_BESSEL_POLY(Y0,x2,k,-0.04261214);
-    C_BESSEL_POLY(Y0,x2,k, 0.25300117);
-    C_BESSEL_POLY(Y0,x2,k,-0.74350384);
-    C_BESSEL_POLY(Y0,x2,k, 0.60559366);
-    C_BESSEL_POLY(Y0,x2,k, 0.36746691);
+    C_BESSEL_POLY2(Y0,&x2,&k, 0.00427916);
+    C_BESSEL_POLY2(Y0,&x2,&k,-0.04261214);
+    C_BESSEL_POLY2(Y0,&x2,&k, 0.25300117);
+    C_BESSEL_POLY2(Y0,&x2,&k,-0.74350384);
+    C_BESSEL_POLY2(Y0,&x2,&k, 0.60559366);
+    C_BESSEL_POLY2(Y0,&x2,&k, 0.36746691);
 
     /* the extra added term in front */
-    x2 = c_rmul_p(0.5,x,x2);
-    x2 = c_log_p(x2,x2);
-    x2 = c_rmul_p(2.0/M_PI , x2, x2);
+    c_rmul_p(0.5,x,&x2);
+    c_log_p(&x2,&x2);
+    c_rmul_p(2.0/M_PI , &x2, &x2);
 
-    t0=c_bessel_J0_p(x,t0);
-    x2 = c_mul_p(x2,t0,x2);
+    c_bessel_J0_p(x,&t0);
+    c_mul_p(&x2,&t0,&x2);
 
-    Y0 = c_add_p(x2,Y0,Y0);
+    Y0 = c_add_p(&x2,Y0,Y0);
 
   }
   else{
@@ -916,41 +919,42 @@ complex * c_bessel_Y0_p(complex *x, complex *Y0)
       fprintf(stderr,"WARNING:  c_bessel_Y0_p called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
     }
-    k=c_complex_p(3.0,0.0,k);
-    x2 = c_div_p(k,x,x2);
+    c_complex_p(3.0,0.0,&k);
+    c_div_p(&k,x,&x2);
 
-    f0 = c_complex_p(0.00014476,0.0,f0);
+    c_complex_p(0.00014476,0.0,&f0);
 
-    C_BESSEL_POLY(f0,x2,k,-0.00072805);
-    C_BESSEL_POLY(f0,x2,k, 0.00137237);
-    C_BESSEL_POLY(f0,x2,k,-0.00009512);
-    C_BESSEL_POLY(f0,x2,k,-0.00552740);
-    C_BESSEL_POLY(f0,x2,k,-0.00000077);
-    C_BESSEL_POLY(f0,x2,k, 0.79788456);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00072805);
+    C_BESSEL_POLY2(&f0,&x2,&k, 0.00137237);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00009512);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00552740);
+    C_BESSEL_POLY2(&f0,&x2,&k,-0.00000077);
+    C_BESSEL_POLY2(&f0,&x2,&k, 0.79788456);
 
     
-    t0 = c_complex_p(0.00013558,0.0,t0);
+    c_complex_p(0.00013558,0.0,&t0);
 
-    C_BESSEL_POLY(t0,x2,k,-0.00029333);
-    C_BESSEL_POLY(t0,x2,k,-0.00054125);
-    C_BESSEL_POLY(t0,x2,k, 0.00262373);
-    C_BESSEL_POLY(t0,x2,k,-0.00003954);
-    C_BESSEL_POLY(t0,x2,k,-0.04166397);
-    C_BESSEL_POLY(t0,x2,k,-0.78539816);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00029333);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00054125);
+    C_BESSEL_POLY2(&t0,&x2,&k, 0.00262373);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.00003954);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.04166397);
+    C_BESSEL_POLY2(&t0,&x2,&k,-0.78539816);
 
-    t0 = c_add_p(x, t0, t0);
+    c_add_p(x, &t0, &t0);
 
-    k  = c_sin_p(t0,k);
-    Y0 = c_mul_p(f0,k,Y0);
+    c_sin_p(&t0,&k);
+    Y0 = c_mul_p(&f0,&k,Y0);
 
-    x2 = c_sqrt_p(x,x2);
-    Y0 = c_div_p(Y0,x2,Y0);
+    c_sqrt_p(x,&x2);
+    Y0 = c_div_p(Y0,&x2,Y0);
 
     if (neg) {
       Y0->im = -Y0->im;
       x->re = -x->re;
     }
   }
+
   return Y0;
 }
 
@@ -1026,26 +1030,25 @@ complex c_bessel_J1(complex x)
 
 complex * c_bessel_J1_p(complex *x, complex *J1)
 {
-  complex *x2=NULL, *k=NULL;
-  complex *f1=NULL, *t1=NULL;
+  complex x2, k;
+  complex f1, t1;
   int neg=0;
 
-  x2 = c_complex_new();
 
   if (fabs(x->re) <= 3.0){
     /* find (x/3)^2 */
-    x2->re = x->re/3.0;
-    x2->im = x->im/3.0;
-    x2 = c_mul_p(x2,x2,x2);
-    
+    REAL(x2) = x->re/3.0;
+    IMAG(x2) = x->im/3.0;
+    c_mul_p(&x2,&x2,&x2);
+
     J1 = c_complex_p(0.00001109 , 0.0, J1);
 
-    C_BESSEL_POLY(J1,x2,k,-0.00031761);
-    C_BESSEL_POLY(J1,x2,k, 0.00443319);
-    C_BESSEL_POLY(J1,x2,k,-0.03954289);
-    C_BESSEL_POLY(J1,x2,k, 0.21093573);
-    C_BESSEL_POLY(J1,x2,k,-0.56249985);
-    C_BESSEL_POLY(J1,x2,k, 0.50000000);
+    C_BESSEL_POLY(J1,&x2,&k,-0.00031761);
+    C_BESSEL_POLY(J1,&x2,&k, 0.00443319);
+    C_BESSEL_POLY(J1,&x2,&k,-0.03954289);
+    C_BESSEL_POLY(J1,&x2,&k, 0.21093573);
+    C_BESSEL_POLY(J1,&x2,&k,-0.56249985);
+    C_BESSEL_POLY(J1,&x2,&k, 0.50000000);
     
     J1 = c_mul_p(x,J1,J1);
   }
@@ -1055,33 +1058,33 @@ complex * c_bessel_J1_p(complex *x, complex *J1)
       x->re = -x->re;
       neg = 1;
     }
-    k  = c_complex_p(3.0,0.0,k);
-    x2 = c_div_p(k,x,x2);
+    c_complex_p(3.0,0.0,&k);
+    c_div_p(&k,x,&x2);
 
-    f1 = c_complex_p(-0.00020033 , 0.0, f1);
+    c_complex_p(-0.00020033 , 0.0, &f1);
 
-    C_BESSEL_POLY(f1,x2,k, 0.00113653);
-    C_BESSEL_POLY(f1,x2,k,-0.00249511);
-    C_BESSEL_POLY(f1,x2,k, 0.00017105);
-    C_BESSEL_POLY(f1,x2,k, 0.01659667);
-    C_BESSEL_POLY(f1,x2,k, 0.00000156);
-    C_BESSEL_POLY(f1,x2,k, 0.79788456);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00113653);
+    C_BESSEL_POLY(&f1,&x2,&k,-0.00249511);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00017105);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.01659667);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00000156);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.79788456);
     
-    t1 = c_complex_p(-0.00029166 , 0.0, t1);
+    c_complex_p(-0.00029166 , 0.0, &t1);
 
-    C_BESSEL_POLY(t1,x2,k, 0.00079824);
-    C_BESSEL_POLY(t1,x2,k, 0.00074348);
-    C_BESSEL_POLY(t1,x2,k,-0.00637879);
-    C_BESSEL_POLY(t1,x2,k, 0.00005650);
-    C_BESSEL_POLY(t1,x2,k, 0.12499612);
-    C_BESSEL_POLY(t1,x2,k,-2.35619449);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00079824);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00074348);
+    C_BESSEL_POLY(&t1,&x2,&k,-0.00637879);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00005650);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.12499612);
+    C_BESSEL_POLY(&t1,&x2,&k,-2.35619449);
 
-    t1 = c_add_p(x, t1, t1);
+    c_add_p(x, &t1, &t1);
 
-    k  = c_cos_p(t1,k);
-    J1 = c_mul_p(f1,k,J1);
-    k  = c_sqrt_p(x,k);
-    J1 = c_div_p(J1,k,J1);
+    c_cos_p(&t1,&k);
+    J1 = c_mul_p(&f1,&k,J1);
+    c_sqrt_p(x,&k);
+    J1 = c_div_p(J1,&k,J1);
 
     if(neg) {
       J1->re = -J1->re;
@@ -1089,6 +1092,7 @@ complex * c_bessel_J1_p(complex *x, complex *J1)
     }
 
   }
+
   return J1;
 }
 
@@ -1173,38 +1177,37 @@ complex c_bessel_Y1(complex x)
 
 complex * c_bessel_Y1_p(complex *x, complex *Y1)
 {
-  complex *x2=NULL, *k=NULL;
-  complex *f1=NULL, *t1=NULL;
+  complex x2, k;
+  complex f1, t1;
   int neg=0;
 
-  x2 = c_complex_new();
 
   if (fabs(x->re) <= 3.0){
     /* find (x/3)^2 */
-    x2->re = x->re/3.0;
-    x2->im = x->im/3.0;
-    x2 = c_mul_p(x2,x2,x2);
+    REAL(x2) = x->re/3.0;
+    IMAG(x2) = x->im/3.0;
+    c_mul_p(&x2,&x2,&x2);
     
     /* the polynomial in (x/3)^2 */
     Y1 = c_complex_p(0.0027873 , 0.0, Y1);
 
-    C_BESSEL_POLY(Y1,x2,k,-0.0400976);
-    C_BESSEL_POLY(Y1,x2,k, 0.3123951);
-    C_BESSEL_POLY(Y1,x2,k,-1.3164827);
-    C_BESSEL_POLY(Y1,x2,k, 2.1682709);
-    C_BESSEL_POLY(Y1,x2,k, 0.2212091);
-    C_BESSEL_POLY(Y1,x2,k,-0.6366198);
+    C_BESSEL_POLY(Y1,&x2,&k,-0.0400976);
+    C_BESSEL_POLY(Y1,&x2,&k, 0.3123951);
+    C_BESSEL_POLY(Y1,&x2,&k,-1.3164827);
+    C_BESSEL_POLY(Y1,&x2,&k, 2.1682709);
+    C_BESSEL_POLY(Y1,&x2,&k, 0.2212091);
+    C_BESSEL_POLY(Y1,&x2,&k,-0.6366198);
 
 
     /* the extra added term in front */
-    x2 = c_rmul_p(2.0/M_PI,x,x2);
-    k  = c_rmul_p(0.5,x,k);
-    k  = c_log_p(k,k);
-    x2 = c_mul_p(x2,k,x2);
-    k  = c_bessel_J1_p(x,k);
-    x2 = c_mul_p(x2,k,x2);
+    c_rmul_p(2.0/M_PI,x,&x2);
+    c_rmul_p(0.5,x,&k);
+    c_log_p(&k,&k);
+    c_mul_p(&x2,&k,&x2);
+    c_bessel_J1_p(x,&k);
+    c_mul_p(&x2,&k,&x2);
 
-    Y1 = c_add_p(x2,Y1,Y1);
+    Y1 = c_add_p(&x2,Y1,Y1);
 
     Y1 = c_div_p(Y1,x,Y1);
 
@@ -1217,40 +1220,41 @@ complex * c_bessel_Y1_p(complex *x, complex *Y1)
       fprintf(stderr,"WARNING:  c_bessel_Y1_p called with negative real arg.\n");
       fprintf(stderr,"          This is untested.\n");
     }
-    k  = c_complex_p(3.0,0.0,k);
-    x2 = c_div_p(k,x,x2);
+    c_complex_p(3.0,0.0,&k);
+    c_div_p(&k,x,&x2);
 
-    f1 = c_complex_p(-0.00020033 , 0.0, f1);
+    c_complex_p(-0.00020033 , 0.0, &f1);
 
-    C_BESSEL_POLY(f1,x2,k, 0.00113653);
-    C_BESSEL_POLY(f1,x2,k,-0.00249511);
-    C_BESSEL_POLY(f1,x2,k, 0.00017105);
-    C_BESSEL_POLY(f1,x2,k, 0.01659667);
-    C_BESSEL_POLY(f1,x2,k, 0.00000156);
-    C_BESSEL_POLY(f1,x2,k, 0.79788456);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00113653);
+    C_BESSEL_POLY(&f1,&x2,&k,-0.00249511);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00017105);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.01659667);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.00000156);
+    C_BESSEL_POLY(&f1,&x2,&k, 0.79788456);
     
-    t1 = c_complex_p(-0.00029166 , 0.0, t1);
+    c_complex_p(-0.00029166 , 0.0, &t1);
 
-    C_BESSEL_POLY(t1,x2,k, 0.00079824);
-    C_BESSEL_POLY(t1,x2,k, 0.00074348);
-    C_BESSEL_POLY(t1,x2,k,-0.00637879);
-    C_BESSEL_POLY(t1,x2,k, 0.00005650);
-    C_BESSEL_POLY(t1,x2,k, 0.12499612);
-    C_BESSEL_POLY(t1,x2,k,-2.35619449);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00079824);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00074348);
+    C_BESSEL_POLY(&t1,&x2,&k,-0.00637879);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.00005650);
+    C_BESSEL_POLY(&t1,&x2,&k, 0.12499612);
+    C_BESSEL_POLY(&t1,&x2,&k,-2.35619449);
 
-    t1 = c_add_p(x, t1, t1);
+    c_add_p(x, &t1, &t1);
 
-    k  = c_sin_p(t1,k);
-    Y1 = c_mul_p(f1,k,Y1);
+    c_sin_p(&t1,&k);
+    Y1 = c_mul_p(&f1,&k,Y1);
 
-    k  = c_sqrt_p(x,k);
-    Y1 = c_div_p(Y1,k,Y1);
+    c_sqrt_p(x,&k);
+    Y1 = c_div_p(Y1,&k,Y1);
 
     if (neg) {
       Y1->im = -Y1->im;
       x->re = -x->re;
     }
   }
+
   return Y1;
 }
 
