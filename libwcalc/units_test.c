@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: units_test.c,v 1.1 2004/07/18 16:09:39 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   int rc;
   double sf;
 
-  my_units = wc_units_resistivity_new();
+  my_units = wc_units_new(WC_UNITS_RESISTIVITY);
 
   str = wc_units_to_str( my_units );
   printf("wc_units_to_str() returned \"%s\"\n", str);

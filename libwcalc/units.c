@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: units.c,v 1.1 2004/07/18 16:09:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -327,44 +327,120 @@ int wc_savestr_to_units( const char *str,  wc_units *units )
   return 0;
 }
 
-
-/* ohm-meters */
-wc_units * wc_units_resistivity_new(void)
+wc_units * wc_units_new(int type)
 {
   wc_units *u;
-  
+  int i;
+
   if ( (u = malloc(sizeof(wc_units))) == NULL ) {
-    fprintf(stderr, "wc_units_resistivity_new():  malloc failed.\n");
+    fprintf(stderr, "wc_units_new():  malloc failed.\n");
     exit(1);
   }
 
-  u->type = WC_UNITS_RESISTIVITY;
+  u->type = type;
 
-  u->nnum = 2;
-  u->nden = 0;
+  /* fill in the number of terms in numerator and denominator */
+  switch (type) {
+  case WC_UNITS_FREQUENCY:
+    u->nnum = 1;
+    u->nden = 0;
+    break;
 
+  case WC_UNITS_RESISTIVITY:
+    u->nnum = 2;
+    u->nden = 0;
+    break;
 
-  if ( (u->num = malloc(u->nnum*sizeof(wc_units_data))) == NULL ) {
-    fprintf(stderr, "wc_units_resistivity_new():  malloc failed.\n");
+  case WC_UNITS_CAPACITANCE_PER_LEN:
+  case WC_UNITS_CONDUCTANCE_PER_LEN:
+  case WC_UNITS_INDUCTANCE_PER_LEN:
+  case WC_UNITS_RESISTANCE_PER_LEN:
+    u->nnum = 1;
+    u->nden = 1;
+    break;
+
+  default:
+    fprintf(stderr, "wc_units_new():  Invalid type %d.\n", type);
     exit(1);
+    break;
+
   }
-  u->den = NULL;
 
   /* 
-   * allocate memory for the arrays that specify the current
-   * value of the units 
+   * allocate memory for the numerator and denominator units and
+   * indices 
    */
-  if ( (u->numi = malloc(u->nnum*sizeof(int))) == NULL ) {
-    fprintf(stderr, "wc_units_resistivity_new():  malloc failed.\n");
-    exit(1);
-  }
-  u->deni=NULL;
-  
-  u->num[0] = wc_units_resistance;
-  u->num[1] = wc_units_length;
+  u->num = NULL;
+  u->numi = NULL;
 
-  u->numi[0] = 0;
-  u->numi[1] = 0;
+  if (u->nnum > 0) {
+    if ( (u->num = malloc(u->nnum*sizeof(wc_units_data))) == NULL ) {
+      fprintf(stderr, "wc_units_new():  malloc failed.\n");
+      exit(1);
+    }
+    if ( (u->numi = malloc(u->nnum*sizeof(int))) == NULL ) {
+      fprintf(stderr, "wc_units_new():  malloc failed.\n");
+      exit(1);
+    }
+  }
+  
+  u->den = NULL;
+  u->deni = NULL;
+  if (u->nden > 0) {
+    if ( (u->den = malloc(u->nden*sizeof(wc_units_data))) == NULL ) {
+      fprintf(stderr, "wc_units_new():  malloc failed.\n");
+      exit(1);
+    }
+    if ( (u->deni = malloc(u->nden*sizeof(int))) == NULL ) {
+      fprintf(stderr, "wc_units_new():  malloc failed.\n");
+      exit(1);
+    }
+  }
+
+  /* initialize the units */
+  switch (type) {
+  case WC_UNITS_FREQUENCY:
+    u->num[0] = wc_units_frequency;
+    break;
+
+  case WC_UNITS_RESISTIVITY:
+    u->num[0] = wc_units_resistance;
+    u->num[1] = wc_units_length;
+    break;
+
+  case WC_UNITS_CAPACITANCE_PER_LEN:
+    u->num[0] = wc_units_capacitance;
+    u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_CONDUCTANCE_PER_LEN:
+    u->num[0] = wc_units_conductance;
+    u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_INDUCTANCE_PER_LEN:
+    u->num[0] = wc_units_inductance;
+    u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_RESISTANCE_PER_LEN:
+    u->num[0] = wc_units_resistance;
+    u->den[0] = wc_units_length;
+    break;
+
+  default:
+    fprintf(stderr, "wc_units_new():  Invalid type %d.\n", type);
+    exit(1);
+    break;
+
+  }
+
+  /* initialize the indices */
+  for( i = 0; i < u->nnum; i++ ) 
+    u->numi[i] = 0;
+
+  for( i = 0; i < u->nden; i++ ) 
+    u->deni[i] = 0;
 
   return u;
 }

@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: units.h,v 1.1 2004/07/18 16:09:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -125,8 +125,10 @@ char *wc_units_to_str( const wc_units *units );
 char *wc_units_to_savestr( const wc_units *units );
 
 
+wc_units *wc_units_new(int type);
+
 wc_units *wc_units_resistivity_new(void);
-void wc_units_resistivity_free(wc_units *u);
+
 void wc_units_free(wc_units *u);
 
 #endif /* __UNITS_H__ */
