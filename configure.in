@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.32 2001/10/23 00:55:40 dan Exp $
+dnl $Id: configure.in,v 1.33 2001/10/24 01:24:10 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -456,7 +456,6 @@ AC_OUTPUT(
 	cgi-wcalc/Makefile
 	gtk-wcalc/Makefile
 	htdocs/Makefile
-	htdocs/cgi-wcalc.shtml
 	mex-wcalc/Makefile
 	sci-wcalc/Makefile
 	pixmaps/Makefile
