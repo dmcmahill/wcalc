@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.15 2003/01/11 01:01:42 dan Exp $
+## $Id: Makefile.am,v 1.16 2003/01/14 10:42:10 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -44,7 +44,7 @@ ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 microstrip_test_SOURCES = alert.c microstrip_test.c 
 
-EXTRA_DIST=	coupled_microstrip_test.data
+EXTRA_DIST=	coupled_microstrip.data
 
 LDADD = libwcalc.la
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
