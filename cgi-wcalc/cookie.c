@@ -1,4 +1,4 @@
-/* $Id: cookie.c,v 1.5 2004/08/05 16:16:28 dan Exp $ */
+/* $Id: cookie.c,v 1.6 2004/08/13 04:43:55 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -679,20 +679,22 @@ void cgiCookie_Expires_set(cgiCookieType *cookie, char *val)
   cookie->Expires=strdup(val);
 }
 
-#define EXPIRES_LEN 28
+#define EXPIRES_LEN 29
 /* set Expires to be 'secs' seconds in the future */
 void cgiCookie_MaxAge_set(cgiCookieType *cookie, long int secs)
 {
   time_t when;
   char *str;
   struct tm *t;
-  int day;
+  int day, month;
 
   /*
    * these are the allowed days.  Note:  we want these, not the
    * versions set by the users current locale 
    */
   char *days[]={"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+  char *months[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+  "Aug", "Sep", "Oct", "Nov", "Dec"};
 
   if (cookie == NULL)
     return ;
@@ -706,12 +708,20 @@ void cgiCookie_MaxAge_set(cgiCookieType *cookie, long int secs)
   
 
   t=gmtime(&when);
-  strftime(str,EXPIRES_LEN,"%w",t);
-  day=atoi(str);
-  strftime(str,EXPIRES_LEN,"   , %d-%m-%Y %H:%M:%S GMT",t);
+  strftime(str, EXPIRES_LEN, "%w",t);
+  day = atoi(str);
+
+  strftime(str, EXPIRES_LEN, "%m",t);
+  month = atoi(str) - 1;
+
+  strftime(str, EXPIRES_LEN,"   , %d-%m -%Y %H:%M:%S GMT",t);
   str[0]=days[day][0];
   str[1]=days[day][1];
   str[2]=days[day][2];
+
+  str[8]=months[month][0];
+  str[9]=months[month][1];
+  str[10]=months[month][2];
 
   cookie->Expires=str;
 
