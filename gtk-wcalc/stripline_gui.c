@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.5 2001/11/03 04:12:25 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.2 2001/11/11 03:46:52 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -977,41 +977,45 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"col1x coly moveto\n");
   fprintf(fp,"/leftcol col1x  def\n");
 
-  /* XXX need to finish this maybe copy from microstrip_gui.c
-  fprintf(fp,"(N) show tab1 (=) show tab2 (%g turns) show newline\n",
-	  gui->line->Nf);
-  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->dia/gui->line->dia_sf,
-	  gui->line->dia_units);
-  fprintf(fp,"(Len.) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->len/gui->line->len_sf,
-	  gui->line->len_units);
+  fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->w,gui->line->w_units);
+  fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->h,gui->line->subs->h_units);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->l,gui->line->l_units);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (%g AWG) show newline\n",
-	  gui->line->AWGf);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g) show newline\n",
-	  gui->line->rho);
+  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->tmet,gui->line->subs->tmet_units);
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->rho,gui->line->subs->rho_units);
+  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
+	  gui->line->subs->rough,gui->line->subs->rough_units);
+  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->subs->er);
+  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->subs->tand);
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->L/gui->line->L_sf,
-	  gui->line->L_units);
-  fprintf(fp,"(Q) show tab1 (=) show tab2 (%g at %g %s) show newline\n",
-	  gui->line->Q,gui->line->freq/gui->line->freq_sf,
-	  gui->line->freq_units);
-  fprintf(fp,"(SRF) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->SRF/gui->line->freq_sf,
-	  gui->line->freq_units);
-  fprintf(fp,"(Closewound) show\n");
-  fprintf(fp,"linespace /linespace 1.0 def newline /linespace exch def \n");
-  fprintf(fp,"(inductance) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->Lmax/gui->line->L_sf,
-	  gui->line->L_units);
-  fprintf(fp,"(fill) show tab1 (=) show tab2 (%g) show newline\n",
-	  gui->line->fill);
+  fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g ) show (W) symbolshow newline\n",
+	  gui->line->z0);
+  fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
+	  gui->line->len);
+  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
+	  gui->line->loss);
+  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
+	  gui->line->losslen);
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
+	  gui->line->skindepth);
   fprintf(fp,"newline\n");
-  */
-
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
+	  gui->line->Ls);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
+	  gui->line->Rs);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
+	  gui->line->Cs);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
+	  gui->line->Gs);
+  
 }
 

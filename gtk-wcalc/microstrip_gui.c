@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.3 2001/11/03 02:16:19 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.4 2001/11/03 16:47:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -911,23 +911,25 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"\n");
   fprintf(fp,"col1x coly moveto\n");
   fprintf(fp,"/leftcol col1x  def\n");
-  fprintf(fp,"(W) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  gui->line->w);
-  fprintf(fp,"(H) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  gui->line->subs->h);
-  fprintf(fp,"(L) show tab1 (=) show tab2 (%g mils ) show newline\n",
-	  gui->line->l);
+
+  fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->w,gui->line->w_units);
+  fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->h,gui->line->subs->h_units);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->l,gui->line->l_units);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g mils) show newline\n",
-	  gui->line->subs->tmet);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g) show newline\n",
-	  gui->line->subs->rho);
-  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g mils-rms) show newline\n",
-	  gui->line->subs->rough);
+  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->tmet,gui->line->subs->tmet_units);
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->rho,gui->line->subs->rho_units);
+  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
+	  gui->line->subs->rough,gui->line->subs->rough_units);
   fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->subs->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->subs->tand);
+
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");

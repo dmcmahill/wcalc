@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.2 2001/11/02 00:29:23 dan Exp $ */
+/*      $Id: stripline.c,v 1.3 2001/11/11 03:46:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -776,28 +776,28 @@ stripline_line *stripline_line_new()
   /* initialize the values to something */
   newline->l    = 1000.0;
   newline->l_sf = 1.0;
-  newline->l_units = NULL;
+  newline->l_units = "m";
   newline->w    = 110.0;
   newline->w_sf = 1.0;
-  newline->w_units = NULL;
+  newline->w_units = "m";
   newline->freq = 1.0e9;
   newline->freq_sf = 1.0;
-  newline->freq_units = NULL;
+  newline->freq_units = "Hz";
 
   newline->subs->h     = 62.0;
   newline->subs->h_sf = 1.0;
-  newline->subs->h_units = NULL;
+  newline->subs->h_units = "m";
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
   newline->subs->tmet  = 1.4;
   newline->subs->tmet_sf = 1.0;
-  newline->subs->tmet_units = NULL;
+  newline->subs->tmet_units = "m";
   newline->subs->rho   = 1.0;
   newline->subs->rho_sf = 1.0;
-  newline->subs->rho_units = NULL;
+  newline->subs->rho_units = "ohm-m";
   newline->subs->rough = 0.055;
   newline->subs->rough_sf = 1.0;
-  newline->subs->rough_units = NULL;
+  newline->subs->rough_units = "m";
 
   /* and do a calculation to finish the initialization */
   stripline_calc(newline,newline->freq);

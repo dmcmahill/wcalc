@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.5 2001/09/28 00:26:22 dan Exp $ */
+/* $Id: microstrip.h,v 1.1 2001/10/05 00:37:33 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -40,14 +40,18 @@
 typedef struct MICROSTRIP_SUBS
 {
   double h,er,tmet,rho,rough,tand;
+  double h_sf,tmet_sf,rho_sf,rough_sf;
+  char *h_units,*tmet_units,*rho_units,*rough_units;
+
 } microstrip_subs;
 
 typedef struct MICROSTRIP_LINE
 {
 
   /* length and width */
-  double l;
-  double w;
+  double l,l_sf;
+  double w,w_sf;
+  char *l_units,*w_units;
 
   /* characteristic impedance (ohms) */
   double z0;
@@ -67,7 +71,8 @@ typedef struct MICROSTRIP_LINE
   double Ro, Xo;
 
   /* the frequency of analysis (Hz) */
-  double freq;
+  double freq,freq_sf;
+  char *freq_units;
 
   microstrip_subs *subs;
 
