@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.7 2002/06/28 22:59:59 dan Exp $ */
+/* $Id: gtk-units.c,v 1.8 2002/07/04 03:09:44 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -156,11 +156,8 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
 
   /* XXX there must be a better way than fixing this size... */
   char str[80];
-
-#ifdef DEBUG
-  char *ustr;
   double sf;
-#endif
+  char *units_str=NULL;
 
   ug = (wc_units_gui *) data;
   /* gui = WC_COAX_GUI(data);
@@ -191,12 +188,10 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
     exit(1);
   }
 
+  units_update(ug->units,&sf,&units_str);
 #ifdef DEBUG
-  g_print("wc_composite_units_menu_changed():      calling units_update(%p,%p,%p)\n",
-	  ug->units,&sf,&ustr);
-  units_update(ug->units,&sf,&ustr);
-  g_print("wc_composite_units_menu_changed():      units string = \"%s\", scale factor = %g\n",
-	  ustr,sf);
+  g_print("wc_composite_units_menu_changed():  Units string = \"%s\", scale factor = %g\n",
+	  units_str,sf);
 #endif
 
   /*
@@ -207,16 +202,22 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
   for (i=0; i<g_list_length(ug->update_list); i++) {
     up_item = (wc_units_update_item *) g_list_nth_data(ug->update_list,i);
 
-    /* update the scale factor and units string for this item */
-    units_update(ug->units,up_item->sf,&(up_item->units_str));
 #ifdef DEBUG
-    g_print("wc_composite_units_menu_changed():      updated item %u units string = \"%s\", scale factor = %g\n",
-	    i,up_item->units_str,*(up_item->sf));
+    g_print("wc_composite_units_menu_changed():      processing item %u, type %d\n",
+	    i,up_item->type);
 #endif
-    
+
+    /* update the scale factor and units string for this item */
+    if (up_item->sf != NULL)
+      *(up_item->sf)=sf;
+    if (up_item->units_str != NULL)
+      *(up_item->units_str) = strdup(units_str);
+
     /* only update the displayed widget if the update flag is set */
     if( (up_item->update) && (up_item->widget != NULL) ) {
-
+#ifdef DEBUG
+      g_print("wc_composite_units_menu_changed():    Updating widget\n");
+#endif
       if(up_item->fmt_string != NULL) {
 	sprintf(str,up_item->fmt_string,(*(up_item->mks_val))/(*(up_item->sf)));
       }
@@ -234,7 +235,7 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
       break ;
       
       case UNITS_LABEL:
-	gtk_label_set_text(GTK_LABEL(up_item->widget),up_item->units_str);
+	gtk_label_set_text(GTK_LABEL(up_item->widget),units_str);
       break ;
       
       default:
@@ -242,6 +243,11 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
 		up_item->type);
 	exit(1);
       }
+    }
+    else {
+#ifdef DEBUG
+      g_print("wc_composite_units_menu_changed():    not updating widget\n");
+#endif
     }
 
   }
@@ -368,7 +374,7 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 				GtkWidget *widget, 
 				double *mks_val, 
 				double *sf,
-				char *units_str, 
+				char **units_str, 
 				const char *fmt_string,
 				int update,
 				int type)
@@ -376,7 +382,28 @@ void  wc_composite_units_attach(wc_units_gui *ug,
   wc_units_update_item *item;
 
 #ifdef DEBUG
-  g_print("wc_composite_units_attach():\n");
+  g_print("wc_composite_units_attach():  attaching a ");
+  switch( type ) {
+  case LABEL:
+    g_print("LABEL");
+    break ;
+    
+  case ENTRY:
+    g_print("ENTRY");
+    break ;
+    
+  case UNITS_LABEL:
+    g_print("UNITS_LABEL");
+    break ;
+    
+  case NONE:
+    g_print("NONE");
+    break ;
+    
+  default:
+    g_print("unknown type (%d)",type);
+  }
+  g_print("\n");
 #endif
 
   item = g_malloc(sizeof(wc_units_update_item));
@@ -386,7 +413,12 @@ void  wc_composite_units_attach(wc_units_gui *ug,
   item->mks_val = mks_val;
   item->sf = sf;
   item->units_str = units_str;
-  item->fmt_string = strdup(fmt_string);
+  if (fmt_string != NULL) {
+    item->fmt_string = strdup(fmt_string);
+  }
+  else {
+    item->fmt_string = NULL;
+  }
   item->update = update;
   item->type = type;
 

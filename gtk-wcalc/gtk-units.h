@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.6 2002/06/28 22:59:59 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.7 2002/07/04 03:09:44 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -121,7 +121,7 @@ typedef struct _WC_UNITS_UPDATE_ITEM
   double *sf;
 
   /* pointer to the units string for the value */
-  char *units_str;
+  char **units_str;
 
   /* sprintf() format string (typically something like "%6.2f") */
   char *fmt_string;
@@ -159,7 +159,7 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 				GtkWidget *widget, 
 				double *mks_val, 
 				double *sf,
-				char *units_str, 
+				char **units_str, 
 				const char *fmt_string,
 				int update,
 				int type);
@@ -173,8 +173,8 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 #define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
        (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),update,LABEL))
 
-#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
-       (wc_composite_units_attach((ug),(widget),NULL,NULL,(units_str),NULL,0,UNITS_LABEL))
+#define wc_composite_units_attach_units_label(ug,widget)      \
+       (wc_composite_units_attach((ug),(widget),NULL,NULL,NULL,NULL,1,UNITS_LABEL))
 
 
 #endif /* __GTK_UNITS_H__ */

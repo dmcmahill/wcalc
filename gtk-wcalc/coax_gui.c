@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.13 2002/06/28 22:59:57 dan Exp $ */
+/* $Id: coax_gui.c,v 1.14 2002/07/04 03:09:41 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -484,23 +484,20 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
   text = gtk_label_new( "RHO_b" );
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 5, 6, 
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+  gtk_misc_set_alignment(GTK_MISC(text),0,0);
+
   wc_composite_units_attach_units(ug,
 				  &(gui->line->rho_a),
 				  &(gui->line->rho_a_sf),
-				  gui->line->rho_a_units);
+				  &(gui->line->rho_a_units));
   wc_composite_units_attach_units(ug,
 				  &(gui->line->rho_b),
 				  &(gui->line->rho_b_sf),
-				  gui->line->rho_b_units);
+				  &(gui->line->rho_b_units));
 
-  wc_composite_units_attach_units_label(ug,
-					text,
-					&(gui->line->rho_a),
-					&(gui->line->rho_a_sf),
-					gui->line->rho_a_units,
-					"%8.4g",
-					1);
-
+  wc_composite_units_attach_units_label(ug,text);
 
 
   text = gtk_label_new( "RHO_b" );
@@ -714,7 +711,8 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_L, 5,6,0,1, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_L);
 
-  wc_composite_units_attach_label(ug,gui->label_L,&(gui->line->L),&(gui->line->L_sf),gui->line->L_units,"%8.4g",1);
+  wc_composite_units_attach_label(ug,gui->label_L,&(gui->line->L),&(gui->line->L_sf),
+				  &(gui->line->L_units),"%8.4g",1);
 
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
@@ -728,7 +726,8 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_R, 5,6,1,2, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_R);
 
-  wc_composite_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),gui->line->R_units,"%8.4g",1);
+  wc_composite_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),
+				  &(gui->line->R_units),"%8.4g",1);
 
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
@@ -742,7 +741,8 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_C, 5,6,2,3, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_C);
 
-  wc_composite_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),gui->line->C_units,"%8.4g",1);
+  wc_composite_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),
+				  &(gui->line->C_units),"%8.4g",1);
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
 
@@ -756,7 +756,8 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_G, 5,6,3,4, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_G);
 
-  wc_composite_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),gui->line->G_units,"%8.4g",1);
+  wc_composite_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),
+				  &(gui->line->G_units),"%8.4g",1);
 
   /* spacer */
   text = gtk_label_new( "                " );
@@ -1036,7 +1037,10 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) ); 
   gui->line->a=atof(vstr)*gui->line->a_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  a = %g\n",gui->line->a);
+  g_print("coax_gui.c:calculate():  a = %g m (%g %s)\n",
+	  gui->line->a,
+	  gui->line->a/gui->line->a_sf,
+	  gui->line->a_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) ); 
@@ -1108,7 +1112,10 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_a) ); 
   gui->line->rho_a=atof(vstr)*gui->line->rho_a_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  rho_a = %g\n",gui->line->rho_a);
+  g_print("coax_gui.c:calculate():  rho_a = %g ohm-m (%g %s)\n",
+	  gui->line->rho_a,
+	  gui->line->rho_a/gui->line->rho_a_sf,
+	  gui->line->rho_a_units);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_b) ); 
@@ -1223,10 +1230,10 @@ static void update_display(coax_gui *gui)
 
   /* update the resistivity units menus */
   i = gui->line->units_rhoa->numi[0];
-  rho_units_ohm_update(gui,i);
+  // XXX rho_units_ohm_update(gui,i);
 
   i = gui->line->units_rhoa->numi[1];
-  rho_units_m_update(gui,i);
+  // XXX rho_units_m_update(gui,i);
 
   sprintf(str,"%.4g",gui->line->rho_a/gui->line->rho_a_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho_a), str );
