@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/18 23:12:38 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/11/28 05:31:28 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -51,6 +51,7 @@ TGIF_SRCS=	\
 		air_coil.obj \
 		alert_fig.obj \
 		coax.obj \
+		coax_model.obj \
 		coupled_microstrip.obj \
 		ic_microstrip.obj \
 		ic_microstrip_model.obj \
