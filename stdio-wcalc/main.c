@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.5 2004/01/10 06:34:03 dan Exp $ */
+/* $Id: main.c,v 1.6 2004/01/10 13:35:58 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -32,6 +32,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+/* echo "ic_microstrip_calc 20e-6 1e-3 5e-6 4.0 200e-6 11.8 1.0 1e-6
+   3.9e-8 0.0 100e6" | ./stdio-wcalc */
 
 /* #define DEBUG */
 
