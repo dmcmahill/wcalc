@@ -1,7 +1,7 @@
-/* $Id: config.h.in,v 1.2 2001/09/18 20:42:53 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,20 +33,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __ALERT_H__
+#define __ALERT_H__
 
-/* Define if you have the function rint() in the math library  */
-#undef HAVE_RINT
+void alert(const char *fmt,...);
 
-/* Define if you have the string.h header file.  */
-#undef HAVE_STRING_H
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if you have the function vsnprintf() in the C library  */
-#undef HAVE_VSNPRINTF
-
-#endif /* __CONFIG_H__ */
-
+#endif /*__ALERT_H__*/

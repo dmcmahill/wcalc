@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.13 2001/09/18 22:28:02 dan Exp $
+dnl $Id: configure.in,v 1.14 2001/09/20 20:32:50 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -79,6 +79,9 @@ AC_AWK_STRFTIME
 dnl check for headers
 AC_HEADER_STDC
 AC_CHECK_HEADERS(string.h)
+
+dnl check for libc functions
+AC_CHECK_FUNCS(vsnprintf)
 
 dnl check for math functions
 AC_CHECK_LIB(m,sin)
