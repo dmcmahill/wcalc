@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/05 01:29:38 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -33,3 +33,4 @@
 ##  SUCH DAMAGE.
 ##
 
+EXTRA_DIST=	alert.h
