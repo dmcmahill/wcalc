@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: ic_microstrip.h,v 1.1 2001/09/10 01:40:29 dan Exp $ */
 
 /*
  * Copyright (c)  2001 Dan McMahill
@@ -57,8 +57,8 @@ typedef struct IC_MICROSTRIP_LINE
   double l;
   double w;
 
-  /* characteristic impedance (ohms) */
-  double z0;
+  /* characteristic impedance Ro + j Xo (ohms) */
+  double Ro, Xo;
 
   /* electrical length (degrees) */
   double len;
@@ -67,21 +67,37 @@ typedef struct IC_MICROSTRIP_LINE
   /* effective dielectric constant */
   double keff;
 
-  /* loss and loss per unit length */
-  double loss,losslen;
+  /* loss per given length, loss per unit length, and loss per wavelegth */
+  double loss, losslen, losslambda;
 
   /* skin depth in the metal and in the lossy dielectric */
   double met_skindepth, subs_skindepth;
+
+  /* incremental circuit model */
+  double Lmis, Rmis, Cmis, Gmis;
 
   ic_microstrip_subs *subs;
 
 } ic_microstrip_line;
 
 
+/*
+ * Function Prototypes
+ */
+
 double ic_microstrip_calc(ic_microstrip_line *line, double f);
-int ic_microstrip_syn(ic_microstrip_line *line, double f);
+int ic_microstrip_syn(ic_microstrip_line *line, double f, int flag);
 
 ic_microstrip_line *ic_microstrip_line_new(void);
 ic_microstrip_subs *ic_microstrip_subs_new(void);
+
+/*
+ * Flags for synthesis
+ */
+
+#define IC_MLISYN_W    0    /* Synthesize the metal width         */
+#define IC_MLISYN_H    1    /* Synthesize the substrate thickness */
+#define IC_MLISYN_TOX  2    /* Synthesize the oxide thickness     */
+
 
 #endif /*__IC_MICROSTRIP_H_*/

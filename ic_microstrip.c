@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: ic_microstrip.c,v 1.1 2001/09/10 01:40:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -93,8 +93,6 @@ static double Zustrip(double h, double w, double t, double er);
 
 double ic_microstrip_calc(ic_microstrip_line *line, double f)
 {
-  double z0;
-
   double omega;
   double w;
 
@@ -170,35 +168,51 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* 
    * Find the oxide capacitance assuming tox << w
    */
-  printf("Finding oxide capacitance\n");
   Cox = (eox*e0/tox)*w;
+#ifdef DEBUG
+  printf("Finding oxide capacitance\n");
   printf("Cox = %g fF/um\n",Cox*1e9);
+#endif
 
   /*
    * Find substrate capacitance using Wheelers microstrip equations
    */
+#ifdef DEBUG
   printf("Finding substrate capacitance\n");
+#endif
   Lsemi = sqrt(mu0*e0)*Zustrip(h,w,tmet,1.0);
   Z0semi = Zustrip(h,w,tmet,es);
+#ifdef DEBUG
   printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",h,w,tmet,es);
   printf("Z0semi = %g ohms\n",Z0semi);
+#endif
   Csemi = Lsemi/(Z0semi*Z0semi);
+#ifdef DEBUG
   printf("Csemi = %g fF/um\n",Csemi*1e15*1e-6);
   printf("Lsemi = %g pH/um\n",Lsemi*1e12*1e-6);
+#endif
 
   /* substrate conductance */
+#ifdef DEBUG
   printf("Finding substrate conductance\n");
+#endif
   Gsemi = (sigmas/(es*e0))*Csemi;
+#ifdef DEBUG
   printf("Gsemi = %g s/um\n",Gsemi*1e-6);
+#endif
 
 
   /* admittance per unit length of the MIS transmission line */
+#ifdef DEBUG
   printf("Finding Ytot\n");
+#endif
   Ytot = c_div(c_complex(-omega*omega*Csemi*Cox,omega*Cox*Gsemi),
 	       c_complex(Gsemi,omega*(Csemi + Cox)));
 
+#ifdef DEBUG
   printf("Ytot (1/(ohm-cm)) = %g + j%g\n",
 	  0.01*REAL(Ytot),0.01*IMAG(Ytot));
+#endif
 
   /*
    * Now we need to find series impedance per unit length of the MIS
@@ -209,9 +223,11 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   a = h*w/(2*k-w);
   b = a + h;
   
+#ifdef DEBUG
   printf("k = %g\n",k);
   printf("a = %g\n",a);
   printf("b = %g\n",b);
+#endif
   /*     
    * calculate the factor:
    *
@@ -290,8 +306,10 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   Ztot = c_rmul(Zi,c_div(num,den));
 
 
+#ifdef DEBUG
   printf("Zi    = %g ohms/um\n",Zi*1e-6);
   printf("Zsemi = %g + i%g\n",REAL(Zsemi),IMAG(Zsemi));
+#endif
 
   /* whew! */
 
@@ -308,6 +326,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   Cmis = IMAG(Ytot)/omega;
 
 
+#ifdef DEBUG
   printf("Lmis = %g pH/um\n",Lmis*1e6);
   printf("Cmis = %g fF/um\n",Cmis*1e9);
   printf("Rmis = %g ohm/um\n",Rmis*1e-6);
@@ -315,6 +334,7 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
 
   printf("Zmis = %g + i%g ohm/cm\n",REAL(Ztot)*1e-2,IMAG(Ztot)*1e-2);
   printf("Zmis = %g + i%g ohm/um\n",REAL(Ztot)*1e-6,IMAG(Ztot)*1e-6);
+#endif
 
   /* characteristic impedance */
   Zo_mis = c_sqrt(c_div(Ztot,Ytot));
@@ -323,23 +343,40 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
   gamma_mis = c_sqrt(c_mul(Ztot,Ytot));
   alpha_mis = REAL(gamma_mis);
   beta_mis  = IMAG(gamma_mis);
+#ifdef DEBUG
   printf("gamma_mis = %g + i%g\n",alpha_mis,beta_mis);
+#endif
 
   lambda_mis = 2.0*M_PI/beta_mis;
 
   slowwave = beta_mis/(omega*sqrt(mu0*e0));
 
+#ifdef DEBUG
   printf("omega = %g rad/sec\n",omega);
+#endif
 
   /* loss in dB per wavelentgh of transmission line */
   loss_per_lambda_mis = alpha_mis*lambda_mis*8.68;
 
+  /* loss total for the line */
+  
+#ifdef DEBUG
   printf("Zo (ohms) = %g + j%g\n",REAL(Zo_mis),IMAG(Zo_mis));
   printf("MIS wavelength           = %g mm\n",1e3*lambda_mis);
   printf("Free space wavelength    = %g mm\n",1e3*LIGHTSPEED/f);
   printf("Slow wave factor         = %g\n",slowwave);
   printf("Loss per wavelength (dB) = %g\n ",loss_per_lambda_mis);
-  return(z0);
+#endif
+
+  /* copy over output */
+  line->Lmis = Lmis;
+  line->Rmis = Rmis;
+  line->Cmis = Cmis;
+  line->Gmis = Gmis;
+  line->Ro   = REAL(Zo_mis);
+  line->Xo   = IMAG(Zo_mis);
+
+  return line->Ro;
 }
 
 
@@ -379,201 +416,276 @@ double ic_microstrip_calc(ic_microstrip_line *line, double f)
  *
  */
 
+//#define DEBUG
 
-int ic_microstrip_syn(ic_microstrip_line *line, double f)
+int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 {
 
-  double h,er,l,lmil,wmin,wmax,abstol,reltol;
-  int maxiters;
-  double A,z0,w_h,B,w,wold,zold;
-  int iters;
-  int done;
-  double zo,dzdw,c,v,len;
+  double l;
+  double Ro, Xo;
+  double v,len;
   double eeff;
+
+  /* the parameters which define the structure */
+  double w;
+  double tmet;
+  double tox,eox;
+  double h,es,sigmas;
+
+  /* permeability and permitivity of free space */
+  double mu0, e0;
+
+
+  /* the optimization variables, current, min/max, and previous values */
+  double var, varmax, varmin, varold;
   
+  /* errors due to the above values for the optimization variable */
+  double err, errmax, errmin, errold;
 
-  double initialw;
+  /* derivative */
+  double deriv;
 
-  z0 = line->z0;
-  len = line->len;
+  /* the sign of the slope of the function being optimized */
+  double sign;
 
-  /* Substrate dielectric thickness (mils) */
+  /* pointer to which parameter of the line is being optimized */
+  double *optpar;
+
+  /* number of iterations so far, and max number allowed */
+  int iters;
+  int maxiters=50;
+  
+  /* convergence parameters */
+  double abstol=0.1e-6;
+  double reltol=0.01e-6;
+
+
+#ifdef DEBUG
+#define stderr stdout
+#endif
+
+  /* flag to end optimization */
+  int done=0;
+
+
+  /* permeability and permitivitty of free space (H/m and F/m) */
+  mu0 = 4*M_PI*1.0e-7;
+  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
+
+  /*
+   * figure out what parameter we're synthesizing and set up the
+   * various optimization parameters.
+   *
+   * Basically what we need to know are
+   *    1)  min/max values for the parameter
+   *    2)  how to access the parameter
+   *    3)  an initial guess for the parameter
+   */
+
+  switch(flag){
+  case IC_MLISYN_W:
+    optpar = &(line->w);
+    varmax = 1000.0e-6;
+    varmin = 0.1e-6;
+    var    = 100e-6;
+    break;
+
+  case IC_MLISYN_H:
+    optpar = &(line->subs->h);
+    varmax = 10000.0e-6;
+    varmin = 10e-6;
+    var    = 250e-6;
+    break;
+
+  case IC_MLISYN_TOX:
+    optpar = &(line->subs->tox);
+    varmax = 1000.0e-6;
+    varmin = 0.01e-6;
+    var    = 1.0e-6;
+    break;
+
+  default:
+    fprintf(stderr,"ic_microstrip_synth():  illegal flag=%d\n",flag);
+    exit(1);
+    break;
+  }
+
+  /*
+   * read values from the input line structure
+   */
+
+  Ro = line->Ro;
+  Xo = line->Xo;
+
+
+  /* Metal width, length, and thicknexx */
+  w = line->w;
+  len = line->l;
+  tmet = line->subs->tmet;
+
+  /* oxide thickness and relative permitivity */
+  tox = line->subs->tox;
+  eox = line->subs->eox;
+
+  /* Substrate thickness, relative permitivity, and conductivity */
   h = line->subs->h;
+  es = line->subs->es;
+  sigmas = line->subs->sigmas;
 
-  /* Substrate relative permittivity */
-  er = line->subs->es;
 
   /* temp value for l used while finding w */
   l = 1000.0;
   line->l=l;
 
 
-  /* limits on the allowed range for w */
-  wmin = 0.5;
-  wmax = 1000;
-
-
-  /* impedance convergence tolerance (ohms) */
-  abstol = 0.1e-6;
-
-  /* width relative convergence tolerance (mils) (set to 0.1 micron) */
-  reltol = MICRON2MIL(0.01);
-
-  maxiters = 500;
-
-  /*
-   * take an initial guess at w and take a trial step to initialize the
-   * iteration
-   */
-
-  /*
-   *  Synthesis formula from Hammerstad and Bekkadal 
-   *  page -2-, (I.1.3), (I.1.4), (I.1.4), (I.1.4) 
-   */
-  A = ((er - 1.0)/(er + 1.0))*(0.226 + 0.121/er) 
-    + (M_PI/376.63)*sqrt(2.0*(er + 1.0))*z0;
-  w_h = 4.0/(0.5*exp(A) - exp(-A));
-
-  if(w_h > 2.0)
-    {
-      B = M_PI*376.63/(2.0*z0*sqrt(er));
-      w_h = (2.0/M_PI)
-	*(B - 1.0 - log(2.0*B - 1.0) + ((er-1.0)/(2.0*er))
-	  *(log(B-1.0) + 0.293 - 0.517/er));
-    }
-
-  w = w_h * h;
-
 #ifdef DEBUG
-  printf("\ninitial guess for w is %g mils, %g mm\n",w,MIL2MM(w));
+  printf("ic_microstrip_syn(): -------------- IC Microstrip Synthesis ----------\n");
+  printf("ic_microstrip_syn(): Metal width                 = %g um\n",line->w*1e6);
+  printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
+  printf("ic_microstrip_syn(): Oxide dielectric const.     = %g \n",line->subs->eox);
+  printf("ic_microstrip_syn(): Substrate thickness         = %g um\n",line->subs->h*1e6);
+  printf("ic_microstrip_syn(): Substrate dielectric const. = %g \n",line->subs->es);
+  printf("ic_microstrip_syn(): Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
+  printf("ic_microstrip_syn(): Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
+  printf("ic_microstrip_syn(): Frequency                   = %g GHz\n",freq/1e9); 
+  printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
+  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",Ro);
+  printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
+  printf("ic_microstrip_syn(): Starting optimization value = %g\n",var);
+  printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
-  initialw = w;
 
-  if(w >= wmax)
-  {
-    w = 0.95*wmax;
+
+  /* Initialize the various error values */
+  *optpar = varmin;
+  errmin = ic_microstrip_calc(line,freq) - Ro;
+
+  *optpar = varmax;
+  errmax = ic_microstrip_calc(line,freq) - Ro;
+
+  *optpar = var;
+  err = ic_microstrip_calc(line,freq) - Ro;
+
+  varold = 0.99*var;
+  *optpar = varold;
+  errold = ic_microstrip_calc(line,freq) - Ro;
+
+
+  /* see if we've actually been able to bracket the solution */
+  if (errmax*errmin > 0){
+    fprintf(stderr,
+	    "ic_microstrip_syn():  could not bracket the solution\n");
+    exit(1);
   }
-  else if(w < wmin)
-  {
-    w = wmin;
-  }
-
-  wold = 1.01*w;
-
-  line->w=wold;
-  /* dont need loss calculations here */
-  //  zold = ic_microstrip_calc(line,f,NOLOSS);
   
-  /*
-   * check to see if we're too high or too low and bracket the
-   * value for w.
-   */
-
-  if(zold < z0)
-    wmax = wold;
+  /* figure out the slope of the error vs variable */
+  if (errmax > 0)
+    sign =  1.0;
   else
-    wmin = wold;
- 
+    sign = -1.0;
 
   iters = 0;
   done = 0;
 
-  while(!done)
-    {
-      iters = iters + 1;
-   
+  /* the actual iterations */
+  while (!done){
 
+    /* update the interation count */
+    iters = iters + 1;
+    
+    /* calculate an estimate of the derivative */
+    deriv = (err-errold)/(var-varold);
+
+    /* copy over the current estimate to the previous one */
+    varold = var;
+    errold = err;
+
+    /* try a quasi-newton iteration */
+    var = var - err/deriv;
+  
+    
+    /*
+     * see if the new guess is within our bracketed range.  If so,
+     * accept the new estimate.  If not, toss it out and do a
+     * bisection step to reduce the bracket.
+     */
+
+    if ( (var>varmax) || (var<varmin) ){
 #ifdef DEBUG
-      printf("iteration #%d:  w = %g\n",iters,line->w);
+      printf("ic_microstrip_syn():  Taking a bisection step\n");
 #endif
-
-      /* check zo for this value of w */
-      line->w=w;
-
-      /* dont need loss calculations here */
-      //      zo = ic_microstrip_calc(line,f,NOLOSS);
-
-      /* keep track of the bounds on w. */
-      if(zo < z0)
-	wmax = w;
-      else
-	wmin = w;
-
-   
-      /* check for convergence */
-      if(fabs(zo - z0) < abstol)
-	{
-	  done = 1;
-
-#ifdef DEBUG
-printf("Z0 Converged\n");
-#endif
-}
-      else if(fabs(w-wold) < reltol)
-	{
-	  done = 1;
-#ifdef DEBUG
-printf("W Converged\n");
-#endif
-}
-      else if(iters >= maxiters)
-	{
-	  fprintf(stderr,"MLISYN failed to converge in %d iterations\n",
-		  maxiters);
-	  exit(1);
-	}
-
-      /* calculate approximation to the derivative */
-      dzdw = (zo-zold)/(w-wold);
-      wold = w;
-      zold = zo;
-      
-      /* take a newton iteration */
-      w = w - (zo-z0)/dzdw;
-      
-      /*
-       * if the newton iteration takes us out of the known range for w,
-       * take a bisection step
-       */
-
-      if((w > wmax) | (w < wmin))
-	{
-#ifdef DEBUG
-printf("Taking bisection step.\n");
-#endif
-w = (wmin + wmax)/2;
-	}
+      var = (varmin + varmax)/2.0;
     }
 
-#ifdef DEBUG
-  printf("Took %d iterations\n",iters);
-#endif
+    /* update the error value */
+    *optpar = var;
+    err = ic_microstrip_calc(line,freq) - Ro;
+    
+      
+    /* update our bracket of the solution. */
 
-  /* speed of light */
-  c = LIGHTSPEED;
+    if (sign*err > 0)
+      varmax = var;
+    else
+      varmin = var;
+
+ 
+    /* check to see if we've converged */
+    if (fabs(err) < abstol){
+      done = 1;
+#ifdef DEBUG
+      printf("ic_microstrip_syn():  abstol converged after iteration #%d\n",
+	     iters);
+#endif
+    }
+    else if ( fabs((var-varold)/var) < reltol){
+      done = 1;
+#ifdef DEBUG
+      printf("ic_microstrip_syn():  reltol converged after iteration #%d\n",
+	     iters);
+#endif
+    }
+    else if (iters >= maxiters){
+      fprintf(stderr,"MLISYN failed to converge in %d iterations\n",
+	      maxiters);
+      exit(1);
+    }
+    
+
+#ifdef DEBUG
+      printf("ic_microstrip_syn(): iteration #%d:  var = %g\terr = %g\n",iters,var,err);
+#endif
+      /* done with iteration */
+  }
+
+  
+  /* fill in the length/electrical length information */
 
   /* velocity on line */
-  //  ic_microstrip_calc(line,f);
   eeff = line->keff;
+  v = LIGHTSPEED / sqrt(eeff);
 
-  v = c / sqrt(eeff);
-
-
-  l = (len/360)*(v/f);
-  lmil = M2MIL(l);
-
-
-  line->w=w;
-  line->l=lmil;
+  /* find the required physical length */
+  line->l = (len/360.0)*(v/freq);
 
   /* recalculate using real length to find loss  */
-  //  ic_microstrip_calc(line,f);
-  
-#ifdef DEBUG
-  printf("synthesis for Z0=%g ohms and len=%g deg\n",line->z0,line->len);
-  printf("produced:\n");
-  printf("\twidth = %g\n\tlength = %g\n",w,l);
+  ic_microstrip_calc(line,freq);
+
+#ifdef DEBUG  
+  printf("ic_microstrip_syn(): -------------- -  Synthesis Results -  ----------\n");
+  printf("ic_microstrip_syn(): Metal width                 = %g um\n",line->w*1e6);
+  printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
+  printf("ic_microstrip_syn(): Oxide dielectric const.     = %g \n",line->subs->eox);
+  printf("ic_microstrip_syn(): Substrate thickness         = %g um\n",line->subs->h*1e6);
+  printf("ic_microstrip_syn(): Substrate dielectric const. = %g \n",line->subs->es);
+  printf("ic_microstrip_syn(): Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
+  printf("ic_microstrip_syn(): Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
+  printf("ic_microstrip_syn(): Frequency                   = %g GHz\n",freq/1e9); 
+  printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
+  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",Ro);
+  printf("ic_microstrip_syn(): Achieved Ro                 = %g ohm\n",line->Ro);
+  printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
   return(0);
@@ -650,6 +762,7 @@ static double Zustrip(double h, double w, double t, double er)
 
 #define def
 
+#ifdef notdef
 int main(int argc, char **argv)
 {
   double h=.062;
@@ -799,5 +912,5 @@ int main(int argc, char **argv)
 
   return 0;
 }
-
+#endif
 
