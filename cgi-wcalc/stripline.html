@@ -1,4 +1,4 @@
-<!-- $Id: stripline.html,v 1.2 2001/10/17 03:41:51 dan Exp $ -->
+<!-- $Id: stripline.html,v 1.3 2002/01/12 16:21:13 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
@@ -65,43 +65,46 @@ stripline
 <TD><IMG SRC="<@s@HTMLPATH@>stripline.png" WIDTH=367 HEIGHT=178 
      ALT="[Stripline Cross-section]"></TD>
 </TR>
+
+<!--
 <TR ALIGN="CENTER">
 <TD><IMG SRC="<@s@HTMLPATH@>stripline_model.png"  WIDTH=300 HEIGHT=141
      ALT="[Stripline Circuit Model]"></TD>
+</TR>
+-->
 
 <TR ALIGN="CENTER">
 <TD>
 
 <TABLE>
-<!--
 <TR>
 <TD>Ls =</TD>
-<TD><@g@Ls*1e9@></TD>
-<TD>[nH/mil]</TD>
+<TD><@g@line->Ls/line->Ls_sf@></TD>
+<TD><@s@line->Ls_units@></TD>
 </TR>
 
 <TR>
 <TD>Rs =</TD>
-<TD><@g@Rs@></TD>
-<TD>[ohm/mil]</TD>
+<TD><@g@line->Rs/line->Rs_sf@></TD>
+<TD><@s@line->Rs_units@></TD>
 </TR>
 
 <TR>
 <TD>Cs =</TD>
-<TD><@g@Cs*1e12@></TD>
-<TD>[pF/mil]</TD>
+<TD><@g@line->Cs/line->Cs_sf@></TD>
+<TD><@s@line->Cs_units@></TD>
 </TR>
 
 <TR>
 <TD>Gs =</TD>
-<TD><@g@Gs@></TD>
-<TD>[(ohm-mil)^-1]</TD>
+<TD><@g@line->Gs/line->Gs_sf@></TD>
+<TD><@s@line->Gs_units@></TD>
 </TR>
--->
+
 
 <TR>
 <TD>Z0 =</TD>
-<TD><@g@Ro@> + j <@g@Xo@></TD>
+<TD><@g@line->Ro@> + j <@g@line->Xo@></TD>
 <TD>[ohm]</TD>
 </TR>
 
@@ -119,26 +122,27 @@ stripline
 
 <TR>
 <TD>Skin depth =</TD>
-<TD><@g@line->skindepth@></TD>
-<TD>[mil]</TD>
+<TD><@g@line->skindepth/line->skindepth_sf@></TD>
+<TD>[<@s@line->skindepth_units@>]</TD>
 </TR>
 
 <TR>
 <TD>Delay =</TD>
-<TD><@g@delay@></TD>
-<TD>[ns]</TD>
+<TD><@g@line->delay/line->delay_sf@></TD>
+<TD>[<@s@line->delay_units@>]</TD>
 </TR>
 
 <TR>
 <TD>End correction =</TD>
-<TD><@g@line->deltal@></TD>
-<TD>[mil]</TD>
+<!-- just use the length units here instead of deltal's own units -->
+<TD><@g@line->deltal/line->l_sf@></TD>
+<TD>[<@s@line->l_units@>]</TD>
 </TR>
 
 <TR>
 <TD>Corrected length =</TD>
-<TD><@g@l-line->deltal@></TD>
-<TD>[mil]</TD>
+<TD><@g@(line->l-line->deltal)/line->l_sf@></TD>
+<TD>[<@s@line->l_units@>]</TD>
 </TR>
 
 </TABLE>  <!-- end of model parameter table -->
@@ -152,61 +156,79 @@ stripline
 
 <TR>
 <TD>Metal width (W)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@line->w/line->w_sf@>"></TD>
+<TD>
+<!-- width units menu -->
+<@s@cgi_units_menu_show(length_units,"w_units",units_get_index_name(length_units,line->w_units))@>
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Trace length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->l_sf@>"></TD>
+<TD>
+<!-- length units menu -->
+<@s@cgi_units_menu_show(length_units,"l_units",units_get_index_name(length_units,line->l_units))@>
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Metal thickness (Tmet)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->subs->tmet_sf@>"></TD>
+<TD>
+<!-- tmet units menu -->
+<@s@cgi_units_menu_show(length_units,"tmet_units",units_get_index_name(length_units,line->subs->tmet_units))@>
+</TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHO)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@rho@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@line->subs->rho@>"></TD>
 <TD>[relative to Cu]</TD>
 </TR>
 
 <TR>
 <TD>Metal surface roughness (RGH)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@rough@>"></TD>
-<TD>[mil-rms]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@line->subs->rough/line->subs->rough_sf@>"></TD>
+<TD>
+<!-- roughness units menu -->
+<@s@cgi_units_menu_show(length_units,"rough_units",units_get_index_name(length_units,line->subs->rough_units))@>
+-rms</TD>
 </TR>
 
 <TR>
 <TD>Substrate thickness (H)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>"></TD>
-<TD>[mil]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@line->subs->h/line->subs->h_sf@>"></TD>
+<TD>
+<!-- thickness units menu -->
+<@s@cgi_units_menu_show(length_units,"h_units",units_get_index_name(length_units,line->subs->h_units))@>
+</TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate relative dielectric constant (Er)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->er@>"></TD>
 <TD></TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate loss tangent (tand)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@tand@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->subs->tand@>"></TD>
 <TD></TD>
 </TR>
 
 
 <TR>
 <TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>"></TD>
-<TD>[MHz]</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->freq_sf@>"></TD>
+<TD>
+<!-- freq units menu -->
+<@s@cgi_units_menu_show(frequency_units,"freq_units",units_get_index_name(frequency_units,line->freq_units))@>
+</TD>
 </TR>
 
 <TR>
@@ -216,13 +238,13 @@ stripline
 
 <TR>
 <TD>Characteristic Impedance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->Ro@>"></TD>
 <TD>[ohms]</TD>
 </TR>
 
 <TR>
 <TD>Electrical Length</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->len@>"></TD>
 <TD>[degrees]</TD>
 </TR>
 
