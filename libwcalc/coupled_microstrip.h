@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.6 2004/07/26 11:08:16 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.7 2004/07/30 04:16:03 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -92,20 +92,10 @@ typedef struct COUPLED_MICROSTRIP_LINE
 
 
 double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
-int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag);
+int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
 
 void coupled_microstrip_line_free(coupled_microstrip_line * line);
 coupled_microstrip_line *coupled_microstrip_line_new(void);
-
-/*
- * Flags for synthesis
- */
-
-/* these aren't used yet */
-#define CMLISYN_W    0    /* Synthesize the metal width         */
-#define CMLISYN_H    1    /* Synthesize the substrate thickness */
-#define CMLISYN_ES   2    /* Synthesize the dielectric constant */
-#define CMLISYN_L    3    /* Synthesize the length */
 
 
 #endif /*__COUPLED_MICROSTRIP_H_*/

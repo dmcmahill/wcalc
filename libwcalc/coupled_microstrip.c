@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.16 2004/07/30 04:16:02 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.17 2004/07/30 04:37:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-/* #define DEBUG_SYN  */ /* debug coupled_microstrip_syn()  */
+#define DEBUG_SYN   /* debug coupled_microstrip_syn()  */
 /* #define DEBUG_CALC */ /* debug coupled_microstrip_calc() */
 
 #include <math.h>
@@ -634,11 +634,11 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   line->loss_odd = l * line->losslen_odd;
   
 #ifdef DEBUG_CALC
-#endif
   printf("coupled_microstrip_calc():  Even mode dielectric loss = %g dB/m \n",
 	 line->losslen_ev);
   printf("coupled_microstrip_calc():  Odd mode dielectric loss = %g dB/m \n",
 	 line->losslen_odd);
+#endif
 
   /* calculate skin depth */
 
@@ -847,7 +847,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
  *
  */
 
-int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
+int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 {
 
   double h,er,l,lmil,wmin,wmax,abstol,reltol;
@@ -867,37 +867,64 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
   double ci[] = {0.002, -0.347, 7.171, -36.910, 76.132, -51.616};
 
   int i;
+  double dw, ds;
   double ze0=0,ze1,ze2,dedw,deds;
   double zo0=0,zo1,zo2,dodw,dods;
 
 #ifdef DEBUG_SYN
   printf("coupled_microstrip_syn(): -------- Coupled_Microstrip Synthesis ----------\n");
-  printf("coupled_microstrip_syn(): Metal width                 = %g mil\n",line->w);
-  printf("coupled_microstrip_syn(): Metal spacing               = %g mil\n",line->s);
-  printf("coupled_microstrip_syn(): Metal thickness             = %g mil\n",line->subs->tmet);
-  printf("coupled_microstrip_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("coupled_microstrip_syn(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("coupled_microstrip_syn(): Substrate thickness         = %g mil\n",line->subs->h);
-  printf("coupled_microstrip_syn(): Substrate dielectric const. = %g \n",line->subs->er);
-  printf("coupled_microstrip_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
-  printf("coupled_microstrip_syn(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("coupled_microstrip_syn(): Metal width                 = %g %s\n",
+	 line->w/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_syn(): Metal spacing               = %g %s\n",
+	 line->s/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_syn(): Metal thickness             = %g %s\n",
+	 line->subs->tmet/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_syn(): Metal relative resistivity  = %g %s\n",
+	 line->subs->rho/line->units_rho->sf, line->units_rho->name);
+  printf("coupled_microstrip_syn(): Metal surface roughness     = %g %s-rms\n",
+	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
+  printf("coupled_microstrip_syn(): Substrate thickness         = %g %s\n",
+	 line->subs->h/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_microstrip_syn(): Substrate dielectric const. = %g \n",
+	 line->subs->er);
+  printf("coupled_microstrip_syn(): Substrate loss tangent      = %g \n",
+	 line->subs->tand);
+  printf("coupled_microstrip_syn(): Frequency                   = %g %s\n",
+	 line->freq/line->units_freq->sf, line->units_freq->name);
   printf("coupled_microstrip_syn(): -------------- ---------------------- ----------\n");
-  printf("coupled_microstrip_syn(): Desired Zo                  = %g ohm\n",line->z0);
+  printf("coupled_microstrip_syn(): Desired Zo                  = %g ohm\n", line->z0);
+  printf("coupled_microstrip_syn(): Desired k                   = %g \n", line->k);
+  printf("coupled_microstrip_syn(): Desired Even Mode Zo        = %g ohm\n", line->z0e);
+  printf("coupled_microstrip_syn(): Desired Odd Mode Zo         = %g ohm\n", line->z0o);
   printf("coupled_microstrip_syn(): Desired electrical length   = %g degrees\n",line->len);
   printf("coupled_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
-  z0 = line->z0;
   len = line->len;
 
-  /* Substrate dielectric thickness (mils) */
+  /* Substrate dielectric thickness (m) */
   h = line->subs->h;
+
   /* Substrate relative permittivity */
   er = line->subs->er;
 
-  /* desired impedances */
+  /* impedance and coupling */
+  z0 = line->z0;
+  k = line->k;
+
+  /* even/odd mode impedances */
   z0e = line->z0e;
   z0o = line->z0o;
+
+  if( line->use_z0k ) {
+    /* use z0 and k to calculate z0e and z0o */
+    z0o = z0*z0*sqrt((1.0 - k) / (1.0 + k));
+    z0e = z0*z0*sqrt((1.0 + k) / (1.0 - k));
+  } else {
+    /* use z0e and z0o to calculate z0 and k */
+    z0 = sqrt(z0e*z0o);
+    k = (z0e - z0o)/(z0e + z0o);
+  }
 
   /* temp value for l used while finding w and s */
   l = 1000.0;
@@ -905,12 +932,12 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
 
 
   /* limits on the allowed range for w */
-  wmin = 0.5;
-  wmax = 1000;
+  wmin = MIL2M(0.5);
+  wmax = MIL2M(1000);
 
   /* limits on the allowed range for s */
-  smin = 0.5;
-  smax = 1000;
+  smin = MIL2M(0.5);
+  smax = MIL2M(1000);
 
 
   /* impedance convergence tolerance (ohms) */
@@ -925,8 +952,6 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
   /*
    * Initial guess at a solution
    */
-  z0 = sqrt(z0e*z0o);
-  k = (z0e - z0o)/(z0e + z0o);
   AW = exp(z0*sqrt(er+1.0)/42.4) - 1.0;
   F1 = 8.0*sqrt(AW*(7.0 + 4.0/er)/11.0 + (1.0 + 1.0/er)/0.81)/AW;
 
@@ -946,6 +971,13 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
   s = h*fabs(F1*F3);
 
 
+#ifdef DEBUG_SYN
+      printf("coupled_microstrip_syn():  Initial estimate:\n"
+	     "                w = %g %s, s = %g %s\n", 
+	     w/line->units_lwst->sf, line->units_lwst->name,
+	     s/line->units_lwst->sf, line->units_lwst->name);
+#endif
+
   l=100;
   loss=0;
   kev=1;
@@ -954,52 +986,105 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
 
   iters = 0;
   done = 0;
-  delta = 1e-5;
+  if( w < s )
+    delta = 1e-3*w;
+  else
+    delta = 1e-3*s;
   
   cval = 1e-12*z0e*z0o;
 
-  while(!done)
+  /* 
+   * We should never need anything anywhere near maxiters iterations.
+   * This limit is just to prevent going to lala land if something
+   * breaks. 
+   */
+  while( (!done) && (iters < maxiters) )
     {
       iters++;
    
+      line->w = w;
+      line->s = s;
+      coupled_microstrip_calc(line, line->freq);
+      
+      ze0 = line->z0e;
+      zo0 = line->z0o;
+
 #ifdef DEBUG_SYN
-      printf("ze = %g\tzo = %g\tw = %g\ts = %g\n",ze0,zo0,w,s);
+      printf("Iteration #%d ze = %g\tzo = %g\tw = %g %s\ts = %g %s\n", 
+	     iters, ze0, zo0, 
+	     w/line->units_lwst->sf, line->units_lwst->name,
+	     s/line->units_lwst->sf, line->units_lwst->name);
 #endif
-   
+
       /* check for convergence */
       err = pow((ze0-z0e),2.0) + pow((zo0-z0o),2.0);
-      if(err < cval)
-	{
-	  done = 1;
-	}
-      else
-	{
-	  /* approximate the first jacobian */
-	  dedw = (ze1 - ze0)/delta;
-	  dodw = (zo1 - zo0)/delta;
-	  deds = (ze2 - ze0)/delta;
-	  dods = (zo2 - zo0)/delta;
-	  
-	  /* find the determinate */
-	  d = dedw*dods - deds*dodw;
-	  
-	  w = fabs(w - ((ze0-z0e)*dods - (zo0-z0o)*deds)/d);
-	  s = fabs(s + ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d);
+      if(err < cval) {
+	done = 1;
+      } else {
+	/* approximate the first jacobian */
+	line->w = w + delta;
+	line->s = s;
+	coupled_microstrip_calc(line, line->freq);
+	ze1 = line->z0e;
+	zo1 = line->z0o;
+
+	line->w = w;
+	line->s = s + delta;
+	coupled_microstrip_calc(line, line->freq);
+	ze2 = line->z0e;
+	zo2 = line->z0o;
+
+	dedw = (ze1 - ze0)/delta;
+	dodw = (zo1 - zo0)/delta;
+	deds = (ze2 - ze0)/delta;
+	dods = (zo2 - zo0)/delta;
+	
+	/* find the determinate */
+	d = dedw*dods - deds*dodw;
+	
+	/* estimate the new solution */
+	dw = -1.0 *  ((ze0-z0e)*dods - (zo0-z0o)*deds)/d;
+	if (dw > 0.1*w )
+	  dw = 0.1*w;
+	else if (dw < -0.1*w)
+	  dw = -0.1*w;
+
+	w = fabs(w + dw);
+
+	ds =         ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d;
+	if (ds > 0.1*s )
+	  ds = 0.1*s;
+	else if (ds < -0.1*s)
+	  ds = -0.1*s;
+
+	s = fabs(s + ds);
+
 #ifdef DEBUG_SYN
-	  printf("dedw = %g\tdodw = %g\tdeds = %g\tdods = %g\n",dedw,dodw,deds,dods);
+	printf("coupled_microstrip_syn():  delta = %g, determinate = %g\n", delta, d);
+	printf("coupled_microstrip_syn():  ze0 = %16.8g,  ze1 = %16.8g,  ze2 = %16.8g\n",
+	       ze0, ze1, ze2);
+	printf("coupled_microstrip_syn():  zo0 = %16.8g,  zo1 = %16.8g,  zo2 = %16.8g\n",
+	       zo0, zo1, zo2);
+	printf("coupled_microstrip_syn(): dedw = %16.8g, dodw = %16.8g\n",
+	       dedw, dodw);
+	printf("coupled_microstrip_syn(): deds = %16.8g, dods = %16.8g\n",
+	       deds, dods);
+	printf("coupled_microstrip_syn(): dw = %g %s, ds = %g %s\n",
+	       dw/line->units_lwst->sf, line->units_lwst->name,
+	       ds/line->units_lwst->sf, line->units_lwst->name);
+	printf("-----------------------------------------------------\n");
 #endif
-	}
+      }
     }
+  
+  line->w = w;
+  line->s = s;
+  coupled_microstrip_calc(line, line->freq);
 
-
-  keff = sqrt(kev*kodd);
-  v = LIGHTSPEED / sqrt(keff);
-  l = (len/360)*(v/f);
-  lmil = M2MIL(l);
 
 #ifdef DEBUG_SYN
-  printf("Took %d iterations, err = %g\n",iters,err);
-  printf("ze = %g\tzo = %g\tz0e = %g\tz0o = %g\n",ze0,zo0,z0e,z0o);
+  printf("Took %d iterations, err = %g\n", iters, err);
+  printf("ze = %g\tzo = %g\tz0e = %g\tz0o = %g\n", ze0, zo0, z0e, z0o);
 #endif
 
   return(0);

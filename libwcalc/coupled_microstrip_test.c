@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip_test.c,v 1.1 2003/01/11 01:01:43 dan Exp $ */
+/* $Id: coupled_microstrip_test.c,v 1.2 2003/01/17 03:24:03 dan Exp $ */
 
 /*
- * Copyright (c) 2002, 2003 Dan McMahill
+ * Copyright (c) 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
