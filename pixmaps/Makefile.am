@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/05 02:25:58 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/05 02:58:19 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -34,7 +34,7 @@
 ##
 
 
-EPS2C  = ${AWK} -f $(topsrcdir)/utils/eps2c
+EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
 
 TGIF_SRCS=	\
 		air_coil.obj \
@@ -55,15 +55,15 @@ EPSS=	${TGIF_SRCS:.obj=.eps}
 EPSC=	${TGIF_SRCS:.obj=.c}
 OFILES=	${TGIF_SRCS:.obj=.o}
 
-TGIF=		@TGIF@
+TGIF=		XENVIRONMENT=$(srcdir)/Xdefaults.tgif @TGIF@
 TGIF_FLAGS=	-print -color
 
-all:	${PNGS} ${XPMS} ${EPSS} ${EPSC} ${OFILES}
+BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${EPSC}
 
-clean:
-	rm -f *.xpm *.xbm *.gif *.png *.eps *~
 
-SUFFIXES = .obj .xpm .xbm .gif .png .eps 
+# All the new suffix rules
+
+SUFFIXES = .obj .xpm .xbm .gif .png .eps .c
 
 .eps.c :
 	$(EPS2C) fname=$*_eps $*.eps > $*.c
@@ -77,9 +77,6 @@ SUFFIXES = .obj .xpm .xbm .gif .png .eps
 .obj.png :
 	$(TGIF) $(TGIF_FLAGS) -png $*.obj
 
-.obj.xbm :
-	$(TGIF) $(TGIF_FLAGS) -xbm $*.obj
-
-.xbm.xpm:
-	convert $*.xbm xpm:- | sed "s/magick/$*/g" > $*.xpm
+.obj.xpm :
+	$(TGIF) $(TGIF_FLAGS) -xpm $*.obj
 

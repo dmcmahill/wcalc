@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.7 2001/09/27 17:47:15 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.1 2001/10/05 00:50:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -722,7 +722,7 @@ static void picture_init(air_coil_gui *gui, GtkWidget *window,GtkWidget *parent)
   pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) aircoil);
+					 (gchar **) air_coil);
 					
   
   /* a pixmap widget to contain the pixmap */
