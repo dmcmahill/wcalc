@@ -1,0 +1,172 @@
+<!-- $Id$ -->
+
+<!--
+ * Copyright (c) 2001 Dan McMahill
+ * All rights reserved.
+ *
+ * This code is derived from software written by Dan McMahill
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *        This product includes software developed Dan McMahill
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ -->
+
+
+<HEAD>
+<TITLE>Integrated Circuit Microstrip Analysis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/08 -->
+<LINK REV="made" HREF="mailto:mcmahill@mtl.mit.edu">
+
+<meta name="description" content="Integrated Circuit Microstrip Analysis">
+<meta name="keywords" content="
+integrated circuit microstrip
+">
+
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<H1 ALIGN="CENTER">Integrated Circuit Microstrip Analysis Calculator</H1>
+
+<P>
+
+
+<FORM METHOD=GET ACTION="/cgi-bin/cad/ic_microstrip3.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/ic_microstrip.png" WIDTH=429 HEIGHT=212 
+     ALT="[IC Microstrip Cross-section]">
+</TR>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/ic_microstrip_model.png" WIDTH=313 HEIGHT=141
+     ALT="[IC Microstrip Circuit Model]">
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+<TR>
+<TD>Lmis =
+<TD><@g@Lmis*1e6@>
+<TD>[pH/um]
+</TR>
+<TR>
+<TD>Rmis =
+<TD><@g@Rmis*1e-6@>
+<TD>[ohm/um]
+</TR>
+<TR>
+<TD>Cmis =
+<TD><@g@Cmis*1e9@>
+<TD>[fF/um]
+</TR>
+<TR>
+<TD>Gmis =
+<TD><@g@Gmis*1e-6@>
+<TD>[(ohm-cm)^-1]
+</TR>
+<TR>
+<TD>Z0 =
+<TD><@g@Ro@> + j <@g@Xo@>
+<TD>[ohm]
+</TR>
+</TABLE>  <!-- end of model parameter table -->
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+<TR>
+<TD>Metal width
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>">
+<TD>[um]
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Substrate thickness
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>">
+<TD>[um]
+<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Substrate relative dielectric constant
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>">
+<TD>
+</TR>
+
+<TR>
+<TD>Substrate resistivity
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhos" VALUE="<@g@rhos@>">
+<TD>[ohm-cm]
+</TR>
+
+<TR>
+<TD>Oxide thickness
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tox" VALUE="<@g@tox@>">
+<TD>[um]
+<TD><INPUT TYPE="SUBMIT" NAME="synth_tox" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Oxide relative dielectric constant
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="eox" VALUE="<@g@eox@>">
+<TD> 
+</TR>
+
+<TR>
+<TD>Metal thickness
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>">
+<TD>[um]
+</TR>
+
+<TR>
+<TD>Frequency
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>">
+<TD>[MHz]
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset">
+</TR>
+<TR>
+<TD>Characteristic Resistance
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>">
+<TD>[ohms]
+</TABLE>
+
+</TR>
+</TABLE>
+
+</FORM>
+
+

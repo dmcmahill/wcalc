@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2001/09/12 03:47:03 dan Exp $
+# $Id: Makefile.in,v 1.5 2001/09/12 16:50:03 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -81,7 +81,10 @@ IC_MICROSTRIP_CGI_OFILES=	${IC_MICROSTRIP_CGI_CFILES:.c=.o} \
 ic_microstrip_html.c:	ic_microstrip.html
 	$(HTML2C) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_html.c
 
-ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip_html.c
+footer_html.c:	footer.html
+	$(HTML2C) $(srcdir)/footer.html > $(srcdir)/footer_html.c
+
+ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip_html.c footer_html.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/ic_microstrip.cgi.c
 
 ic_microstrip.cgi:  $(IC_MICROSTRIP_CGI_OFILES)
