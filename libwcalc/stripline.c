@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.9 2004/07/24 03:47:32 dan Exp $ */
+/*      $Id: stripline.c,v 1.10 2004/07/25 04:05:32 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -710,6 +710,20 @@ int stripline_syn(stripline_line *line, double f, int flag)
 void stripline_line_free(stripline_line * line)
 {
   free(line->subs);
+  wc_units_free(line->units_lwht);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
+  wc_units_free(line->units_len);
+  wc_units_free(line->units_freq);
+  wc_units_free(line->units_loss);
+  wc_units_free(line->units_losslen);
+  wc_units_free(line->units_rho);
+  wc_units_free(line->units_rough);
+  wc_units_free(line->units_delay);
+  wc_units_free(line->units_depth);
+  wc_units_free(line->units_deltal);
   free(line);
 }
 
