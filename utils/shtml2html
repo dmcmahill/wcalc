@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# $Id: html2c,v 1.1 2001/10/05 00:56:07 dan Exp $
+# $Id: shtml2html,v 1.1 2001/10/16 03:26:08 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -57,13 +57,13 @@ BEGIN {
 
 # pick out just the <!--#include ...... --> part
     cmd = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\2",1,line);
-    printf("processing directive \"%s\"\n",cmd) > "/dev/stderr";
+    #printf("processing directive \"%s\"\n",cmd) > "/dev/stderr";
 
 #figure out the included file name
     file = gensub(/(.*)virtual=\"([^\"]*)\"(.*)/,"\\2",1,cmd);
 
     if ( file != cmd) {
-      printf("[%s]",file) > "/dev/stderr";
+      #printf("[%s]",file) > "/dev/stderr";
       while ( getline < file ){ print; }
       close(file);
     }
