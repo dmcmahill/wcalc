@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.18 2002/05/10 22:52:59 dan Exp $
+## $Id: Makefile.am,v 1.19 2002/05/14 00:41:30 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -79,7 +79,7 @@ BUILT_SOURCES= libsci_wcalc.c  whatis ${SCICATS}
 # Generate the entry point function that scilab uses to access the
 # mex-functions
 #
-libsci_wcalc.c: $(srcdir)/mex.mk
+libsci_wcalc.c: $(srcdir)/mex.mk $(srcdir)/Makefile.am
 	@echo "****************************************************"
 	@echo "Generating the scilab gateway function in $@"
 	@echo "****************************************************"
@@ -111,7 +111,7 @@ libsci_wcalc.c: $(srcdir)/mex.mk
 # path hard coded in it and is used for testing before installation
 # ("test_wcalc.sce")
 #
-load_wcalc.sce.in: $(srcdir)/mex.mk 
+load_wcalc.sce.in: $(srcdir)/mex.mk  $(srcdir)/Makefile.am
 	@echo "****************************************************"
 	@echo "Generating the scilab loader function in $@"
 	@echo "****************************************************"
@@ -162,7 +162,7 @@ test_wcalc.sce:	load_wcalc.sce.in
 	@echo "****************************************************"
 
 
-whatis: ${SCIMANS} 
+whatis: ${SCIMANS}  $(srcdir)/Makefile.am
 	@echo "****************************************************"
 	@echo "Generating the whatis table"
 	@echo "****************************************************"
