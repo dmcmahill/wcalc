@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.16 2002/01/14 20:24:38 dan Exp $
+## $Id: Makefile.am,v 1.17 2002/01/18 14:27:01 dan Exp $
 
 ##
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -48,7 +48,7 @@ noinst_PROGRAMS = \
 	cookie.cgi
 
 # These are used by all programs:
-COMMON = alert.c cgic.c cgic.h cgi-units.c cgi-units.h
+COMMON = alert.c cgic.c cgic.h cgi-common.c cgi-common.h cgi-units.c cgi-units.h cookie.c cookie.h
 
 air_coil_cgi_SOURCES = air_coil.cgi.c ${COMMON}
 
@@ -93,7 +93,7 @@ HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/
 SUFFIXES = .html 
 
 %_html.c : %.html
-	@AWK_GENSUB_YES@ $(HTML2C) $(srcdir)/$< > $(srcdir)/$@
+	@AWK_GENSUB_YES@ $(HTML2C) $< > $@
 	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
 	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
 	@AWK_GENSUB_NO@ echo "          .html.c files from the .html files.  If you need"
@@ -104,7 +104,7 @@ SUFFIXES = .html
 
 
 %_id.h : %.html
-	$(HTML2ID) $(srcdir)/$< > $(srcdir)/$@
+	$(HTML2ID) $< > $@
 	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
 	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
 	@AWK_GENSUB_NO@ echo "          _id.h files from the .html files.  If you need"
