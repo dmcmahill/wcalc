@@ -1,7 +1,12 @@
-# $Id: README,v 1.1 2002/08/02 11:48:36 dan Exp $
+# $Id: README,v 1.2 2002/08/03 17:58:37 dan Exp $
 
 This directory contains several of the technical references used in the
 development of the routines in libwcalc.
+
+
+=========================================================================
+MICROSTRIP
+=========================================================================
 
 Deibele_MTT_1987.pdf
 --------------------
@@ -13,6 +18,31 @@ Compares measured effective permitivities of microstrip to the predicted
 values using the formulations of Hammerstad and Jensen and that of
 Kirschning and Jansen.
 
+Hammerstad_and_Jensen_MTT-S_1980.pdf
+------------------------------------
+E. Hammerstad and O. Jensen, "Accurate Models for Microstrip Computer-
+Aided Design" IEEE MTT-S, International Symposium Digest, Washington
+D.C., May 1980, pp. 407-409
+
+Used for the DC effective permitivitty and characteristic impedance
+with metal thickness correction.
+
+Jansen_and_Kirschning_AEU_1983.pdf
+----------------------------------
+R. H. Jansen and M. Kirschning, "Arguments and an Accurate Model for
+the Power-Current Formulation of Microstrip Characteristic Impedance",
+Archiv fur Elektronik und Ubertragungstechnik, April 1983, pp. 108-112
+
+Used for frequency dependence of characteristic impedance.  This is the
+"top level" reference.
+
+Kirschning_and_Jansen_EL_1982.pdf
+---------------------------------
+M. Kirschning and R. H. Jansen, "Accurate Model for Effective Dielectric 
+Constant of Microstrip with Validity up to Millimetre-Wave Frequencies"
+Electronics Letters, Vol 18, No. 6, March 18th, 1982, pp 272-273.
+
+Used for dispersion in effective dielectric constant.
 
 rt312.pdf
 ---------
