@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.1 2001/02/11 19:26:18 dan Exp $
+dnl $Id: configure.in,v 1.2 2001/02/12 14:04:52 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -35,6 +35,10 @@ dnl SUCH DAMAGE.
 dnl
 
 AC_INIT(wcalc.c)
+AC_CONFIG_HEADER(config.h)
+
+dnl determine host type
+AC_CANONICAL_HOST
 
 AC_PROG_MAKE_SET
 AC_PROG_CC
