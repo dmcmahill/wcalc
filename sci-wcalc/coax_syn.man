@@ -1,0 +1,106 @@
+.\" $Id: coax_syn.man,v 1.4 2001/12/10 12:20:37 dan Exp $
+.\"
+.\" Copyright (c) 2001 Dan McMahill
+.\" All rights reserved.
+.\"
+.\" This code is derived from software written by Dan McMahill
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and.\"or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"        This product includes software developed by Dan McMahill
+.\"  4. The name of the author may not be used to endorse or promote products
+.\"     derived from this software without specific prior written permission.
+.\" 
+.\"  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\"  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\"  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\"  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\"  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+.\"  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\"  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+.\"  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+.\"  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\"  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\"  SUCH DAMAGE.
+.\"
+
+.TH coax_syn 1 "March 2001" "Dan McMahill" "Wcalc"
+.\".so ../sci.an
+.SH NAME
+coax_syn - Coaxial transmission line analysis
+.SH CALLING SEQUENCE
+.nf
+[a,b,c,er,len,loss] = coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f);
+.fi
+.SH PARAMETERS
+.TP 10
+a
+: radius of inner conductor (meters)
+.TP
+b
+: inner radius of outer conductor (meters)
+.TP
+c
+: offset of the inner conductor from the center (meters)
+.TP
+t
+: thickness of shield (meters)
+.TP
+rho_a
+: resistivity of inner conductor (ohms/meter)
+.TP
+rho_b
+: resistivity of outer conductor (ohms/meter)
+.TP
+er
+: relative permitivitty of dielectric
+.TP
+tand
+: loss tangent of dielectric
+.TP
+len
+: physical length of line (meters)
+.TP
+f
+: operating frequency (Hertz)
+.SH DESCRIPTION
+function to analyze the electrical characteristics of a
+coaxial transmission line.
+The physical
+dimensions of the line are given as inputs and the 
+characteristic impedand and incremental circuit model
+elements are calculated.
+.SH EXAMPLE
+.nf
+sf=25.4e-6;       // mils to meters conversion factor
+a=10.0*sf;        // radius of inner conductor
+b=100.0*sf;       // inner radius of outer conductor
+c=0*sf;           // offset of inner conductor
+t=5.0*sf;         // thickness of outer conductor
+rho_a=3.5e-8;     // resistivity of inner conductor
+rho_b=rho_a;      // resistivity of outer conductor
+er=9.5;           // relative permitivitty of dielectric
+tand=0.01;        // dielectric loss tangent
+len=1.0;          // length of line
+f=100e6;          // 100 MHz operation
+[z0,elen,loss,L,R,C,G] = coax_syn(a,b,c,t,rho_a,rho_b,er,tand,len,f);
+disp(sprintf('z0   = %g Ohms',z0));
+disp(sprintf('elen = %g degrees',elen));
+disp(sprintf('loss = %g dB',loss));
+disp(sprintf('L    = %g H/m',L));
+disp(sprintf('R    = %g Ohms/m',R));
+disp(sprintf('C    = %g F/m',C));
+disp(sprintf('G    = %g S/m',G));
+.fi
+.SH SEE ALSO
+coax_calc
+.SH AUTHOR
+Dan McMahill
