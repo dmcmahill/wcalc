@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.3 2002/05/10 22:52:31 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.4 2002/06/12 11:30:05 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -39,6 +39,7 @@
 
 /* #define DEBUG */
 
+#include <math.h>
 #include <stdio.h>
 #include "cgic.h"
 #include "coupled_microstrip.h"
