@@ -1,7 +1,7 @@
-/* $Id: mathutil.c,v 1.1 2001/10/05 00:37:34 dan Exp $ */
+/* $Id: mathutil.c,v 1.2 2001/12/21 03:10:50 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,6 +33,9 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG_C_DIV
+
+#include "config.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -103,7 +106,11 @@ complex c_div(complex x, complex y)
   b = IMAG(x);
   c = REAL(y);
   d = IMAG(y);
-  
+
+#ifdef DEBUG_C_DIV  
+  printf("c_div(%g + %g i, %g + %g i)(%p,%p)\n",a,b,c,d,&x,&y);
+#endif
+
   if (d == 0){
     /* the divisor is real */
     REAL(z) = a/c;
