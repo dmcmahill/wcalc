@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.1 2001/02/11 19:26:26 dan Exp $ */
+/* $Id: microstrip_gui.h,v 1.1 2001/02/17 16:56:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -47,7 +47,8 @@ typedef struct MICROSTRIP_GUI
   int (*display) (void);
 
   /* internals */
-  struct MICROSTRIP_REC line;
+  struct MICROSTRIP_LINE line;
+
 
 } microstrip_gui;
 
@@ -55,3 +56,4 @@ microstrip_gui *microstrip_gui_new(void);
 
 
 #endif /*__MICROSTRIP_GUI_H_*/
+
