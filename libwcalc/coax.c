@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.24 2004/09/02 21:27:27 dan Exp $ */
+/* $Id: coax.c,v 1.25 2004/09/08 22:41:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -304,7 +304,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     /*
      * Rather than use the approximate TE10 cutoff frequency from
      * Rosloniec, use an exact solution.  This can actually be solved
-     * by hand without too much pain.
+     * by hand without too much pain for the case where c == 0.
      */
 
     k = 2*M_PI*line->fc / v;
