@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_loadsave.c,v 1.1 2004/07/26 22:22:27 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.c,v 1.2 2004/07/28 03:28:42 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -80,9 +80,21 @@ static fspec * get_fspec(int which_one)
 
     fspec_add_key(linespec, "L", "Length (meters)", 'd', &line->l);
     fspec_add_key(linespec, "W", "Width (meters)", 'd', &line->w);
-    fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 'd', &line->z0);
-    fspec_add_key(linespec, "Elen", "Electrical Length (degrees)", 'd', &line->len);
-    fspec_add_key(linespec, "freq", "Frequency of operation", 'd', &line->freq);
+    fspec_add_key(linespec, "S", "Spacing (meters)", 'd', &line->s);
+    fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 
+		  'd', &line->z0);
+    fspec_add_key(linespec, "k", "Coupling coefficient", 
+		  'd', &line->k);
+    fspec_add_key(linespec, "Z0e", "Even Mode Characteristic Impedance (ohms)", 
+		  'd', &line->z0e);
+    fspec_add_key(linespec, "Z0o", "Odd Mode Characteristic Impedance (ohms)", 
+		  'd', &line->z0o);
+    fspec_add_key(linespec, "use_z0k", "Flag to use z0/k vs z0e/z0o for synthesis", 
+		  'i', &line->use_z0k);
+    fspec_add_key(linespec, "Elen", "Electrical Length (degrees)", 
+		  'd', &line->len);
+    fspec_add_key(linespec, "freq", "Frequency of operation", 
+		  'd', &line->freq);
 
     /*
      * The desired user units
@@ -118,12 +130,18 @@ static fspec * get_fspec(int which_one)
 
     subspec=fspec_add_sect(NULL,"substrate");
 
-    fspec_add_key(subspec,"H","Height (meters)",'d',&subs->h);
-    fspec_add_key(subspec,"ER","Relative dielectric constant",'d',&subs->er);
-    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",'d',&subs->tmet);
-    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",'d',&subs->rho);
-    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
-    fspec_add_key(subspec,"TAND","Dielectric loss tangent",'d',&subs->tand);
+    fspec_add_key(subspec,"H","Height (meters)",
+		  'd',&subs->h);
+    fspec_add_key(subspec,"ER","Relative dielectric constant",
+		  'd',&subs->er);
+    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",
+		  'd',&subs->tmet);
+    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",
+		  'd',&subs->rho);
+    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",
+		  'd',&subs->rough);
+    fspec_add_key(subspec,"TAND","Dielectric loss tangent",
+		  'd',&subs->tand);
 
   }
 
