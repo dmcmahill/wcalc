@@ -1,4 +1,4 @@
-<!-- $Id: coax.html,v 1.5 2002/06/12 11:30:04 dan Exp $ -->
+<!-- $Id: coax.html,v 1.6 2004/07/22 01:32:26 dan Exp $ -->
 <!--
  * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -196,7 +196,10 @@ coax
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOA)</A></TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhoa" VALUE="<@g@line->rho_a@>"></TD>
-<TD>[relative to Cu]</TD>
+<TD>
+<!-- Resistivity units menu -->
+<@s@cgi_units_menu(line->units_rho, "rho_units")@>
+</TD>
 </TR>
 
 <TR>

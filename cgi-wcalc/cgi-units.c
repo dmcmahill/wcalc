@@ -1,7 +1,7 @@
-/* $Id: cgi-units.c,v 1.2 2002/05/10 22:52:27 dan Exp $ */
+/* $Id: cgi-units.c,v 1.3 2002/06/12 11:30:02 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -48,6 +48,7 @@
 /* libwcalc headers */
 #include "alert.h"
 #include "misc.h"
+#include "units.h"
 
 #include "cgi-units.h"
 
@@ -79,6 +80,65 @@ char * cgi_units_menu_show(const units_data *units, char *name, int ind)
   }  
   fprintf(cgiOut,"</SELECT>\n");
 
+  return "";
+}
+
+static void cgi_units_submenu(const wc_units_data *units, 
+			      char * name, int index)
+{
+  int i;
+
+  fprintf(cgiOut, "<SELECT NAME=\"%s\">\n", name);
+
+  /* populate the menu */
+  i = 0;
+  
+  while( units[i].name != NULL ) {
+    fprintf(cgiOut,"    <OPTION VALUE=\"%s\"", units[i].name);
+
+    if (i == index)
+      fprintf(cgiOut," SELECTED");
+
+    fprintf(cgiOut,">%s\n", units[i].name);
+    
+    i++;
+  }
+  fprintf(cgiOut, "</SELECT>\n");
+
+}
+char * cgi_units_menu(const wc_units *units, char *name)
+{
+  int i;
+
+  assert(units != NULL);
+
+  /* Create the numerator menus */
+  if (units->nnum == 0) {
+    fprintf(cgiOut, "1");
+  } else {
+    for ( i = 0; i < units->nnum; i++) {
+
+      cgi_units_submenu(units->num[i], name, units->numi[i]);
+
+      if (i < (units->nnum - 1)) 
+	fprintf(cgiOut, "-\n");
+      
+    }  
+      
+  }
+
+  if (units->nden > 0) {
+    fprintf(cgiOut, "/\n");
+      
+      for (i=0; i<units->nden; i++) {
+	cgi_units_submenu(units->den[i], name, units->deni[i]);
+	
+	if (i < (units->nden - 1)) 
+	  fprintf(cgiOut, "-\n");
+      }
+  }
+
+  
   return "";
 }
 
