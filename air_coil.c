@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.1 2001/09/13 21:16:49 dan Exp $ */
+/* $Id: air_coil.c,v 1.2 2001/09/14 01:59:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -292,7 +292,9 @@ static double air_coil_calc_int(air_coil *coil, double freq, int flag)
 
 void air_coil_syn(air_coil *coil, double f, int flag)
 {
-  double N,N1,N2;
+  double N=0;
+  double N1=0;
+  double N2=0;
   double lenPerTurn;
 
   double error;

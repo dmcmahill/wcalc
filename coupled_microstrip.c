@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.2 2001/09/14 01:59:04 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.3 2001/09/15 02:43:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -559,8 +559,8 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   double ci[] = {0.002, -0.347, 7.171, -36.910, 76.132, -51.616};
 
   int i;
-  double ze0,ze1,ze2,dedw,deds;
-  double zo0,zo1,zo2,dodw,dods;
+  double ze0=0,ze1,ze2,dedw,deds;
+  double zo0=0,zo1,zo2,dodw,dods;
 
 #ifdef DEBUG_SYN
   printf("coupled_microstrip_syn(): -------- Coupled_Microstrip Synthesis ----------\n");

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.2 2001/09/13 14:52:01 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.3 2001/09/15 02:57:39 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -81,7 +81,8 @@ int cgiMain(void){
 
   /* microstrip variables */
   ic_microstrip_line *line;
-  double freq, freq_Hz;
+  double freq;
+  double freq_Hz=0;
 
   double rho,rough,tmet,w,tox,eox,h,es,rhos;
   double Ro=0.0;

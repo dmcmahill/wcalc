@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.1 2001/02/11 19:26:27 dan Exp $ */
+/*      $Id: stripline.c,v 1.2 2001/09/13 19:13:25 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -586,23 +586,23 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
 
   /* the optimization variables, current, min/max, and previous values */
-  double var, varmax, varmin, varold;
+  double var=0, varmax=0, varmin=0, varold=0;
   
   /* errors due to the above values for the optimization variable */
-  double err, errmax, errmin, errold;
+  double err=0, errmax=0, errmin=0, errold=0;
 
   /* derivative */
   double deriv;
 
   /* the sign of the slope of the function being optimized */
-  double sign;
+  double sign=0;
 
   /* pointer to which parameter of the line is being optimized */
   double *optpar;
 
   /* number of iterations so far, and max number allowed */
-  int iters;
-  int maxiters=50;
+  int iters=0;
+  int maxiters=100;
   
   /* convergence parameters */
   double abstol=0.1e-6;
