@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.11 2002/01/18 03:04:56 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.12 2002/01/19 02:41:12 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -770,30 +770,54 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
 	  
 	case 'd':
 	  *((double *)addr) = atof(tok);
+#ifdef DEBUG
+	  printf("fspec_read_string():  read double = %g from \"%s\" (%s)\n",
+		 *((double *)addr),tok,cur->comment);
+#endif
 	  break;
 	  
 	case 'i':
 	  *((int *)addr) = atoi(tok);
+#ifdef DEBUG
+	  printf("fspec_read_string():  read int = %d from \"%s\" (%s)\n",
+		 *((int *)addr),tok,cur->comment);
+#endif
 	  break;
 	  
 	case 's':
 	  *((char **)addr) = strdup(tok);
+#ifdef DEBUG
+	  printf("fspec_read_string():  read string = %s from \"%s\" (%s)\n",
+		 *((char **)addr),tok,cur->comment);
+#endif
 	  break;
 	  
 	case 'f':
+#ifdef DEBUG
+	  printf("fspec_read_string():  skipping fixed key\n");
+#endif
 	  break;
 	  
 	default:
 	  fprintf(stderr,"fspec_read_string():  Invalid type, '%c' in fspec\n",cur->type);
 	  exit(1);
 	}
+	tok=strtok(NULL," ");
+
       }
       break;
 	
     case SPEC_FIXED:
+#ifdef DEBUG
+      printf("fspec_read_string():  skipping SPEC_FIXED\n");
+#endif
+      tok=strtok(NULL," ");
       break;
 	
     case SPEC_COMMENT:
+#ifdef DEBUG
+      printf("fspec_read_string():  skipping SPEC_COMMENT\n");
+#endif
       break;
 	
     default:
@@ -802,7 +826,6 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
     }
     
     cur = cur->next;
-    tok=strtok(NULL," ");
   }
   
   return rslt;
