@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.2 2004/07/19 22:36:13 dan Exp $ */
+/* $Id: units.c,v 1.3 2004/07/20 04:24:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -137,7 +137,7 @@ double wc_units_to_sf( const wc_units *units )
     sf *= units->num[i][units->numi[i]].sf ;
 
   for(i=0; i<units->nden; i++)
-    sf *= units->den[i][units->deni[i]].sf ;
+    sf /= units->den[i][units->deni[i]].sf ;
 
 #ifdef DEBUG
     printf("wc_units_to_sf():  final scale = %g\n", sf);
