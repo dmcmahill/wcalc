@@ -1,4 +1,4 @@
-/* $Id: coax_syn.c,v 1.3 2001/12/09 21:17:20 dan Exp $ */
+/* $Id: coax_syn.c,v 1.1 2001/12/11 03:38:22 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -44,8 +44,8 @@
 #include "mex.h"
 
 /*
- * [z0,elen,loss,L,R,C,G] = 
- *    coax_syn(a,b,c,tshield,rho_a,rho_b,er,tand,len,freq);
+ * [a,b,c,er,len,loss] = 
+ *    coax_syn(z0,elen,a,b,c,tshield,rho_a,rho_b,er,tand,freq,flag);
  */
 
 /* Input Arguments */
@@ -61,6 +61,7 @@
 #define	ER_IN	  prhs[8]
 #define	TAND_IN	  prhs[9]
 #define	FREQ_IN	  prhs[10]
+#define	FLAG_IN	  prhs[11]
 
 /* Output Arguments */
 
@@ -117,11 +118,13 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *a,*b,*c,*t,*rho_a,*rho_b,*er,*tand,*len,*freq;
+  double *a,*b,*c,*t,*rho_a,*rho_b,*er,*tand,*freq;
   double *z0, *elen;
+  double *flag;
   unsigned int *ind_a,*ind_b,*ind_c,*ind_t,*ind_rho_a,*ind_rho_b;
-  unsigned int *ind_er,*ind_tand,*ind_len;
-  unsigned int *ind_freq;
+  unsigned int *ind_er,*ind_tand,*ind_freq;
+  unsigned int *ind_z0,*ind_elen;
+  unsigned int *ind_flag;
 
   /* outputs */
   double *a_out,*b_out,*c_out,*er_out,*len_out;
@@ -148,10 +151,10 @@ void mexFunction(
    */
 
   /* Check for proper number of arguments */
-  if (nrhs != 11) 
+  if (nrhs != 12) 
     {
       mexErrMsgTxt("wrong number of input arguments to COAX_SYN"
-		   " (needs 11).");
+		   " (needs 12).");
     } 
 
   if (nlhs > 6)
@@ -181,6 +184,7 @@ void mexFunction(
   CHECK_INPUT(ER_IN, ER, ind_er, er);
   CHECK_INPUT(TAND_IN, TAND, ind_tand, tand);
   CHECK_INPUT(FREQ_IN, FREQ, ind_freq, freq);
+  CHECK_INPUT(FLAG_IN, FLAG, ind_flag, flag);
 
 
   /* Create matrices for the return arguments */
@@ -188,7 +192,7 @@ void mexFunction(
   B_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   C_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   ER_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  LEN_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LEN_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
   LOSS_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
