@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.61 2004/08/06 12:24:24 dan Exp $
+dnl $Id: configure.in,v 1.62 2004/08/11 13:04:35 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -74,6 +74,7 @@ WCALC_CFLAGS=-I\${top_srcdir}/libwcalc
 WCALC_LDADD=../libwcalc/libwcalc.la
 WCALC_LIBS=
 WCALC_CONFIG=#
+wc_libwcalc_yesno=no
 
 AC_PATH_PROG(WCALC_CONFIG, wcalc-config, none)
 if test "X$WCALC_CONFIG" != "Xnone" ; then
@@ -97,6 +98,7 @@ if test "X$WCALC_CONFIG" != "Xnone" ; then
 else
 	AC_MSG_RESULT([No installed libwcalc found])
 	LIB_WCALC=libwcalc
+	wc_libwcalc_yesno=yes
 fi
 
 AC_SUBST(LIB_WCALC)
@@ -110,6 +112,7 @@ AC_SUBST(WCALC_LIBS)
 # ------------- scilab tests -------------------
 #
 SCI_WCALC=
+wc_sci_wcalc_yesno=no
 
 AC_ARG_WITH([scilab],
 [  --with-scilab=[scidir]    Build the scilab frontend.  If scidir is
@@ -136,6 +139,7 @@ elif test "X$with_scilab" = "X" ; then
 	fi
 
 	SCI_WCALC=sci-wcalc
+	wc_sci_wcalc_yesno=yes
 else
 	SCI=$with_scilab
 	AC_PATH_PROG(SCILAB, scilab, no, [$SCI/bin:$PATH])
@@ -144,6 +148,7 @@ else
 	fi
 
 	SCI_WCALC=sci-wcalc
+	wc_sci_wcalc_yesno=yes
 fi
 ])
 
@@ -182,6 +187,7 @@ AC_SUBST(SCI_WCALC)
 # ------------- octave tests -------------------
 #
 OCT_WCALC=octave-wcalc
+wc_oct_wcalc_yesno=no
 
 AC_ARG_WITH([octave],
 [  --with-octave=octdir    Use the specified octave installation.  
@@ -195,6 +201,7 @@ if test "X$with_octave" = "Xno" ; then
 else
 	OCT=$with_octave
 	OCT_WCALC="octave-wcalc"
+	wc_oct_wcalc_yesno=yes
 fi
 ],
 [
@@ -223,6 +230,8 @@ AC_SUBST(OCT_WCALC)
 
 # ------------- enable/disable web pages  -------------------
 
+wc_htdocs_wcalc_yesno=no
+
 AC_MSG_CHECKING([if the web site should be generated])
 AC_ARG_ENABLE([htdocs],
 [  --enable-htdocs         Causes the web page to be built [default=no]],
@@ -230,20 +239,25 @@ AC_ARG_ENABLE([htdocs],
 if test "X$enable_htdocs" = "Xno" ; then
 	HTDOCS=""
 	AC_MSG_RESULT([no])
+	wc_htdocs_wcalc_yesno=no
 else
 	HTDOCS="htdocs"
 	AC_MSG_RESULT([yes])
+	wc_htdocs_wcalc_yesno=yes
 fi
 ],
 [
 HTDOCS=""
 AC_MSG_RESULT([no])
+wc_htdocs_wcalc_yesno=no
 ])
 AC_SUBST(HTDOCS)
 
 # ------------- done with --enable-htdocs -------------------
 
 # ------------- enable/disable stdio frontend  -------------------
+
+wc_stdio_wcalc_yesno=no
 
 AC_MSG_CHECKING([if the stdio frontend should be compiled])
 AC_ARG_ENABLE([stdio],
@@ -252,20 +266,24 @@ AC_ARG_ENABLE([stdio],
 if test "X$enable_stdio" = "Xno" ; then
 	STDIO_WCALC=""
 	AC_MSG_RESULT([no])
+	wc_stdio_wcalc_yesno=no
 else
 	STDIO_WCALC="stdio-wcalc"
 	AC_MSG_RESULT([yes])
+	wc_stdio_wcalc_yesno=yes
 fi
 ],
 [
 STDIO_WCALC="stdio-wcalc"
 AC_MSG_RESULT([yes])
+wc_stdio_wcalc_yesno=yes
 ])
 AC_SUBST(STDIO_WCALC)
 
 # ------------- done with --enable-stdio -------------------
 
 # ------------- enable/disable CGI frontend  -------------------
+wc_cgi_wcalc_yesno=no
 
 AC_MSG_CHECKING([if the CGI frontend should be compiled])
 AC_ARG_ENABLE([cgi],
@@ -274,14 +292,17 @@ AC_ARG_ENABLE([cgi],
 if test "X$enable_cgi" = "Xno" ; then
 	CGI_WCALC=""
 	AC_MSG_RESULT([no])
+	wc_cgi_wcalc_yesno=no
 else
 	CGI_WCALC="cgi-wcalc"
 	AC_MSG_RESULT([yes])
+	wc_cgi_wcalc_yesno=yes
 fi
 ],
 [
 CGI_WCALC="cgi-wcalc"
 AC_MSG_RESULT([yes])
+wc_cgi_wcalc_yesno=yes
 ])
 AC_SUBST(CGI_WCALC)
 
@@ -290,17 +311,22 @@ AC_SUBST(CGI_WCALC)
 
 # ------------- enable/disable GTK+ frontend  -------------------
 
+wc_gtk_wcalc_yesno=no
+
 AC_ARG_ENABLE([gtk],
 [  --enable-gtk            Causes the GTK+ frontend to be built [default=yes]],
 [
 if test "X$enable_gtk" = "Xno" ; then
 	GTK_WCALC=""
+	wc_gtk_wcalc_yesno=no
 else
 	GTK_WCALC="gtk-wcalc"
+	wc_gtk_wcalc_yesno=yes
 fi
 ],
 [
 GTK_WCALC="gtk-wcalc"
+wc_gtk_wcalc_yesno=yes
 ])
 AC_SUBST(GTK_WCALC)
 
@@ -395,6 +421,7 @@ AC_SUBST(HTMLPATH)
 # ------------- enable/disable Matlab/MEX frontend  -------------------
 
 MATLAB_DIR=""
+wc_mex_wcalc_yesno=no
 
 # because automake insists that .m files are for objective-C
 OBJC="echo"
@@ -406,14 +433,17 @@ AC_ARG_WITH([matlab],
 [
 if test "X$with_matlab" = "Xno" ; then
 	MEX_WCALC=""
+	wc_mex_wcalc_yesno=no
 else
 	MEX_WCALC="mex-wcalc"
 	MATLAB_DIR=$with_matlab
+	wc_mex_wcalc_yesno=yes
 fi
 ],
 [
 with_matlab=no
 MEX_WCALC=""
+wc_mex_wcalc_yesno=no
 ])
 AC_SUBST(MATLAB_DIR)
 AC_SUBST(MEX_WCALC)
@@ -561,7 +591,10 @@ dnl GTK checks
 AC_MSG_CHECKING([if gtk-wcalc should be built])
 if test "X$enable_gtk" != "Xno" ; then
 	AC_MSG_RESULT([yes])
-	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0, GTK22="yes", GTK22="no")
+	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0, 
+		GTK22="yes"
+		GTK_VER=`$PKG_CONFIG --version gtk+-2.0`,
+		GTK22="no")
 
 	if test "X$GTK22" = "Xno" ; then
 	AC_MSG_NOTICE([Did not find gtk-2.2.0 or higher.  I will look for gtk-1.2])
@@ -619,6 +652,7 @@ AC_SUBST(GTK_LIBS)
 
 # ------------- dmalloc -------------------
 dnl dmalloc checks
+wc_dmalloc_yesno=no
 AC_MSG_CHECKING([if dmalloc debugging should be enabled])
 AC_ARG_ENABLE([dmalloc],
 [  --enable-dmalloc        Compile and link with dmalloc for malloc debugging [default=no]],
@@ -628,22 +662,27 @@ if test "X$enable_dmalloc" != "Xno" ; then
 	AC_CHECK_HEADERS(dmalloc.h)
 	DMALLOC_CFLAGS="-I/usr/pkg/include -DDMALLOC"
 	DMALLOC_LIBS="-L/usr/pkg/lib -R/usr/pkg/lib -ldmalloc"
+	wc_dmalloc_yesno=yes
 else
 	AC_MSG_RESULT([no])
 	DMALLOC_CFLAGS=""
 	DMALLOC_LIBS=""
+	wc_dmalloc_yesno=no
 fi
 ],
 [
 DMALLOC_CFLAGS=""
 DMALLOC_LIBS=""
 AC_MSG_RESULT([no])
+wc_dmalloc_yesno=no
 ])
 AC_SUBST(DMALLOC_CFLAGS)
 AC_SUBST(DMALLOC_LIBS)
 
 # ------------- ElectricFence -------------------
-dnl dmalloc checks
+dnl ElectricFence checks
+wc_efence_yesno=no
+
 AC_MSG_CHECKING([if ElectricFence debugging should be enabled])
 AC_ARG_ENABLE([efence],
 [  --enable-efence         Link with ElectricFence for malloc debugging [default=no]],
@@ -651,14 +690,17 @@ AC_ARG_ENABLE([efence],
 if test "X$enable_efence" != "Xno" ; then
 	AC_MSG_RESULT([yes])
 	EFENCE_LIBS="-L/usr/pkg/lib -R/usr/pkg/lib -lefence"
+	wc_efence_yesno=yes
 else
 	AC_MSG_RESULT([no])
 	EFENCE_LIBS=""
+	wc_efence_yesno=no
 fi
 ],
 [
 EFENCE_LIBS=""
 AC_MSG_RESULT([no])
+wc_efence_yesno=no
 ])
 AC_SUBST(EFENCE_LIBS)
 
@@ -681,17 +723,34 @@ if test "x$GCC" = "xyes"; then
 fi
 AC_SUBST(LIBWALC_LDFLAGS)
 
+
 # print a summary of paths and such since there are a bunch
 AC_MSG_NOTICE([
 --------------------------------------------
    cgi-wcalc options
---------------------------------------------
+
 html directory = $HTMLDIR
 html path      = $HTMLPATH
 cgi directory  = $CGIBINDIR
 cgi path       = $CGIPATH
 --------------------------------------------
-])
+   The following will be built
+
+   htdocs      $wc_htdocs_yesno
+   libwcalc    $wc_libwcalc_yesno
+   cgi-wcalc   $wc_cgi_wcalc_yesno
+   gtk-wcalc   $wc_gtk_wcalc_yesno
+   mex-wcalc   $wc_mex_wcalc_yesno
+   oct-wcalc   $wc_oct_wcalc_yesno
+   sci-wcalc   $wc_sci_wcalc_yesno
+   stdio-wcalc $wc_stdio_wcalc_yesno
+
+   dmalloc debugging         $wc_dmalloc_yesno
+   ElectricFence debugging   $wc_efence_yesno
+
+--------------------------------------------
+]
+)
 
 AC_OUTPUT(
 	Makefile 
