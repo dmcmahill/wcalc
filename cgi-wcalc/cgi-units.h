@@ -1,4 +1,4 @@
-/* $Id: cgi-units.h,v 1.5 2004/07/22 20:45:12 dan Exp $ */
+/* $Id: cgi-units.h,v 1.6 2004/07/22 21:35:08 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -72,7 +72,7 @@ typedef struct _CGI_UNITS_MENU
 
 } cgi_units_menu;
 
-char * cgi_units_menu_show(const units_data *u, char *name, int ind);
+char * cgi_units_menu_show(const wc_units_data *u, char *name, int ind);
 char ** cgi_units_inductance(void);
 char * cgi_units_menu_display(cgi_units_menu *menu);
 

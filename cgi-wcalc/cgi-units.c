@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.9 2004/07/23 22:11:51 dan Exp $ */
+/* $Id: cgi-units.c,v 1.10 2004/07/28 04:41:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -60,7 +60,7 @@
 
 static cgi_menu_list * all_menus=NULL;
 
-char * cgi_units_menu_show(const units_data *units, char *name, int ind)
+char * cgi_units_menu_show(const wc_units_data *units, char *name, int ind)
 {
   int i;
 
@@ -156,30 +156,6 @@ char * cgi_units_menu_display(cgi_units_menu *menu)
   return "";
 }
 
-char ** cgi_units_inductance(void)
-{
-  int i;
-  static char ** u=NULL;
-
-
-  if (u == NULL) {
-    i=0;
-    while (inductance_units[i].name != NULL){
-      i++;
-    }
-    if ( (u = malloc(i*sizeof(char *))) == NULL ) {
-      fprintf(stderr,"cgi_units_inductance():  malloc() failed\n");
-      exit(1);
-    }
-    i=0;
-    while (inductance_units[i].name != NULL){
-      u[i] = inductance_units[i].name;
-      i++;
-    }
-  }
-
-  return u;
-}
 
 cgi_units_menu * cgi_units_menu_new(wc_units *units)
 {
