@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# $Id: format_tab,v 1.1 2002/01/05 02:55:11 dan Exp $
+# $Id: format_tab,v 1.2 2002/01/07 10:56:44 dan Exp $
 #
 # Copyright (c) 2002 Dan McMahill
 # All rights reserved.
@@ -65,7 +65,9 @@
 # -------------------
 # HTML mode variables
 # -------------------
-#    html_border  = BORDER value for table
+#    html_border   = BORDER value for table
+#    html_caption  = <CAPTION>  for table
+#    html_no_table = disable the opening/closing <TABLE> and <CAPTION> tags
 #
 # ========
 # Examples
@@ -105,13 +107,15 @@ first==1 {
     printf("\n");
   }
   else if (type == "html") {
-    if (html_border == "") {html_border = 2;}
-    printf("<TABLE BORDER=%d>\n",html_border);
-    printf("<CAPTION>\n");
-    printf("<font COLOR=\"#FF0000\" SIZE=+2>\n");
-    printf("Popular Substrate Materials\n");
-    printf("</font>\n");
-    printf("</CAPTION>\n");
+    if (html_no_table == "") {
+      if (html_border == "") {html_border = 2;}
+      printf("<TABLE BORDER=%d>\n",html_border);
+      if (html_caption != "") {
+        printf("<CAPTION>\n");
+        printf("%s\n",html_caption);
+        printf("</CAPTION>\n");
+      }
+    }
   }
   else {
     printf("ERROR:  unknown \"type\" = \"%s\"\n",type) > /dev/stderr;
@@ -181,6 +185,8 @@ END {
     printf("  return tab;\n}\n");
   }
   else if (type == "html") {
-    printf("</TABLE>\n");
+    if (html_no_table == "") {
+      printf("</TABLE>\n");
+    }
   }
 }
