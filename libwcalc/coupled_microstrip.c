@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.3 2002/02/16 15:44:31 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.4 2002/05/09 23:49:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -268,7 +268,7 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    */
   Q1 = 0.8695*(pow(u,0.194));
   Q2 = 1.0 + 0.7519*g + 0.189*(pow(g,2.31));
-  Q3 = 0.1975 + pow((16.6 + pow((8.4/g),6)),-0.387) 
+  Q3 = 0.1975 + pow((16.6 + pow((8.4/g),6.0)),-0.387) 
     + log((pow(g,10.0))/(1.0 + pow((g/3.4),10.0)))/241.0;
   Q4 = (.02*Q1/Q2)/(exp(-g)*(pow(u,Q3)) + (2.0 - exp(-g))*(pow(u,-Q3)));
   z0e0 = ZL0 * sqrt(EF/EFE0) / (1.0 - (ZL0/377)*sqrt(EF)*Q4);
@@ -635,7 +635,7 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
   F3 = 0;
   for (i=0 ; i<=5 ; i++)
     {
-      F3 = F3 + (bi[i] - ci[i]*(9.6 - er))*pow((0.6 - k),(i-1));
+      F3 = F3 + (bi[i] - ci[i]*(9.6 - er))*pow((0.6 - k),(double)(i-1));
     }
 
   w = h*fabs(F1*F2);
