@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.8 2001/09/12 03:47:01 dan Exp $
+dnl $Id: configure.in,v 1.9 2001/09/16 02:39:49 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -88,4 +88,4 @@ fi
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-AC_OUTPUT(Makefile cgi/Makefile)
+AC_OUTPUT(Makefile cgi/Makefile pixmaps/Makefile)
