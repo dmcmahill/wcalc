@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.2 2001/12/21 03:10:51 dan Exp $ */
+/*      $Id: mathutil.h,v 1.3 2002/02/16 15:38:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -62,46 +62,75 @@ typedef struct COMPLEX
 
 /* addition (a+b) */
 complex c_add(complex a, complex b);
+complex * c_add_p(complex *a, complex *b, complex *c);
 
 /* subtraction (a-b) */
 complex c_sub(complex a, complex b);
+complex * c_sub_p(complex *a, complex *b, complex *c);
 
 /* multiplication (a*b) */
 complex c_mul(complex a, complex b);
+complex * c_mul_p(complex *a, complex *b, complex *c);
 
 /* multiplication by a real number (x*a)*/
 complex c_rmul(double x, complex a);
+complex * c_rmul_p(double x, complex *a, complex *b);
 
 /* division (x/y) */
 complex c_div(complex x, complex y);
+complex * c_div_p(complex *x, complex *y, complex *z);
 
 /* complex conjugate (a*) */
 complex c_conj(complex a);
+complex * c_conj_p(complex *a, complex *b);
 
 /* magnitude (|z|) */
 double  c_abs(complex a);
+double c_abs_p(complex *a);
 
 /* angle */
 double c_arg(complex x);
+double c_arg_p(complex *a);
 
 /* create complex number from its real and imaginary parts */
 complex c_complex(double real, double imag);
+complex * c_complex_p(double real, double imag, complex *z);
+
+/* create a new unititialized complex variable */
+complex * c_complex_new(void);
 
 /* square-root */
 complex c_sqrt(complex x);
+complex * c_sqrt_p(complex *a, complex *b);
 
 /* complex trig functions */
 complex c_cos(complex x);
+complex * c_cos_p(complex *a, complex *b);
+
 complex c_cosh(complex x);
+complex * c_cosh_p(complex *a, complex *b);
+
 complex c_sin(complex x);
+complex * c_sin_p(complex *a, complex *b);
+
 complex c_sinh(complex x);
+complex * c_sinh_p(complex *a, complex *b);
+
 complex c_tan(complex x);
+complex * c_tan_p(complex *a, complex *b);
+
 complex c_cot(complex x);
+complex * c_cot_p(complex *a, complex *b);
+
 complex c_tanh(complex x);
+complex * c_tanh_p(complex *a, complex *b);
+
 complex c_coth(complex x);
+complex * c_coth_p(complex *a, complex *b);
 
 /* logarithm */
 complex c_log(complex x);
+complex * c_log_p(complex *x, complex *z);
 
 /* Bessel functions of complex arguments */
 complex c_bessel_J0(complex x);

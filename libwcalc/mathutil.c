@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.2 2001/12/21 03:10:50 dan Exp $ */
+/* $Id: mathutil.c,v 1.3 2002/02/16 15:39:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -37,8 +37,10 @@
 
 #include "config.h"
 
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "mathutil.h"
 
 double coth(double x)
@@ -48,7 +50,7 @@ double coth(double x)
 
 
 /*
- * The methods for the complex math are from :
+ * The methods for most of the complex math are from :
  *
  * W. Press, S. Teukilsky, W. Vetterling, and B. Flannery,
  * "Numerical Recipes in C", 2nd ed, 1992, Cambridge University
@@ -69,12 +71,34 @@ complex c_add(complex a, complex b)
   return z;
 }
 
+complex * c_add_p(complex *a, complex *b, complex *c)
+{
+  if (c == NULL) 
+    c = c_complex_new();
+
+  c->re = a->re + b->re;
+  c->im = a->im + b->im;
+  
+  return c;
+}
+
 complex c_sub(complex a, complex b)
 {
   complex z;
   REAL(z) = REAL(a) - REAL(b);
   IMAG(z) = IMAG(a) - IMAG(b);
   return z;
+}
+
+complex * c_sub_p(complex *a, complex *b, complex *c)
+{
+  if (c == NULL) 
+    c = c_complex_new();
+
+  c->re = a->re + b->re;
+  c->im = a->im - b->im;
+  
+  return c;
 }
 
 
@@ -86,12 +110,39 @@ complex c_mul(complex a, complex b)
   return z;
 }
 
+complex * c_mul_p(complex *a, complex *b, complex *c)
+{
+  double a_re, b_re;
+  
+  a_re = a->re;
+  b_re = b->re;
+
+  if (c == NULL) 
+    c = c_complex_new();
+
+  c->re = a->re*b->re - a->im*b->im;
+  c->im = a->im*b_re + a_re*b->im;
+
+  return c;
+}
+
 complex c_rmul(double x, complex a)
 {
   complex z;
   REAL(z) = x*REAL(a);
   IMAG(z) = x*IMAG(a);
   return z;
+}
+
+complex * c_rmul_p(double x, complex *a, complex *b)
+{
+  if (b == NULL) 
+    b = c_complex_new();
+
+  b->re = x*a->re;
+  b->im = x*a->im;
+  
+  return b;
 }
 
 
@@ -138,12 +189,68 @@ complex c_div(complex x, complex y)
   return z;
 }
 
+complex * c_div_p(complex *x, complex *y, complex *z)
+{
+  double a,b,c,d;
+  /* temp variables to reduce duplicated calculations */
+  double rat, den;
+
+  a = x->re;
+  b = x->im;
+  c = y->re;
+  d = y->im;
+
+  if (z == NULL) 
+    z = c_complex_new();
+
+#ifdef DEBUG_C_DIV  
+  printf("c_div(%g + %g i, %g + %g i)(%p,%p)\n",a,b,c,d,x,y);
+#endif
+
+  if (d == 0){
+    /* the divisor is real */
+    z->re = a/c;
+    z->im = b/c;
+  }
+  else if (c == 0){
+    z->re = b/d;
+    z->im = -a/d;
+  }
+  else{
+    if (fabs(c) >= fabs(d)){
+      rat = d/c;
+      den = c + d*rat;
+      z->re = (a + b*rat)/den;
+      z->im = (b - a*rat)/den;
+    }
+    else{
+      rat = c/d;
+      den = d + c*rat;
+      z->re = (a*rat + b)/den;
+      z->im = (b*rat - a)/den;
+    }
+  }
+
+  return z;
+}
+
 complex c_conj(complex a)
 {
   complex z;
   REAL(z) = REAL(a);
   IMAG(z) = -IMAG(a);
   return z;
+}
+
+complex * c_conj_p(complex *a, complex *b)
+{
+  if (b == NULL) 
+    b = c_complex_new();
+
+  b->re = a->re;
+  b->im = -b->im;
+
+  return b;
 }
 
 
@@ -176,6 +283,35 @@ double c_abs(complex z)
   return zabs;
 }
 
+double c_abs_p(complex *z)
+{
+  double a,b,zabs;
+
+  a=z->re;
+  b=z->im;
+
+  if (b == 0.0){
+    /* we're purely real, so lets bail out now */
+    zabs = fabs(a);
+  }
+  else if (a == 0.0){
+    /* we're purely imaginary, so lets bail out now */
+    zabs = fabs(b);
+  }
+  else{
+    /* 
+     * the input is actually complex, so we have to do some work 
+     * and implement (5.4.4) from NR
+     */
+    if (fabs(a) >= fabs(b))
+      zabs = fabs(a)*sqrt(1.0 + pow(b/a,2.0));
+    else
+      zabs = fabs(b)*sqrt(1.0 + pow(a/b,2.0));
+  }
+  
+  return zabs;
+}
+
 /* returns the angle */
 double c_arg(complex x)
 {
@@ -184,11 +320,41 @@ double c_arg(complex x)
   return phi;
 }
 
+double c_arg_p(complex *x)
+{
+  double phi;
+  phi = atan2(x->im,x->re);
+  return phi;
+}
+
 complex c_complex(double re, double im)
 {
   complex z;
   REAL(z) = re;
   IMAG(z) = im;
+  return z;
+}
+
+complex *c_complex_p(double re, double im, complex *z)
+{
+  if (z == NULL)
+    z=c_complex_new();
+
+  z->re = re;
+  z->im = im;
+  return z;
+}
+
+complex *c_complex_new(void)
+{
+  complex *z;
+  
+  z = (complex * ) malloc(sizeof(complex));
+  if (z == NULL) {
+    fprintf(stderr,"mathutil.c: c_complex_new():  malloc failed\n");
+    exit(1);
+  }
+
   return z;
 }
 
@@ -235,6 +401,50 @@ complex c_sqrt(complex x)
 }
 
 
+complex * c_sqrt_p(complex *x, complex *z)
+{
+  double c, d;
+  double w;
+
+  if (z == NULL)
+    z = c_complex_new();
+
+  c = x->re;
+  d = x->im;
+
+  if ( (c == 0.0) && (d == 0.0) ){
+    z->re = 0.0;
+    z->im = 0.0;
+    return z;
+  }
+  else if (fabs(c) >= fabs(d)){
+    w = sqrt(fabs(c)) * sqrt( (1.0 + sqrt(1.0 + pow(d/c,2.0))) / 2.0);
+  }
+  else{
+    w = sqrt(fabs(d)) * sqrt( (fabs(c/d) + sqrt(1.0 + pow(c/d,2.0))) / 2.0);
+  }
+
+  if (w == 0.0){
+    z->re = 0.0;
+    z->im = 0.0;
+  }
+  else if (c >= 0.0){
+    z->re = w;
+    z->im = d/(2.0*w);
+  }
+  else if (d >= 0.0){
+    z->re = fabs(d)/(2.0*w);
+    z->im = w;
+  }
+  else{
+    z->re = fabs(d)/(2.0*w);
+    z->im = -w;
+  }
+
+  return z;
+}
+
+
 /*
  * complex trig functions
  */
@@ -248,6 +458,13 @@ complex c_cos(complex x)
   return y;
 }
 
+complex * c_cos_p(complex *x, complex *z)
+{
+  z = c_complex_p( cosh(x->im)*cos(x->re),
+		   -sinh(x->im)*sin(x->re), z );
+  return z;
+}
+
 complex c_cosh(complex x)
 {
   complex y;
@@ -255,6 +472,15 @@ complex c_cosh(complex x)
   y = c_complex( cosh(REAL(x))*cos(IMAG(x)),
 		 sinh(REAL(x))*sin(IMAG(x)) );
   return y;
+}
+
+complex * c_cosh_p(complex *x, complex *z)
+{
+
+  z = c_complex_p( cosh(x->re)*cos(x->im),
+		   sinh(x->re)*sin(x->im), z );
+
+  return z;
 }
 
 complex c_sin(complex x)
@@ -266,6 +492,14 @@ complex c_sin(complex x)
   return y;
 }
 
+complex * c_sin_p(complex *x, complex *z)
+{
+  z = c_complex_p( cosh(x->im)*sin(x->re),
+		   sinh(x->im)*cos(x->re), z);
+
+  return z;
+}
+
 complex c_sinh(complex x)
 {
   complex y;
@@ -273,6 +507,15 @@ complex c_sinh(complex x)
   y = c_complex( sinh(REAL(x))*cos(IMAG(x)),
 		 cosh(REAL(x))*sin(IMAG(x)) );
   return y;
+}
+
+complex * c_sinh_p(complex *x, complex *z)
+{
+
+  z =  c_complex_p( sinh(x->re)*cos(x->im),
+		    cosh(x->re)*sin(x->im), z);
+
+  return z;
 }
 
 complex c_tan(complex x)
@@ -284,6 +527,21 @@ complex c_tan(complex x)
   return y;
 }
 
+complex * c_tan_p(complex *x, complex *z)
+{
+  complex *s,*c;
+
+  s=c_sin_p(x,NULL);
+  c=c_cos_p(x,NULL);
+
+  z = c_div_p(s,c,z);
+
+  free(s);
+  free(c);
+
+  return z;
+}
+
 complex c_cot(complex x)
 {
   complex y;
@@ -291,6 +549,21 @@ complex c_cot(complex x)
   y = c_div(c_cos(x),c_sin(x));
 
   return y;
+}
+
+complex * c_cot_p(complex *x, complex *z)
+{
+  complex *s,*c;
+
+  s=c_sin_p(x,NULL);
+  c=c_cos_p(x,NULL);
+
+  z=c_div_p(c,s,z);
+
+  free(s);
+  free(c);
+
+  return z;
 }
 
 complex c_tanh(complex x)
@@ -302,6 +575,21 @@ complex c_tanh(complex x)
   return y;
 }
 
+complex * c_tanh_p(complex *x, complex *z)
+{
+  complex *s,*c;
+
+  s=c_sinh_p(x,NULL);
+  c=c_cosh_p(x,NULL);
+
+  z=c_div_p(s,c,z);
+
+  free(s);
+  free(c);
+
+  return z;
+}
+
 complex c_coth(complex x)
 {
   complex y;
@@ -309,6 +597,21 @@ complex c_coth(complex x)
   y = c_div(c_cosh(x),c_sinh(x));
 
   return y;
+}
+
+complex * c_coth_p(complex *x, complex *z)
+{
+  complex *s,*c;
+
+  s=c_sinh_p(x,NULL);
+  c=c_cosh_p(x,NULL);
+
+  z=c_div_p(c,s,z);
+
+  free(s);
+  free(c);
+
+  return z;
 }
 
 
@@ -323,6 +626,16 @@ complex c_log(complex x)
   r = log(c_abs(x));
   i = c_arg(x);
   z = c_complex(r,i);
+  return z;
+}
+
+complex * c_log_p(complex *x, complex *z)
+{
+  double r,i;
+
+  r = log(c_abs_p(x));
+  i = c_arg_p(x);
+  z = c_complex_p(r,i,z);
   return z;
 }
 
