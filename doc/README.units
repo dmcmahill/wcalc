@@ -1,0 +1,97 @@
+# $Id$
+######################################################################
+
+------------------------------------------------------------
+Notes on the use and handling of various units within wcalc.
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+Current approach
+------------------------------------------------------------
+
+in gtk-wcalc
+------------
+
+air_coil_gui.c has:
+
+  GList *IndUnits=NULL;
+
+  IndUnits = g_list_append(IndUnits,"pH");
+  IndUnits = g_list_append(IndUnits,"nH");
+  IndUnits = g_list_append(IndUnits,"uH");
+  IndUnits = g_list_append(IndUnits,"mH");
+  IndUnits = g_list_append(IndUnits,"H");
+
+  combo =  gtk_combo_new();
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo), IndUnits);
+
+then when the combo box is changed:
+
+  gui->coil->L_units = vstr;
+  gui->coil->L_sf = induct_units_get_sf(vstr);
+  gtk_label_set_text(GTK_LABEL(gui->label_Lmax_units),vstr);
+
+and in libwcalc/misc.c:
+
+static const units_data inductance_units[]=
+{
+  {"pH", 1e-12},
+  {"nH", 1e-9},
+  {"uH", 1e-6},
+  {"mH", 1e-3},
+  {"H", 1.0},
+  {"kH", 1e3}
+};
+
+double induct_units_get_sf(char *str)
+{
+  if (strcmp(str,"pH") == 0)
+    return 1e-12;
+  else if (strcmp(str,"nH") == 0)
+    return 1e-9;
+  else if (strcmp(str,"uH") == 0)
+    return 1e-6;
+  else if (strcmp(str,"mH") == 0)
+    return 1e-3;
+  else if (strcmp(str,"H") == 0)
+    return 1.0;
+  else if (strcmp(str,"kH") == 0)
+    return 1e3;
+  else{
+    fprintf(stderr,"ERROR:  inductance units string \"%s\" not recognised\n",
+            str);
+    exit(1);
+  }
+
+}
+
+------------------------------------------------------------
+Problems with the existing approach
+------------------------------------------------------------
+
+1) tremendous duplication of strings making it hard to maintain.  Ie, every
+time another module wants/needs something with inductance units, it makes
+its own GList containing the units it wants, but the strings all have to be
+consistent everywhere.  This could be improved by defining lots of macros
+like UNITS_INDUCTANCE_NH "nH" all over the place.
+
+2) very clumsy for composite units like nH/mil or ohm-cm.
+
+3) poor compatibility with i18n via gettext.
+
+------------------------------------------------------------
+Possible approaches
+------------------------------------------------------------
+
+1) create a library based on units(1) that contains a select set of units
+and prefixes.  How does this work with i18n?  But this could help with
+composite units.
+
+
+
+######################################################################
+# Local Variables:
+# mode:		Text
+# fill-column:	75
+# End:
