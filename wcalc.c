@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.3 2001/02/17 16:56:37 dan Exp $ */
+/* $Id: wcalc.c,v 1.4 2001/09/12 23:55:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -856,7 +856,7 @@ void mscalc( GtkWidget *w, gpointer data )
       vstr = gtk_entry_get_text( GTK_ENTRY(text_elen) ); 
       mstr.len = atof(vstr);
 
-      microstrip_syn(&mstr,freq);
+      microstrip_syn(&mstr,freq,MLISYN_W);
 
  
       sprintf(str,"%8f",mstr.w/sf);
