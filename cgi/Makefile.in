@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001/09/11 23:09:37 dan Exp $
+# $Id: Makefile.in,v 1.2 2001/09/12 00:10:44 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -35,7 +35,7 @@
 
 default: all
 
-#@SET_MAKE@
+@SET_MAKE@
 
 
 prefix      = @prefix@
@@ -70,10 +70,10 @@ IC_MICROSTRIP_CGI_CFILES=	ic_microstrip.cgi.c \
 IC_MICROSTRIP_CGI_OFILES=	${IC_MICROSTRIP_CGI_CFILES:.c=.o}
 
 ic_microstrip.html.c:	ic_microstrip.html.in
-	../html2c out=cgiOut ic_microstrip.html.in > ic_microstrip.html.c
+	../html2c out=cgiOut $(srcdir)/ic_microstrip.html.in > $(srcdir)/ic_microstrip.html.c
 
 ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip.html.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c ic_microstrip.cgi.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/ic_microstrip.cgi.c
 
 ic_microstrip.cgi:  ic_microstrip.cgi.o ../ic_microstrip.o ../mathutil.o cgic.o
 	$(CC) $(CFLAGS) -o $@ $(IC_MICROSTRIP_CGI_OFILES) $(LDFLAGS) $(LIBS)
