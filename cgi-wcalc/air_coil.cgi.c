@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.1 2001/10/05 01:28:28 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.2 2001/10/30 23:54:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -195,7 +195,7 @@ int cgiMain(void){
   /* nH -> H */
   coil->L      = L*1e-9 ;
 
-  /* MHz -> MHz */
+  /* MHz -> Hz */
   coil->freq  = freq*1e6   ;
 
   /* convert to Hz from MHz */
