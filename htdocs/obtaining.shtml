@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: obtaining.shtml,v 1.1 2001/10/16 04:15:33 dan Exp $ -->
+<!-- $Id: obtaining.shtml,v 1.2 2001/10/16 13:11:08 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -56,9 +56,7 @@ stripline synthesis,
     systems.  Please note that these are maintained by groups other
     than the Wcalc maintainer:<br>
     <ul>
-    <li>A<a
-    href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/cad/wcalc/README.html">package</a>
-    for <a href="http://www.netbsd.org">NetBSD</a>.</LI>
+    <li><a href="http://www.netbsd.org">NetBSD</a>:  <a href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/cad/wcalc/README.html">Wcalc Package</a>.</li>
     </ul>
     </p>
 
