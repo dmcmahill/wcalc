@@ -1,7 +1,7 @@
-/* $Id: coax.c,v 1.27 2004/12/04 00:27:12 dan Exp $ */
+/* $Id: coax.c,v 1.28 2005/02/12 15:20:41 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -59,7 +59,7 @@
  */
 
 /* debug the coax_calc() function */
-/* #define DEBUG_CALC */
+#define DEBUG_CALC
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
 
@@ -85,7 +85,11 @@
 #include <dmalloc.h>
 #endif
 
-/* finds the error in the TE10 boundary condition.  Error should be 0 */
+/*
+ * finds the error in the TE10 boundary condition.  Error should be 0.
+ * Note that this assumes that c == 0 (center conductor is not offset
+ * with respect to the shield.
+ */
 static double coax_TE10_err(coax_line *line, double k)
 {
   double err;
@@ -172,6 +176,17 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 
   /*
    * find characteristic impedance (from Rosloniec)
+   *
+   * Note that Rosloniec deals in diameters while I deal
+   * in radii.  Also, Rosloniec swaps a and b from the notation I'm
+   * using here.
+   * x = (b + [a^2 - 4c^2]/b)/(2a) is on p. 184 of Rosloniec.
+   *
+   * substituting b = 2a, a=2b gives
+   *
+   * x = (2a + [4b^2 - 4c^2]/2a)/(4b)
+   *   = ( a + [2b^2 - 2c^2]/2a)/(2b)
+   *   = ( a + [ b^2 -  c^2]/ a)/(2b)
    */
   x = (line->a + ( pow(line->b,2.0) - pow(line->c,2.0) )/line->a) / 
     (2*line->b);
@@ -203,7 +218,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 
 #ifdef DEBUG_CALC
   printf("coax_calc_int():  Found line->L (%p) = %g\n",
-	 &(line->L), line->L);
+	 (void *) &(line->L), line->L);
 #endif
 
   if (flag == CALC_ALL) {
@@ -224,7 +239,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      */
 
     if (omega > 0) {
-      /* center and shield skindepths */
+      /* center and shield skin depths */
       delta_c = sqrt(2*line->rho_a/(omega*mu0));
       delta_s = sqrt(2*line->rho_b/(omega*mu0));
 #ifdef DEBUG_CALC
@@ -254,7 +269,13 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
       Rs0 = 0;
       Rs  = 0;
     } else {
-      Gs0 = 2.0 * M_PI * line->tshield * 	(line->b + line->tshield/2) / line->rho_b;
+      /*
+       * cross sectional area is pi*(b+t)^2 - pi*(b)^2 =
+       * pi * [ b^2 + 2*b*t + t^2 - b^2 ] = pi*[2*b*t + t^2]
+       * = pi*t*[2*b + t] = 2*pi*t*[b + t/2]
+       */
+      /* zero frequency incremental conductance and resistance */
+      Gs0 = 2.0 * M_PI * line->tshield * (line->b + line->tshield/2) / line->rho_b;
       Rs0 = 1/Gs0;
     }
 
@@ -269,9 +290,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 
     /*
      * Wheelers incremental inductance calculation for finding
-     * conductor losses.  This should correctly deal with the current
-     * distributes which are found when c != 0 (i.e. center conductor
-     * is offset
+     * conductor losses.  This should correctly deal with
+     * c != 0 (i.e. center conductor is offset)
      */
 
     /* clone the line */
@@ -281,7 +301,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     tmp_line.er = 1.0;
 
 #ifdef DEBUG_CALC
-    printf("\ncoax_calc_int():  ********** Starting Wheelers Incremental Inductance #1 **********\n");
+    printf("\ncoax_calc_int():  "
+	   "********** Starting Wheelers Incremental Inductance #1 (er = 1) **********\n");
 #endif
     rslt = coax_calc_int(&tmp_line, line->freq, CALC_MIN);
     z1 = tmp_line.z0;
@@ -293,48 +314,81 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      */
 
     /* 
-     * center conductor.  Note that "a" is a diameter so we need to
+     * center conductor.  Note that "a" is a radius.  We need to
      * subtract the skin depth in the center conductor.  Instead of
-     * the true skin depth, use 1/1000 of the conductor size
+     * the true skin depth, use 1/100 of the conductor size
      */
+    /*
     if( line->a > 6.0*delta_c) {
       tmp_line.a = line->a - 0.5*delta_c;
+    */
+    /*
+     * pick a new analysis frequency that gives a skin depth which is
+     * 1/10 the radius
+     */
+    tmp_line.freq = (2.0 * line->rho_a ) / (pow(0.01*line->a,2.0) * mu0);
+    tmp_line.freq = tmp_line.freq / (2.0 * M_PI);
+
+    tmp_line.a = line->a - 0.5*0.01*line->a;
 #ifdef DEBUG_CALC
-    printf("\ncoax_calc_int():  ********** Starting Wheelers Incremental Inductance #2 **********\n");
+    printf("\ncoax_calc_int():  "
+	   "********** Starting Wheelers Incremental Inductance #2 (modify center) **********\n");
 #endif
-    rslt = coax_calc_int(&tmp_line, line->freq, CALC_MIN);
+    rslt = coax_calc_int(&tmp_line, tmp_line.freq, CALC_MIN);
     z2 = tmp_line.z0;
 
     /* conduction losses, nepers per meter */
-    lc = (M_PI*line->freq/LIGHTSPEED)*(z2 - z1)/line->z0;
+    lc = (M_PI*tmp_line.freq/LIGHTSPEED)*(z2 - z1)/line->z0;
     
     /* high frequency resistance */
     RcHF = lc*2*line->z0;
+#ifdef DEBUG_CALC
+    printf("\ncoax_calc_int():  Found RcHF = %g Ohms which will be "
+	   "scaled by %g\n", RcHF, 0.01*line->a/delta_c);
+#endif
+    /*
     } else {
       RcHF = 0.0;
     }
+    */
+    /* restore the center conductor size */
+    tmp_line.a = line->a;
 
     /* 
-     * Shield conductor.  Note that "b" is a diameter so we need to
+     * Shield conductor.  Note that "b" is a radius. We need to
      * add the skin depth in the shield conductor 
      */
+    /*
     if( 3.0*delta_s < line->tshield ) {
-    tmp_line.a = line->a;
     tmp_line.b = line->b + 0.5*delta_s;
+    */
+
+    tmp_line.freq = (2.0 * line->rho_b ) / (pow(0.01*line->b,2.0) * mu0);
+    tmp_line.freq = tmp_line.freq / (2.0 * M_PI);
+
+    tmp_line.b = line->b + 0.5*0.01*line->b;
 #ifdef DEBUG_CALC
-    printf("\ncoax_calc_int():  ********** Starting Wheelers Incremental Inductance #3 **********\n");
+    printf("\ncoax_calc_int():  "
+	   "********** Starting Wheelers Incremental Inductance #3 (modify shield) **********\n");
 #endif
-    rslt = coax_calc_int(&tmp_line, line->freq, CALC_MIN);
-#ifdef DEBUG_CALC
-    printf("\ncoax_calc_int():  ********** Finished Wheelers Incremental Inductance **********\n");
-#endif
+    rslt = coax_calc_int(&tmp_line, tmp_line.freq, CALC_MIN);
     z2 = tmp_line.z0;
-    lc = (M_PI*line->freq/LIGHTSPEED)*(z2 - z1)/line->z0;
+    lc = (M_PI*tmp_line.freq/LIGHTSPEED)*(z2 - z1)/line->z0;
     RsHF = lc*2*line->z0;
+#ifdef DEBUG_CALC
+    printf("\ncoax_calc_int():  Found RsHF = %g Ohms which will be "
+	   "scaled by %g\n", RsHF, 0.01*line->b/delta_s);
+#endif
+    /*
     } else {
       RsHF = 0.0;
     }
+    */
 
+#ifdef DEBUG_CALC
+    printf("\ncoax_calc_int():  "
+	   "********** Finished Wheelers Incremental Inductance **********\n");
+#endif
 
     /*
      * Now we have to figure out how to interpolate between our two
@@ -345,13 +399,17 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      * Rtot = Rdc  +  Rhf * ( (0.001*a_or_b)/skindepth )
      *
      * where Rdc = DC resistance and Rhf is the high frequency
-     * resistance you would get if the skindepth were equal to 0.001*a
-     * for the center conductor or 0.001*b for the shield.
+     * resistance you would get if the skindepth were equal to 0.01*a
+     * for the center conductor or 0.01*b for the shield.
+     *
+     * The high frequency resistance should vary as 1/skindepth so
+     * if you know Rhf at skindepth = d1 you should be able to find it
+     * at skindepth = d2 by multiplying by d1/d2
      */
 
     if (omega > 0) {
-      Rc_delta = RcHF;
-      Rs_delta = RsHF;
+      Rc_delta = RcHF * 0.01*line->a / delta_c ;
+      Rs_delta = RsHF * 0.01*line->b / delta_s ;
     } else {
       Rc_delta = 0.0;
       Rs_delta = 0.0;
@@ -401,6 +459,11 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      * Rather than use the approximate TE10 cutoff frequency from
      * Rosloniec, use an exact solution.  This can actually be solved
      * by hand without too much pain for the case where c == 0.
+     *
+     * Start with the value of 'k' found by the approximate cutoff
+     * frequency calculation and iterate until we exactly meet the
+     * boundary conditions for the TE10 cutoff.
+     *
      */
 
     k = 2*M_PI*line->fc / v;
@@ -431,7 +494,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 
 #ifdef DEBUG_CALC
       printf("coax_calc_int():  k=%10.6g,"
-	     " err=%12.8g\n",k,err);
+	     " err=%12.8g\n", k, err);
 #endif
     }
 
