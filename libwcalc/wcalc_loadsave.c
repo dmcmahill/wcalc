@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.8 2002/01/03 03:54:55 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.9 2002/01/18 02:43:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -433,7 +433,7 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
   }
 
   fprintf(fp,"\n");
-  free(fspec_write_string(list,base));
+
   return 0;
 }
 
@@ -665,31 +665,19 @@ char * fspec_write_string(fspec *list, unsigned long base)
 
   assert(list != NULL);
 
+  /*
+   * take 2 passes through.  1st time, we figure out the required
+   * string length.  2nd time through, we copy stuff over.
+   */
   for (pass=0; pass<2; pass++){
     cur = list;
     while ( cur != NULL) {
       switch (cur->spec_type) {
 	
       case SPEC_SECTION:
-	/*
-	if (!pass)
-	  len = len + 1 + strlen(cur->key);
-	else {
-	  strcat(str,cur->key);
-	  strcat(str," ");
-	}
-	*/
 	break;
       
       case SPEC_KEY:
-	/*
-	if (!pass)
-	  len = len + 1 + strlen(cur->key);
-	else {
-	  strcat(str,cur->key);
-	  strcat(str,"=");
-	}
-	*/
 	if (base != NULL) {
 	  addr = (void *) (base + cur->ofs);
 	  switch (cur->type){
@@ -726,15 +714,9 @@ char * fspec_write_string(fspec *list, unsigned long base)
 	
       case SPEC_FIXED:
 	if (!pass) {
-	  /* len = len + 2 + strlen(cur->key) + strlen((char *)
-	     cur->ofs); */
 	  len = len + 1 + strlen((char *) cur->ofs);
 	}
 	else {
-	  /*
-	  strcat(str,cur->key);
-	  strcat(str,"=");
-	  */
 	  strcat(str,(char *)cur->ofs);
 	  strcat(str," ");
 	}
@@ -760,9 +742,6 @@ char * fspec_write_string(fspec *list, unsigned long base)
       str[0]='\0';
     }
   } 
-
-  printf("String is \"%s\"\n",str);
-  printf("len = %d, strlen(str) = %d\n",len,strlen(str));
 
   return str;
 }
