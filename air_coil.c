@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.7 2001/09/27 02:01:46 dan Exp $ */
+/* $Id: air_coil.c,v 1.8 2001/09/27 23:15:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -43,6 +43,7 @@
 #include "mathutil.h"
 #include "physconst.h"
 #include "air_coil.h"
+#include "alert.h"
 #include "misc.h"
 
 
@@ -245,7 +246,9 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
     A = ((0.751186*x - 9.49018)*x + 42.5060)*x + 68.11910;
   }
   else{
-    alert("air_coil_calc():  x=%g which is outside the allowed range\n",x);
+    alert("The length/diameter ratio, x, = %g\n"
+	  "is outside the range 0.1 <= x <= 5\n"
+	  "over which the analysis is accurate",x);
     return -1;
   }
 
