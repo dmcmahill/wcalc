@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.1 2001/10/05 00:37:32 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.2 2001/11/07 04:50:53 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG_SYN  /* debug coupled_microstrip_syn()  */
-//#define DEBUG_CALC /* debug coupled_microstrip_calc() */
+/* #define DEBUG_SYN  */ /* debug coupled_microstrip_syn()  */
+/* #define DEBUG_CALC */ /* debug coupled_microstrip_calc() */
 
 #include <math.h>
 #include <stdio.h>
@@ -185,9 +185,10 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   g = s/h;
 
   deltau = (t/(2*M_PI*h));
-  //deltau = deltau*log(1 + 4*exp(1)*h/(t*coth(sqrt(6.517*u))^2))*(1 + 1/cosh(sqrt(er-1)));
-  //u = u + deltau;
-
+  /* XXX 
+     deltau = deltau*log(1 + 4*exp(1)*h/(t*coth(sqrt(6.517*u))^2))*(1 + 1/cosh(sqrt(er-1)));
+     u = u + deltau;
+  */
 
   /*
    * static even mode relative permittivity (f=0)
@@ -669,8 +670,10 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f, int flag)
       else
 	{
 	  /* approximate the first jacobian */
-	  //[ze1,zo1,ltmp,loss,kev,kodd]=cmlicalc(w+delta,l,s,f,subs);
-	  //[ze2,zo2,ltmp,loss,kev,kodd]=cmlicalc(w,l,s+delta,f,subs);
+	  /* XXX
+	    [ze1,zo1,ltmp,loss,kev,kodd]=cmlicalc(w+delta,l,s,f,subs);
+	    [ze2,zo2,ltmp,loss,kev,kodd]=cmlicalc(w,l,s+delta,f,subs);
+	  */
 	  dedw = (ze1 - ze0)/delta;
 	  dodw = (zo1 - zo0)/delta;
 	  deds = (ze2 - ze0)/delta;

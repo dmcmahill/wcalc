@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.2 2001/10/29 01:28:42 dan Exp $ */
+/* $Id: air_coil.c,v 1.3 2002/01/07 01:24:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG_CALC   /* debug the air_coil_calc() function */
-//#define DEBUG_SYN    /* debug the air_coil_syn() function  */
+/* #define DEBUG_CALC */  /* debug the air_coil_calc() function */
+/* #define DEBUG_SYN  */  /* debug the air_coil_syn() function  */
 
 #include <math.h>
 #include <stdio.h>
