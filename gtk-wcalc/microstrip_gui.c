@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.2 2001/10/17 02:41:05 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.3 2001/11/03 02:16:19 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -48,6 +48,7 @@
 #include "menus.h"
 #include "microstrip.h"
 #include "microstrip_gui.h"
+#include "microstrip_loadsave.h"
 #include "physconst.h"
 
 #include "wcalc.h"
@@ -59,6 +60,8 @@ static void mscalc_synthesize( GtkWidget *w, gpointer data );
 static void mscalc( microstrip_gui *gui, GtkWidget *w, gpointer data );
 
 static void vals_changedCB( GtkWidget *widget, gpointer data );
+
+static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void units_init(microstrip_gui *gui, GtkWidget *parent);
 static void values_init(microstrip_gui *gui, GtkWidget *parent);
@@ -104,7 +107,7 @@ microstrip_gui *microstrip_gui_new(void)
   wcalc->init = microstrip_gui_init;
   wcalc->print_ps = print_ps;
   wcalc->load = NULL;
-  wcalc->save = NULL;
+  wcalc->save = gui_save;
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
@@ -868,6 +871,15 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
 
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
+}
+
+static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
+{
+#ifdef DEBUG
+  g_print("microstrip_gui.c:gui_save():  wcalc=%p, fp=%p, name=%p\n",
+	  wcalc,fp,name);
+#endif
+  microstrip_save(WC_MICROSTRIP_GUI(wcalc)->line,fp,name);
 }
 
 

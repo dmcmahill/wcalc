@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.2 2001/11/02 01:25:42 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.3 2001/11/03 02:16:21 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,8 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
+
 #include "config.h"
 
 #include <assert.h>
@@ -45,6 +47,7 @@
 #include <sys/types.h>
 #include <time.h>
  
+#include "alert.h"
 #include "wcalc_loadsave.h"
 
 
@@ -84,73 +87,46 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
 }
   
 
-
-#define SEC_WCALC 0
-#define SEC_OTHER 1
-
-void wcalc_load(FILE *fp)
+int wcalc_load(FILE *fp)
 {
-  char line[MAXLINELEN];
-  char *tok, *val;
-  int section=SEC_OTHER;
-  int i;
+  char *val;
 
   /* we should never be given a NULL file pointer */
   assert(fp != NULL);
 
-  while( fgets(line,MAXLINELEN,fp) != NULL ){
-    tok = strtok(line,FIELDSEP);
-    if (tok != NULL){
-      for (i=0 ; i<strlen(tok) ; i++){
-	tok[i] = tolower(tok[i]);
-      }
-      /* skip comment lines */
-      if ( (tok[0] != '#') &&
-	   (tok[0] != ';') &&
-	   (tok[0] != '*') ){
-	do {
-	  if (strcmp(tok,"[wcalc]") == 0){
-	    section=SEC_WCALC;
-	  }
-	  else if ( (tok[0] == '[') && (tok[strlen(tok)-1] == ']') ){
-	    section=SEC_OTHER;
-	  }
-	  else if (section==SEC_WCALC) {
-	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
-	      fprintf(stderr,"wcalc_load:  could not read value to go"
-		      " with %s= \n",tok);
-	      exit(1);
-	    }
-	    
-	    if (strcmp(tok,"w") == 0){
-	    }
-	    else if (strcmp(tok,"l") == 0){
-	    }
-	    else {
-	      fprintf(stderr,"wcalc_load:  unknown token \"%s\"\n",tok);
-	      exit(1);
-	    }
-	  }
-	  else {
-	    /* 
-	     * skip because this is another secion of the file.
-	     * probably from global settings
-	     */
-	  }
 
-	} while ( (tok = strtok(NULL,FIELDSEP)) != NULL );
-      }
-    }
-  }
-  
-#ifdef notdef
-  if (!got_w) {  
-    fprintf(stderr,"wcalc_load:  missing data: W\n");   
-    exit(1);  
-  }
+  val=file_read_val(fp,"[wcalc]","wcalc_file_version");
+
+#ifdef DEBUG
+  printf("wcalc_load():  wcalc_file_version = \"%s\"\n",val);
+#endif
+
+  val=file_read_val(fp,"[wcalc]","model_name");
+
+#ifdef DEBUG
+  printf("wcalc_load():  model_name = \"%s\"\n",val);
 #endif
   
-  fclose(fp);
+  if (strcmp(val,FILE_AIR_COIL) == 0) {
+    return MODEL_AIR_COIL;
+  }
+  else if (strcmp(val,FILE_COUPLED_MICROSTRIP) == 0) {
+    return MODEL_COUPLED_MICROSTRIP;
+  }
+  else if (strcmp(val,FILE_IC_MICROSTRIP) == 0) {
+    return MODEL_IC_MICROSTRIP;
+  }
+  else if (strcmp(val,FILE_MICROSTRIP) == 0) {
+    return MODEL_MICROSTRIP;
+  }
+  else if (strcmp(val,FILE_STRIPLINE) == 0) {
+    return MODEL_STRIPLINE;
+  }
+
+  alert("wcalc_loadsave.c:wcalc_load():  model_name\n"
+	"\"%s\" is not understood\n",val);
+
+  return -1;
 }
 
 

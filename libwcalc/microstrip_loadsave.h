@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.h,v 1.1 2001/09/27 12:07:58 dan Exp $ */
+/* $Id: microstrip_loadsave.h,v 1.1 2001/10/05 00:37:33 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -36,9 +36,7 @@
 #ifndef __MICROSTRIP_LOADSAVE_H__
 #define __MICROSTRIP_LOADSAVE_H__
 
-/* writes the data from 'line' to fp */
 void microstrip_save(microstrip_line *line, FILE *fp, char *fname);
-
-void microstrip_load(microstrip_coil *line, char *fname);
+int microstrip_load(microstrip_line *line, FILE *fp);
 
 #endif /*__MICROSTRIP_LOADSAVE_H__*/

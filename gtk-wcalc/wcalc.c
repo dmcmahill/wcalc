@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.2 2001/11/03 02:16:20 dan Exp $ */
+/* $Id: wcalc.c,v 1.3 2001/11/03 04:12:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -61,6 +61,7 @@
 #include "about.h"
 #include "start.h"
 #include "wcalc.h"
+#include "wcalc_loadsave.h"
 
 
 static gint wcalc_delete_event( GtkWidget *widget,
@@ -210,6 +211,7 @@ void wcalc_setup (gpointer data,
   
   char *fname=NULL;
   FILE *fp=NULL;
+  int type;
 
 #ifdef DEBUG
   g_print("wcalc.c:wcalc_setup(): action = %d\n",action);
@@ -231,8 +233,33 @@ void wcalc_setup (gpointer data,
     }
 
     /* extract the _new function for our selected model */
-    /* XXX XXX XXX this should be based on whats in the file!!!*/
-    new_cmd=air_coil_gui_new;
+    type = wcalc_load(fp);
+    switch (type) {
+    case MODEL_AIR_COIL:
+      new_cmd = (void *) air_coil_gui_new;
+      break;
+      /*
+    case MODEL_COUPLED_MICROSTRIP:
+      new_cmd = (void *) coupled_microstrip_gui_new;
+      break;
+
+    case MODEL_IC_MICROSTRIP:
+      new_cmd = (void *) ic_microstrip_gui_new;
+      break;
+      */
+    case MODEL_MICROSTRIP:
+      new_cmd = (void *) microstrip_gui_new;
+      break;
+      /*
+    case MODEL_STRIPLINE:
+      new_cmd = (void *) stripline_gui_new;
+      break;
+      */
+    default:
+      alert("Bad model type in \"%s\"",fname);
+      return;
+    }
+
     /* XXX this should just be done with the _new function */
     model_name=NULL;
 

@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.3 2001/11/03 02:16:20 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.4 2001/11/03 04:12:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -55,35 +55,9 @@
 #define FILE_VERSION "0.1"
 
 
-#ifdef notdef
-int main(int argc, char **argv)
-{
-  air_coil_coil *coil;
-
-  coil = air_coil_new();
-
-
-  /*
-  air_coil_save(coil,"ac.wc","# wcalc:v1");
-  */
-  air_coil_cat(coil,stdout,"foo");
-
-  /*
-  printf("Loading air_coil from test2.wc\n");
-  air_coil_load(&coil,"test2.wc");
-  air_coil_cat(&coil,stdout,"");
-
-  wcalc_open("test.wc");
-  wcalc_open("test3.wc");
-  */
-
-  return 0;
-}
-#endif
-
-
 #define SEC_OTHER 0
 #define SEC_COIL 1
+
 
 int air_coil_load(air_coil_coil *coil, FILE *fp)
 {
@@ -152,9 +126,9 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 	  }
 	  else if ( section==SEC_COIL ){
 	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
-	      fprintf(stderr,"air_coil_load:  could not read value to go"
+	      alert("air_coil_load:  could not read value to go"
 		      " with %s=.\n",tok);
-	      exit(1);
+	      return -1;
 	    }
 	
 	    if (strcmp(tok,"nf") == 0){
@@ -237,8 +211,8 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 	      /* ignore */
 	    }
 	    else {
-	      fprintf(stderr,"air_coil_load:  unknown token \"%s\"\n",tok);
-	      exit(1);
+	      alert("air_coil_load:  unknown token \"%s\"\n",tok);
+	      return -1;
 	    }
 	  }
 	  else {
@@ -254,81 +228,81 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
   }
 
   if (!got_Nf) {
-    fprintf(stderr,"air_coil_load:  missing data: Nf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: Nf\n");
+    return -1;
   }
   if (!got_len) {
-    fprintf(stderr,"air_coil_load:  missing data: len\n");
-    exit(1);
+    alert("air_coil_load:  missing data: len\n");
+    return -1;
   }
   if (!got_AWGf) {
-    fprintf(stderr,"air_coil_load:  missing data: AWGf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: AWGf\n");
+    return -1;
   }
   if (!got_rho) {
-    fprintf(stderr,"air_coil_load:  missing data: rho\n");
-    exit(1);
+    alert("air_coil_load:  missing data: rho\n");
+    return -1;
   }
   if (!got_dia) {
-    fprintf(stderr,"air_coil_load:  missing data: dia\n");
-    exit(1);
+    alert("air_coil_load:  missing data: dia\n");
+    return -1;
   }
   if (!got_L) {
-    fprintf(stderr,"air_coil_load:  missing data: L\n");
-    exit(1);
+    alert("air_coil_load:  missing data: L\n");
+    return -1;
   }
   if (!got_freq) {
-    fprintf(stderr,"air_coil_load:  missing data: freq\n");
-    exit(1);
+    alert("air_coil_load:  missing data: freq\n");
+    return -1;
   }
   if (!got_use_fill) {
-    fprintf(stderr,"air_coil_load:  missing data: use_fill\n");
-    exit(1);
+    alert("air_coil_load:  missing data: use_fill\n");
+    return -1;
   }
 
   if (!got_len_sf) {
-    fprintf(stderr,"air_coil_load:  missing data: len_sf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: len_sf\n");
+    return -1;
   }
   if (!got_len_units) {
-    fprintf(stderr,"air_coil_load:  missing data: len_units\n");
-    exit(1);
+    alert("air_coil_load:  missing data: len_units\n");
+    return -1;
   }
 
   if (!got_dia_sf) {
-    fprintf(stderr,"air_coil_load:  missing data: dia_sf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: dia_sf\n");
+    return -1;
   }
   if (!got_dia_units) {
-    fprintf(stderr,"air_coil_load:  missing data: dia_units\n");
-    exit(1);
+    alert("air_coil_load:  missing data: dia_units\n");
+    return -1;
   }
 
   if (!got_L_sf) {
-    fprintf(stderr,"air_coil_load:  missing data: L_sf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: L_sf\n");
+    return -1;
   }
   if (!got_L_units) {
-    fprintf(stderr,"air_coil_load:  missing data: L_units\n");
-    exit(1);
+    alert("air_coil_load:  missing data: L_units\n");
+    return -1;
   }
 
   if (!got_SRF_sf) {
-    fprintf(stderr,"air_coil_load:  missing data: SRF_sf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: SRF_sf\n");
+    return -1;
   }
   if (!got_SRF_units) {
-    fprintf(stderr,"air_coil_load:  missing data: SRF_units\n");
-    exit(1);
+    alert("air_coil_load:  missing data: SRF_units\n");
+    return -1;
   }
 
   if (!got_freq_sf) {
-    fprintf(stderr,"air_coil_load:  missing data: freq_sf\n");
-    exit(1);
+    alert("air_coil_load:  missing data: freq_sf\n");
+    return -1;
   }
   if (!got_freq_units) {
-    fprintf(stderr,"air_coil_load:  missing data: freq_units\n");
-    exit(1);
+    alert("air_coil_load:  missing data: freq_units\n");
+    return -1;
   }
 
   return 0;
@@ -337,10 +311,6 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 
 void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
 {
-  time_t now;
-
-  now = time(NULL);
-
   wcalc_save_header(fp, fname, FILE_AIR_COIL);
 
   fprintf(fp,"[air_coil]\n");

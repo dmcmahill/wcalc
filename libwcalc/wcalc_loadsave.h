@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.1 2001/10/05 00:37:36 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.2 2001/11/03 02:16:21 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -39,6 +39,7 @@
 #define WCALC_FILE_VERSION "0.1"
 
 void wcalc_save_header(FILE *fp, char *fname, char *model_name);
+int wcalc_load(FILE *fp);
 
 char * file_read_val(FILE *fp, const char *section, const char *key);
 
@@ -49,6 +50,14 @@ char * file_read_val(FILE *fp, const char *section, const char *key);
 #define FILE_MICROSTRIP          "microstrip"
 #define FILE_STRIPLINE           "stripline"
 
+
+enum {
+  MODEL_AIR_COIL,
+  MODEL_COUPLED_MICROSTRIP,
+  MODEL_IC_MICROSTRIP,
+  MODEL_MICROSTRIP,
+  MODEL_STRIPLINE
+};
 
 #define MAXLINELEN 80
 #define FIELDSEP " \t=\n"
