@@ -1,4 +1,4 @@
-/* $Id: cookie.h,v 1.1 2002/01/25 12:26:30 dan Exp $ */
+/* $Id: cookie.h,v 1.2 2002/02/20 01:10:10 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -47,10 +47,10 @@ cgiParseResultType cgiParseCookieInput(void);
  * cgic.html for documentation. 
  */
 
-cgiCookieResultType cgiCookieString(char *name, char *result, int max);
+cgiCookieResultType cgiCookieString(const char *name, char *result, int max);
 
 
-cgiCookieResultType cgiCookieStringNoNewlines(char *name, 
+cgiCookieResultType cgiCookieStringNoNewlines(const char *name, 
 					      char *result, 
 					      int max);
 

@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.12 2004/07/21 22:20:47 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.13 2004/07/21 23:49:39 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -89,16 +89,12 @@ static fspec * get_fspec(void)
      */
     fspec_add_comment(myspec,"User units");
 
-    fspec_add_key(myspec,"emax_sf","'emax' scale factor (Volts/meter/unit)",'d',&line->emax_sf);
-    fspec_add_key(myspec,"emax_units","'emax' units",'s',&line->emax_units);
-    fspec_add_key(myspec,"fc_sf","'fc' scale factor (Hertz/unit)",'d',&line->fc_sf);
-    fspec_add_key(myspec,"fc_units","'fc' units",'s',&line->fc_units);
-    fspec_add_key(myspec,"delay_sf","Delay scale factor (seconds/unit)",'d',&line->delay_sf);
-    fspec_add_key(myspec,"delay_units","Delay units",'s',&line->delay_units);
-    fspec_add_key(myspec,"loss_sf","Loss scale factor (dB/unit)",'d',&line->loss_sf);
-    fspec_add_key(myspec,"loss_units","Loss units",'s',&line->loss_units);
-    fspec_add_key(myspec,"losslen_sf","Loss/length scale factor (dB/meter/unit)",'d',&line->losslen_sf);
-    fspec_add_key(myspec,"losslen_units","Loss/length units",'s',&line->losslen_units);
+
+    fspec_add_key(myspec, "wc_units_emax", "Max. electric field units",  'u', &line->units_emax);
+    fspec_add_key(myspec, "wc_units_fc", "TE10 cutoff frequency units",  'u', &line->units_fc);
+    fspec_add_key(myspec, "wc_units_delay", "Delay units",  'u', &line->units_delay);
+    fspec_add_key(myspec, "wc_units_loss", "Loss units",  'u', &line->units_loss);
+    fspec_add_key(myspec, "wc_units_losslen", "Loss/length units",  'u', &line->units_losslen);
 
     fspec_add_key(myspec, "wc_units_abct", "A,B,C, Tshield units",  'u', &line->units_abct);
     fspec_add_key(myspec, "wc_units_len", "Line physical length units",  'u', &line->units_len);
@@ -139,14 +135,6 @@ int coax_load(coax_line *line, FILE *fp)
 
   myspec=get_fspec();
   rslt=fspec_read_file(myspec,fp,(unsigned long) line);
-
-  /*
-   * parse the composite units data 
-   */
-  /* XXX
-     resistivity_units_set(line->units_rhoa,line->rho_a_units);
-     resaistivity_units_set(line->units_rhob,line->rho_b_units);
-  */
 
   return rslt;
 }
@@ -200,20 +188,6 @@ int coax_load_string(coax_line *line, char *str)
   if (rslt != 0) {
 	return rslt;
   }
-  /*
-   * parse the composite units data 
-   */
-#ifdef DEBUG
-  printf("coax_loadsave.c:coax_load_string():  setting resistivity units\n");
-#endif
-  /* XXX */
-#ifdef notdef
-  rslt = resistivity_units_set(line->units_rhoa,line->rho_a_units);
-  if (rslt != 0) {
-	return rslt;
-  }
-  rslt = resistivity_units_set(line->units_rhob,line->rho_b_units);
-#endif
 
   return rslt;
 }

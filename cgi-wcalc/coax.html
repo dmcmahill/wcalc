@@ -1,4 +1,4 @@
-<!-- $Id: coax.html,v 1.8 2004/07/22 13:06:23 dan Exp $ -->
+<!-- $Id: coax.html,v 1.9 2004/07/22 20:45:13 dan Exp $ -->
 <!--
  * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -123,25 +123,41 @@ coax
 <TR>
 <TD>Loss =</TD>
 <TD><@g@line->loss@></TD>
-<TD>[dB]</TD>
+<TD>
+<@s@cgi_units_menu_display(menu_loss)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Loss/len =</TD>
 <TD><@g@line->losslen@></TD>
-<TD>[dB/mil]</TD>
+<TD>
+<@s@cgi_units_menu_display(menu_losslen)@>
+</TD>
 </TR>
 
 <TR>
 <TD>Delay =</TD>
-<TD><@g@line->delay/line->delay_sf@></TD>
-<TD>[<@s@line->delay_units@>]</TD>
+<TD><@g@line->delay/line->units_delay->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_delay)@>
+</TD>
 </TR>
 
 <TR>
 <TD>TE10 Cutoff Freq. =</TD>
-<TD><@g@line->fc/line->fc_sf@></TD>
-<TD>[<@s@line->fc_units@>]</TD>
+<TD><@g@line->fc/line->units_fc->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_fc)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Max. E-Field =</TD>
+<TD><@g@line->emax/line->units_emax->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_emax)@>
+</TD>
 </TR>
 
 

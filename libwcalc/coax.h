@@ -1,4 +1,4 @@
-/* $Id: coax.h,v 1.10 2004/07/21 22:20:47 dan Exp $ */
+/* $Id: coax.h,v 1.11 2004/07/21 23:49:39 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -73,7 +73,7 @@ typedef struct COAX_LINE
   double emax;
 
   /* incremental circuit model, ({Henries,Ohms,Farads,Siemes}/Meter) */
-  double L,R,C,G;
+  double L, R, C, G;
 
   /* characteriztic impedance (ohms) */
   double z0;
@@ -94,21 +94,10 @@ typedef struct COAX_LINE
   double loss;
   double losslen;
 
-  /* 
-   * various units and scale factors which may be useful for several
-   * backends.  The scale factors multiply the internal values to get
-   * the external units.
-   *
-   * For example, we might have:
-   *   L_units="nH" and L_sf = 1e-9;
-   */
-  double emax_sf;
-  double fc_sf;
-  double delay_sf, loss_sf, losslen_sf;
-  
-  char *emax_units;
-  char *fc_units;
-  char *delay_units, *loss_units, *losslen_units;
+  wc_units *units_emax;
+  wc_units *units_fc;
+  wc_units *units_delay;
+  wc_units *units_loss, *units_losslen;
 
   wc_units *units_abct;
   wc_units *units_len;

@@ -1,4 +1,4 @@
-/* $Id: units.h,v 1.3 2004/07/20 04:24:02 dan Exp $ */
+/* $Id: units.h,v 1.4 2004/07/21 17:34:54 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -87,13 +87,23 @@ typedef struct WC_UNITS
 
   /* what sort of units are these? */
   enum {
+    WC_UNITS_CAPACITANCE,
     WC_UNITS_CAPACITANCE_PER_LEN,
+    WC_UNITS_CONDUCTANCE,
     WC_UNITS_CONDUCTANCE_PER_LEN,
+    WC_UNITS_CURRENT,
+    WC_UNITS_DB,
+    WC_UNITS_DB_PER_LEN,
+    WC_UNITS_ELECTRIC_FIELD,
     WC_UNITS_FREQUENCY,
+    WC_UNITS_INDUCTANCE,
     WC_UNITS_INDUCTANCE_PER_LEN,
     WC_UNITS_LENGTH,
+    WC_UNITS_RESISTANCE,
     WC_UNITS_RESISTANCE_PER_LEN,
     WC_UNITS_RESISTIVITY,
+    WC_UNITS_TIME,
+    WC_UNITS_VOLTAGE
   } type;
 
 } wc_units;
@@ -101,11 +111,14 @@ typedef struct WC_UNITS
 
 extern const wc_units_data wc_units_capacitance[];
 extern const wc_units_data wc_units_conductance[];
+extern const wc_units_data wc_units_current[];
+extern const wc_units_data wc_units_db[];
 extern const wc_units_data wc_units_frequency[];
 extern const wc_units_data wc_units_inductance[];
 extern const wc_units_data wc_units_length[];
 extern const wc_units_data wc_units_resistance[];
 extern const wc_units_data wc_units_time[];
+extern const wc_units_data wc_units_voltage[];
 
 
 /*
@@ -138,5 +151,15 @@ wc_units *wc_units_new(int type);
 wc_units *wc_units_resistivity_new(void);
 
 void wc_units_free(wc_units *u);
+
+/*
+ * return how many choices for the particular units we have 
+ *
+ * This is for a single part of the units.  i.e., it's for something
+ * like inductance, not inductance per length
+ */
+int wc_units_size(const wc_units_data *units);
+
+char ** wc_units_strings_get(const wc_units_data *units);
 
 #endif /* __UNITS_H__ */

@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.11 2004/07/20 04:23:35 dan Exp $ */
+/* $Id: coax_gui.h,v 1.12 2004/07/21 23:01:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -57,15 +57,6 @@ typedef struct COAX_GUI
    */
   GtkWidget *units_vbox;
 
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
   /*
    * Values vbox and its contents
    */
@@ -77,20 +68,16 @@ typedef struct COAX_GUI
   GtkWidget *text_er,*text_tand,*text_emax;
   GtkWidget *text_z0,*text_elen;
 
-  GtkWidget *text_fc,*units_fc;
+  GtkWidget *text_fc;
 
-  GtkWidget *text_freq, *menu_freq_units;
+  GtkWidget *text_freq;
   GtkWidget *text_rho_a,*text_rho_b;
-  GtkWidget *menu_rho_units_ohm,*menu_rho_units_m;
-
-  /* the radio buttons for fill/length selection */
-  GtkWidget *len_button,*fill_button;
 
   /*
    * Outputs vbox and its contents
    */
   GtkWidget *outputs_vbox;
-  GtkWidget *label_delay,*units_delay;
+  GtkWidget *label_delay;
   GtkWidget *label_loss,*label_losslen;
   GtkWidget *label_closs, *label_dloss;
   GtkWidget *label_L,*label_R,*label_C,*label_G;

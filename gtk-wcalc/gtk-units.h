@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.12 2004/07/20 23:05:21 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.13 2004/07/21 04:32:29 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -150,6 +150,7 @@ void  wc_units_attach(wc_units_gui *ug,
        (wc_units_attach((ug), NULL, (mks_val), (sf), (units_str),     \
        "", 0, NONE))
 
+/* attach a gtk_entry which will display the value of our variable */
 #define wc_units_attach_entry(ug, widget, mks_val, sf, units_str,     \
        fmt_string, update)                                            \
        (wc_units_attach((ug), (widget), (mks_val), (sf), (units_str), \

@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.17 2004/07/21 22:20:46 dan Exp $ */
+/* $Id: coax.c,v 1.18 2004/07/21 23:49:38 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -595,6 +595,12 @@ int coax_syn(coax_line *line, double f, int flag)
 
 void coax_free(coax_line *line)
 {
+
+  wc_units_free(line->units_emax);
+  wc_units_free(line->units_fc);
+  wc_units_free(line->units_delay);
+  wc_units_free(line->units_loss);
+  wc_units_free(line->units_losslen);
   wc_units_free(line->units_abct);
   wc_units_free(line->units_len);
   wc_units_free(line->units_freq);
@@ -617,6 +623,12 @@ coax_line *coax_new()
       fprintf(stderr,"coax.c:coax_new(): malloc() failed\n");
       exit(1);
     }
+
+  newline->units_emax    = wc_units_new(WC_UNITS_ELECTRIC_FIELD);
+  newline->units_fc      = wc_units_new(WC_UNITS_FREQUENCY);
+  newline->units_delay   = wc_units_new(WC_UNITS_TIME);
+  newline->units_loss    = wc_units_new(WC_UNITS_DB);
+  newline->units_losslen = wc_units_new(WC_UNITS_DB_PER_LEN);
 
   newline->units_abct = wc_units_new(WC_UNITS_LENGTH);
   newline->units_len = wc_units_new(WC_UNITS_LENGTH);
@@ -641,6 +653,7 @@ coax_line *coax_new()
   newline->emax  = 1e8;
 
   /* XXX units to fixup */
+  /* KILLME
   newline->emax_sf = 1.0;
   newline->fc_sf = 1.0;
   newline->delay_sf = 1.0;
@@ -651,6 +664,7 @@ coax_line *coax_new()
   newline->delay_units = time_units[units_get_index(time_units,newline->delay_sf)].name;
   newline->loss_units = "dB";
   newline->losslen_units = "dB/m";
+  */
 
   /* get the rest of the entries in sync */
   coax_calc(newline,newline->freq);

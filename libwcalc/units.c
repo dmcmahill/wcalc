@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.6 2004/07/21 22:17:41 dan Exp $ */
+/* $Id: units.c,v 1.7 2004/07/22 01:37:23 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -73,6 +73,25 @@ const wc_units_data wc_units_conductance[]=
   {NULL,0}
 };
 
+const wc_units_data wc_units_current[]=
+{
+  {"fA", 1e-15},
+  {"pA", 1e-12},
+  {"nA", 1e-9},
+  {"uA", 1e-6},
+  {"mA", 1e-3},
+  {"A", 1.0},
+  {"kA", 1e3},
+  {"MA", 1e6},
+  {NULL,0}
+};
+
+const wc_units_data wc_units_db[]=
+{
+  {"dB", 1.0},
+  {NULL,0}
+};
+
 const wc_units_data wc_units_frequency[]=
 {
   {"mHz", 1e-3},
@@ -117,11 +136,25 @@ const wc_units_data wc_units_resistance[]=
 
 const wc_units_data wc_units_time[]=
 {
+  {"as", 1e-18},
+  {"fs", 1e-15},
   {"ps", 1e-12},
   {"ns", 1e-9},
   {"us", 1e-6},
   {"ms", 1e-3},
   {"s", 1.0},
+  {NULL,0}
+};
+
+const wc_units_data wc_units_voltage[]=
+{
+  {"pV", 1e-12},
+  {"nV", 1e-9},
+  {"uV", 1e-6},
+  {"mV", 1e-3},
+  {"V", 1.0},
+  {"kV", 1.0e3},
+  {"MV", 1.0e6},
   {NULL,0}
 };
 
@@ -351,8 +384,16 @@ wc_units * wc_units_new(int type)
 
   /* fill in the number of terms in numerator and denominator */
   switch (type) {
+  case WC_UNITS_CAPACITANCE:
+  case WC_UNITS_CONDUCTANCE:
+  case WC_UNITS_CURRENT:
+  case WC_UNITS_DB:
   case WC_UNITS_FREQUENCY:
+  case WC_UNITS_INDUCTANCE:
   case WC_UNITS_LENGTH:
+  case WC_UNITS_RESISTANCE:
+  case WC_UNITS_TIME:
+  case WC_UNITS_VOLTAGE:
     u->nnum = 1;
     u->nden = 0;
     break;
@@ -364,6 +405,8 @@ wc_units * wc_units_new(int type)
 
   case WC_UNITS_CAPACITANCE_PER_LEN:
   case WC_UNITS_CONDUCTANCE_PER_LEN:
+  case WC_UNITS_DB_PER_LEN:
+  case WC_UNITS_ELECTRIC_FIELD:
   case WC_UNITS_INDUCTANCE_PER_LEN:
   case WC_UNITS_RESISTANCE_PER_LEN:
     u->nnum = 1;
@@ -410,9 +453,17 @@ wc_units * wc_units_new(int type)
 
   /* initialize the units */
   switch (type) {
+  case WC_UNITS_CAPACITANCE:
+    u->num[0] = wc_units_capacitance;
+    break;
+
   case WC_UNITS_CAPACITANCE_PER_LEN:
     u->num[0] = wc_units_capacitance;
     u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_CONDUCTANCE:
+    u->num[0] = wc_units_conductance;
     break;
 
   case WC_UNITS_CONDUCTANCE_PER_LEN:
@@ -420,8 +471,30 @@ wc_units * wc_units_new(int type)
     u->den[0] = wc_units_length;
     break;
 
+  case WC_UNITS_CURRENT:
+    u->num[0] = wc_units_current;
+    break;
+
+  case WC_UNITS_DB:
+    u->num[0] = wc_units_db;
+    break;
+
+  case WC_UNITS_DB_PER_LEN:
+    u->num[0] = wc_units_db;
+    u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_ELECTRIC_FIELD:
+    u->num[0] = wc_units_voltage;
+    u->den[0] = wc_units_length;
+    break;
+
   case WC_UNITS_FREQUENCY:
     u->num[0] = wc_units_frequency;
+    break;
+
+  case WC_UNITS_INDUCTANCE:
+    u->num[0] = wc_units_inductance;
     break;
 
   case WC_UNITS_INDUCTANCE_PER_LEN:
@@ -433,6 +506,10 @@ wc_units * wc_units_new(int type)
     u->num[0] = wc_units_length;
     break;
 
+  case WC_UNITS_RESISTANCE:
+    u->num[0] = wc_units_resistance;
+    break;
+
   case WC_UNITS_RESISTANCE_PER_LEN:
     u->num[0] = wc_units_resistance;
     u->den[0] = wc_units_length;
@@ -441,6 +518,14 @@ wc_units * wc_units_new(int type)
   case WC_UNITS_RESISTIVITY:
     u->num[0] = wc_units_resistance;
     u->num[1] = wc_units_length;
+    break;
+
+  case WC_UNITS_TIME:
+    u->num[0] = wc_units_time;
+    break;
+
+  case WC_UNITS_VOLTAGE:
+    u->num[0] = wc_units_voltage;
     break;
 
   default:
@@ -484,4 +569,39 @@ void wc_units_free(wc_units *u)
     free( u->deni );
 
   free(u);
+}
+
+int wc_units_size(const wc_units_data *units)
+{
+  int i;
+
+  i=0;
+  while (units[i].name != NULL){
+    i++;
+  }
+
+  return i;
+}
+
+char ** wc_units_strings_get(const wc_units_data *units)
+{
+  int i;
+  char ** u;
+
+  i = wc_units_size(units);
+  
+  /* allocate memory */
+  if ( (u = malloc(i*sizeof(char *))) == NULL ) {
+    fprintf(stderr,"wc_units_strings_get():  malloc() failed\n");
+    exit(1);
+  }
+
+  /* copy over pointers to the strings */
+  i=0;
+  while (units[i].name != NULL){
+    u[i] = units[i].name;
+    i++;
+  }
+
+  return u;
 }

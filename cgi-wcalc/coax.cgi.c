@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.11 2004/07/22 21:35:08 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.12 2004/07/23 04:55:04 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -109,14 +109,15 @@ int cgiMain(void){
   coax_line *line;
   double freq;
 
-  double a,b,c,tshield,len;
-  double rhoa,rhob,er,tand;
+  double a, b, c, tshield, len;
+  double rhoa, rhob, er, tand;
   double Ro=0.0;
   double elen;
-  int i;
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
   cgiCookieType *cookie;
+
+  cgi_units_menu *menu_emax, *menu_loss, *menu_losslen, *menu_fc, *menu_delay;
   cgi_units_menu *menu_rho, *menu_abct, *menu_freq, *menu_len;
   cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
 
@@ -134,6 +135,12 @@ int cgiMain(void){
   printf("coax.cgi:  calling coax_new()\n");
 #endif
   line = coax_new();
+
+  menu_emax = cgi_units_menu_new(line->units_emax);
+  menu_fc = cgi_units_menu_new(line->units_fc);
+  menu_delay = cgi_units_menu_new(line->units_delay);
+  menu_loss = cgi_units_menu_new(line->units_loss);
+  menu_losslen = cgi_units_menu_new(line->units_losslen);
 
   menu_rho = cgi_units_menu_new(line->units_rho);
   cgi_units_attach_entry(menu_rho, "entry_rhob");
@@ -201,35 +208,41 @@ int cgiMain(void){
     cgi_units_menu_read();
 
     /* Center conductor metal resistivity */
-    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1000.0e9, defRHOB) !=
+    if(cgiFormDoubleBounded("rhoa", &rhoa, 0.0, 1.0e6/line->units_rho->sf, 
+			    defRHOA/line->units_rho->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("conductor resistivity out of range");
     }
     
     /* Shield metal resistivity  */
-    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1000.0e9, defRHOB) !=
+    if(cgiFormDoubleBounded("rhob", &rhob, 0.0, 1.0e6/line->units_rho->sf, 
+			    defRHOB/line->units_rho->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("shield resistivity out of range");
     }
     
     /* shield thickness */
-    if(cgiFormDoubleBounded("tshield", &tshield, 0.0, 1000.0, defTSHIELD) !=
+    if(cgiFormDoubleBounded("tshield", &tshield, 0.0, 1000.0/line->units_abct->sf,
+			    defTSHIELD/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("shield thickness out of range");
     }
 
     /* Coax inner conductor radius */
-    if(cgiFormDoubleBounded("a", &a, 0.0, 1000.0, defA) !=
+    if(cgiFormDoubleBounded("a", &a, 0.0, 1000.0/line->units_abct->sf,
+			    defA/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("a out of range");
     }
 
     /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b", &b, a, 1000.0, defB) !=
+    if(cgiFormDoubleBounded("b", &b, a/line->units_abct->sf, 
+			    (1.0e6*a)/line->units_abct->sf,
+			    defB/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("b must be &gt a");
@@ -237,14 +250,16 @@ int cgiMain(void){
     
 
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c", &c, 0.0, b-a, defC) !=
+    if(cgiFormDoubleBounded("c", &c, 0.0, (b-a)/line->units_abct->sf,
+			    defC/line->units_abct->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("c must be &lt b-a");
     }
 
     /* Coax length */
-    if(cgiFormDoubleBounded("len", &len, 0.0, 100000.0, defLEN) !=
+    if(cgiFormDoubleBounded("len", &len, 0.0, 1.0e9/line->units_len->sf, 
+			    defLEN/line->units_len->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("length out of range");
@@ -265,7 +280,9 @@ int cgiMain(void){
     }
     
     /* Frequency of operation  */
-    if(cgiFormDoubleBounded("freq", &freq, 1e-6, 1e6, defFREQ) !=
+    if(cgiFormDoubleBounded("freq", &freq, 1e-6/line->units_freq->sf, 
+			    1.0e12/line->units_freq->sf, 
+			    defFREQ/line->units_freq->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("frequency out of range");
@@ -278,7 +295,7 @@ int cgiMain(void){
       printFormError("input Z0 out of range");
     }
 
-    if(cgiFormDoubleBounded("elen", &elen, 0.0001, 1000.0, defELEN) !=
+    if(cgiFormDoubleBounded("elen", &elen, 0.0, 1.0e12, defELEN) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("electrical length out of range");
@@ -296,8 +313,8 @@ int cgiMain(void){
     /* copy over the other parameters */
     line->tand  = tand;
     line->er    = er;
-    line->rho_a = rhoa;
-    line->rho_b = rhob;
+    line->rho_a = rhoa*line->units_rho->sf;
+    line->rho_b = rhob*line->units_rho->sf;
     
     line->z0 = Ro;
     /* XXX do i want to add these?  
@@ -313,12 +330,12 @@ int cgiMain(void){
     printf("coax.cgi:  checking for a cookie to load\n");
 #endif
     /* load a stored cookie if it exists */
-    if(cgiCookieStringNoNewlines(name_string,cookie_load_str,COOKIE_MAX) ==
+    if(cgiCookieStringNoNewlines(name_string, cookie_load_str, COOKIE_MAX) ==
        cgiCookieSuccess) {
 #ifdef DEBUG
-    printf("coax.cgi:  loading cookie \"%s\"\n",cookie_load_str);
+    printf("coax.cgi:  loading cookie \"%s\"\n", cookie_load_str);
 #endif
-      coax_load_string(line,cookie_load_str);
+      coax_load_string(line, cookie_load_str);
 #ifdef DEBUG
     printf("coax.cgi:  finished loading cookie\n");
 #endif
@@ -328,8 +345,8 @@ int cgiMain(void){
   
   if (!input_err){
     cookie_str = coax_save_string(line);
-    cookie = cgiCookie_new(name_string,cookie_str);
-    cgiCookie_MaxAge_set(cookie,COOKIE_AGE);
+    cookie = cgiCookie_new(name_string, cookie_str);
+    cgiCookie_MaxAge_set(cookie, COOKIE_AGE);
     cgiHeaderSetCookie(cookie);
     
     /* Put out the CGI header */
@@ -342,36 +359,36 @@ int cgiMain(void){
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
     fprintf(cgiOut,"CGI: --------------- Coax  Analysis -----------\n");
-    fprintf(cgiOut,"CGI: Action                      = %d\n",action);
+    fprintf(cgiOut,"CGI: Action                      = %d\n", action);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"CGI: Inner Radius                = %g %s\n",
-	    line->a/line->units_abct->sf,line->units_abct->name);
+	    line->a/line->units_abct->sf, line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->a);
     fprintf(cgiOut,"CGI: Shield Radius               = %g %s\n",
-	    line->b/line->units_abct->sf,line->units_abct->name);
+	    line->b/line->units_abct->sf, line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->b);
     fprintf(cgiOut,"CGI: Offset                      = %g %s\n",
-	    line->c/line->units_abct->sf,line->units_abct->name);
+	    line->c/line->units_abct->sf, line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->c);
     fprintf(cgiOut,"CGI: Line length                 = %g %s\n",
-	    line->len/line->units_len->sf,line->units_len->name);
+	    line->len/line->units_len->sf, line->units_len->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->len);
     fprintf(cgiOut,"CGI: Shield thickness            = %g %s\n",
-	    line->tshield/line->units_abct->sf,line->units_abct->name);
+	    line->tshield/line->units_abct->sf, line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->tshield);
     fprintf(cgiOut,"CGI: Center metal resistivity    = %g %s\n",
-	    line->rho_a/line->units_rho->sf,line->units_rho->name);
+	    line->rho_a/line->units_rho->sf, line->units_rho->name);
     fprintf(cgiOut,"CGI: Shield metal resistivity    = %g %s\n",
-	    line->rho_b/line->units_rho->sf,line->units_rho->name);
-    fprintf(cgiOut,"CGI: Relative dielectric const.  = %g \n",line->er);
-    fprintf(cgiOut,"CGI: Dielectric loss tangent     = %g \n",line->tand);
+	    line->rho_b/line->units_rho->sf, line->units_rho->name);
+    fprintf(cgiOut,"CGI: Relative dielectric const.  = %g \n", line->er);
+    fprintf(cgiOut,"CGI: Dielectric loss tangent     = %g \n", line->tand);
     fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
-	    line->freq/line->units_freq->sf,line->units_freq->name);
+	    line->freq/line->units_freq->sf, line->units_freq->name);
     fprintf(cgiOut,"CGI:                             = %g Hz\n",
 	    line->freq);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
@@ -385,48 +402,43 @@ int cgiMain(void){
      * in case coax_calc has some error output, surround it
      * with <pre></pre> so we can read it ok.
      */
-    fprintf(cgiOut,"<pre>");
-    coax_calc(line,line->freq);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_calc(line, line->freq);
+    fprintf(cgiOut, "</pre>\n");
 
     break;
 
   case SYNTH_A:
-    fprintf(cgiOut,"<pre>");
-    coax_syn(line,line->freq,COAXSYN_A);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_syn(line, line->freq, COAXSYN_A);
+    fprintf(cgiOut, "</pre>\n");
     break;
 
   case SYNTH_B:
-    fprintf(cgiOut,"<pre>");
-    coax_syn(line,line->freq,COAXSYN_B);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_syn(line, line->freq, COAXSYN_B);
+    fprintf(cgiOut, "</pre>\n");
     break;
 
   case SYNTH_C:
-    fprintf(cgiOut,"<pre>");
-    coax_syn(line,line->freq,COAXSYN_C);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_syn(line, line->freq, COAXSYN_C);
+    fprintf(cgiOut, "</pre>\n");
     break;
 
   case SYNTH_ER:
-    fprintf(cgiOut,"<pre>");
-    coax_syn(line,line->freq,COAXSYN_ER);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_syn(line, line->freq, COAXSYN_ER);
+    fprintf(cgiOut, "</pre>\n");
     break;
 
   case SYNTH_L:
-    fprintf(cgiOut,"<pre>");
-    coax_syn(line,line->freq,COAXSYN_L);
-    fprintf(cgiOut,"</pre>\n");
+    fprintf(cgiOut, "<pre>");
+    coax_syn(line, line->freq, COAXSYN_L);
+    fprintf(cgiOut, "</pre>\n");
     break;
 
   }
-
-
-  /* autoscale some outputs */
-  units_autoscale(time_units,&line->delay_sf,&line->delay_units,line->delay);
-  units_autoscale(frequency_units,&line->fc_sf,&line->fc_units,line->fc);
 
   /* include the HTML output */
 #include "header_html.c"

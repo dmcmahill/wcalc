@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.7 2004/07/22 21:35:08 dan Exp $ */
+/* $Id: cgi-units.c,v 1.8 2004/07/23 04:54:40 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -374,9 +374,9 @@ void cgi_units_menu_read(void)
 
       /* read in the cgi form */
       if (cgiFormSelectSingle(tmps, 
-		       units_strings_get(units->num[i]),
-		       units_size(units->num[i]),
-		       &units->numi[i], 0) != cgiFormSuccess){
+			      wc_units_strings_get(units->num[i]),
+			      wc_units_size(units->num[i]),
+			      &units->numi[i], 0) != cgiFormSuccess){
 	inputErr(&input_err);
       }  
     }
@@ -388,9 +388,9 @@ void cgi_units_menu_read(void)
 
       /* read in the cgi form */
       if (cgiFormSelectSingle(tmps, 
-		       units_strings_get(units->den[i]),
-		       units_size(units->den[i]),
-		       &units->deni[i], 0) != cgiFormSuccess){
+			      wc_units_strings_get(units->den[i]),
+			      wc_units_size(units->den[i]),
+			      &units->deni[i], 0) != cgiFormSuccess){
 	inputErr(&input_err);
       }  
     }

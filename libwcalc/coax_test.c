@@ -1,4 +1,4 @@
-/* $Id: coax_test.c,v 1.3 2002/05/09 23:49:57 dan Exp $ */
+/* $Id: coax_test.c,v 1.4 2002/06/12 11:30:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -131,6 +131,8 @@ int main(int argc, char **argv)
 
   str=coax_save_string(line);
   printf("Example of coax_save_string() output:\n\"%s\"\n\n",str);
-	
+
+  coax_free(line);
+
   return 0;
 }

@@ -1,4 +1,4 @@
-/* $Id: cookie.c,v 1.2 2002/02/20 01:10:09 dan Exp $ */
+/* $Id: cookie.c,v 1.3 2002/05/10 22:52:30 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -197,10 +197,10 @@ static cgiCookieResultType cgiCookieEntryString(cgiCookieEntry *e,
 						int max, 
 						int newlines);
 
-static cgiCookieEntry *cgiCookieEntryFindFirst(char *name);
+static cgiCookieEntry *cgiCookieEntryFindFirst(const char *name);
 static cgiCookieEntry *cgiCookieEntryFindNext();
 
-cgiCookieResultType cgiCookieString(char *name, char *result, int max) 
+cgiCookieResultType cgiCookieString(const char *name, char *result, int max) 
 {
   cgiCookieEntry *e;
   e = cgiCookieEntryFindFirst(name);
@@ -211,7 +211,7 @@ cgiCookieResultType cgiCookieString(char *name, char *result, int max)
   return cgiCookieEntryString(e, result, max, 1);
 }
 
-cgiCookieResultType cgiCookieStringNoNewlines(char *name, 
+cgiCookieResultType cgiCookieStringNoNewlines(const char *name, 
 					      char *result, 
 					      int max) 
 {
@@ -586,7 +586,7 @@ static int cgiStrEqNc(char *s1, char *s2)
 static char *cgiFindTarget = 0;
 static cgiCookieEntry *cgiFindPos = 0;
 
-static cgiCookieEntry *cgiCookieEntryFindFirst(char *name) {
+static cgiCookieEntry *cgiCookieEntryFindFirst(const char *name) {
   cgiFindTarget = name;
   cgiFindPos = cgiCookieEntryFirst;
   return cgiCookieEntryFindNext();
