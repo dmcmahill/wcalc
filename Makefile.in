@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 2001/09/15 14:43:55 dan Exp $
+# $Id: Makefile.in,v 1.17 2001/09/15 23:56:37 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -184,9 +184,10 @@ Makefile: Makefile.in configure
 DISTDIR=wcalc-${VERSION}
 
 release: configure 
+	touch pixmaps/*.png pixmaps/*.eps pixmaps/*.xpm
 	rm -fr ${DISTDIR} ${DISTDIR}.tar.gz 
 	mkdir ${DISTDIR} 
-	tar -cf - `cat files` | (cd ${DISTDIR} && tar xf -) 
+	tar -cf - `cat files` | (cd ${DISTDIR} && tar xpf -) 
 	tar -cvf - ${DISTDIR} | gzip > ${DISTDIR}.tar.gz 
 	rm -fr ${DISTDIR}
 
