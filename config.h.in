@@ -1,23 +1,25 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
+/* Define if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
 
-/* Define if you have the rint function.  */
+/* Define if you have the `m' library (-lm). */
+#undef HAVE_LIBM
+
+/* Define if you have the `rint' function. */
 #undef HAVE_RINT
 
-/* Define if you have the vsnprintf function.  */
-#undef HAVE_VSNPRINTF
-
-/* Define if you have the <string.h> header file.  */
+/* Define if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define if you have the m library (-lm).  */
-#undef HAVE_LIBM
+/* Define if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
 
 /* Name of package */
 #undef PACKAGE
 
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
 /* Version number of package */
 #undef VERSION
-
