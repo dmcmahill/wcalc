@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.5 2002/06/26 11:01:30 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.6 2002/06/28 22:59:59 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -106,6 +106,34 @@ typedef struct _WC_UNITS_MENU_DATA
 
 #define WC_UNITS_MENU_DATA(x)      ((wc_units_menu_data *) (x))
 
+typedef struct _WC_UNITS_UPDATE_ITEM
+{
+  /* pointer to the widget that need updating */
+  GtkWidget *widget;
+
+  /* what sort of GtkWidget is it? */
+  enum {LABEL, ENTRY, UNITS_LABEL, NONE} type;
+
+  /* pointer to the value in mks */
+  double *mks_val;
+
+  /* pointer to the scale factor */
+  double *sf;
+
+  /* pointer to the units string for the value */
+  char *units_str;
+
+  /* sprintf() format string (typically something like "%6.2f") */
+  char *fmt_string;
+
+  /*
+   * do we actually update the widget or only the scale factor and scale
+   * factor string?
+   */
+  int update;
+
+} wc_units_update_item;
+
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
 			  gpointer gui,
@@ -133,12 +161,20 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 				double *sf,
 				char *units_str, 
 				const char *fmt_string,
+				int update,
 				int type);
 
-#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str,fmt_string)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),0))
+#define wc_composite_units_attach_units(ug,mks_val,sf,units_str)      \
+       (wc_composite_units_attach((ug),NULL,(mks_val),(sf),(units_str),"",0,NONE))
 
-#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),1))
+#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),update,ENTRY))
+
+#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),update,LABEL))
+
+#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
+       (wc_composite_units_attach((ug),(widget),NULL,NULL,(units_str),NULL,0,UNITS_LABEL))
+
 
 #endif /* __GTK_UNITS_H__ */

@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.12 2002/06/26 11:01:28 dan Exp $ */
+/* $Id: coax_gui.c,v 1.13 2002/06/28 22:59:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -65,11 +65,6 @@
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
-static void L_units_changed(GtkWidget *w, gpointer data );
-static void L_units_update(coax_gui *gui,int which);
-static void R_units_changed(GtkWidget *w, gpointer data );
-static void C_units_changed(GtkWidget *w, gpointer data );
-static void G_units_changed(GtkWidget *w, gpointer data );
 static void abct_units_changed(GtkWidget *w, gpointer data );
 static void abct_units_update(coax_gui *gui,int which);
 static void len_units_changed(GtkWidget *w, gpointer data );
@@ -237,6 +232,8 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkTooltips *tips;
+
+  wc_units_gui *ug;
 
   tips = gtk_tooltips_new();
 
@@ -463,11 +460,11 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
     units_menu_new(frequency_units,0,(gpointer) gui,freq_units_changed);
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_freq_units,FALSE,FALSE,0);
 
-
   text = gtk_label_new( "RHO_a" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+#ifdef notdef
   hbox=gtk_hbox_new(FALSE,0);
   gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 4, 5,
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
@@ -479,6 +476,32 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gui->menu_rho_units_m =
     units_menu_new(length_units,0,(gpointer) gui,rho_units_m_changed);
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_rho_units_m,FALSE,FALSE,0);
+#endif
+
+  text = wc_composite_units_menu_new(gui->rho_units,WC_WCALC(gui),&ug,
+				     wc_composite_units_menu_changed);
+  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 4, 5, 
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+
+  text = gtk_label_new( "RHO_b" );
+  wc_composite_units_attach_units(ug,
+				  &(gui->line->rho_a),
+				  &(gui->line->rho_a_sf),
+				  gui->line->rho_a_units);
+  wc_composite_units_attach_units(ug,
+				  &(gui->line->rho_b),
+				  &(gui->line->rho_b_sf),
+				  gui->line->rho_b_units);
+
+  wc_composite_units_attach_units_label(ug,
+					text,
+					&(gui->line->rho_a),
+					&(gui->line->rho_a_sf),
+					gui->line->rho_a_units,
+					"%8.4g",
+					1);
+
+
 
   text = gtk_label_new( "RHO_b" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 5, 6, 0,0,XPAD,YPAD);
@@ -691,7 +714,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_L, 5,6,0,1, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_L);
 
-  wc_composite_units_attach_label(ug,gui->label_L,&(gui->line->L),&(gui->line->L_sf),gui->line->L_units,"%8.4g");
+  wc_composite_units_attach_label(ug,gui->label_L,&(gui->line->L),&(gui->line->L_sf),gui->line->L_units,"%8.4g",1);
 
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
@@ -705,7 +728,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_R, 5,6,1,2, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_R);
 
-  wc_composite_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),gui->line->R_units,"%8.4g");
+  wc_composite_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),gui->line->R_units,"%8.4g",1);
 
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
@@ -719,8 +742,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_C, 5,6,2,3, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_C);
 
-  wc_composite_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),gui->line->C_units,"%8.4g");
-
+  wc_composite_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),gui->line->C_units,"%8.4g",1);
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
 
@@ -734,7 +756,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_G, 5,6,3,4, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_G);
 
-  wc_composite_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),gui->line->G_units,"%8.4g");
+  wc_composite_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),gui->line->G_units,"%8.4g",1);
 
   /* spacer */
   text = gtk_label_new( "                " );
@@ -827,84 +849,6 @@ static void picture_init(coax_gui *gui, GtkWidget *window,GtkWidget *parent)
 
 }
 
-static void L_units_changed( GtkWidget *w, gpointer data)
-{
-  int which;
-  coax_gui *gui;
-
-  gui = WC_COAX_GUI(data);
-
-  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
-#ifdef DEBUG
-  g_print("L_units_changed():  gui  =%p\n",gui);
-  g_print("L_units_changed():  which=%d\n",which);
-#endif
-  L_units_update(gui,which);
-}
-
-static void L_units_update( coax_gui *gui,int which)
-{
-  return ;
-  gtk_option_menu_set_history(GTK_OPTION_MENU(gui->menu_abct_units), which);
-
-  gtk_label_set_text(GTK_LABEL(gui->units_b),length_units[which].name);
-  gtk_label_set_text(GTK_LABEL(gui->units_c),length_units[which].name);
-  gtk_label_set_text(GTK_LABEL(gui->units_t),length_units[which].name);
-  gui->line->a_sf = length_units[which].sf;
-  gui->line->b_sf = length_units[which].sf;
-  gui->line->c_sf = length_units[which].sf;
-  gui->line->tshield_sf = length_units[which].sf;
-
-  gui->line->a_units = length_units[which].name;
-  gui->line->b_units = length_units[which].name;
-  gui->line->c_units = length_units[which].name;
-  gui->line->tshield_units = length_units[which].name;
-
-}
-
-
-static void R_units_changed( GtkWidget *w, gpointer data)
-{
-  int which;
-  coax_gui *gui;
-
-  gui = WC_COAX_GUI(data);
-
-  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
-#ifdef DEBUG
-  g_print("R_units_changed():  gui  =%p\n",gui);
-  g_print("R_units_changed():  which=%d\n",which);
-#endif
-  //  abct_units_update(gui,which);
-}
-static void C_units_changed( GtkWidget *w, gpointer data)
-{
-  int which;
-  coax_gui *gui;
-
-  gui = WC_COAX_GUI(data);
-
-  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
-#ifdef DEBUG
-  g_print("C_units_changed():  gui  =%p\n",gui);
-  g_print("C_units_changed():  which=%d\n",which);
-#endif
-  //  abct_units_update(gui,which);
-}
-static void G_units_changed( GtkWidget *w, gpointer data)
-{
-  int which;
-  coax_gui *gui;
-
-  gui = WC_COAX_GUI(data);
-
-  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
-#ifdef DEBUG
-  g_print("G_units_changed():  gui  =%p\n",gui);
-  g_print("G_units_changed():  which=%d\n",which);
-#endif
-  //  abct_units_update(gui,which);
-}
 
 static void abct_units_changed( GtkWidget *w, gpointer data)
 {

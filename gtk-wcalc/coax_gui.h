@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.6 2002/05/10 22:52:38 dan Exp $ */
+/* $Id: coax_gui.h,v 1.7 2002/06/12 11:30:11 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -82,7 +82,8 @@ typedef struct COAX_GUI
 
   GtkWidget *text_freq, *menu_freq_units;
   GtkWidget *text_rho_a,*text_rho_b;
-  GtkWidget *menu_rho_units_ohm,*menu_rho_units_m,*units_rho_b;
+  GtkWidget *menu_rho_units_ohm,*menu_rho_units_m;
+  GtkWidget *units_rho_b;
 
   /* the radio buttons for fill/length selection */
   GtkWidget *len_button,*fill_button;

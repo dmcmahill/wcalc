@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.6 2002/06/26 11:01:29 dan Exp $ */
+/* $Id: gtk-units.c,v 1.7 2002/06/28 22:59:59 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -62,29 +62,6 @@
 #include <dmalloc.h>
 #endif
 
-
-typedef struct _WC_UNITS_UPDATE_ITEM
-{
-  /* pointer to the widget that need updating */
-  GtkWidget *widget;
-
-  /* what sort of GtkWidget is it? */
-  /*enum {LABEL, ENTRY} type;*/
-  int type;
-
-  /* pointer to the value in mks */
-  double *mks_val;
-
-  /* pointer to the scale factor */
-  double *sf;
-
-  /* pointer to the units string for the value */
-  char *units_str;
-
-  /* sprintf() format string (typically something like "%6.2f") */
-  char *fmt_string;
-
-} wc_units_update_item;
 
 static wc_units_menu_data *units_menu_data_new(int ind);
 
@@ -229,14 +206,44 @@ void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
 
   for (i=0; i<g_list_length(ug->update_list); i++) {
     up_item = (wc_units_update_item *) g_list_nth_data(ug->update_list,i);
+
+    /* update the scale factor and units string for this item */
     units_update(ug->units,up_item->sf,&(up_item->units_str));
 #ifdef DEBUG
     g_print("wc_composite_units_menu_changed():      updated item %u units string = \"%s\", scale factor = %g\n",
 	    i,up_item->units_str,*(up_item->sf));
 #endif
-    /* XXX need to switch on widget type here */
-    sprintf(str,up_item->fmt_string,(*(up_item->mks_val))/(*(up_item->sf)));
-    gtk_label_set_text(GTK_LABEL(up_item->widget),str);
+    
+    /* only update the displayed widget if the update flag is set */
+    if( (up_item->update) && (up_item->widget != NULL) ) {
+
+      if(up_item->fmt_string != NULL) {
+	sprintf(str,up_item->fmt_string,(*(up_item->mks_val))/(*(up_item->sf)));
+      }
+      else {
+	sprintf(str,"--ERR--");
+      }
+
+      switch( up_item->type ) {
+      case LABEL:
+	gtk_label_set_text(GTK_LABEL(up_item->widget),str);
+	break ;
+	
+      case ENTRY:
+	gtk_entry_set_text(GTK_ENTRY(up_item->widget),str);
+      break ;
+      
+      case UNITS_LABEL:
+	gtk_label_set_text(GTK_LABEL(up_item->widget),up_item->units_str);
+      break ;
+      
+      default:
+	fprintf(stderr,"wc_composite_units_menu_changed():  invalid up_item->type = %d\n",
+		up_item->type);
+	exit(1);
+      }
+    }
+
   }
 
 }
@@ -363,6 +370,7 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 				double *sf,
 				char *units_str, 
 				const char *fmt_string,
+				int update,
 				int type)
 {
   wc_units_update_item *item;
@@ -379,7 +387,8 @@ void  wc_composite_units_attach(wc_units_gui *ug,
   item->sf = sf;
   item->units_str = units_str;
   item->fmt_string = strdup(fmt_string);
-  item->type = 0;
+  item->update = update;
+  item->type = type;
 
   /* add to the list in the wc_units_gui */
   ug->update_list = g_list_append(ug->update_list, item);
