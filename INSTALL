@@ -1,4 +1,32 @@
-$Id$
+$Id: INSTALL,v 1.1 2001/02/11 19:26:15 dan Exp $
+
+
+Wcalc uses a standard GNU autoconf/automake/libtool based build
+system which should make compilation go smoothly on most unix-like
+systems.  Please do read this first section however.
+
+Wcalc includes several different frontends.  Because all users
+may not want to install all frontends (and the requesite dependencies)
+the build system is designed to allow the user to pick and choose
+which frontends to build and install.  In addition, the build 
+system is designed to allow additional frontends to be build and
+added to an existing installation.
+
+Please refer to the output of
+
+  ./configure --help
+
+for the details on the options which turn on/off the various
+frontends.
+
+In addition to the selection of which frontends should be built,
+the CGI frontend has some configurable paths which you may wish
+to change from the default.  For example if you may wish to
+use http://yourserver/~someuser/cgi-bin/ instead of
+http://yourserver/cgi-bin/ for the CGI frontend.
+
+
+-------- Standard GNU INSTALL Instructions Follow --------------------
 
 This is a generic INSTALL file for utilities distributions.
 If this package does not come with, e.g., installable documentation or
