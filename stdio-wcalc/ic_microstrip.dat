@@ -1,4 +1,4 @@
-# $Id: ic_microstrip.dat,v 1.2 2004/11/22 22:36:40 dan Exp $
+# $Id: ic_microstrip.dat,v 1.3 2004/11/24 02:01:36 dan Exp $
 #
 # I.C. microstrip test data
 #
@@ -8,7 +8,7 @@
 * Analysis
 *
 *****************************************
-* [z0, L, R, C, G] = 
+* [Ro, Xo, keff, elen, loss, L, R, C, G] = 
 *  ic_microstrip_calc(w, l, tox, eox, h, es, sigmas, tmet, rho, rough, f);
 *
 

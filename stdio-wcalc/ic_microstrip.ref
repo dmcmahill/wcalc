@@ -3,12 +3,12 @@
 * Analysis
 *
 *****************************************
-* [z0, L, R, C, G] = 
+* [Ro, Xo, keff, elen, loss, L, R, C, G] = 
 *  ic_microstrip_calc(w, l, tox, eox, h, es, sigmas, tmet, rho, rough, f);
 *
 * MIS microstrip calculation
 --> ic_microstrip_calc 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9
-87.3526 0.766429 6.99345e-07 600.062 9.15389e-11 0.102871
+87.3526 0.766429 5.75403 6.9132 0 6.99345e-07 600.062 9.15389e-11 0.102871
 *****************************************
 *
 * Synthesis

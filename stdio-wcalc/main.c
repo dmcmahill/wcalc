@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.15 2004/11/16 01:14:19 dan Exp $ */
+/* $Id: main.c,v 1.16 2004/11/22 22:36:40 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -530,7 +530,7 @@ static void exec_coupled_microstrip_syn(double *args)
 }
 
 /*
- * [z0,L,R,C,G] = 
+ * [Ro, Xo ,keff,elen,loss,L,R,C,G] = 
  *  ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
  */
 static void exec_ic_microstrip_calc(double *args)
@@ -558,7 +558,8 @@ static void exec_ic_microstrip_calc(double *args)
     printf("%s", ERRMSG);
   } else { 
     /* print the outputs */
-    printf("%g %g %g %g %g %g\n", line->Ro, line->Xo,
+    printf("%g %g %g %g %g %g %g %g %g\n", line->Ro, line->Xo,
+	   line->keff, line->len, line->loss,
 	   line->Lmis, line->Rmis, line->Cmis, line->Gmis);
   }
 
