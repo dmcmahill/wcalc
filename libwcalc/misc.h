@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.7 2002/07/05 23:12:52 dan Exp $ */
+/* $Id: misc.h,v 1.8 2004/07/21 17:35:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -36,36 +36,7 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-typedef struct UNITS_DATA
-{
-  /* the name of the units, "inch" */
-  char *name;
-
-  /* the scale factor, mks_units/unit, for example meter/inch */
-  double sf;
-} units_data;
-
-extern const units_data capacitance_units[];
-extern const units_data conductance_units[];
-extern const units_data frequency_units[];
-extern const units_data inductance_units[];
-extern const units_data length_units[];
-extern const units_data resistance_units[];
-extern const units_data time_units[];
-void units_autoscale(const units_data *units, 
-		     double *sf, 
-		     char **name,
-		     double val);
-int units_size(const units_data *units);
-char ** units_strings_get(const units_data *units);
-int units_get_index(const units_data *units, double sf);
-int units_get_index_name(const units_data *units, char *name);
-
 double dia2awg(double dia);
 double awg2dia(double AWG);
-double phys_units_get_sf(char *str);
-double freq_units_get_sf(char *str);
-double induct_units_get_sf(char *str);
-char * eng_units(double value, const char *base_units, double *sf);
 
 #endif /*__MISC_H__*/
