@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.10 2002/07/04 02:09:45 dan Exp $
+## $Id: Makefile.am,v 1.11 2002/12/10 10:42:16 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -49,7 +49,7 @@ MEXSFX=	@MEXSFX@
 # base directory for matlab installation
 MATLAB_DIR=	@MATLAB_DIR@
 
-pkglibexecdir=	${libexecdir}/${PACKAGE}
+pkglibexecdir=	${libexecdir}/${PACKAGE}-${VERSION}
 pkglibexec_DATA=	${MEX_FILES} ${MEX_MANS}
 
 noinst_SCRIPTS=		runmatlab
