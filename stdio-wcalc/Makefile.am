@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2004/01/10 04:58:08 dan Exp $
+## $Id: Makefile.am,v 1.2 2004/01/10 06:33:43 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -51,4 +51,5 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 stdio_wcalc_LDADD = ../libwcalc/libwcalc.la
 
+EXTRA_DIST= ${man_MANS}
 
