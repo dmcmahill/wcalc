@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.2 2001/09/18 21:08:55 dan Exp $ */
+/* $Id: misc.c,v 1.3 2001/09/22 03:50:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -35,7 +35,10 @@
 
 //#define DEBUG
 
+#include "config.h"
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #ifdef HAVE_STRING_H
@@ -178,5 +181,44 @@ double induct_units_get_sf(char *str)
 
 }
 
+/*
+ * convert a value to a string in engineering units.
+ *
+ * eng_units(123.456789e6, "Hz", 2)
+ * will return a pointer to "120 MHz"
+ *
+ * eng_units(123.456789e6, "Hz", 5)
+ * will return a pointer to "123.45 MHz"
+ *
+ */
+char *eng_units(double value, const char *base_units, double *sf)
+{
+  size_t len;
+  static char *prefix="afpnum kMGT";
+  int p;
+  char *str;
 
+  /* space for base_units */
+  len  = strlen(base_units);
 
+  /* space for prefix and '\0' terminator */
+  len += 2;
+
+  if ( (str = malloc(len*sizeof(char))) == NULL ){
+    fprintf(stderr,"misc.c:eng_units():  malloc failed\n");
+    exit(1);
+  }
+  (*sf)=1e-12;
+
+  p=strlen(prefix);
+  while( (--p > 0) && (value*(*sf) < 1.0))
+    *sf = (*sf)*1e3;
+
+  if (prefix[p] == ' '){
+    snprintf(str,len,"%s",base_units);
+  }
+  else{
+    snprintf(str,len,"%c%s",prefix[p],base_units);
+  }
+  return str;
+}

@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.h,v 1.1 2001/09/22 03:50:15 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.2 2001/09/23 01:44:44 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -72,14 +72,18 @@ typedef struct AIR_COIL_GUI
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
-  GtkWidget *text_Nf,*text_dia,*text_len,*text_AWGf,*text_rho,*text_L;
+  GtkWidget *text_Nf,*text_dia,*text_len,*text_fill,*text_AWGf,*text_rho,*text_L;
+
+  /* the radio buttons for fill/length selection */
+  GtkWidget *len_button,*fill_button;
 
   /*
    * Outputs vbox and its contents
    */
   GtkWidget *outputs_vbox;
-  GtkWidget *label_Q,*label_SRF,*label_Lmax,*label_fill;
-  GtkWidget *label_Lmax_units, *label_SRF_units;
+  GtkWidget *label_Q,*label_Qfreq,*label_SRF,*label_SRF_units;
+  GtkWidget *label_Lmax,*label_fill;
+  GtkWidget *label_Lmax_units;
 
   /*
    * Picture vbox and its contents

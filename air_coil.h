@@ -1,4 +1,4 @@
-/* $Id: air_coil.h,v 1.3 2001/09/22 03:50:14 dan Exp $ */
+/* $Id: air_coil.h,v 1.4 2001/09/23 01:44:44 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -70,6 +70,12 @@ typedef struct AIR_COIL_COIL
 
   /* Self resonant frequency */
   double SRF;
+
+  /* 
+   * use the fill to calculate length instead of length to calculate
+   * fill 
+   */
+  int use_fill;
 
   /* 
    * various units and scale factors which may be useful for several

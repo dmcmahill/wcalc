@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.8 2001/09/20 12:40:32 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.9 2001/09/20 20:32:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -107,8 +107,14 @@ microstrip_gui *microstrip_gui_new(void)
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
 
+  wcalc->file_name=NULL;
+  wcalc->file_basename=NULL;
+
   wcalc->model_name=name;
   wcalc->model_version=version;
+
+  wcalc->window_title=NULL;
+  wcalc->save_needed=NULL;
 
   /*
    * Initialize the model dependent portions
@@ -123,7 +129,6 @@ microstrip_gui *microstrip_gui_new(void)
   g_print("              wcalc->line = %p\n",new->line);
   g_print("              wcalc->line->subs = %p\n",new->line->subs);
 #endif
-
 
   return new_gui;
 }

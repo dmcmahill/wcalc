@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil_loadsave.c,v 1.1 2001/09/23 17:38:07 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -101,6 +101,8 @@ void air_coil_load(air_coil_coil *coil, char *fname)
   int got_L=0;
   int got_freq=0;
 
+  int got_use_fill=0;
+
   int got_len_sf=0;
   int got_len_units=0;
   int got_dia_sf=0;
@@ -198,6 +200,10 @@ void air_coil_load(air_coil_coil *coil, char *fname)
 	      coil->freq = atof(val);
 	      got_freq = 1;
 	    }
+	    else if (strcmp(tok,"use_fill") == 0){
+	      coil->use_fill = atoi(val);
+	      got_use_fill = 1;
+	    }
 	    else if (strcmp(tok,"len_sf") == 0){
 	      coil->len_sf = atof(val);
 	      got_len_sf = 1;
@@ -281,6 +287,10 @@ void air_coil_load(air_coil_coil *coil, char *fname)
   }
   if (!got_freq) {
     fprintf(stderr,"air_coil_load:  missing data: freq\n");
+    exit(1);
+  }
+  if (!got_use_fill) {
+    fprintf(stderr,"air_coil_load:  missing data: use_fill\n");
     exit(1);
   }
 
@@ -377,6 +387,11 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
 
   fprintf(fp,"# Frequency of operation (Hz)\n");
   fprintf(fp,"freq = %g\n",coil->freq);
+
+  fprintf(fp,"\n");
+
+  fprintf(fp,"# Use fill to calculate length?\n");
+  fprintf(fp,"use_fill = %d\n",coil->use_fill);
 
   fprintf(fp,"\n");
 

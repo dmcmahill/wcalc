@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.10 2001/09/20 20:32:54 dan Exp $ */
+/*      $Id: wcalc.h,v 1.11 2001/09/23 17:38:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,10 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __WCALC_H_
-#define __WCALC_H_
+#ifndef __WCALC_H__
+#define __WCALC_H__
+
+#include "config.h"
 
 #include <gtk/gtk.h>
 
@@ -95,14 +97,31 @@ typedef struct WCALC
    * Required data
    */
 
-  /* file name */
+  /* complete file name (path too) */
   char *file_name;
+
+  /* base filename (no path) */
+  char *file_basename;
 
   /* name of the model.  "Microstrip Analysis/Synthesis" for example */
   char *model_name;
   
   /* version of the model.  "v1.0" for example */
   char *model_version;
+
+  /*
+   * name of window (typically "Wcalc:model_name:filename") 
+   * Note, this will be set to have room for one extra character which
+   * is either \0 or '*'.  The '*' indicates that a file->save is
+   * needed. 
+   */
+  char *window_title;
+
+  /*
+   * pointer to the last character in model_name so we can easily set
+   * to ' ' or '*' 
+   */
+  char *save_needed;
 
   /*
    * TRUE if the values are in sync because an analysis has been
@@ -125,6 +144,8 @@ void wcalc_setup(gpointer data,
 
 Wcalc *Wcalc_new(void);
 
+void wcalc_save_needed(GtkWidget *widget, gpointer data );
+
 #define WC_WCALC(x)      ((Wcalc *) (x))
 
-#endif __WCALC_H_
+#endif __WCALC_H__

@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.5 2001/09/22 04:46:50 dan Exp $ */
+/* $Id: air_coil.c,v 1.6 2001/09/23 01:44:43 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -138,6 +138,15 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   /* temp storage */
   air_coil_coil tmp_coil;
+
+  /* 
+   * are we using the given length directly or calculating it based on
+   * fill?
+   */
+  if (coil->use_fill){
+    lmin = coil->Nf*(awg2dia(coil->AWGf) + TINSUL);
+    coil->len = INCH2M(lmin)*coil->fill;
+  }
 
   pitch = M2INCH(coil->len) / coil->Nf;
 
@@ -312,6 +321,12 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
   double len,len1,len2,Lsyn1,Lsyn2;
 
   double L;
+  int use_fill;
+
+
+  /* store the use_fill setting and switch to length for synthesis */
+  use_fill = coil->use_fill;
+  coil->use_fill=0;
 
   L = coil->L;
 
@@ -444,6 +459,9 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
       return -1;
     }
   }
+  
+  /* restore the use_fill setting */
+  coil->use_fill = use_fill;
 
   return 0;
 }
@@ -472,7 +490,9 @@ air_coil_coil *air_coil_new()
   newcoil->rho = 1.0;
   newcoil->dia = INCH2M(0.14);
   newcoil->freq = 10e6;
-  
+
+  newcoil->use_fill=0;
+
   newcoil->len_sf = 25.4e-3;
   newcoil->dia_sf = 25.4e-3;
   newcoil->L_sf = 1.0e-9;

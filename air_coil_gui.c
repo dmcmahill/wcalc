@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.3 2001/09/22 05:49:34 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.4 2001/09/23 17:38:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,7 +33,9 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+#define DEBUG
+
+#include "config.h"
 
 #include <gtk/gtk.h>
 
@@ -57,6 +59,8 @@ static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void dia_units_changed(GtkWidget *w, gpointer data );
 static void len_units_changed(GtkWidget *widget, gpointer data );
+static void use_len_pressed(GtkWidget *widget, gpointer data );
+static void use_fill_pressed(GtkWidget *widget, gpointer data );
 static void L_units_changed(GtkWidget *widget, gpointer data );
 static void freq_units_changed(GtkWidget *widget, gpointer data );
 
@@ -118,8 +122,14 @@ air_coil_gui *air_coil_gui_new(void)
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
 
+  wcalc->file_name=NULL;
+  wcalc->file_basename=NULL;
+
   wcalc->model_name=name;
   wcalc->model_version=version;
+
+  wcalc->window_title=NULL;
+  wcalc->save_needed=NULL;
 
   /*
    * Initialize the model dependent portions
@@ -178,6 +188,7 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
 
 static void values_init(air_coil_gui *gui, GtkWidget *parent)
 {
+  GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *button;
@@ -186,6 +197,10 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   GList *PhysUnits=NULL;
   GList *IndUnits=NULL;
   GList *FreqUnits=NULL;
+
+  /* the "Len/Fill" radio button group */
+  GSList *len_group;
+
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -222,9 +237,11 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   /* Analyze button */
   button = gtk_button_new_with_label ("Analyze");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (analyze), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 3, 4, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 0,GTK_EXPAND|GTK_FILL,XPAD,YPAD);
   gtk_widget_show (button);
   
   /* 
@@ -234,6 +251,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   /* N */
   button = gtk_button_new_with_label ("<-Synthesize");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,XPAD,YPAD);
@@ -241,6 +260,8 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 
   /* I.D. */
   button = gtk_button_new_with_label ("<-Synthesize");
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
 		      gui);
@@ -251,9 +272,11 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   /* Len */
   button = gtk_button_new_with_label ("<-Synthesize");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,XPAD,YPAD);
   gtk_widget_show (button);
 
 
@@ -279,6 +302,10 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 		     gui->coil->dia_units);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
 		      GTK_SIGNAL_FUNC (dia_units_changed), 
 		      (gpointer) gui);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
@@ -288,50 +315,40 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show(combo);
 
 
-  /* Coil length and units */
-  text = gtk_label_new( "Len." );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
-  gtk_widget_show(text);
-
-  combo =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(combo), PhysUnits);
-  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
-  gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 2, 3, 0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
-  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
-		     gui->coil->len_units);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (len_units_changed), 
-		      (gpointer) gui);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), 
-		      (gpointer) gui);
-  gtk_widget_show(combo);
-
-
+  /* Wire Size */
   text = gtk_label_new( "Wire Dia." );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  hbox = gtk_hbox_new(FALSE,1);
+  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 0, 1, 
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+  gtk_widget_show(hbox);
+  text = gtk_label_new( "AWG" );
+  gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
 
   text = gtk_label_new( "Resistivity" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Inductance" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
-  gtk_widget_show(text);
+
+  hbox = gtk_hbox_new(FALSE,1);
+  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 1, 2, 
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+  gtk_widget_show(hbox);
 
   combo =  gtk_combo_new();
   gtk_combo_set_popdown_strings( GTK_COMBO(combo), IndUnits);
   gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
-  gtk_table_attach(GTK_TABLE(table), combo, 7, 8, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
 		     gui->coil->L_units);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (L_units_changed), 
@@ -340,6 +357,65 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 		      "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), 
 		      (gpointer) gui);
+  gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
+  gtk_widget_show(combo);
+
+  text = gtk_label_new( "/" );
+  gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
+  gtk_widget_show(text);
+
+  combo =  gtk_combo_new();
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo), IndUnits);
+  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
+  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
+  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->L_units);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (L_units_changed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), 
+		      (gpointer) gui);
+  gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
+  gtk_widget_show(combo);
+
+
+
+  text = gtk_label_new( "Inductance" );
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  hbox = gtk_hbox_new(FALSE,1);
+  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 2, 3,
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+  gtk_widget_show(hbox);
+  combo =  gtk_combo_new();
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo), IndUnits);
+  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
+  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
+  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->L_units);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (L_units_changed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), 
+		      (gpointer) gui);
+  gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
   gtk_widget_show(combo);
 
 
@@ -348,14 +424,21 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
 
+  hbox = gtk_hbox_new(FALSE,1);
+  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 3, 4,
+		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+  gtk_widget_show(hbox);
   combo =  gtk_combo_new();
   gtk_combo_set_popdown_strings( GTK_COMBO(combo), FreqUnits);
   gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
-  gtk_table_attach(GTK_TABLE(table), combo, 7, 8, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
 		     gui->coil->freq_units);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
   gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
 		      "changed",
 		      GTK_SIGNAL_FUNC (freq_units_changed), 
@@ -364,6 +447,7 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
 		      "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), 
 		      (gpointer) gui);
+  gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
   gtk_widget_show(combo);
 
 
@@ -380,12 +464,16 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->text_Nf, 1, 2, 0, 1,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_Nf),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_Nf);
 
   gui->text_dia = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_dia, 1, 2, 1, 2,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_dia),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_dia);
@@ -394,12 +482,25 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->text_len, 1, 2, 2, 3,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_len),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_len);
+
+  gui->text_fill = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_fill, 1, 2, 3, 4,0,0,XPAD,YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_fill),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_fill);
 
   gui->text_AWGf = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, 6, 7, 0, 1,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_AWGf);
@@ -408,12 +509,16 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->text_rho, 6, 7, 1, 2,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_rho);
 
   gui->text_L = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_L, 6, 7, 2, 3,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_L);
@@ -422,8 +527,65 @@ static void values_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->text_freq, 6, 7, 3, 4,0,0,XPAD,YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_freq);
+
+
+
+  /* Coil length and units */
+  
+  button = gtk_radio_button_new_with_label (NULL, "Len.");
+  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 2, 3, 0,0,XPAD,YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_len_pressed),
+		     gui);
+  gui->len_button = button;
+  gtk_widget_show (button);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+
+  len_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+  button = gtk_radio_button_new_with_label(len_group, "Fill");
+  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 3, 4, 0,0,XPAD,YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_fill_pressed),
+		     gui);
+  gui->fill_button = button;
+  gtk_widget_show (button);
+
+  if(gui->coil->use_fill){
+    gtk_widget_set_sensitive (gui->text_len, FALSE);
+    gtk_widget_set_sensitive (gui->text_fill, TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+  }
+  else{
+    gtk_widget_set_sensitive (gui->text_len, TRUE);
+    gtk_widget_set_sensitive (gui->text_fill, FALSE);
+  }
+
+
+  combo =  gtk_combo_new();
+  gtk_combo_set_popdown_strings( GTK_COMBO(combo), PhysUnits);
+  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
+  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
+  gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
+  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
+		     gui->coil->len_units);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (len_units_changed), 
+		      (gpointer) gui);
+  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
+		      "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), 
+		      (gpointer) gui);
+  gtk_widget_show(combo);
 
 
 
@@ -471,14 +633,15 @@ static void outputs_init(air_coil_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  /* XXX these will change */
-  text = gtk_label_new( "@freq" );
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 0, 1, 0,0,XPAD,YPAD);
-  gtk_widget_show(text);
+  gui->label_Qfreq = gtk_label_new( "@freq" );
+  gtk_table_attach(GTK_TABLE(table), gui->label_Qfreq, 2, 3, 0, 1,
+		   0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_Qfreq);
 
-  text = gtk_label_new( "MHz" );
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 0,0,XPAD,YPAD);
-  gtk_widget_show(text);
+  gui->label_SRF_units = gtk_label_new( "MHz" );
+  gtk_table_attach(GTK_TABLE(table), gui->label_SRF_units, 2, 3, 1, 2,
+		   0,0,XPAD,YPAD);
+  gtk_widget_show(gui->label_SRF_units);
 
   text = gtk_label_new( " " );
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,XPAD,YPAD);
@@ -618,6 +781,12 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
   g_print("air_coil_gui.c:calculate():  len = %g\n",gui->coil->len);
 #endif
 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fill) ); 
+  gui->coil->fill=atof(vstr);
+#ifdef DEBUG
+  g_print("air_coil_gui.c:calculate():  fill = %g\n",gui->coil->fill);
+#endif
+
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_AWGf) ); 
   gui->coil->AWGf=atof(vstr);
 #ifdef DEBUG
@@ -679,6 +848,8 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 static void update_display(air_coil_gui *gui)
 {
   char str[80];
+  char *vstr;
+  double sf;
 
   sprintf(str,"%.4g",gui->coil->Nf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_Nf), str );
@@ -689,6 +860,9 @@ static void update_display(air_coil_gui *gui)
   sprintf(str,"%.4g",gui->coil->len/gui->coil->len_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_len), str );
 
+  sprintf(str,"%.4g",gui->coil->fill);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_fill), str );
+
   sprintf(str,"%.4g",gui->coil->L/gui->coil->L_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
   
@@ -698,13 +872,21 @@ static void update_display(air_coil_gui *gui)
   sprintf(str,"%.4g",gui->coil->AWGf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
   
-
   sprintf(str,"%8.4g",gui->coil->Q);
   gtk_label_set_text( GTK_LABEL(gui->label_Q), str );
-  
-  sprintf(str,"%8.4g",gui->coil->SRF*1e-6);
+    
+  vstr = eng_units(gui->coil->freq,"Hz",&sf);
+  sprintf(str,"@ %.4g %s",sf*gui->coil->freq,vstr);
+  free(vstr);
+  gtk_label_set_text(GTK_LABEL(gui->label_Qfreq),str);
+
+  vstr = eng_units(gui->coil->SRF,"Hz",&sf);
+  gtk_label_set_text(GTK_LABEL(gui->label_SRF_units),vstr);
+  sprintf(str,"@ %.4g %s",sf*gui->coil->freq,vstr);
+  free(vstr);
+  sprintf(str,"%8.4g",gui->coil->SRF*sf);
   gtk_label_set_text( GTK_LABEL(gui->label_SRF), str );
-  
+
   sprintf(str,"%8.4g",gui->coil->Lmax/gui->coil->L_sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Lmax), str );
   
@@ -723,6 +905,9 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_Nf, "Number of turns", NULL);
   gtk_tooltips_set_tip(tips, gui->text_dia, "Inside diameter of the coil", NULL);
   gtk_tooltips_set_tip(tips, gui->text_len, "Length of the coil", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_fill, "Ratio of the Length of the coil\n"
+		       "to the length of a closewound\n"
+		       "coil", NULL);
   gtk_tooltips_set_tip(tips, gui->text_AWGf, "Wire diameter", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_rho, "Resistivity of the wire", NULL);
@@ -739,6 +924,26 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
 
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
+}
+
+static void use_len_pressed(GtkWidget *widget, gpointer data )
+{
+  air_coil_gui *gui;
+
+  gui = WC_AIR_COIL_GUI(data);
+  gtk_widget_set_sensitive (gui->text_len, TRUE);
+  gtk_widget_set_sensitive (gui->text_fill, FALSE);
+  gui->coil->use_fill=0;
+}
+
+static void use_fill_pressed(GtkWidget *widget, gpointer data )
+{
+  air_coil_gui *gui;
+
+  gui = WC_AIR_COIL_GUI(data);
+  gtk_widget_set_sensitive (gui->text_len, FALSE);
+  gtk_widget_set_sensitive (gui->text_fill, TRUE);
+  gui->coil->use_fill=1;
 }
 
 static void dia_units_changed(GtkWidget *widget, gpointer data )
@@ -820,7 +1025,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 }
 
   /* XXX this is not the way to include this.... */
-#include "pixmaps/air_coil.c"
+//#include "pixmaps/air_coil.c"
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {
@@ -836,7 +1041,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   bbox_ury=775;
 
   /* XXX this is not the way to include this.... */
-  air_coil_eps(fp);
+  //air_coil_eps(fp);
 
   fprintf(fp,"%% spit out the numbers\n");
   fprintf(fp,"newline\n");

@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.1 2001/09/13 21:16:49 dan Exp $ */
+/* $Id: misc.h,v 1.2 2001/09/22 03:50:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -42,5 +42,6 @@ double awg2dia(double AWG);
 double phys_units_get_sf(char *str);
 double freq_units_get_sf(char *str);
 double induct_units_get_sf(char *str);
+char * eng_units(double value, const char *base_units, double *sf);
 
 #endif /*__MISC_H__*/

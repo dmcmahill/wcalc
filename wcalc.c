@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.18 2001/09/22 03:50:18 dan Exp $ */
+/* $Id: wcalc.c,v 1.19 2001/09/23 17:38:09 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -326,3 +326,14 @@ Wcalc *Wcalc_new(void)
 
   return(new);
 }
+
+/* call back used all over all the _gui's */
+void wcalc_save_needed(GtkWidget *widget, gpointer data )
+{
+  if(WC_WCALC(data)->save_needed != NULL){
+    *(WC_WCALC(data)->save_needed) = '*';
+    gtk_window_set_title (GTK_WINDOW (WC_WCALC(data)->window),
+			  WC_WCALC(data)->window_title);
+  }
+}
+
