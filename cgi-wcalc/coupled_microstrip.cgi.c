@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.9 2004/08/13 05:36:25 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.10 2004/08/30 22:21:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -149,10 +149,7 @@ int cgiMain(void){
   cgi_units_menu *menu_deltal;
 
   /* create the coupled_microstrip line */
-  fprintf(cgiOut,"<pre>");
   line = coupled_microstrip_line_new();
-  fprintf(cgiOut,"</pre>");
-
 
   menu_lwst = cgi_units_menu_new(line->units_lwst);
   menu_len = cgi_units_menu_new(line->units_len);

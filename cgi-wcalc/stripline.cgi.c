@@ -1,4 +1,4 @@
-/* $Id: stripline.cgi.c,v 1.8 2004/08/13 05:36:27 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.9 2004/08/30 22:21:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -133,9 +133,7 @@ int cgiMain(void){
   /* cgiReadEnvironment("/tmp/capcgi.dat"); */
   
   /* create the stripline line */
-  fprintf(cgiOut,"<pre>");
   line = stripline_line_new();
-  fprintf(cgiOut,"</pre>");
 
   menu_lwht = cgi_units_menu_new(line->units_lwht);
   menu_L = cgi_units_menu_new(line->units_L);
