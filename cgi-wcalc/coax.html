@@ -1,6 +1,6 @@
-<!-- $Id: coax.html,v 1.4 2002/02/20 00:42:53 dan Exp $ -->
+<!-- $Id: coax.html,v 1.5 2002/06/12 11:30:04 dan Exp $ -->
 <!--
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -79,26 +79,26 @@ coax
 <TABLE>
 <TR>
 <TD>L =</TD>
-<TD><@g@line->L/line->L_sf@></TD>
-<TD><@s@line->L_units@></TD>
+<TD><@g@line->L/line->units_L->sf@></TD>
+<TD><@s@line->units_L->name@></TD>
 </TR>
 
 <TR>
 <TD>R =</TD>
-<TD><@g@line->R/line->R_sf@></TD>
-<TD><@s@line->R_units@></TD>
+<TD><@g@line->R/line->units_R->sf@></TD>
+<TD><@s@line->units_R->name@></TD>
 </TR>
 
 <TR>
 <TD>C =</TD>
-<TD><@g@line->C/line->C_sf@></TD>
-<TD><@s@line->C_units@></TD>
+<TD><@g@line->C/line->units_C->sf@></TD>
+<TD><@s@line->units_C->name@></TD>
 </TR>
 
 <TR>
 <TD>G =</TD>
-<TD><@g@line->G/line->G_sf@></TD>
-<TD><@s@line->G_units@></TD>
+<TD><@g@line->G/line->units_G->sf@></TD>
+<TD><@s@line->units_G->name@></TD>
 </TR>
 
 
@@ -144,50 +144,50 @@ coax
 
 <TR>
 <TD>Inner Radius (A)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" VALUE="<@g@line->a/line->a_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" VALUE="<@g@line->a/line->units_abct->sf@>"></TD>
 <TD>
 <!-- A units menu -->
-<@s@cgi_units_menu_show(length_units,"a_units",units_get_index_name(length_units,line->a_units))@>
+<@s@cgi_units_menu_show(length_units,"a_units",units_get_index_name(length_units,line->units_abct->name))@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_a" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Outer Radius (B)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" VALUE="<@g@line->b/line->b_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" VALUE="<@g@line->b/line->units_abct->sf@>"></TD>
 <TD>
 <!-- B units menu -->
-<@s@cgi_units_menu_show(length_units,"b_units",units_get_index_name(length_units,line->b_units))@>
+<@s@cgi_units_menu_show(length_units,"b_units",units_get_index_name(length_units,line->units_abct->name))@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_b" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Offset (C)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="c" VALUE="<@g@line->c/line->c_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="c" VALUE="<@g@line->c/line->units_abct->sf@>"></TD>
 <TD>
 <!-- C units menu -->
-<@s@cgi_units_menu_show(length_units,"c_units",units_get_index_name(length_units,line->c_units))@>
+<@s@cgi_units_menu_show(length_units,"c_units",units_get_index_name(length_units,line->units_abct->name))@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_c" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Shield Thickness (T)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tshield" VALUE="<@g@line->tshield/line->tshield_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tshield" VALUE="<@g@line->tshield/line->units_abct->sf@>"></TD>
 <TD>
 <!-- Tshield units menu -->
-<@s@cgi_units_menu_show(length_units,"tshield_units",units_get_index_name(length_units,line->tshield_units))@>
+<@s@cgi_units_menu_show(length_units,"tshield_units",units_get_index_name(length_units,line->units_abct->name))@>
 </TD>
 <TD></TD>
 </TR>
 
 <TR>
 <TD>Line length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@line->len/line->len_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@line->len/line->units_len->sf@>"></TD>
 <TD>
 <!-- length units menu -->
-<@s@cgi_units_menu_show(length_units,"len_units",units_get_index_name(length_units,line->len_units))@>
+<@s@cgi_units_menu_show(length_units,"len_units",units_get_index_name(length_units,line->units_len->name))@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
 </TR>
@@ -222,10 +222,10 @@ coax
 
 <TR>
 <TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->freq_sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"></TD>
 <TD>
 <!-- freq units menu -->
-<@s@cgi_units_menu_show(frequency_units,"freq_units",units_get_index_name(frequency_units,line->freq_units))@>
+<@s@cgi_units_menu_show(frequency_units,"freq_units",units_get_index_name(frequency_units,line->units_freq->name))@>
 </TD>
 </TR>
 

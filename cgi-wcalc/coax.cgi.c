@@ -1,7 +1,7 @@
-/* $Id: coax.cgi.c,v 1.7 2002/05/10 22:52:29 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.8 2002/06/12 11:30:03 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -54,6 +54,7 @@
 #include "coax_loadsave.h"
 #include "misc.h"
 #include "physconst.h"
+#include "units.h"
 
 /* ID's for this module */
 #include "coax_id.h"
@@ -201,18 +202,21 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->tshield_units = length_units[i].name;
     line->tshield_sf = length_units[i].sf;
-    
+    */
 
     /* units */
     if (cgiFormRadio("a_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->a_units = length_units[i].name;
     line->a_sf = length_units[i].sf;
-    
+    */
+
     /* Coax inner conductor radius */
     if(cgiFormDoubleBounded("a",&a,0.0,1000.0,defA) !=
        cgiFormSuccess){
@@ -224,11 +228,13 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->b_units = length_units[i].name;
     line->b_sf = length_units[i].sf;
-    
+    */
+
     /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b",&b,a*line->a_sf/line->b_sf,1000.0,defB) !=
+    if(cgiFormDoubleBounded("b",&b,a,1000.0,defB) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("b must be &gt a");
@@ -239,11 +245,13 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->c_units = length_units[i].name;
     line->c_sf = length_units[i].sf;
-    
+    */
+
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c",&c,0.0,(b*line->b_sf-a*line->a_sf)/line->c_sf,defC) !=
+    if(cgiFormDoubleBounded("c",&c,0.0,b-a,defC) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("c must be &lt b-a");
@@ -259,9 +267,10 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->len_units = length_units[i].name;
     line->len_sf = length_units[i].sf;
-
+    */
 
     /* Dielectric relative permittivity */
     if(cgiFormDoubleBounded("er",&er,1.0,1000.0,defER) !=
@@ -285,9 +294,10 @@ int cgiMain(void){
 	cgiFormSuccess){
       inputErr(&input_err);
     }
+    /* XXX
     line->freq_units = frequency_units[i].name;
     line->freq_sf = frequency_units[i].sf;
-
+    */
 
     /* electrical parameters: */
     if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,defRO) !=
@@ -301,13 +311,13 @@ int cgiMain(void){
     } 
 
     /* copy data over to the line structure */
-    line->a           = a*line->a_sf;
-    line->b           = b*line->b_sf;
-    line->c           = c*line->c_sf;
-    line->tshield     = tshield*line->tshield_sf;
-    line->len         = len*line->len_sf;
+    line->a           = a*line->units_abct->sf;
+    line->b           = b*line->units_abct->sf;
+    line->c           = c*line->units_abct->sf;
+    line->tshield     = tshield*line->units_abct->sf;
+    line->len         = len*line->units_len->sf;
 
-    line->freq = freq * line->freq_sf;
+    line->freq = freq * line->units_freq->sf;
   
     /* copy over the other parameters */
     line->tand  = tand;
@@ -361,33 +371,33 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: Action                      = %d\n",action);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"CGI: Inner Radius                = %g %s\n",
-	    line->a/line->a_sf,line->a_units);
+	    line->a/line->units_abct->sf,line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->a);
     fprintf(cgiOut,"CGI: Shield Radius               = %g %s\n",
-	    line->b/line->b_sf,line->b_units);
+	    line->b/line->units_abct->sf,line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->b);
     fprintf(cgiOut,"CGI: Offset                      = %g %s\n",
-	    line->c/line->c_sf,line->c_units);
+	    line->c/line->units_abct->sf,line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->c);
     fprintf(cgiOut,"CGI: Line length                 = %g %s\n",
-	    line->len/line->len_sf,line->len_units);
+	    line->len/line->units_len->sf,line->units_len->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->len);
     fprintf(cgiOut,"CGI: Shield thickness            = %g %s\n",
-	    line->tshield/line->tshield_sf,line->tshield_units);
+	    line->tshield/line->units_abct->sf,line->units_abct->name);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->tshield);
     fprintf(cgiOut,"CGI: Center metal resistivity    = %g %s\n",
-	    line->rho_a/line->rho_a_sf,line->rho_a_units);
+	    line->rho_a/line->units_rho->sf,line->units_rho->name);
     fprintf(cgiOut,"CGI: Shield metal resistivity    = %g %s\n",
-	    line->rho_b/line->rho_b_sf,line->rho_b_units);
+	    line->rho_b/line->units_rho->sf,line->units_rho->name);
     fprintf(cgiOut,"CGI: Relative dielectric const.  = %g \n",line->er);
     fprintf(cgiOut,"CGI: Dielectric loss tangent     = %g \n",line->tand);
     fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
-	    line->freq/line->freq_sf, line->freq_units); 
+	    line->freq/line->units_freq->sf,line->units_freq->name);
     fprintf(cgiOut,"CGI:                             = %g Hz\n",
 	    line->freq);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
