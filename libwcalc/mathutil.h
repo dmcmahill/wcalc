@@ -1,4 +1,4 @@
-/*      $Id: mathutil.h,v 1.4 2002/05/04 20:19:16 dan Exp $ */
+/*      $Id: mathutil.h,v 1.5 2002/05/06 02:14:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -59,6 +59,8 @@ typedef struct COMPLEX
 
 #define REAL(x)     (x.re)
 #define IMAG(x)     (x.im)
+#define REAL_P(x)     (x->re)
+#define IMAG_P(x)     (x->im)
 
 /* addition (a+b) */
 complex c_add(complex a, complex b);

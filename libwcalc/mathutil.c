@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.4 2002/05/04 20:19:14 dan Exp $ */
+/* $Id: mathutil.c,v 1.5 2002/05/06 02:14:14 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -105,7 +105,7 @@ complex * c_sub_p(complex *a, complex *b, complex *c)
   if (c == NULL) 
     c = c_complex_new();
 
-  c->re = a->re + b->re;
+  c->re = a->re - b->re;
   c->im = a->im - b->im;
   
   return c;
@@ -1570,6 +1570,9 @@ complex * c_hankel0_1_p(complex *x, complex *H)
   Y0 = c_mul_p(j,Y0,Y0);
   H = c_add_p(H,Y0,H);
 
+  free(Y0);
+  free(j);
+
   return H;
 }
 
@@ -1598,6 +1601,9 @@ complex * c_hankel0_2_p(complex *x, complex *H)
   Y0 = c_bessel_Y0_p(x,Y0);
   Y0 = c_mul_p(j,Y0,Y0);
   H = c_sub_p(H,Y0,H);
+
+  free(Y0);
+  free(j);
 
   return H;
 }
@@ -1628,6 +1634,9 @@ complex * c_hankel1_1_p(complex *x, complex *H)
   Y1 = c_mul_p(j,Y1,Y1);
   H = c_add_p(H,Y1,H);
 
+  free(Y1);
+  free(j);
+
   return H;
 }
 
@@ -1656,6 +1665,9 @@ complex * c_hankel1_2_p(complex *x, complex *H)
   Y1 = c_bessel_Y1_p(x,Y1);
   Y1 = c_mul_p(j,Y1,Y1);
   H = c_sub_p(H,Y1,H);
+
+  free(Y1);
+  free(j);
 
   return H;
 }
