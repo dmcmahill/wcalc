@@ -1,7 +1,7 @@
-/* $Id: air_coil.h,v 1.3 2002/05/10 22:52:51 dan Exp $ */
+/* $Id: air_coil.h,v 1.4 2002/06/12 11:30:22 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -35,6 +35,8 @@
 
 #ifndef __AIR_COIL_H__
 #define __AIR_COIL_H__
+
+#include "units.h"
 
 typedef struct AIR_COIL_COIL
 {
@@ -77,17 +79,11 @@ typedef struct AIR_COIL_COIL
    */
   int use_fill;
 
-  /* 
-   * various units and scale factors which may be useful for several
-   * backends.  The scale factors multiply the internal values to get
-   * the external units.
-   *
-   * For example, we might have:
-   *   L_units="nH" and L_sf = 1e-9;
-   */
-  
-  double len_sf, dia_sf, L_sf, SRF_sf, freq_sf, rho_sf;
-  char *len_units, *dia_units, *L_units, *SRF_units, *freq_units, *rho_units;
+  /* user units */
+  wc_units *units_len, *units_dia;
+  wc_units *units_L, *units_SRF;
+  wc_units *units_rho;
+  wc_units *units_freq;
 
 } air_coil_coil;
 

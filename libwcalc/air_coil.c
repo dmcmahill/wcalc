@@ -1,7 +1,7 @@
-/* $Id: air_coil.c,v 1.5 2002/05/09 23:49:54 dan Exp $ */
+/* $Id: air_coil.c,v 1.6 2002/06/12 11:30:22 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,6 +45,7 @@
 #include "air_coil.h"
 #include "alert.h"
 #include "misc.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -501,6 +502,14 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
 
 void air_coil_free(air_coil_coil *coil)
 {
+
+  wc_units_free(coil->units_len);
+  wc_units_free(coil->units_dia);
+  wc_units_free(coil->units_L);
+  wc_units_free(coil->units_SRF);
+  wc_units_free(coil->units_rho);
+  wc_units_free(coil->units_freq);
+
   free(coil);
 }
 
@@ -525,23 +534,15 @@ air_coil_coil *air_coil_new()
 
   newcoil->use_fill=0;
 
-  /* XXX need better way to initialize these */
-  newcoil->len_sf = 25.4e-3;
-  newcoil->dia_sf = 25.4e-3;
-  newcoil->L_sf = 1.0e-9;
-  newcoil->SRF_sf = 1.0e6;
-  newcoil->freq_sf = 1.0e6;
-  newcoil->rho_sf = 1.0;
-
-  newcoil->len_units="inch";
-  newcoil->dia_units="inch";
-  newcoil->L_units="nH";
-  newcoil->SRF_units="MHz";
-  newcoil->freq_units="MHz";
-  newcoil->rho_units="Ohm-m";
+  newcoil->units_len = wc_units_new(WC_UNITS_LENGTH);
+  newcoil->units_dia = wc_units_new(WC_UNITS_LENGTH);
+  newcoil->units_L = wc_units_new(WC_UNITS_INDUCTANCE);
+  newcoil->units_SRF = wc_units_new(WC_UNITS_FREQUENCY);
+  newcoil->units_rho = wc_units_new(WC_UNITS_RESISTIVITY);
+  newcoil->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
 
   /* get the rest of the entries in sync */
-  air_coil_calc(newcoil,newcoil->freq);
+  air_coil_calc(newcoil, newcoil->freq);
 
   return(newcoil);
 }

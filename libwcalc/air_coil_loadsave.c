@@ -1,7 +1,7 @@
-/* $Id: air_coil_loadsave.c,v 1.8 2002/05/09 23:49:55 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.9 2002/06/12 11:30:23 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,7 @@
 #include "air_coil_loadsave.h"
 #include "alert.h"
 #include "wcalc_loadsave.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -82,21 +83,19 @@ static fspec * get_fspec(void)
      * The desired user units
      */
     fspec_add_comment(myspec,"Desired user units and associated scale factors");
+    fspec_add_key(myspec, "units_len", "Length units",  
+		  'u', &coil->units_len);
+    fspec_add_key(myspec, "units_dia", "Diameter units",  
+		  'u', &coil->units_dia);
+    fspec_add_key(myspec, "units_L", "Inductance units",  
+		  'u', &coil->units_L);
+    fspec_add_key(myspec, "units_SRF", "Self resonant frequency units",  
+		  'u', &coil->units_SRF);
+    fspec_add_key(myspec, "units_rho", "Resistivity units",  
+		  'u', &coil->units_rho);
+    fspec_add_key(myspec, "units_freq", "Frequency units",  
+		  'u', &coil->units_freq);
 
-    fspec_add_key(myspec,"len_sf","Length scale factor (meters/unit)",'d',&coil->len_sf);
-    fspec_add_key(myspec,"len_units","Length units",'s',&coil->len_units);
- 
-    fspec_add_key(myspec,"dia_sf","Diameter scale factor (meters/unit)",'d',&coil->dia_sf);
-    fspec_add_key(myspec,"dia_units","Diameter units",'s',&coil->dia_units);
-  
-    fspec_add_key(myspec,"L_sf","Inductance scale factor (H/unit)",'d',&coil->L_sf);
-    fspec_add_key(myspec,"L_units","Inductance units",'s',&coil->L_units);
-    
-    fspec_add_key(myspec,"SRF_sf","Self resonant frequency scale factor (Hz/unit)",'d',&coil->SRF_sf);
-    fspec_add_key(myspec,"SRF_units","Self resonant frequency units",'s',&coil->SRF_units);
-    
-    fspec_add_key(myspec,"freq_sf","Frequency scale factor (Hz/unit)",'d',&coil->freq_sf);
-    fspec_add_key(myspec,"freq_units","Frequency units",'s',&coil->freq_units);
   }
 
   return myspec;

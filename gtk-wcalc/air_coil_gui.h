@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.h,v 1.3 2002/05/10 22:52:37 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.4 2002/06/12 11:30:09 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -59,20 +59,12 @@ typedef struct AIR_COIL_GUI
   /* frequency entry */
   GtkWidget *text_freq;
 
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
   /*
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
-  GtkWidget *text_Nf,*text_dia,*text_len,*text_fill,*text_AWGf,*text_rho,*text_L;
+  GtkWidget *text_Nf,*text_dia,*text_len,*text_fill;
+  GtkWidget *text_AWGf,*text_rho,*text_L;
 
   /* the radio buttons for fill/length selection */
   GtkWidget *len_button,*fill_button;
@@ -81,9 +73,8 @@ typedef struct AIR_COIL_GUI
    * Outputs vbox and its contents
    */
   GtkWidget *outputs_vbox;
-  GtkWidget *label_Q,*label_Qfreq,*label_SRF,*label_SRF_units;
+  GtkWidget *label_Q, *label_Qfreq, *label_SRF;
   GtkWidget *label_Lmax,*label_fill;
-  GtkWidget *label_Lmax_units;
 
   /*
    * Picture vbox and its contents
@@ -91,10 +82,6 @@ typedef struct AIR_COIL_GUI
   GtkWidget *picture_vbox;
   GtkWidget *text_status;
 
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
 
 } air_coil_gui;
 
