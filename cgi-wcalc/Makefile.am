@@ -1,4 +1,4 @@
-## $Id$
+## $Id: Makefile.am,v 1.1 2001/10/05 00:08:49 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -59,18 +59,51 @@ LDADD = ../libwcalc/libwcalc.la
 
 BUILT_SOURCES = \
 	air_coil_html.c \
+	air_coil_id.h \
+	coupled_microstrip_id.h \
 	coupled_microstrip_html.c \
 	footer_html.c \
+	ic_microstrip_id.h \
 	ic_microstrip_html.c \
+	microstrip_id.h \
 	microstrip_html.c \
+	stripline_id.h \
 	stripline_html.c
 
 HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut 
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
-air_coil_html.c:        air_coil.html
-	$(HTML2C) $(srcdir)/air_coil.html > $(srcdir)/air_coil_html.c
-
 footer_html.c:	footer.html
 	$(HTML2C) $(srcdir)/footer.html > $(srcdir)/footer_html.c
+
+air_coil_html.c:	air_coil.html
+	$(HTML2C) $(srcdir)/air_coil.html > $(srcdir)/air_coil_html.c
+
+air_coil_id.h: air_coil.html
+	$(HTML2ID) $(srcdir)/air_coil.html > $(srcdir)/air_coil_id.h
+
+coupled_microstrip_html.c:	coupled_microstrip.html
+	$(HTML2C) $(srcdir)/coupled_microstrip.html > $(srcdir)/coupled_microstrip_html.c
+
+coupled_microstrip_id.h: coupled_microstrip.html
+	$(HTML2ID) $(srcdir)/coupled_microstrip.html > $(srcdir)/coupled_microstrip_id.h
+
+ic_microstrip_html.c:	ic_microstrip.html
+	$(HTML2C) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_html.c
+
+ic_microstrip_id.h: ic_microstrip.html
+	$(HTML2ID) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_id.h
+
+microstrip_html.c:	microstrip.html
+	$(HTML2C) $(srcdir)/microstrip.html > $(srcdir)/microstrip_html.c
+
+microstrip_id.h: microstrip.html
+	$(HTML2ID) $(srcdir)/microstrip.html > $(srcdir)/microstrip_id.h
+
+stripline_html.c:	stripline.html
+	$(HTML2C) $(srcdir)/stripline.html > $(srcdir)/stripline_html.c
+
+stripline_id.h: stripline.html
+	$(HTML2ID) $(srcdir)/stripline.html > $(srcdir)/stripline_id.h
+
 
