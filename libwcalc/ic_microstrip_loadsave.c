@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.2 2001/11/11 15:54:22 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.1 2001/11/12 04:02:50 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -54,47 +54,97 @@
 
 #define FILE_VERSION "0.1"
 
-#define SEC_OTHER 0
-#define SEC_STRIP 1
-#define SEC_SUBS  2
+
+#define LINE_SPEC      0
+#define SUBSTRATE_SPEC 1
+
+
+static fspec * get_fspec(int which_one)
+{
+  static fspec *linespec=NULL;
+  static fspec *subspec=NULL;
+  ic_microstrip_line *line=0;
+  ic_microstrip_subs *subs=0;
+
+  if (linespec == NULL) {
+    /* Build up the list which describes the file format */
+
+    linespec=fspec_add_sect(NULL,"ic_microstrip");
+    fspec_add_key(linespec,"file_version","I.C. microstrip file version",'f',FILE_VERSION);
+
+    fspec_add_key(linespec,"L","Length (meters)",'d',&line->l);
+    fspec_add_key(linespec,"W","Width (meters)",'d',&line->w);
+    fspec_add_key(linespec,"Ro","Characteristic Impedance (ohms)",'d',&line->Ro);
+    fspec_add_key(linespec,"Elen","Electrical Length (degrees)",'d',&line->len);
+    fspec_add_key(linespec,"freq","Frequency of operation",'d',&line->freq);
+
+    /*
+     * The desired user units
+     */
+    fspec_add_comment(linespec,"Desired user units and associated scale factors");
+
+    fspec_add_key(linespec,"l_sf","Length scale factor (meters/unit)",'d',&line->l_sf);
+    fspec_add_key(linespec,"l_units","Length units",'s',&line->l_units);
+
+    fspec_add_key(linespec,"w_sf","Width scale factor (meters/unit)",'d',&line->w_sf);
+    fspec_add_key(linespec,"w_units","Width units",'s',&line->w_units);
+
+    
+    fspec_add_key(linespec,"freq_sf","Frequency scale factor (Hz/unit)",'d',&line->freq_sf);
+    fspec_add_key(linespec,"freq_units","Frequency units",'s',&line->freq_units);
+  }
+
+  if (subspec == NULL) {
+    /* Build up the list which describes the file format */
+
+    subspec=fspec_add_sect(NULL,"substrate");
+
+    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",'d',&subs->tmet);
+    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",'d',&subs->rho);
+    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
+    fspec_add_key(subspec,"Eox","Oxide relative dielectric constant",'d',&subs->eox);
+    fspec_add_key(subspec,"Tox","Oxide thickness (meters)",'d',&subs->tox);
+    fspec_add_key(subspec,"H","Substrate thickness (meters)",'d',&subs->h);
+    fspec_add_key(subspec,"Es","Substrate relative dielectric constant",'d',&subs->es);
+    fspec_add_key(subspec,"sigmas","Substrate conductivity (1/(ohm-meters))",'d',&subs->sigmas);
+
+    /*
+     * The desired user units
+     */
+    fspec_add_comment(subspec,"Desired user units and associated scale factors");
+
+    fspec_add_key(subspec,"tmet_sf","Tmet scale factor (meters/unit)",'d',&subs->tmet_sf);
+    fspec_add_key(subspec,"tmet_units","Tmet units",'s',&subs->tmet_units);
+
+    fspec_add_key(subspec,"rho_sf","Resistivity scale factor (ohm-meters/unit)",'d',&subs->rho_sf);
+    fspec_add_key(subspec,"rho_units","Resistivity units",'s',&subs->rho_units);
+
+    fspec_add_key(subspec,"rough_sf"," scale factor (meters/unit)",'d',&subs->rough_sf);
+    fspec_add_key(subspec,"rough_units"," units",'s',&subs->rough_units);
+
+    fspec_add_key(subspec,"tox_sf","Oxide thickness scale factor (meters/unit)",'d',&subs->tox_sf);
+    fspec_add_key(subspec,"tox_units","Oxide thickness units",'s',&subs->tox_units);
+
+    fspec_add_key(subspec,"h_sf","Substrate thickness scale factor (meters/unit)",'d',&subs->h_sf);
+    fspec_add_key(subspec,"h_units","Substrate thickness units",'s',&subs->h_units);
+
+    fspec_add_key(subspec,"sigmas_sf",
+		  "Substrate conductivity scale factor (siemens/meter/unit)",'d',&subs->sigmas_sf);
+    fspec_add_key(subspec,"sigmas_units","Substrate thickness units",'s',&subs->sigmas_units);
+
+  }
+
+  if (which_one == LINE_SPEC)
+    return linespec;
+  else
+    return subspec;
+}
 
 int ic_microstrip_load(ic_microstrip_line *line, FILE *fp)
 {
-  char file_line[MAXLINELEN];
-  char *tok, *val;
-  int section=SEC_OTHER;
-
-  int i;
-
-  int got_l=0;
-  int got_l_sf=0;
-  int got_l_units=0;
-  int got_w=0;
-  int got_w_sf=0;
-  int got_w_units=0;
-  int got_z0=0;
-  int got_len=0;
-  int got_h=0;
-  int got_h_sf=0;
-  int got_h_units=0;
-  int got_tox=0;
-  int got_tox_sf=0;
-  int got_tox_units=0;
-  int got_eox=0;
-  int got_es=0;
-  int got_tmet=0;
-  int got_tmet_sf=0;
-  int got_tmet_units=0;
-  int got_rho=0;
-  int got_rho_sf=0;
-  int got_rho_units=0;
-  int got_rough=0;
-  int got_rough_sf=0;
-  int got_rough_units=0;
-  int got_sigmas=0;
-  int got_freq=0;
-  int got_freq_sf=0;
-  int got_freq_units=0;
+  fspec *myspec;
+  char *val;
+  int rslt,tmpi;
 
   assert(fp!=NULL);
 
@@ -109,394 +159,34 @@ int ic_microstrip_load(ic_microstrip_line *line, FILE *fp)
 	 val);
 #endif
 
-  /* 
+  /*
    * If the file format changes, this is where we would call legacy
    * routines to read old style file formats.
    */
 
-  while( fgets(file_line,MAXLINELEN,fp) != NULL ){
-    tok = strtok(file_line,FIELDSEP);
-    if (tok != NULL){
-      for (i=0 ; i<strlen(tok) ; i++){
-	tok[i] = tolower(tok[i]);
-      }
-      /* skip comment lines */
-      if ( (tok[0] != '#') &&
-	   (tok[0] != ';') &&
-	   (tok[0] != '*') ){
-	do {
-	  if (strcmp(tok,"[ic_microstrip]") == 0){
-	    section=SEC_STRIP;
-	  }
-	  else if (strcmp(tok,"[substrate]") == 0){
-	    section=SEC_SUBS;
-	  }
-	  else if ( (tok[0] == '[') && (tok[strlen(tok)-1] == ']') ){
-	    section=SEC_OTHER;
-	  }
-	  else if ( (section==SEC_STRIP) || (section==SEC_SUBS) ){
-	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
-	      alert("ic_microstrip_load:  could not read value to go"
-		      " with %s=\n",tok);
-	      return -1;
-	    }
-	    
-	    if (strcmp(tok,"w") == 0){
-	      line->w = atof(val);
-	      got_w = 1;
-	    }
-	    else if (strcmp(tok,"w_sf") == 0){
-	      line->w_sf = atof(val);
-	      got_w_sf = 1;
-	    }
-	    else if (strcmp(tok,"w_units") == 0){
-	      line->w_units = strdup(val);
-	      got_w_units = 1;
-	    }
-	    else if (strcmp(tok,"l") == 0){
-	      line->l = atof(val);
-	      got_l = 1;
-	    }
-	    else if (strcmp(tok,"l_sf") == 0){
-	      line->l_sf = atof(val);
-	      got_l_sf = 1;
-	    }
-	    else if (strcmp(tok,"l_units") == 0){
-	      line->l_units = strdup(val);
-	      got_l_units = 1;
-	    }
-	    else if (strcmp(tok,"Ro") == 0){
-	      line->Ro = atof(val);
-	      got_z0 = 1;
-	    }
-	    else if (strcmp(tok,"elen") == 0){
-	      line->len = atof(val);
-	      got_len = 1;
-	    }
-	    else if (strcmp(tok,"h") == 0){
-	      line->subs->h = atof(val);
-	      got_h = 1;
-	    }
-	    else if (strcmp(tok,"h_sf") == 0){
-	      line->subs->h_sf = atof(val);
-	      got_h_sf = 1;
-	    }
-	    else if (strcmp(tok,"h_units") == 0){
-	      line->subs->h_units = strdup(val);
-	      got_h_units = 1;
-	    }
-	    else if (strcmp(tok,"es") == 0){
-	      line->subs->es = atof(val);
-	      got_es = 1;
-	    }
-	    else if (strcmp(tok,"eox") == 0){
-	      line->subs->eox = atof(val);
-	      got_eox = 1;
-	    }
-	    else if (strcmp(tok,"tox") == 0){
-	      line->subs->tox = atof(val);
-	      got_tox = 1;
-	    }
-	    else if (strcmp(tok,"tox_sf") == 0){
-	      line->subs->tox_sf = atof(val);
-	      got_tox_sf = 1;
-	    }
-	    else if (strcmp(tok,"tox_units") == 0){
-	      line->subs->tox_units = strdup(val);
-	      got_tox_units = 1;
-	    }
-	    else if (strcmp(tok,"tmet") == 0){
-	      line->subs->tmet = atof(val);
-	      got_tmet = 1;
-	    }
-	    else if (strcmp(tok,"tmet_sf") == 0){
-	      line->subs->tmet_sf = atof(val);
-	      got_tmet_sf = 1;
-	    }
-	    else if (strcmp(tok,"tmet_units") == 0){
-	      line->subs->tmet_units = strdup(val);
-	      got_tmet_units = 1;
-	    }
-	    else if (strcmp(tok,"rho") == 0){
-	      line->subs->rho = atof(val);
-	      got_rho = 1;
-	    }
-	    else if (strcmp(tok,"rho_sf") == 0){
-	      line->subs->rho_sf = atof(val);
-	      got_rho_sf = 1;
-	    }
-	    else if (strcmp(tok,"rho_units") == 0){
-	      line->subs->rho_units = strdup(val);
-	      got_rho_units = 1;
-	    }
-	    else if (strcmp(tok,"rough") == 0){
-	      line->subs->rough = atof(val);
-	      got_rough = 1;
-	    }
-	    else if (strcmp(tok,"rough_sf") == 0){
-	      line->subs->rough_sf = atof(val);
-	      got_rough_sf = 1;
-	    }
-	    else if (strcmp(tok,"rough_units") == 0){
-	      line->subs->rough_units = strdup(val);
-	      got_rough_units = 1;
-	    }
-	    else if (strcmp(tok,"sigmas") == 0){
-	      line->subs->sigmas = atof(val);
-	      got_sigmas = 1;
-	    }
-	    else if (strcmp(tok,"freq") == 0){
-	      line->freq = atof(val);
-	      got_freq = 1;
-	    }
-	    else if (strcmp(tok,"freq_sf") == 0){
-	      line->freq_sf = atof(val);
-	      got_freq_sf = 1;
-	    }
-	    else if (strcmp(tok,"freq_units") == 0){
-	      line->freq_units = strdup(val);
-	      got_freq_units = 1;
-	    }
-	    else if (strcmp(tok,"file_version") == 0){
-	      /* ignore */
-	    }
-	    else {
-	      alert("ic_microstrip_load:  unknown token \"%s\"\n",tok);
-	      return -1;
-	    }
-	  }
-	  else {
-	    /* 
-	     * skip because this is another secion of the file.
-	     * probably from global settings
-	     */
-	  }
 
-	} while ( (tok = strtok(NULL,FIELDSEP)) != NULL );
-      }
-    }
-  }
-  
-  if (!got_l) {  
-    alert("ic_microstrip_load:  missing data: L\n");   
-    return -1;  
-  }
-  if (!got_l_sf) {  
-    alert("ic_microstrip_load:  missing data: l scale factor\n");   
-    return -1;  
-  }
-  if (!got_l_units) {  
-    alert("ic_microstrip_load:  missing data: l units\n");   
-    return -1;  
-  }
-  if (!got_w) {  
-    alert("ic_microstrip_load:  missing data: W\n");   
-    return -1;  
-  }
-  if (!got_w_sf) {  
-    alert("ic_microstrip_load:  missing data: w scale factor\n");   
-    return -1;  
-  }
-  if (!got_w_units) {  
-    alert("ic_microstrip_load:  missing data: w units\n");   
-    return -1;  
-  }
-  if (!got_z0) {  
-    alert("ic_microstrip_load:  missing data: Z0\n");   
-    return -1;  
-  }
-  if (!got_len) {  
-    alert("ic_microstrip_load:  missing data: Elen\n");   
-    return -1;  
-  }
-  if (!got_h) {  
-    alert("ic_microstrip_load:  missing data: H\n");   
-    return -1;  
-  }
-  if (!got_h_sf) {  
-    alert("ic_microstrip_load:  missing data: h scale factor\n");   
-    return -1;  
-  }
-  if (!got_h_units) {  
-    alert("ic_microstrip_load:  missing data: h units\n");   
-    return -1;  
-  }
-  if (!got_es) {  
-    alert("ic_microstrip_load:  missing data: ES\n");   
-    return -1;  
-  }
-  if (!got_eox) {  
-    alert("ic_microstrip_load:  missing data: EOX\n");   
-    return -1;  
-  }
-  if (!got_tox) {  
-    alert("ic_microstrip_load:  missing data: TOX\n");   
-    return -1;  
-  }
-  if (!got_tox_sf) {  
-    alert("ic_microstrip_load:  missing data: TOX sf\n");   
-    return -1;  
-  }
-  if (!got_tox_units) {  
-    alert("ic_microstrip_load:  missing data: TOX units\n");   
-    return -1;  
-  }
-  if (!got_tmet) {  
-    alert("ic_microstrip_load:  missing data: TMET\n");   
-    return -1;  
-  }
-  if (!got_tmet_sf) {  
-    alert("ic_microstrip_load:  missing data: tmet scale factor\n");   
-    return -1;  
-  }
-  if (!got_tmet_units) {  
-    alert("ic_microstrip_load:  missing data: tmet units\n");   
-    return -1;  
-  }
-  if (!got_rho) {  
-    alert("ic_microstrip_load:  missing data: RHO\n");   
-    return -1;  
-  }
-  if (!got_rho_sf) {  
-    alert("ic_microstrip_load:  missing data: rho scale factor\n");   
-    return -1;  
-  }
-  if (!got_rho_units) {  
-    alert("ic_microstrip_load:  missing data: rho units\n");   
-    return -1;  
-  }
-  if (!got_rough) {  
-    alert("ic_microstrip_load:  missing data: ROUGH\n");   
-    return -1;  
-  }
-  if (!got_rough_sf) {  
-    alert("ic_microstrip_load:  missing data: rough scale factor\n");   
-    return -1;  
-  }
-  if (!got_rough_units) {  
-    alert("ic_microstrip_load:  missing data: rough units\n");   
-    return -1;  
-  }
-  if (!got_sigmas) {  
-    alert("ic_microstrip_load:  missing data: sigmas\n");   
-    return -1;  
-  }
-  if (!got_freq) {  
-    alert("ic_microstrip_load:  missing data: FREQ\n");   
-    return -1;  
-  }
-  if (!got_freq_sf) {  
-    alert("ic_microstrip_load:  missing data: freq scale factor\n");   
-    return -1;  
-  }
-  if (!got_freq_units) {  
-    alert("ic_microstrip_load:  missing data: freq units\n");   
-    return -1;  
-  }
-  
-  return 0;
+  myspec=get_fspec(LINE_SPEC);
+  rslt=fspec_read_file(myspec,fp,(unsigned long) line);
+  rewind(fp);
+  myspec=get_fspec(SUBSTRATE_SPEC);
+  tmpi=fspec_read_file(myspec,fp,(unsigned long) line->subs);
+
+  if (tmpi != 0)
+    rslt=tmpi;
+
+  return rslt;
 }
 
 
 void ic_microstrip_save(ic_microstrip_line *line, FILE *fp, char *fname)
 {
+  fspec *myspec;
+
   wcalc_save_header(fp, fname, FILE_IC_MICROSTRIP);
 
-  fprintf(fp,"[ic_microstrip]\n");
-  fprintf(fp,"\n#\n#file format version\n#\n\n");
+  myspec=get_fspec(LINE_SPEC);
+  fspec_write_file(myspec,fp,(unsigned long) line);
 
-  fprintf(fp,"file_version = %s\n\n",FILE_VERSION);
-  /*
-   * The input values
-   */
-
-  fprintf(fp,"#\n# Input parameters\n#\n\n");
-
-   fprintf(fp,"# Length (meters)\n");
-  fprintf(fp,"L = %g\n",line->l);
-
-  fprintf(fp,"# Width (meters)\n");
-  fprintf(fp,"W = %g\n",line->w);
-
-  fprintf(fp,"# Characteristic Impedance (ohms)\n");
-  fprintf(fp,"Z0 = %g\n",line->Ro);
-
-  fprintf(fp,"# Electrical Length (degrees)\n");
-  fprintf(fp,"Elen = %g\n",line->len);
-
-  fprintf(fp,"# Operating frequency (Hertz)\n");
-  fprintf(fp,"freq = %g\n",line->freq);
-
-  fprintf(fp,"\n");
-
-  /*
-   * The desired user units
-   */
-
-  fprintf(fp,"#\n# Desired user units\n#\n\n");
-
-  fprintf(fp,"# Length scale factor (meters/unit)\n");
-  fprintf(fp,"l_sf= %g\n",line->l_sf);
-  fprintf(fp,"# Length units\n");
-  fprintf(fp,"l_units= %s\n",line->l_units);
-
-  fprintf(fp,"# Width scale factor (meters/unit)\n");
-  fprintf(fp,"w_sf= %g\n",line->w_sf);
-  fprintf(fp,"# Width units\n");
-  fprintf(fp,"w_units= %s\n",line->w_units);
-
-  fprintf(fp,"# Frequency scale factor (Hertz/unit)\n");
-  fprintf(fp,"freq_sf= %g\n",line->freq_sf);
-  fprintf(fp,"# Frequency units\n");
-  fprintf(fp,"freq_units= %s\n",line->freq_units);
-
-  fprintf(fp,"[substrate]\n");
-
-  fprintf(fp,"# Height (meters)\n");
-  fprintf(fp,"H = %g\n",(line->subs)->h);
-
-  fprintf(fp,"# Relative dielectric constant\n");
-  fprintf(fp,"ER = %g\n",(line->subs)->es);
-
-  fprintf(fp,"# Metalization thickness (meters)\n");
-  fprintf(fp,"TMET = %g\n",(line->subs)->tmet);
-
-  fprintf(fp,"# Metalization resistivity (ohm-meters)\n");
-  fprintf(fp,"RHO = %g\n",(line->subs)->rho);
-
-  fprintf(fp,"# Metalization surface roughness (meters-RMS)\n");
-  fprintf(fp,"ROUGH = %g\n",(line->subs)->rough);
-
-  fprintf(fp,"# Substrate conductivity\n");
-  fprintf(fp,"sigmas = %g\n",(line->subs)->sigmas);
-
-  fprintf(fp,"\n");
-
-  /*
-   * The desired user units
-   */
-
-  fprintf(fp,"#\n# Desired user units\n#\n\n");
-
-  fprintf(fp,"# Height scale factor (meters/unit)\n");
-  fprintf(fp,"h_sf= %g\n",line->subs->h_sf);
-  fprintf(fp,"# Height units\n");
-  fprintf(fp,"h_units= %s\n",line->subs->h_units);
-
-  fprintf(fp,"#  Metal thickness scale factor (meters/unit)\n");
-  fprintf(fp,"tmet_sf= %g\n",line->subs->tmet_sf);
-  fprintf(fp,"#  Metal thickness units\n");
-  fprintf(fp,"tmet_units= %s\n",line->subs->tmet_units);
-
-  fprintf(fp,"#  Rho scale factor (ohm-meters/unit)\n");
-  fprintf(fp,"rho_sf= %g\n",line->subs->rho_sf);
-  fprintf(fp,"#  units\n");
-  fprintf(fp,"rho_units= %s\n",line->subs->rho_units);
-
-  fprintf(fp,"#  roughness scale factor (meters/unit)\n");
-  fprintf(fp,"rough_sf= %g\n",line->subs->rough_sf);
-  fprintf(fp,"#  roughness units\n");
-  fprintf(fp,"rough_units= %s\n",line->subs->rough_units);
-
-
+  myspec=get_fspec(SUBSTRATE_SPEC);
+  fspec_write_file(myspec,fp,(unsigned long) line->subs);
 }

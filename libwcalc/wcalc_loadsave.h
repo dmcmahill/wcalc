@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.2 2001/11/03 02:16:21 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.3 2001/11/03 16:47:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -38,10 +38,78 @@
 
 #define WCALC_FILE_VERSION "0.1"
 
+/*
+ * typedef's
+ */
+
+typedef struct FSPEC {
+  /* 
+   * SECTION:  section (like "[air_coil]")
+   * KEY:      key (like "width")
+   * FIXED:    fixed key (like "file_version")
+   * COMMENT:  fixed comment
+   */
+  enum {SPEC_SECTION, SPEC_KEY, SPEC_FIXED, SPEC_COMMENT} spec_type;
+
+  /* the section name ("air_coil") or keyname ("width") */
+  char *key;
+
+  /*
+   * a comment like "Width of the line (meters)" 
+   * This will be saved in the output file.
+   */
+  char *comment;
+
+  /* 
+   * type of the variable associated with the key.
+   *  'd' = double
+   *  'i' = int
+   *  's' = char *   (i.e. a string)
+   */
+  char type;
+
+  /* 
+   * offset into the struct where this value lives.  For example:
+   * &air_coil->fill - air_coil;
+   */
+  unsigned long ofs;
+
+  /* this is a doubly linked list */
+  struct FSPEC *next, *prev;
+} fspec;
+
+
+/*
+ * prototypes
+ */
+
+/*
+ * Write a wcalc header to the opened file pointer, fp.
+ * The file name is written out to the file in the comment
+ * section.
+ */
 void wcalc_save_header(FILE *fp, char *fname, char *model_name);
+
+/*
+ * look in the opened file pointer to determine the model type
+ * contained in the file.
+ * Returns one of the MODEL_* enumeration values below
+ */
 int wcalc_load(FILE *fp);
 
 char * file_read_val(FILE *fp, const char *section, const char *key);
+
+fspec * fspec_add_key(fspec *list,
+		      char *name,
+		      char *comment,
+		      char type,
+		      void *ofs
+		      );
+fspec * fspec_add_sect(fspec *list,char *name);
+fspec * fspec_add_comment(fspec *list,char *comment);
+int fspec_write_file(fspec *list,FILE *fp,unsigned long base);
+int fspec_read_file(fspec *list,FILE *fp,unsigned long base);
+
 
 /* Model types.  Used to identify models in the file */
 #define FILE_AIR_COIL            "air_coil"
@@ -59,7 +127,7 @@ enum {
   MODEL_STRIPLINE
 };
 
-#define MAXLINELEN 80
+#define MAXLINELEN 256
 #define FIELDSEP " \t=\n"
 
 #endif /*__WCALC_LOADSAVE_H__*/
