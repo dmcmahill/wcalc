@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.1 2001/10/05 00:50:23 dan Exp $ */
+/* $Id: start.c,v 1.2 2001/10/11 02:23:14 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -35,11 +35,15 @@
 
 //#define DEBUG
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
 #include "pixmaps/splash.xpm"
+
+#include "files.h"
 #include "start.h"
 #include "wcalc.h"
 
@@ -137,6 +141,23 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
 
 }
 
+static void open_pressed (GtkWidget *w, GtkWidget *window)
+{
+
+#ifdef DEBUG
+  g_print("start.c:open_pressed():\n");
+#endif
+
+  wcalc_open();
+
+  /* unmake it modal */
+  gtk_grab_remove(window);
+
+  /* blow away the window */
+  gtk_widget_destroy(window);
+
+}
+
  
 void start_popup(void)
 {
@@ -200,6 +221,16 @@ void start_popup(void)
   separator = gtk_hseparator_new ();
   gtk_box_pack_end (GTK_BOX (main_vbox), separator, FALSE, TRUE, 0);
   gtk_widget_show (separator);
+
+  /* Add the "Open..." button and set its action */
+  button = gtk_button_new_with_label ("Open...");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(open_pressed),
+		     GTK_OBJECT(window));
+  
+  gtk_box_pack_start (GTK_BOX (action_area),
+		      button, TRUE, FALSE, 0);
+  gtk_widget_show (button);
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label ("Ok");

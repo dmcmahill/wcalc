@@ -1,4 +1,4 @@
-/* $Id: files.h,v 1.3 2001/09/23 17:38:09 dan Exp $ */
+/* $Id: files.h,v 1.1 2001/10/05 00:50:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -42,6 +42,6 @@ void wcalc_save_as(gpointer data,
 void wcalc_save(gpointer data,
 		guint action,
 		GtkWidget *widget);
-void wcalc_open(void);
+int wcalc_open(void);
 
 #endif /*__FILES_H__*/
