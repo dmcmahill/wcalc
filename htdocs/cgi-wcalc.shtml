@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml.in,v 1.3 2001/10/23 01:05:12 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml,v 1.6 2001/10/27 16:18:35 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -51,6 +51,7 @@ stripline synthesis,
     <font face="helvetica, arial" size="+0">
     <ul>
     <LI><A HREF="/cgi-bin/air_coil.cgi">Air Core Inductors (Single Layer Solenoid)</A></LI>
+    <LI><A HREF="/cgi-bin/coax.cgi">Coaxial Transmission Line</A></LI>
     <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
     <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
     <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>

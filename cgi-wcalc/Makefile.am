@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.14 2002/01/07 01:24:13 dan Exp $
+## $Id: Makefile.am,v 1.15 2002/01/07 10:42:19 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -37,6 +37,7 @@ cgibinexecdir = @CGIBINDIR@
 
 cgibinexec_PROGRAMS = \
 	air_coil.cgi \
+	coax.cgi \
 	coupled_microstrip.cgi \
 	ic_microstrip.cgi \
 	microstrip.cgi \
@@ -46,6 +47,8 @@ cgibinexec_PROGRAMS = \
 COMMON = alert.c cgic.c cgic.h cgi-units.c cgi-units.h
 
 air_coil_cgi_SOURCES = air_coil.cgi.c ${COMMON}
+
+coax_cgi_SOURCES = coax.cgi.c ${COMMON}
 
 coupled_microstrip_cgi_SOURCES = coupled_microstrip.cgi.c ${COMMON}
 
@@ -62,6 +65,7 @@ LDADD = ../libwcalc/libwcalc.la
 
 HTML_FILES= \
 	air_coil.html \
+	coax.html \
 	coupled_microstrip.html \
 	footer.html \
 	ic_microstrip.html \
