@@ -1,7 +1,7 @@
-/* $Id: air_coil.cgi.c,v 1.8 2002/01/10 17:27:33 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.9 2002/01/14 02:53:54 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,7 +45,9 @@
 
 /* CGI specific */
 #include "cgic.h"
+#include "cgi-common.h"
 #include "cgi-units.h"
+#include "cookie.h"
 
 /* libwcalc */
 #include "air_coil.h"
@@ -77,6 +79,7 @@
 #define defIND    100.0
 
 static const char *name_string="air_coil.cgi";
+static int input_err;
 
 int cgiMain(void){
 
@@ -84,7 +87,6 @@ int cgiMain(void){
   char str_action[ACTION_LEN];
 
   int action;
-  int input_err = 0;
   int i;
 
   /* air_coil variables */
@@ -95,15 +97,14 @@ int cgiMain(void){
 
   char *fill_choices[] = {"no","yes"};
 
+  input_err=0;
+
   /* 
    * uncomment to be able to run in the debugger. 
    * access the CGI URL that gives the problem, then change foo.cgi to
    * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
    */
   /* cgiReadEnvironment("/tmp/capcgi.dat"); */
-
-  /* Put out the CGI header */
-  cgiHeaderContentType("text/html");  
 
   /* create the air_coil  */
   coil = air_coil_new();
@@ -142,103 +143,91 @@ int cgiMain(void){
     /* Number of turns */
     if(cgiFormDoubleBounded("N",&N,0.0001,1000.0,defN) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* wire size */
     if(cgiFormDoubleBounded("AWG",&AWG,0.0001,1000.0,defAWG) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* Metal resistivity relative to copper */
     if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* inside diameter */
     if(cgiFormDoubleBounded("dia",&dia,0.0001,1000.0,defDIA) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* inside diameter units */
     if (cgiFormRadio("dia_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     coil->dia_units = length_units[i].name;
     coil->dia_sf = length_units[i].sf;
-#ifdef DEBUG
-    fprintf(cgiOut,"<pre>CGI:  dia_units = %s</pre>\n",coil->dia_units);
-#endif
     
     /* Solenoid length  */
     if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* Solenoid length units */
     if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     coil->len_units = length_units[i].name;
     coil->len_sf = length_units[i].sf;
-#ifdef DEBUG
-    fprintf(cgiOut,"<pre>CGI:  len_units = %s</pre>\n",coil->len_units);
-#endif
 
     /* Solenoid fill  */
     if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
 
     if (cgiFormRadio("use_fill",fill_choices,2,&coil->use_fill,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
       
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }  
 
     /* Frequency of operation  */
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
 
     /* Frequency of operation units */
     if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     coil->freq_units = frequency_units[i].name;
     coil->freq_sf = frequency_units[i].sf;
-#ifdef DEBUG
-    fprintf(cgiOut,"<pre>CGI:  freq_units = %s</pre>\n",coil->freq_units);
-#endif
 
     /* Inductance units */
     if (cgiFormRadio("L_units",units_strings_get(inductance_units),units_size(inductance_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     coil->L_units = inductance_units[i].name;
     coil->L_sf = inductance_units[i].sf;
-#ifdef DEBUG
-    fprintf(cgiOut,"<pre>CGI:  L_units = %s</pre>\n",coil->L_units);
-#endif
 
     /* Desired Inductance */
     if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
 
 
@@ -252,8 +241,34 @@ int cgiMain(void){
     coil->freq = freq*coil->freq_sf;
     
   }  /* if ( (action != RESET) && (action != LOAD) ) */
-  
+  else {
+#ifdef DEBUG
+    printf("%s:  checking for a cookie to load\n",name_string);
+#endif
+    /* load a stored cookie if it exists */
+    if(cgiCookieStringNoNewlines(name_string,cookie_load_str,COOKIE_MAX) ==
+       cgiCookieSuccess) {
+#ifdef DEBUG
+      printf("%s:  loading cookie \"%s\"\n",name_string,cookie_load_str);
+#endif
+      air_coil_load_string(line,cookie_load_str);
+#ifdef DEBUG
+      printf("%s:  finished loading cookie\n",name_string);
+#endif
+    }
 
+  if (!input_err){
+    cookie_str = air_coil_save_string(line);
+    cookie = cgiCookie_new(name_string,cookie_str);
+    cgiCookie_MaxAge_set(cookie,COOKIE_AGE);
+    cgiHeaderSetCookie(cookie);
+    
+    /* Put out the CGI header */
+    cgiHeaderContentType("text/html");  
+  }
+  else {
+    fixInputMsg();
+  }
 
 
 #ifdef DEBUG

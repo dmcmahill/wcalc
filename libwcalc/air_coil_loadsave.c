@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.5 2001/11/03 16:47:26 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.6 2001/11/25 16:33:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -138,3 +138,60 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) coil);
 }
 
+int air_coil_load_string(air_coil_coil *coil, char *str)
+{
+  fspec *myspec;
+  char *val;
+  char *mystr;
+  int rslt;
+
+  assert(str!=NULL);
+
+#ifdef DEBUG
+  printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
+#endif
+
+  mystr=strdup(str);
+
+  /* XXX fixme*/
+  val = strtok(mystr," ");
+
+  /* read the model version  */
+  if ( val == NULL ){
+    alert("Could not determine the air_coil file_version\n");
+    return -1;
+  }
+
+#ifdef DEBUG
+  printf("air_coil_loadsave.c:air_coil_load_string():  Got file_version=\"%s\"\n",
+	 val);
+#endif
+  /*
+   * If the file format changes, this is where we would call legacy
+   * routines to read old style formats.
+   */
+
+  myspec=get_fspec();
+#ifdef DEBUG
+  printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
+#endif
+  rslt=fspec_read_string(myspec,str,(unsigned long) coil);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  /* XXX any composite units to init */
+
+  return rslt;
+}
+
+
+char * air_coil_save_string(air_coil_coil *coil)
+{
+  fspec *myspec;
+  char *str;
+
+  myspec=get_fspec();
+  str=fspec_write_string(myspec,(unsigned long) coil);
+  return str;
+}
