@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.29 2001/10/19 02:00:49 dan Exp $
+dnl $Id: configure.in,v 1.30 2001/10/20 01:34:28 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -259,8 +259,6 @@ AC_SUBST(MEX_WCALC)
 #	glnx86          - .mexglx
 #	Windows         - .dll
 
-if test ! "X$enable_matlab" = "Xno" ; then
-
 AC_PATH_PROG(MEX, mex)
 AC_MSG_CHECKING([for matlab mex suffix])
 case $host in
@@ -331,7 +329,6 @@ case $host in
 
 esac
 AC_MSG_RESULT([$MEXSFX])
-fi
 
 AC_SUBST(MEXSFX)
 
