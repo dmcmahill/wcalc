@@ -81,7 +81,7 @@ cgi/stripline.html
 cgi/stripline_html.c
 cgi/Makefile
 cgi/stripline_id.h
-pixmaps/Makefile
+pixmaps/Makefile.in
 pixmaps/air_coil.eps
 pixmaps/air_coil.obj
 pixmaps/air_coil.png
@@ -106,6 +106,10 @@ pixmaps/microstrip_model.eps
 pixmaps/microstrip_model.obj
 pixmaps/microstrip_model.png
 pixmaps/microstrip_model.xpm
+pixmaps/splash.eps
+pixmaps/splash.obj
+pixmaps/splash.png
+pixmaps/splash.xpm
 pixmaps/stripline.eps
 pixmaps/stripline.obj
 pixmaps/stripline.png
