@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.8 2004/07/23 04:54:40 dan Exp $ */
+/* $Id: cgi-units.c,v 1.9 2004/07/23 22:11:51 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -270,6 +270,14 @@ char * cgi_units_menu_init()
   fprintf(cgiOut, "\nfunction valsChanged()\n{\n");
   fprintf(cgiOut, "\tdocument.wcalc.status.value = 'Values Out of Sync';\n");
   fprintf(cgiOut, "}\n\n");
+
+  fprintf(cgiOut, "\nfunction register(cgi, cookie) {\n");
+  fprintf(cgiOut, "\tvar today = new Date();\n");
+  fprintf(cgiOut, "\tvar expires = new Date();\n");
+  fprintf(cgiOut, "\texpires.setTime(today.getTime() + 1000*60*60*24*365);\n");
+  fprintf(cgiOut, "\tsetCookie(cgi, cookie, expires);\n");
+  fprintf(cgiOut, "}\n\n");
+
 
   while( ml != NULL ) {
     fprintf(cgiOut, "function changed_%s()\n", ml->menu->name);
