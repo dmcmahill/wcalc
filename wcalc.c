@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.13 2001/09/19 19:17:38 dan Exp $ */
+/* $Id: wcalc.c,v 1.14 2001/09/20 02:02:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -48,6 +48,7 @@
 
 #include "microstrip.h"
 #include "microstrip_gui.h"
+#include "stripline_gui.h"
 #include "physconst.h"
 
 #include "about.h"
@@ -66,11 +67,7 @@ static gint wcalc_destroy_event (GtkWidget *widget,
 static void wcalc_destroy_sig( GtkWidget *widget,
 			       gpointer   data );
 
-static Wcalc *Wcalc_new(void);
-
-
 static void global_model_init(void);
-
 
 /*
  * globals (yuck!)
@@ -147,12 +144,18 @@ int main( int   argc,
   /* set up the list of available models for the program */
   global_model_init();
 
+  /*
+   * the splash screen and also ask for what type of model for a new
+   * calculator or if we should open an existing design 
+   */
   start_popup();
+
   gtk_main ();
 
   return 0;
 }
 
+/* When a new model is added, this function must be updated. */
 static void global_model_init()
 {
   global_model_names = NULL;
@@ -174,19 +177,12 @@ static void global_model_init()
   */
   global_model_names = g_list_append(global_model_names,"Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
-  global_model_new = g_list_append(global_model_new,Wcalc_new);
+  global_model_new = g_list_append(global_model_new,microstrip_gui_new);
 
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
-  global_model_new = g_list_append(global_model_new,NULL);
+  global_model_new = g_list_append(global_model_new,stripline_gui_new);
 
-
-
-
-#ifdef DEBUG
-  g_print("global_model_init():  length of global_model_names is %d\n",
-	  g_list_length(global_model_names));
-#endif
 }
 
 void wcalc_setup (gpointer data,
@@ -198,22 +194,16 @@ void wcalc_setup (gpointer data,
   GtkWidget *main_vbox;
   GtkWidget *menubar;
   GdkBitmap *icon_bitmap;
-
-
-  void * (* new_cmd)(void);
-  char * model_name;
+  void * (* new_cmd)(void);  /* the function which will create a new
+			      * *_gui 
+			      */ 
+  char * model_name; /* the name of the model we will analyze */
 
   /* extract the _new function for our selected model */
   new_cmd = (void *) g_list_nth_data(global_model_new,action);
 
   /* extract the name of this model */
   model_name = (char *) g_list_nth_data(global_model_names,action);
-
-  if(new_cmd == NULL){
-    g_print("wcalc.c:wcalc_setup():  Sorry, I don't know how to create \"%s\"\n",
-	    model_name);
-    return ;
-  }
 
 #ifdef DEBUG
   g_print("wcalc_setup():  model = \"%s\" (# %d)\n",
@@ -222,6 +212,12 @@ void wcalc_setup (gpointer data,
   g_print("                new_cmd = %p\n",
 	  (void *) g_list_nth_data(global_model_new,action));
 #endif
+
+  if(new_cmd == NULL){
+    g_print("wcalc.c:wcalc_setup():  Sorry, I don't know how to create \"%s\"\n",
+	    model_name);
+    return ;
+  }
 
   /*
    * create our new GUI of the appropriate type.  Note that every GUI
@@ -236,7 +232,6 @@ void wcalc_setup (gpointer data,
   /* add this window to our global list */
   window_list = g_slist_append(window_list, wcalc->window);
 
-  //  wcalc->window = gtk_window_new (GTK_WINDOW_DIALOG);
 #ifdef DEBUG
   g_print("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
 #endif
@@ -265,8 +260,9 @@ void wcalc_setup (gpointer data,
 
 
 
-
-  /* Setup main window callbacks */
+  /* 
+   * Setup main window callbacks 
+   */
 
   /* Window Manager "delete" */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
@@ -283,27 +279,28 @@ void wcalc_setup (gpointer data,
 		      GTK_SIGNAL_FUNC (wcalc_destroy_sig), 
 		      wcalc);
 
+  /*
+   * Create the main window layout
+   */
 
-  /*create the main vbox */
+  /* create the main vbox */
   main_vbox = gtk_vbox_new (FALSE, 1);
   gtk_container_border_width (GTK_CONTAINER (main_vbox), 1);
   gtk_container_add (GTK_CONTAINER (wcalc->window), main_vbox);
   gtk_widget_show (main_vbox);
-
-
-
 
   /* set up the menu bar */
   get_main_menu (wcalc,wcalc->window, &menubar);
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, TRUE, 0);
   gtk_widget_show (menubar);
 
-  microstrip_gui_init(wcalc,main_vbox);
-
+  
+  /* call the MD initialization */
+  wcalc->init(wcalc,main_vbox);
 }
 
 
-static Wcalc *Wcalc_new(void)
+Wcalc *Wcalc_new(void)
 {
   Wcalc *new;
 
@@ -315,12 +312,6 @@ static Wcalc *Wcalc_new(void)
     }
 
   new->init_done=0;
-  new->phys_units_text = NULL;
-
-  /*
-   * create the microstrip line which will be used
-   */
-  new->line = microstrip_line_new();
 
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);

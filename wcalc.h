@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.6 2001/09/19 19:17:39 dan Exp $ */
+/*      $Id: wcalc.h,v 1.7 2001/09/20 02:02:59 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -46,17 +46,6 @@
 
 #include "microstrip.h"
 
-/*
- * List of available models.  If you add a model, you must include it
- * here 
- */
-enum {
-  WC_MODEL_AIRCOIL,
-  WC_MODEL_COUPLEDMICROSTRIP,
-  WC_MODEL_ICMICROSTRIP,
-  WC_MODEL_MICROSTRIP,
-  WC_MODEL_STRIPLINE,
-};
 
 /* Global list of the names of the various models */
 GList *global_model_names;
@@ -80,13 +69,36 @@ typedef struct WCALC
    */
   GtkWidget *window;
 
+  /*
+   * The main vbox
+   */
+  GtkWidget main_vbox;
+
+
+  /*
+   * Required public methods 
+   */
+  void (*init) (struct WCALC *, GtkWidget *);
+  int (*load) (FILE *);
+  int (*save) (FILE *);
+  int (*analyze) (void);
+  int (*synthesize) (void);
+  int (*display) (void);
+
+  /*  
+  model_new;
+  gui_init;
+  gui_print;
+  gui_destroy;
+  */
+
   /* 
    * Frequency/Units/Model vbox and its contents 
    */
   GtkWidget *units_vbox;
 
   /* frequency entry */
-  GtkWidget *entry_freq;
+  GtkWidget *text_freq;
 
   /* frequency units */
   GtkWidget *combo_funits;
@@ -96,12 +108,6 @@ typedef struct WCALC
 
   /* physical units */
   GtkWidget *combo_punits;
-
-
-  /*
-   * Frequency vbox and its contents
-   */
-  GtkWidget *text_freq;
 
   /*
    * Values vbox and its contents
@@ -144,5 +150,7 @@ typedef struct WCALC
 void wcalc_setup(gpointer data,
 		 guint action,
 		 GtkWidget *widget);
+
+Wcalc *Wcalc_new(void);
 
 #endif __WCALC_H_

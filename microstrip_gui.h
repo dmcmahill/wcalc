@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.h,v 1.3 2001/09/19 19:16:00 dan Exp $ */
+/* $Id: microstrip_gui.h,v 1.4 2001/09/20 02:02:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -36,15 +36,13 @@
 #ifndef __MICROSTRIP_GUI_H_
 #define __MICROSTRIP_GUI_H_
 
+#include "microstrip.h"
+#include "wcalc.h"
 
 typedef struct MICROSTRIP_GUI 
 {
-  /* Required public methods */
-  int (*load) (FILE *);
-  int (*save) (FILE *);
-  int (*analyze) (void);
-  int (*synthesize) (void);
-  int (*display) (void);
+  /* The parent */
+  Wcalc wcalc;
 
   /* internals */
   struct MICROSTRIP_LINE *line;

@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.5 2001/09/19 19:15:59 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.6 2001/09/20 02:02:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -42,7 +42,6 @@
 #include <string.h>
 #endif
 
-#include "icon_bitmap"
 #include "menus.h"
 
 #include "microstrip.h"
@@ -52,9 +51,9 @@
 #include "wcalc.h"
 
 
-void mscalc_analyze( GtkWidget *w, gpointer data );
-void mscalc_synthesize( GtkWidget *w, gpointer data );
-void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data );
+static void mscalc_analyze( GtkWidget *w, gpointer data );
+static void mscalc_synthesize( GtkWidget *w, gpointer data );
+static void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data );
 
 static void vals_changedCB( GtkWidget *widget, gpointer data );
 
@@ -72,10 +71,15 @@ static void cb_punits_menu_select( GtkWidget *item,
 #define ENTRYLENGTH  8
 
 
+/*
+ * Public Functions
+ */
+
 microstrip_gui *microstrip_gui_new(void)
 {
   microstrip_gui *new_gui;
-  
+  Wcalc *wcalc;
+
   /* allocate memory */
   new_gui = (microstrip_gui *) malloc(sizeof(microstrip_gui));
   if(new_gui == NULL)
@@ -84,15 +88,37 @@ microstrip_gui *microstrip_gui_new(void)
       exit(1);
     }
 
-#ifdef notdef
-  /* initialize */
-  new_gui->load = &microstrip_gui_load;
-  new_gui->save = &microstrip_gui_save;
-  new_gui->analyze = &microstrip_gui_analyze;
-  new_gui->synthesize = &microstrip_gui_synthesize;
-  new_gui->display = &microstrip_gui_display;
-#endif
+  /* Wcalc is the parent */
+  wcalc = (Wcalc *) new_gui;
+
+  /*
+   * Initialize the parent
+   */
+  wcalc->init_done=0;
+
+  wcalc->init = microstrip_gui_init;
+  wcalc->load = NULL;
+  wcalc->save = NULL;
+  wcalc->analyze = NULL;
+  wcalc->synthesize = NULL;
+  wcalc->display = NULL;
+
+
+  /* XXX these must go.  they should be MD */
+  wcalc->line = microstrip_line_new();
+  wcalc->phys_units_text = NULL;
+
+  /*
+   * create the microstrip line which will be used
+   */
   new_gui->line = microstrip_line_new();
+
+#ifdef DEBUG
+  g_print("Wcalc_new():  New pointer is %p\n",new);
+  g_print("              wcalc->line = %p\n",new->line);
+  g_print("              wcalc->line->subs = %p\n",new->line->subs);
+#endif
+
 
   return new_gui;
 }
@@ -143,6 +169,9 @@ void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
   wcalc->init_done=1;
 }
 
+/*
+ * Private Functions
+ */
 
 static void units_init(Wcalc *wcalc,GtkWidget *parent)
 {
@@ -605,17 +634,17 @@ static void picture_init(Wcalc *wcalc, GtkWidget *window,GtkWidget *parent)
 
 }
 
-void mscalc_analyze( GtkWidget *w, gpointer data )
+static void mscalc_analyze( GtkWidget *w, gpointer data )
 {
   mscalc((Wcalc *) data, w, "analyze");
 }
 
-void mscalc_synthesize( GtkWidget *w, gpointer data )
+static void mscalc_synthesize( GtkWidget *w, gpointer data )
 {
   mscalc((Wcalc *) data, w, "synthesize");
 }
 
-void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
+static void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
 {
   double freq;
   char str[80];
