@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.75 2004/11/13 03:34:03 dan Exp $
+dnl $Id: configure.in,v 1.76 2004/11/18 13:47:35 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -1185,6 +1185,7 @@ AC_OUTPUT(
 	htdocs/octave-man/Makefile
 	htdocs/sci-man/Makefile
 	mex-wcalc/Makefile
+	mex-wcalc/mexopts.sh
 	octave-wcalc/Makefile
 	sci-wcalc/Makefile
 	stdio-wcalc/Makefile
