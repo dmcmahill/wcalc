@@ -1,4 +1,4 @@
-.\"	$Id: stdio-wcalc.1,v 1.3 2004/09/02 01:59:52 dan Exp $
+.\"	$Id: stdio-wcalc.1,v 1.4 2004/11/24 02:15:55 dan Exp $
 .\"
 .\" Copyright (c), 2004 Dan McMahill <mcmahill@alum.mit.edu>
 .\" All rights reserved.
@@ -53,13 +53,32 @@
 
 .SH DESCRIPTION
 The
-.B stdio-wcalc
+.B stdio\-wcalc
 program is a simple standard input/output interface to libwcalc which is
-the numerical engine for the
-.B wcalc
+the numerical engine for the wcalc
 program.  The input is read from the standard input on a line
 at a time basis.  Each line consists of a command followed by the 
 numerical arguments.
+
+The analysis and synthesis functions supported by
+.B stdio\-wcalc
+are the same as those in the scilab, octave, and matlab frontends
+to wcalc.  Please refer to the online documentation for one of those
+frontends for details.  The syntax used by
+.B stdio\-wcalc
+is slightly different.  Instead of [a,b,c] = somefn(x,y,z) as you
+would use in scilab, octave, or matlab, you simply enter
+somefn x y z
+as the input line to
+.B stdio\-wcalc
+and the standard output will be
+a b c
+.
+
+In addition to the analysis and synthesis functions,
+.B stdio\-wcalc
+supports the "version" command which returns the current version
+of the program.  
 
 .SH SEE ALSO
 wcalc(1)
@@ -69,7 +88,8 @@ wcalc(1)
 was written by Dan McMahill <mcmahill@alum.mit.edu>
 
 .SH BUGS
-None known.  Please report any to Dan McMahill <mcmahill@alum.mit.edu>
+This man page is lacking.  Please report others on the Wcalc Sourceforge
+website at http://wcalc.sf.net
 
 
 
