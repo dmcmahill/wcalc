@@ -1,7 +1,7 @@
-/* $Id: air_coil.cgi.c,v 1.13 2002/06/12 11:29:59 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.14 2003/01/02 06:43:54 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -54,6 +54,7 @@
 #include "air_coil_loadsave.h"
 #include "misc.h"
 #include "physconst.h"
+#include "units.h"
 #include "wcalc_loadsave.h"
 
 /* ID's for this module */
@@ -93,7 +94,6 @@ int cgiMain(void){
   char str_action[ACTION_LEN];
 
   int action;
-  int i;
 
   /* air_coil variables */
   air_coil_coil *coil;
@@ -106,8 +106,13 @@ int cgiMain(void){
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
   cgiCookieType *cookie;
+
+  cgi_units_menu *menu_len, *menu_dia;
+  cgi_units_menu *menu_L, *menu_SRF;
+  cgi_units_menu *menu_rho;
+  cgi_units_menu *menu_freq;
   
-  input_err=0;
+  input_err = 0;
 
   /* 
    * uncomment to be able to run in the debugger. 
@@ -118,6 +123,16 @@ int cgiMain(void){
 
   /* create the air_coil  */
   coil = air_coil_new();
+
+  menu_len = cgi_units_menu_new(coil->units_len);
+  menu_dia = cgi_units_menu_new(coil->units_dia);
+  menu_L = cgi_units_menu_new(coil->units_L);
+  menu_SRF = cgi_units_menu_new(coil->units_SRF);
+  menu_rho = cgi_units_menu_new(coil->units_rho);
+  menu_freq = cgi_units_menu_new(coil->units_freq);
+
+  cgi_units_attach_entry(menu_freq, "entry_Qfreq");
+  cgi_units_attach_entry(menu_L, "entry_Lmax");
 
 
   /* flags to the program: */
@@ -148,6 +163,7 @@ int cgiMain(void){
      * extract the parameters from the CGI form and use them to populate
      * the air_coil structure
      */
+    cgi_units_menu_read();
     
 
     /* Number of turns */
@@ -174,13 +190,6 @@ int cgiMain(void){
       inputErr(&input_err);
     }
     
-    /* inside diameter units */
-    if (cgiFormRadio("dia_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    coil->dia_units = length_units[i].name;
-    coil->dia_sf = length_units[i].sf;
     
     /* Solenoid length  */
     if(cgiFormDoubleBounded("len",&len,0.0001,1000.0,defLEN) !=
@@ -188,13 +197,6 @@ int cgiMain(void){
       inputErr(&input_err);
     }
     
-    /* Solenoid length units */
-    if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    coil->len_units = length_units[i].name;
-    coil->len_sf = length_units[i].sf;
 
     /* Solenoid fill  */
     if(cgiFormDoubleBounded("fill",&coil->fill,1.0,10.0,defFILL) !=
@@ -207,32 +209,11 @@ int cgiMain(void){
       inputErr(&input_err);
     }
     
-    if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
-       cgiFormSuccess){
-      inputErr(&input_err);
-    }  
-
     /* Frequency of operation  */
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
       inputErr(&input_err);
     }
-
-    /* Frequency of operation units */
-    if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    coil->freq_units = frequency_units[i].name;
-    coil->freq_sf = frequency_units[i].sf;
-
-    /* Inductance units */
-    if (cgiFormRadio("L_units",units_strings_get(inductance_units),units_size(inductance_units),&i,0) !=
-	cgiFormSuccess){
-      inputErr(&input_err);
-    }
-    coil->L_units = inductance_units[i].name;
-    coil->L_sf = inductance_units[i].sf;
 
     /* Desired Inductance */
     if(cgiFormDoubleBounded("L",&L,0.0001,1000.0,defIND) !=
@@ -244,11 +225,11 @@ int cgiMain(void){
     /* copy data over to the coil structure */
     coil->Nf   = N;
     coil->AWGf = AWG;
-    coil->rho  = rho*coil->rho_sf;
-    coil->dia  = dia*coil->dia_sf;
-    coil->len  = len*coil->len_sf;
-    coil->L    = L*coil->L_sf;
-    coil->freq = freq*coil->freq_sf;
+    coil->rho  = rho*coil->units_rho->sf;
+    coil->dia  = dia*coil->units_dia->sf;
+    coil->len  = len*coil->units_len->sf;
+    coil->L    = L*coil->units_L->sf;
+    coil->freq = freq*coil->units_freq->sf;
     
   }  /* if ( (action != RESET) && (action != LOAD) ) */
   else {
@@ -286,15 +267,22 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: --------------- ----- Air Coil ----- -----------\n");
     fprintf(cgiOut,"CGI: action = %d\n",action);
     fprintf(cgiOut,"CGI: --------------- -------------------- -----------\n");
-    fprintf(cgiOut,"CGI: Number of turns             = %g \n",coil->Nf);
-    fprintf(cgiOut,"CGI: Wire Size                   = %g AWG\n",coil->AWGf);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",coil->rho);
-    fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",coil->rho/coil->rho_sf,coil->rho_units);
-    fprintf(cgiOut,"CGI: Inside Diameter             = %g %s\n",coil->dia/coil->dia_sf,coil->dia_units);
-    fprintf(cgiOut,"CGI: Solenoid length             = %g %s\n",coil->len/coil->len_sf,coil->len_units);
-    fprintf(cgiOut,"CGI: Solenoid fill               = %g \n",coil->fill);
-    fprintf(cgiOut,"CGI: use_fill                    = %d \n",coil->use_fill);
-    fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",coil->freq/coil->freq_sf,coil->freq_units); 
+    fprintf(cgiOut,"CGI: Number of turns             = %g \n",
+	    coil->Nf);
+    fprintf(cgiOut,"CGI: Wire Size                   = %g AWG\n",
+	    coil->AWGf);
+    fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",
+	    coil->rho/coil->units_rho->sf, coil->units_rho->name);
+    fprintf(cgiOut,"CGI: Inside Diameter             = %g %s\n",
+	    coil->dia/coil->units_dia->sf, coil->units_dia->name);
+    fprintf(cgiOut,"CGI: Solenoid length             = %g %s\n",
+	    coil->len/coil->units_len->sf, coil->units_len->name);
+    fprintf(cgiOut,"CGI: Solenoid fill               = %g \n",
+	    coil->fill);
+    fprintf(cgiOut,"CGI: use_fill                    = %d \n",
+	    coil->use_fill);
+    fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
+	    coil->freq/coil->units_freq->sf, coil->units_freq->name); 
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"</pre>\n");
 #endif
@@ -307,20 +295,20 @@ int cgiMain(void){
      * with <pre></pre> so we can read it ok.
      */
     fprintf(cgiOut,"<pre>");
-    air_coil_calc(coil,coil->freq);
+    air_coil_calc(coil, coil->freq);
     fprintf(cgiOut,"</pre>\n");
 
     break;
 
   case SYNTH_NMIN:
     fprintf(cgiOut,"<pre>");
-    air_coil_syn(coil,coil->freq,AIRCOILSYN_NMIN);
+    air_coil_syn(coil, coil->freq, AIRCOILSYN_NMIN);
     fprintf(cgiOut,"</pre>\n");
     break;
 
   case SYNTH_NFIX:
     fprintf(cgiOut,"<pre>");
-    air_coil_syn(coil,coil->freq,AIRCOILSYN_NFIX);
+    air_coil_syn(coil, coil->freq, AIRCOILSYN_NFIX);
     fprintf(cgiOut,"</pre>\n");
     break;
 
@@ -329,13 +317,13 @@ int cgiMain(void){
     break;
 
   default:
-    fprintf(stderr,"air_coil.cgi:  unknown action (%d)\n",action);
+    fprintf(stderr, "air_coil.cgi:  unknown action (%d)\n", action);
     exit(1);
     break;
   }
 
   /* autoscale the SRF output */
-  units_autoscale(frequency_units,&coil->SRF_sf,&coil->SRF_units,coil->SRF);
+  /* XXX */
 
   /* include the HTML output */
 #include "header_html.c"
