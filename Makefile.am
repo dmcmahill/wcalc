@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.20 2002/12/17 15:59:48 dan Exp $
+## $Id: Makefile.am,v 1.21 2004/01/10 04:45:28 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -37,8 +37,8 @@ SUBDIRS= m4 include intl po libwcalc pixmaps @STDIO_WCALC@ \
 		@GTK_WCALC@ @CGI_WCALC@ \
 		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils doc
 
-DIST_SUBDIRS= m4 include intl po libwcalc pixmaps  gtk-wcalc cgi-wcalc \
-		octave-wcalc sci-wcalc mex-wcalc htdocs utils doc
+DIST_SUBDIRS= m4 include intl po libwcalc pixmaps stdio-wcalc gtk-wcalc \
+		cgi-wcalc octave-wcalc sci-wcalc mex-wcalc htdocs utils doc
 
 ACLOCAL_AMFLAGS=	-I m4
 
