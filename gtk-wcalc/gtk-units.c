@@ -1,7 +1,7 @@
-/* $Id: gtk-units.c,v 1.8 2002/07/04 03:09:44 dan Exp $ */
+/* $Id: gtk-units.c,v 1.9 2002/07/05 03:22:10 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -368,7 +368,67 @@ void  set_sf_menu(GtkWidget *menu, const units_data units[],double sf)
   
 }
 
-
+/*
+ * wc_composite_units_attach()
+ * 
+ * This function attaches various gtk widgets to a 
+ * wc_units_gui.  This lets the wc_units_gui know what actions may
+ * need to be taken in its callbacks.  For example, you can attach a
+ * label and specify that it will get updated to reflect a new choice
+ * of units.  Ie, if you change a wc_units_gui unit from 'cm' to 'mm'
+ * you can specify that several attached labels should be converted to
+ * 'mm' and updated.  
+ *
+ * The supported attachements are (see gtk-units.h for the most up to
+ * date list):
+ *
+ * LABEL        =  a gtk_label which should hold a string showing a
+ *                 value which is in the units specified.
+ *
+ * ENTRY        =  a gtk_entry which should hold a string showing a
+ *                 value which is in the units specified.
+ *
+ * UNITS_LABEL  =  a gtk_label which should hold a string reporting
+ *                 the current units.
+ *
+ * NONE         =
+ *
+ * For these attachments, the 'update' flag when set specifies that
+ * the callback for the units menu will update the attached object.
+ * When the 'update' flag is not set, no update is performed.  This
+ * allows you to type in "4.7" in an entry and then realize you needed
+ * to set the units to "mil" instead of "cm".  With update=0, you can
+ * make the change and the "4.7" stays.  With update=1, the 4.7 cm
+ * will be converted to 4.7 mil.
+ * 
+ * The other arguments are:
+ *
+ * double *mks_val;
+ *    This is a pointer to the numerical value in
+ *    MKS units.  When a LABEL or ENTRY is being updated to reflect
+ *    new units, *mks_val is consulted.
+ *
+ * double *sf;
+ *    This is a pointer to the scale factor in units/mks_units.
+ *    When the units are changed, *sf is updated to reflect the new
+ *    units.
+ *
+ * char **units_str;
+ *    This is a pointer to a string containing the currently selected
+ *    units.  When the units are changed, **units_str is updated to
+ *    reflect the new units.
+ *
+ * const char *fmt_string;
+ *    This is used as the format specifier for converting the
+ *    numerical value to the string used by the LABEL and ENTRY.
+ *
+ * int update;
+ *    When set, the attached object will be updated when the units
+ *    change.
+ *
+ * int type;
+ *    One of {LABEL, ENTRY, UNITS_LABEL, NONE}
+ */
 
 void  wc_composite_units_attach(wc_units_gui *ug, 
 				GtkWidget *widget, 

@@ -1,7 +1,7 @@
-/*      $Id: gtk-units.h,v 1.7 2002/07/04 03:09:44 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.8 2002/07/05 03:22:10 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2003 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -165,16 +165,22 @@ void  wc_composite_units_attach(wc_units_gui *ug,
 				int type);
 
 #define wc_composite_units_attach_units(ug,mks_val,sf,units_str)      \
-       (wc_composite_units_attach((ug),NULL,(mks_val),(sf),(units_str),"",0,NONE))
+       (wc_composite_units_attach((ug),NULL,(mks_val),(sf),(units_str), \
+       "",0,NONE))
 
-#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),update,ENTRY))
+#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str, \
+       fmt_string,update)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str), \
+       (fmt_string),update,ENTRY))
 
-#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string,update)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),update,LABEL))
+#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str, \
+       fmt_string,update)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str), \
+       (fmt_string),update,LABEL))
 
 #define wc_composite_units_attach_units_label(ug,widget)      \
-       (wc_composite_units_attach((ug),(widget),NULL,NULL,NULL,NULL,1,UNITS_LABEL))
+       (wc_composite_units_attach((ug),(widget),NULL,NULL,NULL,NULL,1, \
+       UNITS_LABEL))
 
 
 #endif /* __GTK_UNITS_H__ */
