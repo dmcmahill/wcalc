@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.1 2004/07/29 02:38:23 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.2 2004/07/29 22:39:28 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -62,6 +62,9 @@
 #ifdef DMALLOC
 #include <dmalloc.h>
 #endif
+
+static void use_z0k_pressed(GtkWidget *widget, gpointer data );
+static void use_z0ez0o_pressed(GtkWidget *widget, gpointer data );
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
@@ -135,7 +138,6 @@ coupled_microstrip_gui *coupled_microstrip_gui_new(void)
 
   /* create the coupled_microstrip line which will be used */
   new_gui->line = coupled_microstrip_line_new();
-  new_gui->phys_units_text = NULL;
 
   return new_gui;
 }
@@ -215,6 +217,10 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *button;
   GtkWidget *frame;
   wc_units_gui *ug;
+
+  /* the "z0/k vs z0e/z0o" radio button group */
+  GSList *z0k_group;
+
   int y=0;
   int x=0;
 
@@ -512,10 +518,25 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  Impedance -------------- */
 
+  button = gtk_radio_button_new_with_label (NULL, _("Z0"));
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1,
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_z0k_pressed),
+		     gui);
+  gui->button_z0k = button;
+  gtk_widget_show (button);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+
+  z0k_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+
+
+  /*
   text = gtk_label_new( "Z0" );
   gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
+  */
 
   gui->text_z0 = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_z0, x+1, x+2, y, y+1,
@@ -550,10 +571,21 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  Even mode impedance -------------- */
 
+  button = gtk_radio_button_new_with_label(z0k_group, "Z0e");
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1,
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_z0ez0o_pressed),
+		     gui);
+  gui->button_z0ez0o = button;
+  gtk_widget_show (button);
+  
+  /*
   text = gtk_label_new( "Z0e" );
   gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
+  */
 
   gui->text_z0e = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_z0e, x+1, x+2, y, y+1,
@@ -583,6 +615,21 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (gui->text_z0o), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_z0o);
+
+
+  if(gui->line->use_z0k){
+    gtk_widget_set_sensitive (gui->text_z0e, FALSE);
+    gtk_widget_set_sensitive (gui->text_z0o, FALSE);
+    gtk_widget_set_sensitive (gui->text_z0, TRUE);
+    gtk_widget_set_sensitive (gui->text_k, TRUE);
+  }
+  else{
+    gtk_widget_set_sensitive (gui->text_z0e, TRUE);
+    gtk_widget_set_sensitive (gui->text_z0o, TRUE);
+    gtk_widget_set_sensitive (gui->text_z0, FALSE);
+    gtk_widget_set_sensitive (gui->text_k, FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+  }
 
   y++;
 
@@ -1330,6 +1377,31 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
 
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
+}
+
+
+static void use_z0k_pressed(GtkWidget *widget, gpointer data )
+{
+  coupled_microstrip_gui *gui;
+
+  gui = WC_COUPLED_MICROSTRIP_GUI(data);
+  gtk_widget_set_sensitive (gui->text_z0, TRUE);
+  gtk_widget_set_sensitive (gui->text_k, TRUE);
+  gtk_widget_set_sensitive (gui->text_z0e, FALSE);
+  gtk_widget_set_sensitive (gui->text_z0o, FALSE);
+  gui->line->use_z0k = 1;
+}
+
+static void use_z0ez0o_pressed(GtkWidget *widget, gpointer data )
+{
+  coupled_microstrip_gui *gui;
+
+  gui = WC_COUPLED_MICROSTRIP_GUI(data);
+  gtk_widget_set_sensitive (gui->text_z0, FALSE);
+  gtk_widget_set_sensitive (gui->text_k, FALSE);
+  gtk_widget_set_sensitive (gui->text_z0e, TRUE);
+  gtk_widget_set_sensitive (gui->text_z0o, TRUE);
+  gui->line->use_z0k = 0;
 }
 
 

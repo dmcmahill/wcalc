@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.h,v 1.2 2004/07/29 12:37:27 dan Exp $ */
+/* $Id: coupled_microstrip_gui.h,v 1.3 2004/07/29 22:39:29 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -84,10 +84,8 @@ typedef struct COUPLED_MICROSTRIP_GUI
   GtkWidget *picture_vbox;
   GtkWidget *text_status;
 
-  /*
-   * list of labels which change when we change physical units
-   */
-  GList *phys_units_text;
+  /* the radio buttons for z0/k vs z0e/z0o selection */
+  GtkWidget *button_z0k, *button_z0ez0o;
 
 } coupled_microstrip_gui;
 
