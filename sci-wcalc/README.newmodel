@@ -1,4 +1,4 @@
-# $Id: README.newmodel,v 1.1 2001/10/25 00:49:55 dan Exp $
+# $Id: README.newmodel,v 1.2 2001/10/31 04:38:08 dan Exp $
 
 This document describes the steps required to add a new model to the
 scilab interfaces.   Luckily, it is very simple!
@@ -33,5 +33,18 @@ Write a Scilab man page
 Write a scilab man page for each of your new functions.  Use
 air_coil_calc.man for an example.  Note that you _must_ write the
 man page (or at a minimum include a placeholder) or the build will
-fail!
+fail!  
+
+The other item of note is that the scilab man page should be written
+in a way that makes it portable between scilab and matlab.  In particular:
+
+  -  Use single quotes instead of double qoutes.
+
+  -  Do not use '//' in ascii drawings because when the matlab help page
+     is generated, '//' will become '%'.
+
+  -  Do not use printf.  Matlab doesn't have it.  Use
+       disp(sprintf('foo = %g',foo));
+     instead.
+
 
