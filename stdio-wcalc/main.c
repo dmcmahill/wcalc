@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.4 2004/01/10 06:16:25 dan Exp $ */
+/* $Id: main.c,v 1.5 2004/01/10 06:34:03 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -88,7 +88,6 @@ int main(int argc, char **argv)
   int lineno = 1;
 
   while( fgets(line, sizeof(line), stdin) != NULL ) {
-    fprintf(stderr, "Processing: %s\n", line);
     tok = strtok(line, " \t");
     if(tok == NULL) {
       fprintf(stderr, "stdio-wcalc: null token\n");
