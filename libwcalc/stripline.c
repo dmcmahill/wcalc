@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.10 2004/07/25 04:05:32 dan Exp $ */
+/*      $Id: stripline.c,v 1.11 2004/07/26 11:08:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -222,7 +222,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   line->len = 360*line->l*f/v;
 
   /*
-   * delay on line (ns)
+   * delay on line 
    */
   line->delay = line->l / v;
 

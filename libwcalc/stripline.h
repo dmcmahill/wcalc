@@ -1,4 +1,4 @@
-/*      $Id: stripline.h,v 1.6 2004/07/24 03:47:33 dan Exp $ */
+/*      $Id: stripline.h,v 1.7 2004/07/25 04:05:33 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -57,6 +57,8 @@ typedef struct STRIPLINE_LINE
 
   /* electrical length (degrees) */
   double len;
+
+  /* delay (seconds) */
   double delay;
 
   /* open end length correction */
