@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.7 2001/10/23 00:50:59 dan Exp $
+## $Id: Makefile.am,v 1.8 2001/10/23 03:35:49 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -36,12 +36,12 @@
 # list of all the mex files
 include $(srcdir)/mex.mk
 
-lib_LTLIBRARIES = libsci_wcalc.la
+pkglib_LTLIBRARIES = libsci_wcalc.la
 
 libsci_wcalc_la_SOURCES = \
 	alert.c \
 	libsci_wcalc.c \
-	${MEX_SOURCES}
+	${MEX_SRCS}
 
 libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la 
 libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
@@ -51,7 +51,7 @@ libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
 # a more unique name
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -DmexFunction=mex_$*
 
-SCIMANS=	${MEX_SOURCES:.c=.man}
+SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 
 EXTRA_DIST= mex.mk ${SCIMANS}
@@ -67,12 +67,12 @@ libsci_wcalc.c: $(srcdir)/mex.mk
 	@echo "Generating the scilab gateway function in $@"
 	@echo "****************************************************"
 	@echo "#include \"mex.h\"" > $@
-	@for mex in ${MEX_SOURCES} ; do \
+	@for mex in ${MEX_SRCS} ; do \
 		mexfn=`basename $$mex .c`; \
 		echo "extern Gatefunc mex_$${mexfn};" >> $@ ; \
 	done
 	@echo "static GenericTable Tab[]={ " >> $@
-	@for mex in ${MEX_SOURCES} ; do \
+	@for mex in ${MEX_SRCS} ; do \
 		mexfn=`basename $$mex .c`; \
 		echo "{mex_gateway, mex_$${mexfn},\"err msg\"}," >> $@ ; \
 	done
@@ -99,7 +99,7 @@ load_wcalc.sce.in: $(srcdir)/mex.mk
 	@echo "Generating the scilab loader function in $@"
 	@echo "****************************************************"
 	@echo "scilab_functions=[..." > $@
-	@for mex in ${MEX_SOURCES} ; do \
+	@for mex in ${MEX_SRCS} ; do \
 		mexfn=`basename $$mex .c`; \
 		echo "\"$${mexfn}\";" >> $@ ; \
 	done
@@ -144,18 +144,4 @@ whatis: ${SCIMANS}
 		} \
 		/^\.SH[ \t]*NAME/ {s=1}' ${SCIMANS} | sort > whatis
 
-SUFFIXES = .cat .man
-
-.man.cat : 
-	@echo "****************************************************"
-	@echo "Processing $*.man to produce $*.cat"
-	@echo "****************************************************"
-	@cat $*.man | tbl | neqn | nroff -man | \
-		awk 'BEGIN{s=0;t=0;} \
-		     /^ *$$/ {s=1;next;} \
-		     s==1 { \
-			s=0; \
-			if(t){printf("\n");} \
-			t=1; \
-		     } \
-		     {print;}' > $*.cat
+include $(srcdir)/sciman.mk

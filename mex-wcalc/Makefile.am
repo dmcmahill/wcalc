@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/23 02:56:12 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/23 03:34:57 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -42,13 +42,27 @@ MEX=	@MEX@
 # the suffix for the compiled mex file
 MEXSFX=	@MEXSFX@
 
-pkglibexecdir=	${libexecdir}/${packages}
-#pkglibexec_PROGRAMS=	pipestage.${MEXSFX}
+# base directory for matlab installation
+MATLAB_DIR=	@MATLAB_DIR@
+
+pkglibexecdir=	${libexecdir}/${PACKAGE}
+
 noinst_SCRIPTS=		runmatlab
 
-MEX_FILES=	${MEX_SOURCES:.c=.${MEXSFX}}
+pkglib_LTLIBRARIES=	libmex-alert.la
+libmex_alert_la_SOURCES=	alert.c
+INCLUDES = -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include
 
-all-local:	${MEX_FILES}
+MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
+MEX_MANS=	${MEX_SRCS:.c=.m}
+
+# various MEX flags
+MEXLDFLAGS=	-L$(top_srcdir)/libwcalc/.libs -lwcalc \
+		-L.libs -lmex-alert
+MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc 
+
+
+all-local:	${MEX_FILES} runmatlab ${MEX_MANS}
 
 # copy over the source files
 air_coil_calc.c: $(top_srcdir)/sci-wcalc/air_coil_calc.c
@@ -57,28 +71,46 @@ air_coil_calc.c: $(top_srcdir)/sci-wcalc/air_coil_calc.c
 air_coil_syn.c: $(top_srcdir)/sci-wcalc/air_coil_syn.c
 	cp -f $(top_srcdir)/sci-wcalc/air_coil_syn.c air_coil_syn.c
 
-air_coil_calc.m: $(top_srcdir)/sci-wcalc/air_coil_calc.cat
-	fn=`echo $* | tr [:lower:] [:upper:]`; echo "% $$fn" > $@
-	cat $< | \
-		col -b | \
-		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
-				cnt==0{print "% " $$0} \
-				cnt > 0{cnt--}' \
-		>> $@
-	echo " " >> $@
-	cat $(srcdir)/copyright.m >> $@
+air_coil_calc.man: $(top_srcdir)/sci-wcalc/air_coil_calc.man
+	cp -f $< $@
+
+air_coil_syn.man: $(top_srcdir)/sci-wcalc/air_coil_syn.man
+	cp -f $< $@
 
 runmatlab:	$(srcdir)/runmatlab.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > runmatlab
 
-BUILT_SOURCES=	air_coil_calc.m
 
 EXTRA_DIST=	runmatlab.in copyright.m
 
 # All the new suffix rules
-
-SUFFIXES = .c .${MEXSFX} .m
+SUFFIXES = .c .${MEXSFX} .m .cat
 
 .c.${MEXSFX} :
-	$(MEX) -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc $*.c -L$(top_srcdir)/libwcalc/.libs -lwcalc
+	$(MEX) $(MEXINCLUDES) $*.c $(MEXLDFLAGS)
 
+.cat.m :
+	@echo "****************************************************"
+	@echo "Generating Matlab help file: $*.m"
+	@echo "****************************************************"
+	${AWK} 'BEGIN{s=0;} \
+		/^\.SH/ {s=0;t=3;} \
+		s==1{ \
+			if(t==3)printf("%%%-16s ",toupper($$1)); \
+			for(i=t;i<=NF;i++){printf("%s ",$$i);} \
+			t=1; \
+		} \
+		/^\.SH[ \t]*NAME/ {s=1} \
+		END{printf("\n");}' $*.man > $@
+	echo "%" >> $@
+	cat $< | \
+		col -b -x | \
+		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
+				cnt==0{print "% " $$0} \
+				cnt > 0{cnt--}' |\
+		sed 's;//;%;g' \
+		>> $@
+	echo " " >> $@
+	cat $(srcdir)/copyright.m >> $@
+
+include $(top_srcdir)/sci-wcalc/sciman.mk
