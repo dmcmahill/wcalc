@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.9 2001/09/27 23:19:18 dan Exp $ */
+/* $Id: air_coil.c,v 1.10 2001/09/27 23:39:32 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -155,7 +155,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 	    "too high.  You CAN NOT fit the desired\n"
 	    "number of turns into the given length.\n"
 	    "The maximum number of turns that can\n"
-	    "fit in the given length is %g",
+	    "fit in the given length is %g\n",
 	    coil->Nf,
 	    floor(coil->Nf*coil->fill));
   }
@@ -186,7 +186,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   if ( (x>5.0) || (x <= 0.1) ){
     alert("The length/diameter ratio, x, = %g\n"
 	  "which is outside the range 0.1 <= x <= 5\n"
-	  "over which the analysis is accurate",x);
+	  "over which the analysis is accurate\n",x);
     return -1;
   }
 
@@ -260,7 +260,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   else{
     alert("The length/diameter ratio, x, = %g\n"
 	  "which is outside the range 0.1 <= x <= 5\n"
-	  "over which the analysis is accurate",x);
+	  "over which the analysis is accurate\n",x);
     return -1;
   }
 
