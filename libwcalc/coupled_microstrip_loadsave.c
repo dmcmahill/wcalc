@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_loadsave.c,v 1.4 2004/07/31 03:39:15 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.c,v 1.5 2004/08/31 21:38:19 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -104,6 +104,16 @@ static fspec * get_fspec(int which_one)
     fspec_add_key(linespec, 
 		  "units_lwht", "Length, width, substrate and metal thickness units",
 		  'u', &line->units_lwst);
+
+    fspec_add_key(linespec, "units_L", "Incremental inductance units",  
+		  'u', &line->units_L);
+    fspec_add_key(linespec, "units_R", "Incremental resistance units",  
+		  'u', &line->units_R);
+    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 
+		  'u', &line->units_C);
+    fspec_add_key(linespec, "units_G", "Incremental conductance units", 
+		  'u', &line->units_G);
+
     fspec_add_key(linespec, "units_len", "Line physical length units",  
 		  'u', &line->units_len);
     fspec_add_key(linespec, "units_freq", "Frequency units",  
