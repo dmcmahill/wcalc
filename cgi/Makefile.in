@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2001/09/12 16:50:03 dan Exp $
+# $Id: Makefile.in,v 1.6 2001/09/12 23:51:48 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -57,13 +57,27 @@ AWK     = @AWK@
 CC      = @CC@
 CFLAGS  = @CFLAGS@ -I$(srcdir)/..
 LDFLAGS = @LDFLAGS@
+
 LIBS    = @LIBS@ -lm
 
 
 HTML2C  = ${AWK} -f ../html2c out=cgiOut 
+HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
-PROGS = ic_microstrip.cgi
+PROGS = ic_microstrip.cgi \
+	microstrip.cgi
 
+
+../mathutil.o: $(srcdir)/../mathutil.c
+	cd .. && $(MAKE) mathutil.o
+
+footer_html.c:	footer.html
+	$(HTML2C) $(srcdir)/footer.html > $(srcdir)/footer_html.c
+
+
+###########################################
+#
+# ic_microstrip.cgi
 
 IC_MICROSTRIP_CGI_CFILES=	ic_microstrip.cgi.c \
 				cgic.c 
@@ -75,21 +89,51 @@ IC_MICROSTRIP_CGI_OFILES=	${IC_MICROSTRIP_CGI_CFILES:.c=.o} \
 ../ic_microstrip.o: $(srcdir)/../ic_microstrip.c
 	cd .. && $(MAKE) ic_microstrip.o
 
-../mathutil.o: $(srcdir)/../mathutil.c
-	cd .. && $(MAKE) mathutil.o
 
 ic_microstrip_html.c:	ic_microstrip.html
 	$(HTML2C) $(srcdir)/ic_microstrip.html > $(srcdir)/ic_microstrip_html.c
 
-footer_html.c:	footer.html
-	$(HTML2C) $(srcdir)/footer.html > $(srcdir)/footer_html.c
+ic_microstrip_id.h: ic_microstrip.html
+	$(HTML2ID) $(srcdir)/ic_microstrip.html >> $(srcdir)/ic_microstrip_id.h
 
-ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip_html.c footer_html.c
+ic_microstrip.cgi.o: ic_microstrip.cgi.c ic_microstrip_html.c footer_html.c ic_microstrip_id.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/ic_microstrip.cgi.c
 
 ic_microstrip.cgi:  $(IC_MICROSTRIP_CGI_OFILES)
 	$(CC) $(CFLAGS) -o $@ $(IC_MICROSTRIP_CGI_OFILES) $(LDFLAGS) $(LIBS)
 
+#
+###########################################
+
+###########################################
+#
+# microstrip.cgi
+
+MICROSTRIP_CGI_CFILES=	microstrip.cgi.c \
+			cgic.c 
+
+MICROSTRIP_CGI_OFILES=	${MICROSTRIP_CGI_CFILES:.c=.o} \
+			../microstrip.o \
+			../mathutil.o 
+
+../microstrip.o: $(srcdir)/../microstrip.c
+	cd .. && $(MAKE) microstrip.o
+
+
+microstrip_html.c:	microstrip.html
+	$(HTML2C) $(srcdir)/microstrip.html > $(srcdir)/microstrip_html.c
+
+microstrip_id.h: microstrip.html
+	$(HTML2ID) $(srcdir)/microstrip.html >> $(srcdir)/microstrip_id.h
+
+microstrip.cgi.o: microstrip.cgi.c microstrip_html.c footer_html.c microstrip_id.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(srcdir)/microstrip.cgi.c
+
+microstrip.cgi:  $(MICROSTRIP_CGI_OFILES)
+	$(CC) $(CFLAGS) -o $@ $(MICROSTRIP_CGI_OFILES) $(LDFLAGS) $(LIBS)
+
+#
+###########################################
 
 
 clean:

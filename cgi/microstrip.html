@@ -1,0 +1,182 @@
+<!--
+ * Copyright (c) 2001 Dan McMahill
+ * All rights reserved.
+ *
+ * This code is derived from software written by Dan McMahill
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *        This product includes software developed Dan McMahill
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ -->
+
+
+<HEAD>
+<TITLE>Microstrip Analysis/Synthesis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
+<LINK REV="made" HREF="mailto:mcmahill@mtl.mit.edu">
+
+<meta name="description" content="Microstrip Analysis/Synthesis">
+<meta name="keywords" content="
+microstrip
+">
+
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<H1 ALIGN="CENTER">Microstrip Analysis/Synthesis Calculator</H1>
+
+<P>
+
+
+<FORM METHOD=GET ACTION="/cgi-bin/cad/microstrip.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/microstrip.png" WIDTH=368 HEIGHT=194 
+     ALT="[Microstrip Cross-section]">
+</TR>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="/cad/microstrip_model.png" WIDTH=300 HEIGHT=141
+     ALT="[Microstrip Circuit Model]">
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+<TR>
+<TD>Ls =
+<TD><@g@Ls*1e6@>
+<TD>[pH/um]
+</TR>
+<TR>
+<TD>Rs =
+<TD><@g@Rs*1e-6@>
+<TD>[ohm/um]
+</TR>
+<TR>
+<TD>Cs =
+<TD><@g@Cs*1e9@>
+<TD>[fF/um]
+</TR>
+<TR>
+<TD>Gs =
+<TD><@g@Gs*1e-6@>
+<TD>[(ohm-cm)^-1]
+</TR>
+<TR>
+<TD>Z0 =
+<TD><@g@Ro@> + j <@g@Xo@>
+<TD>[ohm]
+</TR>
+</TABLE>  <!-- end of model parameter table -->
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+
+<TR>
+<TD>Metal width
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@w@>">
+<TD>[mil]
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Trace length
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@l@>">
+<TD>[mil]
+</TR>
+
+<TR>
+<TD>Metal resistivity
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@rho@>">
+<TD>[relative to Cu]
+</TR>
+
+<TR>
+<TD>Metal Thickness
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@tmet@>">
+<TD>[mil]
+</TR>
+
+<TR>
+<TD>Substrate thickness
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@h@>">
+<TD>[mil]
+<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Substrate relative dielectric constant
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@es@>">
+<TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc">
+</TR>
+
+<TR>
+<TD>Substrate loss tangent
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@tand@>">
+<TD>
+</TR>
+
+
+<TR>
+<TD>Frequency
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@freq@>">
+<TD>[MHz]
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset">
+</TR>
+
+<TR>
+<TD>Characteristic Impedance
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@Ro@>">
+<TD>[ohms]
+</TR>
+
+<TR>
+<TD>Electrical Length
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>">
+<TD>[degrees]
+</TR>
+
+</TABLE>
+
+</TR>
+</TABLE>
+
+</FORM>
+
+<!-- $Id$ -->
+
