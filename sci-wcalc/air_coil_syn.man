@@ -1,4 +1,4 @@
-.\" $Id: air_coil_syn.man,v 1.4 2001/10/24 01:24:35 dan Exp $
+.\" $Id: air_coil_syn.man,v 1.5 2001/10/24 03:03:47 dan Exp $
 .\"
 .\" Copyright (c) 2001 Dan McMahill
 .\" All rights reserved.
@@ -38,7 +38,7 @@
 air_coil_syn - Single layer air core solenoid inductor synthesis
 .SH CALLING SEQUENCE
 .nf
-[N_out,len_out,fill_out,Q,SRF] = 
+[N_out,len_out,fill_out,Q,SRF, Lmax] = 
   air_coil_syn(L,N,len,fill,AWG,rho,dia,freq,flag);
 .fi
 .SH PARAMETERS
@@ -56,7 +56,7 @@ AWG
 : wire size (American Wire Gauge)
 .TP
 rho
-: resistivity of wire (not used currently)
+: resistivity of wire (ohm-m)
 .TP
 dia
 : inside diameter of coil (meters)
@@ -89,6 +89,9 @@ fill_out
 Q
 : calculated quality factor
 .TP
+Lmax
+: calculated closewound inductance
+.TP
 SRF
 : calculated self resonant frequency (Hertz)
 .SH DESCRIPTION
@@ -103,11 +106,11 @@ N=0;              // we'll synthesize the number of turns
 len=0;            // we'll synthesize the length/fill
 fill=0;           // we'll synthesize the length/fill
 AWG=22;           // wire size
-rho=1;            // not used yet
+rho=1.72e-8;      // Resistivity of copper (ohm-m)
 dia=0.25*0.0254;  // 0.25 inches inside diameter
 f=10e6;           // 10 MHz operation
 flag=0;           // synthesize for minimum number of turns
-[Nout,len_out,fill_out,Q,SRF] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);
+[Nout,len_out,fill_out,Q,SRF,Lm] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);
 disp(sprintf('Number of turns = %g ',Nout));
 disp(sprintf('Length=%g inches',len_out/0.0254));
 disp(sprintf('Fill=%g',fill_out));
@@ -115,6 +118,7 @@ disp(sprintf('Inside diameter = %g inches ',dia/0.0254));
 disp(sprintf('L=%g nH',L*1e9));
 disp(sprintf('Q=%g at %g MHz',Q,f/1e6));
 disp(sprintf('Self Resonant Freq=%g MHz',SRF/1e6));
+disp(sprintf('Closewound inductance =%g nH',Lm*1e9));
 .fi
 .SH SEE ALSO
 air_coil_calc

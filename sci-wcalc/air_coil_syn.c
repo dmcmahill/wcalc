@@ -1,6 +1,6 @@
-/* $Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $ */
+/* $Id: air_coil_syn.c,v 1.6 2002/06/12 11:30:35 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $";
+static char vcid[] = "$Id: air_coil_syn.c,v 1.6 2002/06/12 11:30:35 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $";
 #endif
 
 /*
- * function [N,LEN,FILL,L,Q,SRF] = 
+ * function [N,LEN,FILL,Q,SRF,Lmax] = 
  *      air_coil_syn(L,N,len,fill,AWG,rho,dia,freq,flag) 
  */
 
@@ -73,7 +73,7 @@ static char vcid[] = "$Id: air_coil_syn.c,v 1.5 2002/05/10 22:53:00 dan Exp $";
 #define	FILL_OUT  plhs[2]
 #define	Q_OUT     plhs[3]
 #define	SRF_OUT   plhs[4]
-
+#define LMAX_OUT  plhs[5]
 
 #define CHECK_INPUT(x,y,z,v)                                          \
 m = mxGetM(x);                                                        \
@@ -125,7 +125,7 @@ void mexFunction(
   unsigned int *ind_freq,*ind_fill,*ind_flag;
 
   /* outputs */
-  double	*N_out,*Q,*SRF,*len_out,*fill_out;
+  double	*N_out,*Q,*SRF,*Lmax,*len_out,*fill_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -169,10 +169,10 @@ void mexFunction(
 		   " (needs 8 or 9).");
     } 
 
-  if (nlhs > 5)
+  if (nlhs > 6)
     {
       mexErrMsgTxt("wrong number of output arguments to AIR_COIL_SYN"
-		   " (needs <= 5).");
+		   " (needs <= 6).");
     }
   
   
@@ -212,6 +212,7 @@ void mexFunction(
   FILL_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   Q_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   SRF_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LMAX_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   N_out    = mxGetPr(N_OUT);
@@ -219,6 +220,7 @@ void mexFunction(
   fill_out = mxGetPr(FILL_OUT);
   Q        = mxGetPr(Q_OUT);
   SRF      = mxGetPr(SRF_OUT);
+  Lmax     = mxGetPr(LMAX_OUT);
 
   /* the actual computation */
   coil = air_coil_new();
@@ -257,6 +259,7 @@ void mexFunction(
     fill_out[ind] = coil->fill;
     Q[ind]        = coil->Q;
     SRF[ind]      = coil->SRF;
+    Lmax[ind]     = coil->Lmax;
   }
 
   /* clean up */
