@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.1 2001/10/05 00:50:22 dan Exp $ */
+/* $Id: files.c,v 1.2 2001/11/03 02:16:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -58,7 +58,6 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
   GtkFileSelection *fs;
   struct stat sb;
   FILE *fp;
-  size_t len;
   wcalc = data[0];
   fs = data[1];
 
@@ -92,27 +91,6 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
   /* store the filename in the wcalc */
   wcalc->file_name = strdup(fname);
 
-#ifdef WIN32
-#define DIRSEP '\\'
-#else
-#define DIRSEP '/'
-#endif
-
-  /* extract the basefile name */
-  wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
-  while(--wcalc->file_basename > wcalc->file_name){
-    if(*wcalc->file_basename == DIRSEP)
-      break;
-  }
-  wcalc->file_basename++;
-
-#ifdef DEBUG
-  g_print("files.c:file_ok_sel():  wcalc->file_name = \"%s\"\n",
-	  wcalc->file_name);
-  g_print("                        wcalc->file_basename = \"%s\"\n",
-	  wcalc->file_basename);
-#endif
-
   /* actually do the save (model dependent) */
   if (wcalc->save != NULL){
     wcalc->save(wcalc,fp,fname);
@@ -126,22 +104,7 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
   fclose(fp);
 
   /* update the window title */
-  if (wcalc->window_title != NULL)
-    free(wcalc->window_title);
-  
-  len  = strlen("Wcalc: ");
-  len += strlen(wcalc->model_name);
-  len += strlen(": ");
-  len += strlen(wcalc->file_basename);
-  len++;  /* for the '*' when file->save is needed */
-
-  wcalc->window_title=g_malloc(len*sizeof(char));
-  sprintf(wcalc->window_title,"Wcalc: %s: %s ",
-	  wcalc->model_name,
-	  wcalc->file_basename);
-  wcalc->save_needed = wcalc->window_title + len - 1;
-  
-  gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
+  wcalc_set_title(wcalc);
 
   /* close the print window */
   gtk_grab_remove(GTK_WIDGET(fs));

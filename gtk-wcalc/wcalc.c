@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.1 2001/10/05 00:50:23 dan Exp $ */
+/* $Id: wcalc.c,v 1.2 2001/11/03 02:16:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -39,6 +39,7 @@
 
 #include <gtk/gtk.h>
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -274,15 +275,12 @@ void wcalc_setup (gpointer data,
 #ifdef DEBUG
   g_print("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
 #endif
+  if ( fname != NULL ) {
+    wcalc->file_name = fname;
+  }
 
   /* Setup main window properties */
-  if (fname == NULL) {
-    gtk_window_set_title (GTK_WINDOW (wcalc->window), model_name);
-  }
-  else {
-    /* XXX need to add model name, strip path, etc.  use files.c code */
-    gtk_window_set_title (GTK_WINDOW (wcalc->window), fname);
-  }
+  wcalc_set_title(wcalc);
 
   gtk_container_set_border_width (GTK_CONTAINER (wcalc->window), 0);
 
@@ -357,6 +355,8 @@ Wcalc *Wcalc_new(void)
       exit(1);
     }
 
+  new->file_basename="Untitled";
+
   new->init_done=0;
 
 #ifdef DEBUG
@@ -376,3 +376,46 @@ void wcalc_save_needed(GtkWidget *widget, gpointer data )
   }
 }
 
+
+void wcalc_set_title(Wcalc * wcalc)
+{
+  size_t len;
+
+
+  if (wcalc->file_name != NULL) {
+#ifdef WIN32
+#define DIRSEP '\\'
+#else
+#define DIRSEP '/'
+#endif
+    /* extract the basefile name */
+    wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
+    while(--wcalc->file_basename > wcalc->file_name){
+      if(*wcalc->file_basename == DIRSEP)
+	break;
+    }
+    wcalc->file_basename++;
+#undef DIRSEP
+  }
+  else {
+    wcalc->file_basename = "Untitled";
+  }
+
+  if (wcalc->window_title != NULL)
+    free(wcalc->window_title);
+  
+  len  = strlen("Wcalc: ");
+  len += strlen(wcalc->model_name);
+  len += strlen(": ");
+  len += strlen(wcalc->file_basename);
+  len++;  /* for the '*' when file->save is needed */
+
+  wcalc->window_title=g_malloc(len*sizeof(char));
+  sprintf(wcalc->window_title,"Wcalc: %s: %s ",
+	  wcalc->model_name,
+	  wcalc->file_basename);
+  wcalc->save_needed = wcalc->window_title + len - 1;
+  
+  gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
+
+}

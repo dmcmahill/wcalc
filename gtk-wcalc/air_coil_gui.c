@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.3 2001/10/17 02:41:04 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.4 2001/11/03 02:16:17 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -892,6 +892,9 @@ static void update_display(air_coil_gui *gui)
   
   sprintf(str,"%.4g",gui->coil->AWGf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
+  
+  sprintf(str,"%.4g",gui->coil->freq/gui->coil->freq_sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
   
   sprintf(str,"%8.4g",gui->coil->Q);
   gtk_label_set_text( GTK_LABEL(gui->label_Q), str );

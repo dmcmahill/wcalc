@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.2 2001/11/02 01:25:41 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.3 2001/11/03 02:16:20 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -52,7 +52,7 @@
 #include "alert.h"
 #include "wcalc_loadsave.h"
 
-#define FILE_VERSION "v1"
+#define FILE_VERSION "0.1"
 
 
 #ifdef notdef
@@ -95,6 +95,7 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 
   int got_Nf=0;
   int got_len=0;
+  int got_fill=0;
   int got_AWGf=0;
   int got_rho=0;
   int got_dia=0;
@@ -163,6 +164,10 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 	    else if (strcmp(tok,"len") == 0){
 	      coil->len = atof(val);
 	      got_len = 1;
+	    }
+	    else if (strcmp(tok,"fill") == 0){
+	      coil->fill = atof(val);
+	      got_fill = 1;
 	    }
 	    else if (strcmp(tok,"awgf") == 0){
 	      coil->AWGf = atof(val);
@@ -353,6 +358,9 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
 
   fprintf(fp,"# Length of coil (meters)\n");
   fprintf(fp,"len = %g\n",coil->len);
+
+  fprintf(fp,"# Ratio of coil length to close wound length\n");
+  fprintf(fp,"fill = %g\n",coil->fill);
 
   fprintf(fp,"# Wire size (AWG)\n");
   fprintf(fp,"AWGf = %g\n",coil->AWGf);
