@@ -1,4 +1,4 @@
-/* $Id: cgic.c,v 1.1 2001/09/11 22:52:06 dan Exp $ */
+/* $Id: cgic.c,v 1.2 2001/09/17 15:27:29 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 	fprintf(dout, "%s\n", cgiContentType);
 	CGICDEBUGEND	
 #endif /* CGICDEBUG */
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN32__) && !defined(__MINGW32__)
 	/* 1.07: Must set stdin and stdout to binary mode */
 	_setmode( _fileno( stdin ), _O_BINARY );
 	_setmode( _fileno( stdout ), _O_BINARY );

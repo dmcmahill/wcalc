@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: misc.c,v 1.1 2001/09/13 21:16:48 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -35,6 +35,9 @@
 
 #include <stdio.h>
 #include <math.h>
+
+/* for rint() if its missing from math.h */
+#include "mathutil.h"
 
 #include "misc.h"
 

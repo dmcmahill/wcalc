@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.4 2001/09/17 19:32:59 dan Exp $ */
+/* $Id: print.c,v 1.5 2001/09/17 20:45:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -42,6 +42,9 @@
 
 
 #include <gtk/gtk.h>
+
+/* for rint() if its missing from math.h */
+#include "mathutil.h"
 
 #include "print.h"
 #include "wcalc.h"
