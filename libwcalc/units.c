@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.4 2004/07/20 22:56:40 dan Exp $ */
+/* $Id: units.c,v 1.5 2004/07/21 17:34:53 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -218,7 +218,7 @@ char *wc_units_to_savestr( const wc_units *units )
 {
   char *str;
   size_t len;
-  int i;
+  int i, j;
 
   /*
    * assume that we'll never have more than 1000 choices for a
@@ -247,10 +247,14 @@ char *wc_units_to_savestr( const wc_units *units )
   for(i=1; i < units->nnum; i++)
     sprintf(str, "%s-%d", str, units->numi[i]);
 
-  if ( (units->nnum == 0) && (units->nden > 0) )
+  if ( (units->nnum == 0) && (units->nden > 0) ) {
     sprintf(str, "units->deni[0]");
+    j = 1;
+  } else {
+    j = 0;
+  }
 
-  for(i=1; i < units->nden; i++)
+  for(i=j; i < units->nden; i++)
     sprintf(str, "%s-%d", str, units->deni[i]);
 
 #ifdef DEBUG
