@@ -1,4 +1,4 @@
-# $Id$
+# $Id: coupled_microstrip.data,v 1.1 2003/01/11 01:01:43 dan Exp $
 #
 # Input data for coupled_microstrip_test program
 #
@@ -8,7 +8,7 @@
 # scale sf
 # sub  h er tmet rho rough tand
 # syn freq z0 k z0e z0o len flag
-scale 25.4e-6
+#scale 25.4e-6
 sub 10.0 4.8 0.0 1.0 0.055 0.01
 line 15.0 10.0 500.0
 #
