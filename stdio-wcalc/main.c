@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.8 2004/03/06 05:39:47 dan Exp $ */
+/* $Id: main.c,v 1.9 2004/03/06 13:56:56 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -102,7 +102,7 @@ static void exec_version(double *args);
 int main(int argc, char **argv)
 {
   char line[256];
-  char *tok;
+  char *tok, *nl;
   int narg;
   int cnt;
   void (*fn) (double *);
@@ -110,6 +110,9 @@ int main(int argc, char **argv)
   int lineno = 1;
 
   while( fgets(line, sizeof(line), stdin) != NULL ) {
+    /* strip off the final newline */
+    nl = strpbrk(line, "\n");
+    if( nl != NULL ) *nl = '\0';
     tok = strtok(line, " \t");
     if(tok == NULL) {
       fprintf(stderr, "stdio-wcalc: null token\n");
@@ -384,7 +387,7 @@ static void exec_stripline_calc(double *args)
  */
 static void exec_version(double *args)
 {
-  printf("Not implemented yet\n");
+  printf("%s\n", VERSION);
 
   return;
 }
