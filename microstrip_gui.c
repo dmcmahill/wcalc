@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.7 2001/09/20 03:04:03 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.8 2001/09/20 12:40:32 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -50,6 +50,7 @@
 
 #include "wcalc.h"
 
+static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void mscalc_analyze( GtkWidget *w, gpointer data );
 static void mscalc_synthesize( GtkWidget *w, gpointer data );
@@ -71,6 +72,8 @@ static void cb_punits_menu_select( GtkWidget *item,
 #define ENTRYLENGTH  8
 
 
+static char *name="Microstrip Analysis/Synthesis";
+static char *version="v0.1";
 /*
  * Public Functions
  */
@@ -97,12 +100,15 @@ microstrip_gui *microstrip_gui_new(void)
   wcalc->init_done=0;
 
   wcalc->init = microstrip_gui_init;
+  wcalc->print_ps = print_ps;
   wcalc->load = NULL;
   wcalc->save = NULL;
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
 
+  wcalc->model_name=name;
+  wcalc->model_version=version;
 
   /*
    * Initialize the model dependent portions
@@ -132,7 +138,7 @@ void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox)
 
   microstrip_gui *gui;
 
-  gui = (microstrip_gui *) wcalc;
+  gui = WC_MICROSTRIP_GUI(wcalc);
 
   /* create the other vbox's and pack them into the main vbox */
   units_vbox = gtk_vbox_new (FALSE, 1);
@@ -817,3 +823,77 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
   if(WC_WCALC(gui)->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
 }
+
+
+static void print_ps(Wcalc *wcalc, FILE *fp)
+{
+  microstrip_gui *gui;
+
+  int bbox_llx, bbox_lly, bbox_urx, bbox_ury;
+
+  gui = WC_MICROSTRIP_GUI(wcalc);
+  
+  bbox_llx=101;
+  bbox_lly=664;
+  bbox_urx=309;
+  bbox_ury=775;
+
+
+#include "ps_microstrip.c"
+
+
+  fprintf(fp,"%% spit out the numbers\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"/col1x currentpoint pop def\n");
+  fprintf(fp,"/col2x %g 2 div inch def\n",global_print_config->paperwidth);
+  fprintf(fp,"/coly currentpoint exch pop def\n");
+  fprintf(fp,"/linespace 1.5 def\n");
+  fprintf(fp,"\n");
+  fprintf(fp,"col1x coly moveto\n");
+  fprintf(fp,"/leftcol col1x  def\n");
+  fprintf(fp,"(W) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  gui->line->w);
+  fprintf(fp,"(H) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  gui->line->subs->h);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (%g mils ) show newline\n",
+	  gui->line->l);
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  gui->line->subs->tmet);
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->subs->rho);
+  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g mils-rms) show newline\n",
+	  gui->line->subs->rough);
+  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->subs->er);
+  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->subs->tand);
+  fprintf(fp,"\n");
+  fprintf(fp,"col2x coly moveto \n");
+  fprintf(fp,"/leftcol col2x def\n");
+  fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g ) show (W) symbolshow newline\n",
+	  gui->line->z0);
+  fprintf(fp,"(keff) show tab1 (=) show tab2 (%g) show newline\n",
+	  gui->line->keff);
+  fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
+	  gui->line->len);
+  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
+	  gui->line->loss);
+  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
+	  gui->line->losslen);
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
+	  gui->line->skindepth);
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
+	  gui->line->Ls);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
+	  gui->line->Rs);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
+	  gui->line->Cs);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
+	  gui->line->Gs);
+  
+}
+

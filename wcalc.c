@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.15 2001/09/20 03:04:04 dan Exp $ */
+/* $Id: wcalc.c,v 1.16 2001/09/20 12:40:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -142,6 +142,7 @@ int main( int   argc,
 
   /* set up the list of available models for the program */
   global_model_init();
+  global_printer_init();
 
   /*
    * the splash screen and also ask for what type of model for a new

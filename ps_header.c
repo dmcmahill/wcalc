@@ -1,12 +1,16 @@
-/* $Id: ps_header.c,v 1.1 2001/09/16 19:56:03 dan Exp $ */
+/* $Id: ps_header.c,v 1.2 2001/09/17 20:45:18 dan Exp $ */
 
 /* ********* Automatically Generated.  Do not edit! ******** */
 /* *********         Created with html2c            ******** */
 
 fprintf(fp,"%%!PS-Adobe-3.0\n");
 fprintf(fp,"%%%%Creator: WaveCalc\n");
-fprintf(fp,"%%%%BoundingBox: 0 0 %g %g\n",rint(72*paperwidth),rint(72*paperheight));
-fprintf(fp,"%%%%PageBoundingBox: 0 0 %g %g\n",rint(72*paperwidth),rint(72*paperheight));
+fprintf(fp,"%%%%BoundingBox: 0 0 %g %g\n",
+	rint(72*global_print_config->paperwidth),
+	rint(72*global_print_config->paperheight));
+fprintf(fp,"%%%%PageBoundingBox: 0 0 %g %g\n",
+	rint(72*global_print_config->paperwidth),
+	rint(72*global_print_config->paperheight));
 fprintf(fp,"%%%%EndComments\n");
 fprintf(fp,"%%%%BeginProlog\n");
 fprintf(fp,"%%\n");
@@ -14,7 +18,7 @@ fprintf(fp,"%% Select the font\n");
 fprintf(fp,"/currfont /Times-Roman findfont def\n");
 fprintf(fp,"%% \n");
 fprintf(fp,"%% Set font size\n");
-fprintf(fp,"/fsize %g def\n",fontsize);
+fprintf(fp,"/fsize %g def\n",global_print_config->fontsize);
 fprintf(fp,"currfont fsize scalefont setfont\n");
 fprintf(fp,"\n");
 fprintf(fp,"%%\n");
@@ -27,7 +31,7 @@ fprintf(fp,"/inch {72 mul} def\n");
 fprintf(fp,"%%\n");
 fprintf(fp,"\n");
 fprintf(fp,"%%\n");
-fprintf(fp,"/leftcol %g inch def\n",leftmargin);
+fprintf(fp,"/leftcol %g inch def\n",global_print_config->leftmargin);
 fprintf(fp,"\n");
 fprintf(fp,"%%\n");
 fprintf(fp,"%% wrapper around eps files inclusion\n");
@@ -105,32 +109,32 @@ fprintf(fp,"%% newlinecenter command\n");
 fprintf(fp,"/newlinecenter {\n");
 fprintf(fp,"  currentpoint\n");
 fprintf(fp,"  fsize linespace mul sub \n");
-fprintf(fp,"  exch pop %g 2 div inch exch\n",paperwidth);
+fprintf(fp,"  exch pop %g 2 div inch exch\n",global_print_config->paperwidth);
 fprintf(fp,"  moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
 fprintf(fp,"\n");
 fprintf(fp,"/tab1{\n");
 fprintf(fp,"    currentpoint exch pop \n");
-fprintf(fp,"    %g inch leftcol add exch \n",tab1);
+fprintf(fp,"    %g inch leftcol add exch \n",global_print_config->tab1);
 fprintf(fp,"    moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
 fprintf(fp,"/tab2{\n");
 fprintf(fp,"    currentpoint exch pop \n");
-fprintf(fp,"    %g inch leftcol add exch \n",tab2);
+fprintf(fp,"    %g inch leftcol add exch \n",global_print_config->tab2);
 fprintf(fp,"    moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
 fprintf(fp,"/tab3{\n");
 fprintf(fp,"    currentpoint exch pop \n");
-fprintf(fp,"    %g inch leftcol add exch \n",tab3);
+fprintf(fp,"    %g inch leftcol add exch \n",global_print_config->tab3);
 fprintf(fp,"    moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
 fprintf(fp,"/tab4{\n");
 fprintf(fp,"    currentpoint exch pop \n");
-fprintf(fp,"    %g inch leftcol add exch \n",tab4);
+fprintf(fp,"    %g inch leftcol add exch \n",global_print_config->tab4);
 fprintf(fp,"    moveto\n");
 fprintf(fp,"} def\n");
 fprintf(fp,"\n");
@@ -149,12 +153,17 @@ fprintf(fp,"\n");
 fprintf(fp,"%%\n");
 fprintf(fp,"%% The header on the page\n");
 fprintf(fp,"%%\n");
-fprintf(fp,"%g 2 div inch %g %g sub inch moveto\n",paperwidth,paperheight,topmargin);
+fprintf(fp,"%g 2 div inch %g %g sub inch moveto\n",
+	global_print_config->paperwidth,
+	global_print_config->paperheight,
+	global_print_config->topmargin);
 fprintf(fp,"%%\n");
 fprintf(fp,"%% larger font\n");
 fprintf(fp,"currfont fsize 2.0 mul scalefont setfont\n");
-fprintf(fp,"(WaveCalc:  Version-0.1) centertopshow newlinecenter\n");
-fprintf(fp,"(%s) centertopshow newlinecenter\n",name);
+fprintf(fp,"(WaveCalc:  Version-%s) centertopshow newlinecenter\n",VER);
+fprintf(fp,"currfont fsize 1.5 mul scalefont setfont\n");
+fprintf(fp,"(%s) centertopshow newlinecenter\n",wcalc->model_name);
+fprintf(fp,"(%s) centertopshow newlinecenter\n",wcalc->model_version);
 fprintf(fp,"newlinecenter\n");
 fprintf(fp,"currfont fsize scalefont setfont\n");
 fprintf(fp,"\n");

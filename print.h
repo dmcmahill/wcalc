@@ -1,4 +1,4 @@
-/* $Id: print.h,v 1.1 2001/09/15 23:56:39 dan Exp $ */
+/* $Id: print.h,v 1.2 2001/09/17 20:45:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -41,4 +41,23 @@ void print_popup(gpointer data,
 		 guint action,
 		 GtkWidget *widget);
 
+void global_printer_init(void);
+
+typedef struct PRINT_CONFIG {
+  double fontsize;
+  double leftmargin;
+  double topmargin;
+  double bottommargin;
+  double paperheight;
+  double paperwidth;
+  double tab1;
+  double tab2;
+  double tab3;
+  double tab4;
+} print_config;
+
 #endif /*__PRINT_H__*/
+
+
+
+

@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.12 2001/09/18 20:42:53 dan Exp $
+dnl $Id: configure.in,v 1.13 2001/09/18 22:28:02 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -44,6 +44,10 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
+
+dnl used for processing the drawings to give png's
+dnl and xpm's
+AC_PATH_PROG(TGIF, tgif)
 
 AC_CYGWIN
 AC_MINGW32

@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.8 2001/09/20 03:04:04 dan Exp $ */
+/*      $Id: wcalc.h,v 1.9 2001/09/20 12:40:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -44,6 +44,7 @@
 #include <string.h>
 #endif
 
+#include "print.h"
 
 /* Global list of the names of the various models */
 GList *global_model_names;
@@ -53,6 +54,12 @@ GList *global_model_new;
 
 /* Global list of menu paths for the models */
 GList *global_model_menus;
+
+
+/* Global printer page setup */
+print_config *global_print_config;
+
+  
 
 typedef struct WCALC
 {
@@ -77,11 +84,31 @@ typedef struct WCALC
    * Required public methods 
    */
   void (*init) (struct WCALC *, GtkWidget *);
+  void (*print_ps) (struct WCALC *, FILE *);
   int (*load) (FILE *);
   int (*save) (FILE *);
   int (*analyze) (void);
   int (*synthesize) (void);
   int (*display) (void);
+
+  /*
+   * Required data
+   */
+
+  /* file name */
+  char *file_name;
+
+  /* name of the model.  "Microstrip Analysis/Synthesis" for example */
+  char *model_name;
+  
+  /* version of the model.  "v1.0" for example */
+  char *model_version;
+
+  /*
+   * TRUE if the values are in sync because an analysis has been
+   * performed.  FALSE because an entry has been changed
+   */
+  int values_in_sync;
 
   /*  
   model_new;

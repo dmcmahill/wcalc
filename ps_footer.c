@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: ps_footer.c,v 1.1 2001/09/17 20:45:18 dan Exp $ */
 
 /* ********* Automatically Generated.  Do not edit! ******** */
 /* *********         Created with html2c            ******** */
@@ -14,8 +14,8 @@ fprintf(fp,"%%\n");
 fprintf(fp,"%% add the time stamp\n");
 fprintf(fp,"%%\n");
 fprintf(fp,"\n");
-fprintf(fp,"%g inch 2 div\n",paperwidth);
-fprintf(fp,"%g inch \n",bottommargin);
+fprintf(fp,"%g inch 2 div\n",global_print_config->paperwidth);
+fprintf(fp,"%g inch \n",global_print_config->bottommargin);
 fprintf(fp,"moveto\n");
 fprintf(fp,"(%s) centerbotshow\n",ctime(&now));
 fprintf(fp,"\n");
