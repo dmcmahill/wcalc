@@ -1,4 +1,4 @@
-/* $Id: cookie.h,v 1.2 2002/02/20 01:10:10 dan Exp $ */
+/* $Id: cookie.h,v 1.3 2004/07/23 22:11:53 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -84,7 +84,7 @@ cgiCookieResultType cgiCookieDoubleBounded(char *name,
 
 typedef enum {
 	cgiCookieInsecure,
-	cgiCookieSecure,
+	cgiCookieSecure
 } cgiCookieSecureType;
 
 typedef struct {
