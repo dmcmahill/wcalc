@@ -2,11 +2,12 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml,v 1.6 2001/10/27 16:18:35 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml,v 1.7 2002/01/14 20:24:38 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <title>CGI-Wcalc</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
 <meta name="KEYWORDS" content="
 coupled microstrip,

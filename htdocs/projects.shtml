@@ -2,11 +2,12 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.2 2001/10/27 16:12:59 dan Exp $ -->
+<!-- $Id: projects.shtml,v 1.3 2001/10/27 17:41:11 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <title>Current Wcalc Projects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
 <meta name="KEYWORDS" content="
 coupled microstrip,

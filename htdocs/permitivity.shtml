@@ -2,11 +2,12 @@
 
 <html>
 <head>
-<!-- $Id: resistivity.shtml,v 1.1 2002/01/10 18:15:14 dan Exp $ -->
+<!-- $Id: permitivity.shtml,v 1.1 2002/01/11 15:32:48 dan Exp $ -->
 <!-- Copyright (c) 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <title>Permitivities of Common Materials</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  Permitivities of common materials">
 <meta name="KEYWORDS" content="
 dielectric,
