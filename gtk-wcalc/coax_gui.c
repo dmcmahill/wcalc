@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.18 2003/01/02 06:40:08 dan Exp $ */
+/* $Id: coax_gui.c,v 1.19 2004/07/18 16:07:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -51,6 +51,7 @@
 #include "gtk-units.h"
 
 #include "misc.h"
+#include "units.h"
 
 #include "coax.h"
 #include "coax_gui.h"
@@ -156,7 +157,7 @@ coax_gui *coax_gui_new(void)
   new_gui->freq_units = frequency_units_new();
 
   new_gui->rho_units = resistivity_units_new();
-  new_gui->L_units = inc_inductance_units_new();
+  new_gui->L_units = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
   new_gui->R_units = inc_resistance_units_new();
   new_gui->C_units = inc_capacitance_units_new();
   new_gui->G_units = inc_conductance_units_new();
@@ -352,7 +353,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), hbox,
 		   2, 3, 0, 1, GTK_EXPAND|GTK_FILL, 0,XPAD,YPAD);
   gui->menu_abct_units =
-    units_menu_new(length_units, 0, (gpointer) gui, abct_units_changed);
+    wc_units_submenu_new(length_units, 0, (gpointer) gui, abct_units_changed);
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_abct_units,FALSE,FALSE,0);
 
   text = gtk_label_new( "b" );
@@ -395,7 +396,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), hbox,
 		   2, 3, 3, 4, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
   gui->menu_len_units =
-    units_menu_new(length_units, 0, (gpointer) gui, len_units_changed);
+    wc_units_submenu_new(length_units, 0, (gpointer) gui, len_units_changed);
   gtk_box_pack_start (GTK_BOX (hbox), gui->menu_len_units, FALSE, FALSE, 0);
 
 
@@ -464,16 +465,16 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		   5, 6, 3, 4, 0,0,XPAD,YPAD);
 
   text = wc_composite_units_menu_new(gui->freq_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+				     wc_units_menu_changed);
 
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
-  wc_composite_units_attach_units(ug,
-				  &(gui->line->freq),
-				  &(gui->line->freq_sf),
-				  &(gui->line->freq_units));
-
+  wc_units_attach_units(ug,
+			&(gui->line->freq),
+			&(gui->line->freq_sf),
+			&(gui->line->freq_units));
+  
   /* ---------------- RHO_a label/entry/units menu -------------- */
 
   text = gtk_label_new( _("RHO_a") );
@@ -482,7 +483,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
 
   text = wc_composite_units_menu_new(gui->rho_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+				     wc_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 4, 5, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
@@ -493,16 +494,16 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
   gtk_misc_set_alignment(GTK_MISC(text),0,0);
 
-  wc_composite_units_attach_units(ug,
-				  &(gui->line->rho_a),
-				  &(gui->line->rho_a_sf),
-				  &(gui->line->rho_a_units));
-  wc_composite_units_attach_units(ug,
-				  &(gui->line->rho_b),
-				  &(gui->line->rho_b_sf),
-				  &(gui->line->rho_b_units));
-
-  wc_composite_units_attach_units_label(ug,text);
+  wc_units_attach_units(ug,
+			&(gui->line->rho_a),
+			&(gui->line->rho_a_sf),
+			&(gui->line->rho_a_units));
+  wc_units_attach_units(ug,
+			&(gui->line->rho_b),
+			&(gui->line->rho_b_sf),
+			&(gui->line->rho_b_units));
+  
+  wc_units_attach_units_label(ug,text);
 
 
   text = gtk_label_new( _("RHO_b") );
@@ -705,25 +706,25 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
 
-  text = wc_composite_units_menu_new(gui->L_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+  text = wc_units_menu_new(gui->L_units, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
 #define OUTPUT_TEXT "     "
 
   gui->label_L = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_L, 5,6,0,1, 0,0,XPAD,YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_L, 5, 6, 0, 1, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_L);
 
-  wc_composite_units_attach_label(ug,gui->label_L,&(gui->line->L),&(gui->line->L_sf),
-				  &(gui->line->L_units),"%8.4g",1);
+  /* attach inductance label to the units gui */
+  wc_units_attach_label(ug, gui->label_L, &(gui->line->L), &(gui->line->L_sf),
+			&(gui->line->L_units), "%8.4g", 1);
 
   text = gtk_label_new( "R" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0, 0, XPAD, YPAD);
 
   text = wc_composite_units_menu_new(gui->R_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+				     wc_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
@@ -731,14 +732,14 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_R, 5,6,1,2, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_R);
 
-  wc_composite_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),
+  wc_units_attach_label(ug,gui->label_R,&(gui->line->R),&(gui->line->R_sf),
 				  &(gui->line->R_units),"%8.4g",1);
 
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
 
   text = wc_composite_units_menu_new(gui->C_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+				     wc_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
@@ -746,13 +747,13 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_C, 5,6,2,3, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_C);
 
-  wc_composite_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),
+  wc_units_attach_label(ug,gui->label_C,&(gui->line->C),&(gui->line->C_sf),
 				  &(gui->line->C_units),"%8.4g",1);
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
 
   text = wc_composite_units_menu_new(gui->G_units,WC_WCALC(gui),&ug,
-				     wc_composite_units_menu_changed);
+				     wc_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
@@ -761,7 +762,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach (GTK_TABLE(table), gui->label_G, 5,6,3,4, 0,0,XPAD,YPAD);
   gtk_widget_show(gui->label_G);
 
-  wc_composite_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),
+  wc_units_attach_label(ug,gui->label_G,&(gui->line->G),&(gui->line->G_sf),
 				  &(gui->line->G_units),"%8.4g",1);
 
   /* spacer */

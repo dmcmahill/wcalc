@@ -1,7 +1,7 @@
-/* $Id: coax_gui.h,v 1.8 2002/07/04 03:09:43 dan Exp $ */
+/* $Id: coax_gui.h,v 1.9 2002/07/05 23:18:41 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,6 +38,7 @@
 
 #include "coax.h"
 #include "wcalc.h"
+#include "gtk-units.h"
 
 typedef struct COAX_GUI 
 {
@@ -116,8 +117,9 @@ typedef struct COAX_GUI
   /*
    * units for the incremental model
    */
-  composite_units_data *L_units, *R_units, *C_units, *G_units;
+  composite_units_data *R_units, *C_units, *G_units;
 
+  wc_units *L_units;
 } coax_gui;
 
 coax_gui *coax_gui_new(void);

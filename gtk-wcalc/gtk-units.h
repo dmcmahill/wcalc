@@ -1,7 +1,7 @@
-/*      $Id: gtk-units.h,v 1.8 2002/07/05 03:22:10 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.9 2003/02/06 02:09:56 dan Exp $ */
 
 /*
- * Copyright (c) 2002, 2003 Dan McMahill
+ * Copyright (c) 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -47,6 +47,7 @@
 #endif
 
 #include "misc.h"
+#include "units.h"
 #include "wcalc.h"
 
 typedef struct _WC_UNITS_GUI
@@ -134,10 +135,10 @@ typedef struct _WC_UNITS_UPDATE_ITEM
 
 } wc_units_update_item;
 
-GtkWidget *units_menu_new(const units_data *units, 
-			  int initial,
-			  gpointer gui,
-			  void (*callback)(GtkWidget *, gpointer));
+GtkWidget *wc_units_submenu_new(const units_data *units, 
+				int initial,
+				gpointer gui,
+				void (*callback)(GtkWidget *, gpointer));
 
 void  set_sf_menu(GtkWidget *menu,
 		  const units_data units[],
@@ -148,38 +149,44 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
 				       wc_units_gui **ug,
 				       void (*callback)(GtkWidget *, gpointer));
 
+GtkWidget *wc_units_menu_new(const wc_units *units, 
+			     Wcalc *gui,
+			     wc_units_gui **ug);
+
 wc_label_units *wc_label_units_new(const composite_units_data *units, 
 				   Wcalc *gui,
 				   void (*callback)(GtkWidget *, gpointer));
 
-void wc_composite_units_menu_changed( GtkWidget *w, gpointer data);
+void wc_units_menu_changed( GtkWidget *w, gpointer data);
 
 
-void  wc_composite_units_attach(wc_units_gui *ug, 
-				GtkWidget *widget, 
-				double *mks_val, 
-				double *sf,
-				char **units_str, 
-				const char *fmt_string,
-				int update,
-				int type);
+void  wc_units_attach(wc_units_gui *ug, 
+		      GtkWidget *widget, 
+		      double *mks_val, 
+		      double *sf,
+		      char **units_str, 
+		      const char *fmt_string,
+		      int update,
+		      int type);
 
-#define wc_composite_units_attach_units(ug,mks_val,sf,units_str)      \
-       (wc_composite_units_attach((ug),NULL,(mks_val),(sf),(units_str), \
-       "",0,NONE))
+#define wc_units_attach_units(ug, mks_val, sf, units_str)             \
+       (wc_units_attach((ug), NULL, (mks_val), (sf), (units_str),     \
+       "", 0, NONE))
 
-#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str, \
-       fmt_string,update)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str), \
-       (fmt_string),update,ENTRY))
+#define wc_units_attach_entry(ug, widget, mks_val, sf, units_str,     \
+       fmt_string, update)                                            \
+       (wc_units_attach((ug), (widget), (mks_val), (sf), (units_str), \
+       (fmt_string), update, ENTRY))
 
-#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str, \
-       fmt_string,update)      \
-       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str), \
-       (fmt_string),update,LABEL))
+/* attach a gtk_label which will display the value of our variable */
+#define wc_units_attach_label(ug, widget, mks_val, sf, units_str,     \
+       fmt_string, update)                                            \
+       (wc_units_attach((ug), (widget), (mks_val), (sf), (units_str), \
+       (fmt_string), update, LABEL))
 
-#define wc_composite_units_attach_units_label(ug,widget)      \
-       (wc_composite_units_attach((ug),(widget),NULL,NULL,NULL,NULL,1, \
+/* attach a gtk_label which will display the units of our variable */
+#define wc_units_attach_units_label(ug, widget)                       \
+       (wc_units_attach((ug), (widget), NULL, NULL, NULL, NULL, 1,    \
        UNITS_LABEL))
 
 
