@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-01-02 01:44-0500\n"
+"POT-Creation-Date: 2004-11-04 22:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -111,29 +111,29 @@ msgstr ""
 msgid "/_Help/_Material Properties/_Wire Sizes"
 msgstr ""
 
-#: gtk-wcalc/menus.c:200
+#: gtk-wcalc/menus.c:205
 #, c-format
 msgid "window_close():  Called with input pointer %p\n"
 msgstr ""
 
-#: gtk-wcalc/menus.c:201
+#: gtk-wcalc/menus.c:206
 #, c-format
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
 
-#: gtk-wcalc/start.c:241
+#: gtk-wcalc/start.c:243
 msgid "Open..."
 msgstr ""
 
-#: gtk-wcalc/start.c:251
+#: gtk-wcalc/start.c:253
 msgid "New"
 msgstr ""
 
-#: gtk-wcalc/start.c:270
+#: gtk-wcalc/start.c:272
 msgid "Quit"
 msgstr ""
 
-#: gtk-wcalc/start.c:288
+#: gtk-wcalc/start.c:290
 msgid ""
 "**** WARNING ****\n"
 "This is a development snapshot\n"
