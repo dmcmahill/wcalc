@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.24 2002/12/18 13:56:43 dan Exp $
+## $Id: Makefile.am,v 1.1 2004/01/10 04:58:08 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -35,7 +35,7 @@
 
 bin_PROGRAMS = stdio-wcalc
 
-stdio_wcalc_SOURCES =  main.c 
+stdio_wcalc_SOURCES =  alert.c main.c 
 
 man_MANS=	stdio-wcalc.1
 
