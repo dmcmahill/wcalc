@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.3 2002/01/18 03:03:09 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.4 2002/01/18 03:04:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -209,7 +209,7 @@ int coax_load_string(coax_line *line, char *str)
 }
 
 
-char * coax_save_string(coax_line *line, char *fname)
+char * coax_save_string(coax_line *line)
 {
   fspec *myspec;
   char *str;
