@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.45 2002/06/17 23:37:47 dan Exp $
+dnl $Id: configure.in,v 1.46 2002/06/18 00:40:28 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -131,7 +131,6 @@ fi
 [
 OCT_WCALC=""
 with_octave=no
-fi
 ])
 
 
