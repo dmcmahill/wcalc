@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.21 2002/06/27 23:43:00 dan Exp $
+## $Id: Makefile.am,v 1.22 2002/12/10 10:42:17 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -170,14 +170,14 @@ whatis: ${SCIMANS}  $(srcdir)/Makefile.am
 	@echo "****************************************************"
 	@echo "Generating the whatis table"
 	@echo "****************************************************"
-	@${AWK} 'BEGIN{s=0;} \
+	@(for f in ${SCIMANS}; do ${AWK} 'BEGIN{s=0;} \
 		/^\.SH/ {s=0}; \
 		s==1{ \
 			printf("%-26s - ",$$1); \
 			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
 			printf("\n"); \
 		} \
-		/^\.SH[ \t]*NAME/ {s=1}' ${SCIMANS} | sort > whatis
+		/^\.SH[ \t]*NAME/ {s=1}' ${srdir}/$$f ; done) | sort > whatis
 
 SUFFIXES=
 
