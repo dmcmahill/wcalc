@@ -1,4 +1,6 @@
-/* $Id: coax_syn.c,v 1.1 2001/12/11 03:38:22 dan Exp $ */
+/* $Id: coax_syn.c,v 1.2 2001/12/13 05:08:08 dan Exp $ */
+
+static char vcid[] = "$Id$";
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -149,6 +151,11 @@ void mexFunction(
   /*
    * Arguemnt checking and processing
    */
+
+  if (nrhs == 0) {
+    mexPrintf("%s\r\n",vcid);
+    return;
+  }
 
   /* Check for proper number of arguments */
   if (nrhs != 12) 

@@ -1,4 +1,6 @@
-/* $Id: coupled_microstrip_syn.c,v 1.1 2001/11/04 19:23:10 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.2 2001/11/07 04:50:54 dan Exp $ */
+
+static char vcid[] = "$Id$";
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -148,6 +150,11 @@ void mexFunction(
   /*
    * Arguemnt checking and processing
    */
+
+  if (nrhs == 0) {
+    mexPrintf("%s\r\n",vcid);
+    return;
+  }
 
   /* Check for proper number of arguments */
   if (nrhs != 12) {

@@ -1,4 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.4 2001/10/24 01:29:56 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.5 2001/10/30 23:42:06 dan Exp $ */
+
+static char vcid[] = "$Id$";
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -142,6 +144,11 @@ void mexFunction(
   /*
    * Arguemnt checking and processing
    */
+
+  if (nrhs == 0) {
+    mexPrintf("%s\r\n",vcid);
+    return;
+  }
 
   /* Check for proper number of arguments */
   if (nrhs == 7) 
