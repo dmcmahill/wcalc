@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.1 2001/11/27 04:46:31 dan Exp $ */
+/* $Id: coax.c,v 1.2 2001/11/28 07:18:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -230,6 +230,7 @@ int coax_syn(coax_line *line, double f, int flag)
   int rslt = 0;
   double Ro;
   double v;
+  double elen;
 
   /* the optimization variables, current, min/max, and previous values */
   double var=0, varmax=0, varmin=0, varold=0;
@@ -306,7 +307,8 @@ int coax_syn(coax_line *line, double f, int flag)
    * read values from the input line structure
    */
 
-  Ro = line->z0;
+  Ro   = line->z0;
+  elen = line->elen;
 
   /*
    * temp value for len used while synthesizing the other parameters.
@@ -458,7 +460,7 @@ int coax_syn(coax_line *line, double f, int flag)
 
   v = LIGHTSPEED / sqrt(line->er);
 
-  line->len = (line->elen/360)*(v/f);
+  line->len = (elen/360)*(v/f);
 
   /* recalculate using real length to find loss  */
   rslt = coax_calc(line,f);
@@ -505,7 +507,7 @@ coax_line *coax_new()
   newline->er    = 1.0;
   newline->tand  = 1e-6;
   newline->freq  = 10e6;
-  /*  newline->emax  = 1e8; */
+  newline->emax  = 1e8;
 
   newline->a_sf = 1.0;
   newline->b_sf = 1.0;
@@ -514,6 +516,7 @@ coax_line *coax_new()
   newline->len_sf = 1.0;
   newline->rho_a_sf = 1.0;
   newline->rho_b_sf = 1.0;
+  newline->emax_sf = 1.0;
   newline->L_sf = 1.0;
   newline->R_sf = 1.0;
   newline->C_sf = 1.0;
@@ -533,6 +536,7 @@ coax_line *coax_new()
   newline->len_units = "m";
   newline->rho_a_units = "Ohm-m";
   newline->rho_b_units = "Ohm-m";
+  newline->emax_units = "V/m";
   newline->L_units = "Henries/m";
   newline->R_units = "Ohms/m";
   newline->C_units = "Farads/m";

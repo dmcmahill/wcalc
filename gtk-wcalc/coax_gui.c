@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.5 2001/11/03 04:12:25 dan Exp $ */
+/* $Id: coax_gui.c,v 1.1 2001/11/28 07:18:55 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -366,11 +366,11 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Fc" );
+  text = gtk_label_new( "Emax" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 6, 7, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  text = gtk_label_new( "Shield thickness (t)" );
+  text = gtk_label_new( "t" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 7, 8, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
@@ -472,17 +472,26 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_set_sensitive(gui->text_tand,FALSE);
   gtk_widget_show(gui->text_tand);
 
-  gui->text_fc = gtk_entry_new_with_max_length( ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_fc, 1, 2, 6, 7,0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_fc),WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_fc), "changed",
+  gui->text_emax = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_emax, 1, 2, 6, 7,0,0,XPAD,YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_emax),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_emax), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_fc), "changed",
+  gtk_signal_connect (GTK_OBJECT (gui->text_emax), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_fc);
+  gtk_widget_set_sensitive(gui->text_emax,FALSE);
+  gtk_widget_show(gui->text_emax);
+
+  gui->text_tshield = gtk_entry_new_with_max_length( ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_tshield, 1, 2, 7, 8,0,0,XPAD,YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_tshield),WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tshield), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_tshield), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_tshield);
 
   gui->text_z0 = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_z0, 6, 7, 0, 1,0,0,XPAD,YPAD);
@@ -554,7 +563,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
 
-  table = gtk_table_new (4, 7, FALSE);
+  table = gtk_table_new (5, 7, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
   /* Text labels */
@@ -574,20 +583,52 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "Conductor loss" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "np/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 3, 4, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "Dielectric loss" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "np/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 4, 5, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "H/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "Ohms/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "C" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
+  text = gtk_label_new( "F/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,XPAD,YPAD);
+  gtk_widget_show(text);
+
+  text = gtk_label_new( "Siemens/m" );
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
 
@@ -760,10 +801,16 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   g_print("coax_gui.c:calculate():  tand = %g\n",gui->line->tand);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fc) ); 
-  gui->line->fc=atof(vstr)*gui->line->fc_sf;
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_emax) ); 
+  gui->line->emax=atof(vstr)*gui->line->emax_sf;
 #ifdef DEBUG
-  g_print("coax_gui.c:calculate():  fc = %g\n",gui->line->fc);
+  g_print("coax_gui.c:calculate():  emax = %g\n",gui->line->emax);
+#endif
+
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tshield) ); 
+  gui->line->tshield=atof(vstr)*gui->line->tshield_sf;
+#ifdef DEBUG
+  g_print("coax_gui.c:calculate():  tshield = %g\n",gui->line->tshield);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
@@ -782,6 +829,12 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
   gui->line->freq=atof(vstr)*gui->line->freq_sf;
 #ifdef DEBUG
   g_print("coax_gui.c:calculate():  freq = %g\n",gui->line->freq);
+#endif
+
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_fc) ); 
+  gui->line->fc=atof(vstr)*gui->line->fc_sf;
+#ifdef DEBUG
+  g_print("coax_gui.c:calculate():  fc = %g\n",gui->line->fc);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho_a) ); 
@@ -859,8 +912,11 @@ static void update_display(coax_gui *gui)
   sprintf(str,"%.4g",gui->line->tand);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tand), str );
 
-  sprintf(str,"%.4g",gui->line->fc/gui->line->fc_sf);
-  gtk_entry_set_text( GTK_ENTRY(gui->text_fc), str );
+  sprintf(str,"%.4g",gui->line->emax/gui->line->emax_sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_emax), str );
+
+  sprintf(str,"%.4g",gui->line->tshield/gui->line->tshield_sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_tshield), str );
 
   sprintf(str,"%.4g",gui->line->z0);
   gtk_entry_set_text( GTK_ENTRY(gui->text_z0), str );
@@ -917,14 +973,15 @@ static void tooltip_init(coax_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_len, "Physical length of line", NULL);
   gtk_tooltips_set_tip(tips, gui->text_er, "Dielectric relative permitivitty", NULL);
   gtk_tooltips_set_tip(tips, gui->text_tand, "Dielectric loss tangent", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_fc, "Breakdown field strength "
+  gtk_tooltips_set_tip(tips, gui->text_emax, "Breakdown field strength "
 		       "in the dielectric", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_tshield, "Thickenss of outer conductor", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length of line", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
   gtk_tooltips_set_tip(tips, gui->text_fc, "Cutoff frequency for"
 		       " TE11 mode", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rho_a, "Resistivity of inner conductor", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rho_b, "Resistivity of outer conductor", NULL);
 

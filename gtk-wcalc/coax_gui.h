@@ -1,4 +1,4 @@
-/* $Id: coax_gui.h,v 1.2 2001/11/03 02:16:18 dan Exp $ */
+/* $Id: coax_gui.h,v 1.1 2001/11/28 07:18:56 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -70,6 +70,7 @@ typedef struct COAX_GUI
    */
   GtkWidget *values_vbox;
   GtkWidget *text_a,*text_b,*text_c,*text_len,*text_er,*text_tand,*text_emax;
+  GtkWidget *text_tshield;
   GtkWidget *text_z0,*text_elen,*text_fc,*text_freq;
   GtkWidget *text_rho_a,*text_rho_b;
 

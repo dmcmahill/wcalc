@@ -1,4 +1,4 @@
-/* $Id: coax.h,v 1.1 2001/11/27 04:46:31 dan Exp $ */
+/* $Id: coax.h,v 1.2 2001/11/28 07:18:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -66,6 +66,9 @@ typedef struct COAX_LINE
   /* dielectric loss tangent */
   double tand;
 
+  /* dielectric breakdown field strength */
+  double emax;
+
   /* incremental circuit model, ({Henries,Ohms,Farads,Siemes}/Meter) */
   double L,R,C,G;
 
@@ -97,15 +100,16 @@ typedef struct COAX_LINE
    *   L_units="nH" and L_sf = 1e-9;
    */
   double a_sf,b_sf,c_sf,tshield_sf,len_sf,rho_a_sf,rho_b_sf;
+  double emax_sf;
   double L_sf,R_sf,C_sf,G_sf;
   double fc_sf,freq_sf;
   double delay_sf, loss_sf, losslen_sf;
   
   char *a_units,*b_units,*c_units,*tshield_units,*len_units,*rho_a_units,*rho_b_units;
+  char *emax_units;
   char *L_units,*R_units,*C_units,*G_units;
   char *fc_units,*freq_units;
   char *delay_units, *loss_units, *losslen_units;
-  
 
 } coax_line;
 
