@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.36 2001/10/30 23:51:44 dan Exp $
+dnl $Id: configure.in,v 1.37 2001/10/31 13:12:48 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -477,6 +477,7 @@ AC_SUBST(GTK_LIBS)
 
 AC_OUTPUT(
 	Makefile 
+	doc/Makefile
 	include/Makefile
 	libwcalc/Makefile
 	cgi-wcalc/Makefile

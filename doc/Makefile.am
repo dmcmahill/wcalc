@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.16 2001/10/31 13:12:49 dan Exp $
+## $Id$
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -33,15 +33,4 @@
 ##  SUCH DAMAGE.
 ##
 
-SUBDIRS = include libwcalc pixmaps @GTK_WCALC@ @CGI_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils doc
-DIST_SUBDIRS = include libwcalc pixmaps gtk-wcalc cgi-wcalc sci-wcalc mex-wcalc htdocs utils doc
-
-# XXX need to move the ps stuff
-EXTRA_DIST=	ltcf-c.sh \
-	ps_header.c \
-	ps_footer.c \
-	ps_microstrip.c \
-	AUTHORS \
-	README.newmodel \
-	README.win32 \
-	TODO
+EXTRA_DIST=	README.units
