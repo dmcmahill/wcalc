@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: alert.c,v 1.1 2001/09/27 21:35:43 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -157,6 +157,9 @@ void alert(const char *fmt,...)
 
   /* show it */
   gtk_widget_show (window);
+
+  /* and BEEEP */
+  gdk_beep();
 }
 
 
