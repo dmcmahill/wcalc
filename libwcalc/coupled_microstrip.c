@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.23 2004/08/31 21:38:18 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.24 2004/11/09 12:56:06 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -656,7 +656,7 @@ int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    
 
   /* warn the user if the loss calc is suspect. */
-  if(t < 3.0*depth)
+  if( t > 0.0 && t < 3.0*depth)
     {
       alert("Warning:  The metal thickness is less than\n"
 	    "three skin depths.  Use the loss results with\n"
@@ -671,6 +671,8 @@ int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
    * suspect, but I dont have time right now to come up
    * with a better result.
    */
+
+/* XXX need to turn on copper loss!!!!! */
 #ifdef notdef   
   if(depth <= t)
     {
@@ -682,8 +684,8 @@ int coupled_microstrip_calc(coupled_microstrip_line *line, double f)
       Ko = exp(-1.2*pow( (z0e0 + z0o0)/(2.0*FREESPACEZ0), 0.7));
 
 #ifdef DEBUG_CALC
-#endif
       printf("coupled_microstrip_calc():  Ko = %g\n",Ko);
+#endif
 
       /* skin resistance */
       Rs = 1.0 / (sigma * depth);
