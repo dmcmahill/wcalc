@@ -43,6 +43,7 @@ mkinstalldirs
 physconst.h
 print.c
 print.h
+ps_footer.c
 ps_header.c
 ps_microstrip.c
 start.c
