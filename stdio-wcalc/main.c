@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.13 2004/09/02 02:23:22 dan Exp $ */
+/* $Id: main.c,v 1.14 2004/09/02 21:27:46 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -79,6 +79,8 @@
 #include <dmalloc.h>
 #endif
 
+#define ERRMSG _("Error:  Calculation failed.  Please review any warnings.\n")
+
 /* local prototypes */
 static void exec_air_coil_calc(double *args);
 static void exec_coax_calc(double *args);
@@ -88,10 +90,10 @@ static void exec_microstrip_calc(double *args);
 static void exec_stripline_calc(double *args);
 
 static void exec_air_coil_syn(double *args);
+static void exec_coax_syn(double *args);
 
 /*
  * not implemented yet here
-static void exec_coax_syn(double *args);
 static void exec_coupled_microstrip_syn(double *args);
 static void exec_ic_microstrip_syn(double *args);
 static void exec_microstrip_syn(double *args);
@@ -138,7 +140,7 @@ int main(int argc, char **argv)
       version();
       exit(0);
     } else if( (strcmp(argv[i], "-v") == 0) ||
-	(strcmp(argv[i], "--verbose") == 0) ) {
+	       (strcmp(argv[i], "--verbose") == 0) ) {
       verbose = 1;
     } else if( argv[i][0] == '-') {
       printf("option \"%s\" is not understood\n",
@@ -220,6 +222,9 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "coax_calc") == 0) {
       narg = 10;
       fn = &exec_coax_calc;
+    } else if(strcmp(tok, "coax_syn") == 0) {
+      narg = 12;
+      fn = &exec_coax_syn;
     } else if(strcmp(tok, "coupled_microstrip_calc") == 0) {
       narg = 10;
       fn = &exec_coupled_microstrip_calc;
@@ -283,25 +288,28 @@ static void exec_air_coil_calc(double *args)
 {
   /* our air_coil for calculations */
   air_coil_coil *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = air_coil_new();
-  line->Nf    = args[0];
-  line->len   = args[1];
-  line->fill  = args[2];
-  line->AWGf  = args[3];
-  line->rho   = args[4];
-  line->dia   = args[5];
-  line->freq  = args[6];
-  line->use_fill  = (int) rint(args[7]);
+  line->Nf    = args[i++];
+  line->len   = args[i++];
+  line->fill  = args[i++];
+  line->AWGf  = args[i++];
+  line->rho   = args[i++];
+  line->dia   = args[i++];
+  line->freq  = args[i++];
+  line->use_fill  = (int) rint(args[i++]);
 
   /* run the calculation */
-  air_coil_calc(line, line->freq);
-  
-  /* print the outputs */
-  printf("%g %g %g %g %g %g\n", 
-	 line->L, line->Q, line->SRF,
-	 line->len, line->fill, line->Lmax);
+  if(  air_coil_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   line->L, line->Q, line->SRF,
+	   line->len, line->fill, line->Lmax);
+  }
 
   /* clean up */
   air_coil_free(line);
@@ -333,11 +341,13 @@ static void exec_air_coil_syn(double *args)
   flag        = (int) rint(args[i++]);
 
   /* run the calculation */
-  air_coil_syn(line, line->freq, flag);
-  
-  /* print the outputs */
-  printf("%g %g %g %g %g %g\n", 
-	 line->Nf, line->len, line->fill, line->Q, line->SRF, line->Lmax);
+  if( air_coil_syn(line, line->freq, flag) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   line->Nf, line->len, line->fill, line->Q, line->SRF, line->Lmax);
+  }
 
   /* clean up */
   air_coil_free(line);
@@ -353,28 +363,71 @@ static void exec_coax_calc(double *args)
 {
   /* our coax for calculations */
   coax_line *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = coax_new();
-  line->a        = args[0];
-  line->b        = args[1];
-  line->c        = args[2];
-  line->tshield  = args[3];
-  line->rho_a    = args[4];
-  line->rho_b    = args[5];
-  line->er       = args[6];
-  line->tand     = args[7];
-  line->len      = args[8];
-  line->freq     = args[9];
+  line->a        = args[i++];
+  line->b        = args[i++];
+  line->c        = args[i++];
+  line->tshield  = args[i++];
+  line->rho_a    = args[i++];
+  line->rho_b    = args[i++];
+  line->er       = args[i++];
+  line->tand     = args[i++];
+  line->len      = args[i++];
+  line->freq     = args[i++];
 
   /* run the calculation */
-  coax_calc(line, line->freq);
+  if( coax_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g %g %g %g\n", 
+	   line->z0, line->elen,
+	   line->loss,
+	   line->L, line->R, line->C, line->G);
+  }
+
+  /* clean up */
+  coax_free(line);
   
-  /* print the outputs */
-  printf("%g %g %g %g %g %g %g\n", 
-	 line->z0, line->elen,
-	 line->loss,
-	 line->L, line->R, line->C, line->G);
+  return;
+}
+
+/*
+ * [a,b,c,er,len,loss] = ...
+ *   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
+ */
+static void exec_coax_syn(double *args)
+{
+  /* our coax for calculations */
+  coax_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coax_new();
+  line->z0       = args[i++];
+  line->elen     = args[i++];
+  line->a        = args[i++];
+  line->b        = args[i++];
+  line->c        = args[i++];
+  line->tshield  = args[i++];
+  line->rho_a    = args[i++];
+  line->rho_b    = args[i++];
+  line->er       = args[i++];
+  line->tand     = args[i++];
+  line->freq     = args[i++];
+
+  /* run the calculation */
+  if( coax_syn(line, line->freq, args[i++]) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   line->a, line->b, line->c,
+	   line->er, line->len, line->loss);
+  }
 
   /* clean up */
   coax_free(line);
@@ -390,30 +443,34 @@ static void exec_coupled_microstrip_calc(double *args)
 {
   /* our coupled_microstrip for calculations */
   coupled_microstrip_line *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = coupled_microstrip_line_new();
-  line->w           = args[0];
-  line->s           = args[1];
-  line->subs->h     = args[2];
-  line->l           = args[3];
-  line->subs->tmet  = args[4];
-  line->subs->rho   = args[5];
-  line->subs->rough = args[6];
-  line->subs->er    = args[7];
-  line->subs->tand  = args[8];
-  line->freq        = args[9];
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
 
   /* run the calculation */
-  coupled_microstrip_calc(line, line->freq);
+  if( coupled_microstrip_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
   
-  /* print the outputs */
-  printf("%g %g %g %g %g %g %g %g %g %g\n", 
-	 line->z0, line->k,
-	 line->z0e, line->z0o, 
-	 line->kev, line->kodd,
-	 line->loss_ev, line->loss_odd, 
-	 line->deltale, line->deltalo);
+    /* print the outputs */
+    printf("%g %g %g %g %g %g %g %g %g %g\n", 
+	   line->z0, line->k,
+	   line->z0e, line->z0o, 
+	   line->kev, line->kodd,
+	   line->loss_ev, line->loss_odd, 
+	   line->deltale, line->deltalo);
+  }
 
   /* clean up */
   coupled_microstrip_line_free(line);
@@ -429,27 +486,30 @@ static void exec_ic_microstrip_calc(double *args)
 {
   /* our ic_microstrip for calculations */
   ic_microstrip_line *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = ic_microstrip_line_new();
-  line->w           = args[0];
-  line->l           = args[1];
-  line->subs->tox   = args[2];
-  line->subs->eox   = args[3];
-  line->subs->h     = args[4];
-  line->subs->es    = args[5];
-  line->subs->sigmas= args[6];
-  line->subs->tmet  = args[7];
-  line->subs->rho   = args[8];
-  line->subs->rough = args[9];
-  line->freq        = args[10];
+  line->w           = args[i++];
+  line->l           = args[i++];
+  line->subs->tox   = args[i++];
+  line->subs->eox   = args[i++];
+  line->subs->h     = args[i++];
+  line->subs->es    = args[i++];
+  line->subs->sigmas= args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->freq        = args[i++];
 
   /* run the calculation */
-  ic_microstrip_calc(line, line->freq);
-  
-  /* print the outputs */
-  printf("%g %g %g %g %g %g\n", line->Ro, line->Xo,
-	 line->Lmis, line->Rmis, line->Cmis, line->Gmis);
+  if( ic_microstrip_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", line->Ro, line->Xo,
+	   line->Lmis, line->Rmis, line->Cmis, line->Gmis);
+  }
 
   /* clean up */
   ic_microstrip_line_free(line);
@@ -465,25 +525,29 @@ static void exec_microstrip_calc(double *args)
 {
   /* our microstrip for calculations */
   microstrip_line *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = microstrip_line_new();
-  line->w           = args[0];
-  line->subs->h     = args[1];
-  line->l           = args[2];
-  line->subs->tmet  = args[3];
-  line->subs->rho   = args[4];
-  line->subs->rough = args[5];
-  line->subs->er    = args[6];
-  line->subs->tand  = args[7];
-  line->freq        = args[8];
+  line->w           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
 
   /* run the calculation */
-  microstrip_calc(line, line->freq);
+  if( microstrip_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
   
-  /* print the outputs */
-  printf("%g %g %g %g\n", line->z0, line->keff,
-	 line->loss, line->deltal);
+    /* print the outputs */
+    printf("%g %g %g %g\n", line->z0, line->keff,
+	   line->loss, line->deltal);
+  }
 
   /* clean up */
   microstrip_line_free(line);
@@ -499,24 +563,27 @@ static void exec_stripline_calc(double *args)
 {
   /* our stripline for calculations */
   stripline_line *line;
+  int i = 0;
 
   /* create the line and fill in the parameters */
   line = stripline_line_new();
-  line->w           = args[0];
-  line->subs->h     = args[1];
-  line->l           = args[2];
-  line->subs->tmet  = args[3];
-  line->subs->rho   = args[4];
-  line->subs->rough = args[5];
-  line->subs->er    = args[6];
-  line->subs->tand  = args[7];
-  line->freq        = args[8];
+  line->w           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
 
   /* run the calculation */
-  stripline_calc(line, line->freq);
-  
-  /* print the outputs */
-  printf("%g %g %g\n", line->z0, line->loss, line->deltal);
+  if( stripline_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g\n", line->z0, line->loss, line->deltal);
+  }
 
   /* clean up */
   stripline_line_free(line);
@@ -533,3 +600,5 @@ static void exec_version(double *args)
 
   return;
 }
+
+
