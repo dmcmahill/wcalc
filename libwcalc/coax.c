@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.9 2002/01/14 22:00:54 dan Exp $ */
+/* $Id: coax.c,v 1.10 2002/01/14 22:03:06 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -296,8 +296,16 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 	   line->fc);
 #endif
     i=0;
-    while ( (fabs(err/k) > 5*DBL_EPSILON) && (i < 10) ){
+    while ( (fabs(err/k) > 5*DBL_EPSILON) && 
+	    (k != kold) &&
+	    (i < 10)  ){
+
       ddk = (err - errold)/(k - kold);
+      
+      /* avoid divide by zero */
+      if (ddk == 0.0)
+	break;
+
       kold = k;
       errold = err;
       k = k - err/ddk;
