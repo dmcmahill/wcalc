@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.9 2002/05/10 22:51:18 dan Exp $ */
+/* $Id: coax_gui.c,v 1.10 2002/06/12 11:30:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -680,7 +680,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
 
   text = wc_composite_units_menu_new(gui->L_units,WC_WCALC(gui),
-				     L_units_changed);
+				     wc_composite_units_menu_changed);
   gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
@@ -823,7 +823,7 @@ static void L_units_changed( GtkWidget *w, gpointer data)
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("L_units_changed():  gui  =%p\n",gui);
   g_print("L_units_changed():  which=%d\n",which);
@@ -859,7 +859,7 @@ static void R_units_changed( GtkWidget *w, gpointer data)
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("R_units_changed():  gui  =%p\n",gui);
   g_print("R_units_changed():  which=%d\n",which);
@@ -873,7 +873,7 @@ static void C_units_changed( GtkWidget *w, gpointer data)
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("C_units_changed():  gui  =%p\n",gui);
   g_print("C_units_changed():  which=%d\n",which);
@@ -887,7 +887,7 @@ static void G_units_changed( GtkWidget *w, gpointer data)
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("G_units_changed():  gui  =%p\n",gui);
   g_print("G_units_changed():  which=%d\n",which);
@@ -902,7 +902,7 @@ static void abct_units_changed( GtkWidget *w, gpointer data)
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("abct_units_changed():  gui  =%p\n",gui);
   g_print("abct_units_changed():  which=%d\n",which);
@@ -936,7 +936,7 @@ static void len_units_changed( GtkWidget *w, gpointer data )
 
   gui=WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("len_units_changed():  gui  =%p\n",gui);
   g_print("len_units_changed():  which=%d\n",which);
@@ -960,7 +960,7 @@ static void freq_units_changed( GtkWidget *w, gpointer data )
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("freq_units_changed():  gui  =%p\n",gui);
   g_print("freq_units_changed():  which=%d\n",which);
@@ -987,7 +987,7 @@ static void rho_units_ohm_changed( GtkWidget *w, gpointer data )
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("rho_units_ohm_changed():  gui  =%p\n",gui);
   g_print("rho_units_ohm_changed():  which=%d\n",which);
@@ -1015,7 +1015,7 @@ static void rho_units_m_changed( GtkWidget *w, gpointer data )
 
   gui = WC_COAX_GUI(data);
 
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
 #ifdef DEBUG
   g_print("rho_units_m_changed():  gui  =%p\n",gui);
   g_print("rho_units_m_changed():  which=%d\n",which);

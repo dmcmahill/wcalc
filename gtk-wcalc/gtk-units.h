@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.2 2002/02/21 02:09:48 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.3 2002/06/12 11:30:13 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -49,7 +49,7 @@
 #include "misc.h"
 #include "wcalc.h"
 
-typedef struct WC_UNITS_GUI
+typedef struct _WC_UNITS_GUI
 {
   /* the composite units */
   composite_units_data *units;
@@ -75,8 +75,9 @@ typedef struct WC_UNITS_GUI
   GList *menu_num, *menu_den;
 
 } wc_units_gui;
+#define WC_UNITS_GUI(x)      ((wc_units_gui *) (x))
 
-typedef struct WC_LABEL_UNITS
+typedef struct _WC_LABEL_UNITS
 {
   wc_units_gui *units_gui;
   GtkWidget *label;
@@ -85,6 +86,15 @@ typedef struct WC_LABEL_UNITS
 
 } wc_label_units;
 
+typedef struct _WC_UNITS_MENU_DATA
+{
+  /* Index into the units array indicating if this is, for example,
+   *   nH, uH, mH, etc.
+   */
+  int ind;
+
+} wc_units_menu_data;
+#define WC_UNITS_MENU_DATA(x)      ((wc_units_menu_data *) (x))
 
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
@@ -98,5 +108,11 @@ void  set_sf_menu(GtkWidget *menu,
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
 				       void (*callback)(GtkWidget *, gpointer));
+
+wc_label_units *wc_label_units_new(const composite_units_data *units, 
+				   Wcalc *gui,
+				   void (*callback)(GtkWidget *, gpointer));
+
+void wc_composite_units_menu_changed( GtkWidget *w, gpointer data);
 
 #endif /* __GTK_UNITS_H__ */

@@ -1,4 +1,4 @@
-/* $Id: gtk-units.c,v 1.3 2002/05/10 22:52:40 dan Exp $ */
+/* $Id: gtk-units.c,v 1.4 2002/06/12 11:30:13 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -60,6 +60,9 @@
 #include <dmalloc.h>
 #endif
 
+
+static wc_units_menu_data *units_menu_data_new(int ind);
+
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
 				       void (*callback)(GtkWidget *, gpointer))
@@ -80,6 +83,9 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
   ug->menu_den=NULL;
 
   hbox = gtk_hbox_new(FALSE,0);
+#ifdef DEBUG
+      g_print("wc_composite_units_menu_new():  created hbox = %p\n",hbox);
+#endif
 
   /* the numerator */
   if (units->nnum == 0) {
@@ -88,12 +94,16 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
   }
   else {
     for (i=0; i<units->nnum; i++) {
-      item = units_menu_new(units->num[i],0,gui,callback);
+      /* item = units_menu_new(units->num[i],0,gui,callback); */
+      item = units_menu_new(units->num[i],0,ug,callback);
 
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
       /* add to our list of numerator menus */
       g_list_append(ug->menu_num,item);
+#ifdef DEBUG
+      g_print("wc_composite_units_menu_new():  added numerator item[%d] = %p\n",i,item);
+#endif
       
       if (i < (units->nnum - 1)) {
 	item = gtk_label_new("-");
@@ -105,14 +115,16 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
   if (units->nden > 0) {
       item = gtk_label_new("/");
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-
-      /* add to our list of denominator menus */
-      g_list_append(ug->menu_den,item);
       
       for (i=0; i<units->nden; i++) {
-	item = units_menu_new(units->den[i],0,gui,callback);
+	/* item = units_menu_new(units->den[i],0,gui,callback); */
+	item = units_menu_new(units->den[i],0,ug,callback);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-	
+	/* add to our list of denominator menus */
+	g_list_append(ug->menu_den,item);
+#ifdef DEBUG
+	g_print("wc_composite_units_menu_new():  added denominator item[%d] = %p\n",i,item);
+#endif
 	if (i < (units->nden - 1)) {
 	  item = gtk_label_new("-");
 	  gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
@@ -126,17 +138,26 @@ GtkWidget *wc_composite_units_menu_new(const composite_units_data *units,
 }
 
 
-static void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
+void wc_composite_units_menu_changed( GtkWidget *w, gpointer data)
 {
   int which;
-  //  coax_gui *gui;
+  wc_units_gui *ug;
 
-  // gui = WC_COAX_GUI(data);
-  //g_list_nth_data(ug->menu_num,action);
-
-  which = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(w)));
 #ifdef DEBUG
-  g_print("wc_composite_units_menu_changed():  \n");
+  char *ustr;
+  double sf;
+#endif
+
+  ug = (wc_units_gui *) data;
+  /* gui = WC_COAX_GUI(data);
+     g_list_nth_data(ug->menu_num,action); */
+
+  which = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)))->ind;
+#ifdef DEBUG
+  g_print("wc_composite_units_menu_changed():  ug->units      = %p\n",ug->units);
+  units_update(ug->units,&sf,&ustr);
+  g_print("wc_composite_units_menu_changed():      units string = \"%s\", scale factor = %g\n",
+	  ustr,sf);
 #endif
 
 }
@@ -162,6 +183,20 @@ static void wc_composite_units_menu_update( coax_gui *gui,int which)
 }
 #endif
 
+static wc_units_menu_data *wc_units_menu_data_new(int ind)
+{
+  wc_units_menu_data *data;
+
+  if ( (data = (wc_units_menu_data *) malloc(sizeof(wc_units_menu_data))) == NULL) {
+    fprintf(stderr,"wc_units_menu_data():  malloc() failed\n");
+    exit(1);
+  }
+
+  data->ind = ind;
+
+  return data;
+}
+
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
 			  Wcalc *gui,
@@ -170,18 +205,30 @@ GtkWidget *units_menu_new(const units_data *units,
   GtkWidget *opt_menu;
   GtkWidget *menu;
   GtkWidget *item;
+  wc_units_menu_data *data;
+
   int i;
 
   opt_menu = gtk_option_menu_new();
   menu = gtk_menu_new();
 
+#ifdef DEBUG
+  g_print("units_menu_new():  opt_menu = %p\n",opt_menu);
+  g_print("units_menu_new():  menu     = %p\n",menu);
+#endif
+
   i=0;
   while (units[i].name != NULL) {
     item = gtk_menu_item_new_with_label(units[i].name);
+#ifdef DEBUG
+    /*    g_print("units_menu_new():  item[%d] = %p\n",i,item); */
+#endif
     gtk_signal_connect(GTK_OBJECT(item), "activate",
 		       GTK_SIGNAL_FUNC(callback), 
 		       (gpointer) gui);
-    gtk_object_set_user_data(GTK_OBJECT(item),GINT_TO_POINTER(i));
+    data = wc_units_menu_data_new(i);
+    gtk_object_set_user_data(GTK_OBJECT(item),(gpointer *) data);
+    /* `menu' becomes the parent of each `item' */
     gtk_menu_append(GTK_MENU(menu), item);
     gtk_widget_show(item);
 
