@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.30 2004/09/08 22:39:44 dan Exp $
+## $Id: Makefile.am,v 1.31 2004/09/21 01:57:23 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -71,10 +71,12 @@ SCIHTML=	${SCIMANS:.man=.htm}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
 
-DISTCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
+MAINTAINERCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm
+CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
-	${RUN_TESTS} ${TEST_FILES} ${TEST_REF}
+	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
+	whatis whatis.htm ${SCICATS} ${SCIHTML}
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
 
