@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.5 2001/11/25 16:33:31 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.6 2001/11/28 07:18:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -473,7 +473,7 @@ int fspec_read_file(fspec *list,FILE *fp,unsigned long base)
 	tok[i] = tolower(tok[i]);
       }
 #ifdef DEBUG
-	    printf("fspec_read_file():  tok = \"%s\", length=%ld\n",tok,strlen(tok));
+	    printf("fspec_read_file():  tok = \"%s\", length=%ld\n",tok,(long int) strlen(tok));
 #endif
       /* skip comment lines */
       if ( (tok[0] != '#') &&
