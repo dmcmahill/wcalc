@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.9 2004/08/05 13:20:13 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.10 2004/08/30 22:59:19 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -592,7 +592,7 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
   wc_units_attach_label(ug, gui->label_losslen, &(gui->line->losslen),
 			NULL, NULL, WC_FMT_G, 1);
 
-  /* ---------------- metal skin depth -------------- */
+  /* ---------------- metal depth -------------- */
   text = gtk_label_new( "Metal Skin Depth" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 
 		   0, 0, WC_XPAD, WC_YPAD);
@@ -1028,6 +1028,10 @@ static void update_display(ic_microstrip_gui *gui)
   sprintf(str, WC_FMT_G, gui->line->subs_skindepth/gui->line->units_lwht->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_subs_depth), str );
     
+  /* ---------------- Keff -------------- */
+  sprintf(str, WC_FMT_G, gui->line->keff);
+  gtk_label_set_text( GTK_LABEL(gui->label_keff), str );
+    
   /* ---------------- L -------------- */
   sprintf(str, WC_FMT_G, gui->line->Lmis/gui->line->units_L->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Lmis), str );
@@ -1158,6 +1162,8 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->subs_skindepth/gui->line->units_depth->sf, gui->line->units_depth->name);
   fprintf(fp,"(metal skin) show newlineclose (  depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->met_skindepth/gui->line->units_depth->sf, gui->line->units_depth->name);
+  fprintf(fp,"(Keff) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
+	  gui->line->keff);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->Lmis/gui->line->units_L->sf, gui->line->units_L->name);
