@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.6 2004/09/09 12:47:07 dan Exp $
+## $Id: Makefile.am,v 1.7 2004/11/12 02:14:21 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -76,7 +76,7 @@ runoctave:	$(srcdir)/runoctave.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runoctave.in copyright.m
+EXTRA_DIST=	runoctave.in copyright.m alert.c
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man
