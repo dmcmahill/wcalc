@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.1 2001/02/17 16:56:34 dan Exp $
+$Id: README.newmodel,v 1.2 2001/09/12 23:55:38 dan Exp $
 
 WARNING:  This is not finished yet....  But it needs to be so I can
 have a cleaner way to add new models.
@@ -28,5 +28,19 @@ The microstrip_gui.{c,h} should define an object of type
 ->analyze(void)		performs an analysis
 ->synthesize(void)	performs a synthesis
 ->display(void)		updates the display
+->print(void)		generates postscript for the printout
 
 
+
+Integration into the program
+----------------------------
+menus.c			Add a new entry under the file->new menu defined in
+			static GtkItemFactoryEntry menu_items[];
+
+start.c			Add a new entry to the combo_model widget.  This consists
+			of adding a line to start_popup() like:
+	
+				glist = g_list_append(glist,"Microstrip");
+
+			and editing the callback for the combo_model to call the
+			appropriate model_gui
