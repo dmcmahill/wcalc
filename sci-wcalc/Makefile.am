@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2001/10/23 03:35:49 dan Exp $
+## $Id: Makefile.am,v 1.9 2001/10/24 01:23:35 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -54,7 +54,7 @@ INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I@SCI@/routines -Dm
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 
-EXTRA_DIST= mex.mk ${SCIMANS}
+EXTRA_DIST= mex.mk sciman.mk ${SCIMANS}
 
 BUILT_SOURCES= libsci_wcalc.c load_wcalc.sce test_wcalc.sce whatis ${SCICATS}
 
