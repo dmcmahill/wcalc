@@ -1,4 +1,4 @@
-/* $Id: cookie.c,v 1.3 2002/05/10 22:52:30 dan Exp $ */
+/* $Id: cookie.c,v 1.4 2004/07/23 22:11:53 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -38,8 +38,9 @@ extern int cgiHexValue[256];
 /* The first form entry. */
 cgiCookieEntry *cgiCookieEntryFirst;
 
+/*
 static int cgiStrEqNc(char *s1, char *s2);
-
+*/
 
 typedef enum {
   cgiEscapeRest,
@@ -136,7 +137,6 @@ cgiParseResultType cgiParseCookieInput(void)
   return cgiParseSuccess;
 }
 
-extern int cgiHexValue[256];
 
 cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len) {
   char *s;
@@ -500,10 +500,11 @@ static void cgiCookieEscape(FILE *fp,char *str)
     
   }
 }
- 
+
+#ifdef notdef
 static void cgiCookieUnEscape(char *str) {
   long int i;
-  char tmp[3];
+  int tmp[3];
   char ch;
 
   tmp[2] = '\0';
@@ -527,7 +528,8 @@ static void cgiCookieUnEscape(char *str) {
     
   }
 }
- 
+#endif
+
 void cgiHeaderSetCookie(cgiCookieType *cookie) 
 {
 
@@ -558,7 +560,7 @@ void cgiHeaderSetCookie(cgiCookieType *cookie)
   fprintf(cgiOut,"%c",10);
 }
 
-
+#ifdef notdef
 static int cgiStrEqNc(char *s1, char *s2) 
 {
   while(1) {
@@ -582,8 +584,9 @@ static int cgiStrEqNc(char *s1, char *s2)
     s2++;
   }
 }
+#endif
 
-static char *cgiFindTarget = 0;
+static const char *cgiFindTarget = 0;
 static cgiCookieEntry *cgiFindPos = 0;
 
 static cgiCookieEntry *cgiCookieEntryFindFirst(const char *name) {
