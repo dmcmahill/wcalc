@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.10 2004/07/30 22:32:57 dan Exp $ */
+/* $Id: units.c,v 1.11 2004/08/04 23:47:29 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -32,6 +32,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+/* #define DEBUG */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -307,6 +309,10 @@ int wc_savestr_to_units( const char *str,  wc_units *units )
   size_t len;
   int i, j;
 
+#ifdef DEBUG
+  printf("wc_savestr_to_units(\"%s\", %p)\n", str, units);
+#endif
+
   /* do a quick sanity check of the string */
   len = 0;
   for(i = 0 ; i < strlen(str) ; i++) {
@@ -319,6 +325,10 @@ int wc_savestr_to_units( const char *str,  wc_units *units )
     }
   }
 
+#ifdef DEBUG
+  printf("wc_savestr_to_units():  nnum = %d, nden = %d\n", 
+		units->nnum, units->nden);
+#endif
   if (len != units->nnum + units->nden - 1) {
     alert("wc_savestr_to_units():  Found %d indices in \"%s\""
 	  "but I needed %d.\n", len + 1,

@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.20 2004/07/28 03:28:43 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.21 2004/08/31 21:38:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -423,7 +423,9 @@ int fspec_write_file(fspec *list,FILE *fp,unsigned long base)
 	case 'u':
 	  /* now write out the savestring for the units */
 	  tmps = wc_units_to_savestr( *((wc_units **) addr));
+#ifdef DEBUG
 	  printf("fspec_write_file():  saving units string \"%s\"\n", tmps);
+#endif
 	  fprintf(fp, "%s", tmps);
 	  free(tmps);
 

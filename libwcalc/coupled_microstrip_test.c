@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_test.c,v 1.4 2004/07/31 06:04:25 dan Exp $ */
+/* $Id: coupled_microstrip_test.c,v 1.5 2004/08/02 21:03:00 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2003, 2004 Dan McMahill
@@ -69,7 +69,10 @@ int main(int argc, char **argv)
 
   coupled_microstrip_line *line;
 
+  printf("couple_microstrip_test():  Calling coupled_microstrip_line_new\n");
   line = coupled_microstrip_line_new();
+
+  printf("couple_microstrip_test():  Calling wc_savestr_to_units\n");
   wc_savestr_to_units("5", line->units_lwst);
 
   sf = 1.0;
