@@ -1,0 +1,19 @@
+<!-- $Id: man_end.incl,v 1.1 2001/10/28 22:50:26 dan Exp $ -->
+    
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

@@ -1,6 +1,6 @@
-## $Id: Makefile.am,v 1.10 2001/10/29 11:57:37 dan Exp $
-##
+## $Id: Makefile.am,v 1.4 2001/10/29 11:57:38 dan Exp $
 
+##
 ## Copyright (c) 2001 Dan McMahill
 ## All rights reserved.
 ##
@@ -33,57 +33,68 @@
 ##  SUCH DAMAGE.
 ##
 
-# Note, we let the user pick some arbitrary directory for the PNG files
-# because we simply don't know how the user will organize their web server.
-# For example, someone might install this in their personal public_html
-# directory and need to look for images in ~randomuser/images, or perhaps
-# this is installed by the webadmin under /wcalc.
+vpath %.man $(top_srcdir)/sci-wcalc
 
-SUBDIRS=	sci-man  mex-man
+include $(top_srcdir)/sci-wcalc/mex.mk
+#MEX_SRCS=air_coil_calc.c
 
 pkgimgdatadir= @HTMLDIR@
-pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
+pkgimgdata_DATA= ${SCIMANHTML}
 
 # the include= is a ':' seperated search path for SSI directives
-SHTML_INCLUDE_PATH= $(srcdir)
+SHTML_INCLUDE_PATH= $(srcdir):$(top_srcdir)/htdocs
 
-SHTML_IN=	\
-	about.shtml \
-	air_coil.shtml \
-	cgi-wcalc.shtml \
-	coupled_microstrip.shtml \
-	gtk-wcalc.shtml \
-	ic_microstrip.shtml \
-	index.shtml \
-	mex-wcalc.shtml \
-	microstrip.shtml \
-	obtaining.shtml \
-	projects.shtml \
-	sci-wcalc.shtml \
-	screenshots.shtml \
-	stripline.shtml
+SCIMANSHTML=	${MEX_SRCS:.c=.shtml}
+SCIMANHTML=	${MEX_SRCS:.c=.html}
+SCIMANS=	${MEX_SRCS:.c=.man}
+SCICATS=	${SCIMANS:.man=.cat}
 
-INCL_FILES=\
-	left_column.incl \
-	main_footer.incl \
-	page_start.incl
-
-HTML_OUT=	${SHTML_IN:.shtml=.html}
-
-PNGS=\
-	screen1.png \
-	screen2.png
+all-local:	whatis.incl
 
 clean-local:	
-	-rm ${HTML_OUT}
+	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl
 
-EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} shtml.mk
 
-# add the dependency on the .incl files
-${HTML_OUT} : ${INCL_FILES}
+BUILT_SOURCES= left_column.incl main_footer.incl
+EXTRA_DIST=	man_start.incl man_end.incl
 
-CGIPATH=	@CGIPATH@
+CP_INCL=	sed -e 's;a href=";a href="../;g' \
+		    -e 's;img src=";img src="../;g' 
 
-SUFFIXES= 
-include $(srcdir)/shtml.mk
+left_column.incl: $(srcdir)/../left_column.incl
+	$(CP_INCL) $< > $@
 
+main_footer.incl: $(srcdir)/../main_footer.incl
+	$(CP_INCL) $< > $@
+
+whatis.incl: ${SCIMANS} Makefile
+	@echo "****************************************************"
+	@echo "Generating the HTML whatis table"
+	@echo "****************************************************"
+	rm -f $@
+	for man in ${SCIMANS} ; do \
+	${AWK} 'BEGIN{s=0;} \
+		/^\.SH/ {s=0}; \
+		s==1{ \
+			printf("<tr><td><a href=\"mex-man/%s.html\">%s</a></td><td>",$$1,$$1); \
+			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
+			printf("</td></tr>\n"); \
+		} \
+		/^\.SH[ \t]*NAME/ {s=1}' $(top_srcdir)/sci-wcalc/$$man | sort >> $@ ; \
+	done
+
+SUFFIXES=	.shtml .html .cat
+
+.cat.shtml :
+	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
+	echo "<pre>" >> $@
+	cat $< | col -b | \
+		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
+			cnt==0{print  $$0} \
+			cnt > 0{cnt--}' | \
+		sed 's;//;%;g' >> $@
+	echo "</pre>" >> $@
+	cat $(srcdir)/man_end.incl >> $@
+
+include $(top_srcdir)/sci-wcalc/sciman.mk
+include $(top_srcdir)/htdocs/shtml.mk
