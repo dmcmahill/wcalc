@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.4 2001/09/15 14:43:55 dan Exp $ */
+/* $Id: menus.c,v 1.5 2001/09/15 23:56:38 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -41,12 +41,14 @@
 #include "print.h"
 #include "wcalc.h"
 
-extern void wcalc_setup (void);
+extern void   wcalc_setup (void);
 /*static void window_close(GtkWidget *widget,
 			 GdkEventAny *event,
 			 gpointer data);
 */
-static void window_close(Wcalc *wcalc);
+static void window_close (gpointer data,
+			     guint action,
+			     GtkWidget *widget);
 
 
 /* This is the GtkItemFactoryEntry structure used to generate new menus.
@@ -128,13 +130,25 @@ void get_main_menu( Wcalc *wcalc,
   }
 }
 
-#define DEBUG
-static void window_close(Wcalc *wcalc)
+
+static void  window_close (gpointer data,
+			   guint action,
+			   GtkWidget *widget)
 {
+  GtkWidget *window;
+
+  window = ( (Wcalc *) data)->window;
+
 #ifdef DEBUG
-  printf("window_close():  Called with input pointer %p\n",wcalc);
-  printf("window_close():  I will destroy window %p\n",wcalc->window);
+  printf("window_close():  Called with input pointer %p\n",(void *) data);
+  printf("window_close():  I will destroy window %p\n",window);
 #endif
+
+  /* unmake it modal */
+  //  gtk_grab_remove(window);
+
   /* blow away the window */
-  gtk_widget_destroy(wcalc->window);
+  gtk_widget_destroy(window);
+
 }
+

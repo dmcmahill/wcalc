@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.6 2001/09/15 14:43:56 dan Exp $ */
+/* $Id: wcalc.c,v 1.7 2001/09/15 23:56:39 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+//#define DEBUG
 
 #include <gtk/gtk.h>
 
@@ -80,19 +80,8 @@ static void cb_punits_menu_select( GtkWidget *item,
  * globals (yuck!)
  */
 
-//GtkWidget *text_freq;
-//GtkWidget *wcalc->label_keff,*label_loss,*wcalc->label_losslen,*wcalc->label_skindepth;
-//GtkWidget *wcalc->text_W,*wcalc->text_L,*wcalc->text_Z0,*wcalc->text_elen;
-//GtkWidget *wcalc->text_H,*wcalc->text_er,*wcalc->text_rho,*wcalc->text_rough,*wcalc->text_tmet,*wcalc->text_tand;
 
-//GtkWidget *wcalc->text_status;
-
-//GtkWidget *wcalc->combo_funits;
-//GtkWidget *wcalc->combo_punits;
-//GtkWidget *wcalc->combo_model;
-
-
-//GList *phys_units_text;
+static GSList *window_list=NULL;
 
 
 #define ENTRYLENGTH  8
@@ -151,7 +140,14 @@ void delete_event( GtkWidget *widget,
                    GdkEvent  *event,
 		   gpointer   data )
 {
-  gtk_main_quit ();
+  GtkWidget *window;
+
+  window = ( (Wcalc *) data)->window;
+  window_list = g_slist_remove(window_list,window);
+  
+  /* if this was the last window, then quit */
+  if (g_slist_length(window_list) == 0)
+    gtk_main_quit ();
 }
 
 void destroy (GtkWidget *widget, gpointer data)
@@ -192,6 +188,10 @@ void wcalc_setup (void)
 
   /* Create a new window */
   wcalc->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+  /* add this window to our global list */
+  window_list = g_slist_append(window_list, wcalc->window);
+
   //  wcalc->window = gtk_window_new (GTK_WINDOW_DIALOG);
 #ifdef DEBUG
   printf("wcalc_setup():  Just set wcalc->window = %p\n",wcalc->window);
@@ -215,13 +215,19 @@ void wcalc_setup (void)
 
 
   /* Setup main window callbacks */
+  /* XXX probably need some sort of better way to catch this.
+     in fact, i probably need to keep a global list of windows
+     and have this event take windows out of the global list
+     then quit when they're all gone....  yep.  otherwise 
+     we never exit the program....
+  */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
-		      GTK_SIGNAL_FUNC (delete_event), NULL);
+		      GTK_SIGNAL_FUNC (delete_event),
+		      wcalc);
   
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy", 
-		      GTK_SIGNAL_FUNC (gtk_main_quit), 
-		      "WM destroy");
-
+		      GTK_SIGNAL_FUNC (delete_event), 
+		      wcalc);
 
 
   /*create the main vbox */
@@ -986,16 +992,7 @@ static GtkWidget *make_menu_item( gchar *name,
 static Wcalc *Wcalc_new(void)
 {
   Wcalc *new;
-#ifdef notdef 
-  static int flag=0;
 
-  if (flag)
-    {
-      fprintf(stderr,"Wcalc_new():  This routine may only be used once\n");
-      fprintf(stderr,"              in the program.\n\n");
-      exit(1);
-    }
-#endif
   new = (Wcalc *) malloc(sizeof(Wcalc));
   if (new == NULL)
     {
