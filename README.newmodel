@@ -1,4 +1,4 @@
-$Id$
+$Id: README.newmodel,v 1.1 2001/02/17 16:56:34 dan Exp $
 
 WARNING:  This is not finished yet....  But it needs to be so I can
 have a cleaner way to add new models.
@@ -7,7 +7,7 @@ have a cleaner way to add new models.
 This file tries to document the procedure for adding a new model
 to the program.
 
-Each structure should have two files.  We will use microstrip as
+Each structure should have three files.  We will use microstrip as
 the example.
 
 microstrip.c	 =  GUI independent file which contains all of the
@@ -15,6 +15,9 @@ microstrip.c	 =  GUI independent file which contains all of the
 
 microstrip_gui.c =  file which contains the methods to interface the
 		    main program to the microstrip calculations.
+
+microstrip_loadsave.c =  file which contains the function to load/save
+			 microstrip data from/to files.
 
 
 The microstrip_gui.{c,h} should define an object of type

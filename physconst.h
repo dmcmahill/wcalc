@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: physconst.h,v 1.1 2001/02/11 19:26:27 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -45,6 +45,9 @@
 #define MIL2MICRON(x)  (x*25.4)
 #define MICRON2MIL(x)  (x/25.4)
 
+#define MIL2UM(x)  (x*25.4)
+#define UM2MIL(x)  (x/25.4)
+
 #define MIL2MM(x)  (x*25.4e-3)
 #define MM2MIL(x)  (x/25.4e-3)
 
@@ -53,6 +56,12 @@
 
 #define MIL2M(x)  (x*25.4e-6)
 #define M2MIL(x)  (x/25.4e-6)
+
+#define MILSTR   "mil"
+#define UMSTR    "um "
+#define MMSTR    "mm "
+#define CMSTR    "cm "
+#define MSTR     "m  "
 
 #endif /*__PHYSCONST_H__*/
 

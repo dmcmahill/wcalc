@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.2 2001/02/12 18:00:45 dan Exp $ */
+/* $Id: wcalc.c,v 1.3 2001/02/17 16:56:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -88,7 +88,10 @@ GtkWidget *combo_punits;
 GtkWidget *combo_model;
 
 
+GList *phys_units_text;
 
+
+#define ENTRYLENGTH  8
 
 static gint button_press (GtkWidget *widget, GdkEvent *event)
 {
@@ -247,6 +250,7 @@ void wcalc_setup (void)
   gtk_widget_show (substrate_vbox);
   gtk_widget_show (picture_vbox);
 
+  phys_units_text = NULL;
 
   units_init(units_vbox);
   values_init(values_vbox);
@@ -297,7 +301,7 @@ static void units_init(GtkWidget *parent)
   gtk_widget_show(text);
 
 
-  text_freq = gtk_entry_new_with_max_length( 6 );
+  text_freq = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_box_pack_start (GTK_BOX (my_hbox), text_freq, FALSE, FALSE, 0);
   gtk_widget_set_usize(GTK_WIDGET(text_freq),60,0);
   gtk_widget_show(text_freq);
@@ -367,10 +371,17 @@ static void units_init(GtkWidget *parent)
 #else
 
 
-  glist2 = g_list_append(glist2,"mil");
-  //glist2 = g_list_append(glist2,"micron");
-  //glist2 = g_list_append(glist2,"mm");
-  //glist2 = g_list_append(glist2,"cm");
+  /* 
+   * Note, these strings are the same length so the window layout
+   * won't change as we select different physical units.
+   */
+
+  glist2 = NULL;
+  glist2 = g_list_append(glist2,MILSTR);
+  glist2 = g_list_append(glist2,UMSTR);
+  glist2 = g_list_append(glist2,MMSTR);
+  glist2 = g_list_append(glist2,CMSTR);
+  glist2 = g_list_append(glist2,MSTR);
 
 
   combo_punits =  gtk_combo_new();
@@ -380,7 +391,7 @@ static void units_init(GtkWidget *parent)
   gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo_punits)->entry), FALSE);
   gtk_widget_set_usize(GTK_WIDGET( combo_punits),100,0);
   gtk_signal_connect (GTK_OBJECT (GTK_COMBO(combo_punits)->entry), "changed",
-		      GTK_SIGNAL_FUNC (cb_punits_menu_select), NULL);
+		      GTK_SIGNAL_FUNC (cb_punits_menu_select), GTK_ENTRY(GTK_COMBO(combo_punits)->entry));
   gtk_widget_show( combo_punits );
   
 
@@ -440,12 +451,17 @@ static void values_init(GtkWidget *parent)
   text = gtk_label_new( "Length" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 1, 2);
   gtk_widget_show(text);
-  text = gtk_label_new( "mils" );
+
+  text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 2, 3, 0, 1);
   gtk_widget_show(text);
-  text = gtk_label_new( "mils" );
+  phys_units_text = g_list_append(phys_units_text, text);
+
+  text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 2, 3, 1, 2);
   gtk_widget_show(text);
+  phys_units_text = g_list_append(phys_units_text, text);
+
   text = gtk_label_new( "Z0" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 4, 5, 0, 1);
   gtk_widget_show(text);
@@ -460,7 +476,7 @@ static void values_init(GtkWidget *parent)
   gtk_widget_show(text);
   
 #define WIDTH 60
-  text_W = gtk_entry_new_with_max_length( 6 );
+  text_W = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_entry_set_text(GTK_ENTRY(text_W),"      ");
   gtk_table_attach (GTK_TABLE(table), text_W, 1, 2, 0, 1,0,0,0,0);
   gtk_widget_set_usize(GTK_WIDGET(text_W),WIDTH,0);
@@ -468,21 +484,21 @@ static void values_init(GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), NULL);
   gtk_widget_show(text_W);
 
-  text_L = gtk_entry_new_with_max_length( 6 );
+  text_L = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), text_L, 1, 2, 1, 2,0,0,0,0);
   gtk_widget_set_usize(GTK_WIDGET(text_L),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_L), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), NULL);
   gtk_widget_show(text_L);
 
-  text_Z0 = gtk_entry_new_with_max_length( 6 );
+  text_Z0 = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_Z0, 5, 6, 0, 1);
   gtk_widget_set_usize(GTK_WIDGET(text_Z0),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_Z0), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), NULL);
   gtk_widget_show(text_Z0);
 
-  text_elen = gtk_entry_new_with_max_length( 6 );
+  text_elen = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_elen, 5, 6, 1, 2);
   gtk_widget_set_usize(GTK_WIDGET(text_elen),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_elen), "changed",
@@ -536,9 +552,10 @@ static void outputs_init(GtkWidget *parent)
   text = gtk_label_new( "Skin Depth" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 0, 1);
   gtk_widget_show(text);
-  text = gtk_label_new( "mil" );
+  text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,0,1);
   gtk_widget_show(text);
+  phys_units_text = g_list_append(phys_units_text, text);
 
 #define OUTPUT_TEXT "     "
   label_keff = gtk_label_new( OUTPUT_TEXT );
@@ -586,22 +603,23 @@ static void substrate_init(GtkWidget *parent)
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0, 1, 0, 1);
   gtk_widget_show(text);
 
-  text_H = gtk_entry_new_with_max_length( 6 );
+  text_H = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_H, 1,2,0,1);
   gtk_widget_set_usize(GTK_WIDGET(text_H),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_H), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), NULL);
   gtk_widget_show(text_H);
 
-  text = gtk_label_new( "mils" );
+  text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 2,3,0,1);
   gtk_widget_show(text);
+  phys_units_text = g_list_append(phys_units_text, text);
 
   text = gtk_label_new( "Er" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,1,2);
   gtk_widget_show(text);
 
-  text_er = gtk_entry_new_with_max_length( 6 );
+  text_er = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_er, 1,2,1,2);
   gtk_widget_set_usize(GTK_WIDGET(text_er),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_er), "changed",
@@ -616,7 +634,7 @@ static void substrate_init(GtkWidget *parent)
   gtk_table_attach_defaults (GTK_TABLE(table), text, 0,1,2,3);
   gtk_widget_show(text);
 
-  text_tand = gtk_entry_new_with_max_length( 6 );
+  text_tand = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_tand, 1,2,2,3);
   gtk_widget_set_usize(GTK_WIDGET(text_tand),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_tand), "changed",
@@ -631,22 +649,23 @@ static void substrate_init(GtkWidget *parent)
   gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 0, 1);
   gtk_widget_show(text);
 
-  text_tmet = gtk_entry_new_with_max_length( 6 );
+  text_tmet = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_tmet, 4,5,0,1);
   gtk_widget_set_usize(GTK_WIDGET(text_tmet),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_tmet), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), NULL);
   gtk_widget_show(text_tmet);
 
-  text = gtk_label_new( "mil" );
+  text = gtk_label_new( MILSTR );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 5,6,0,1);
   gtk_widget_show(text);
+  phys_units_text = g_list_append(phys_units_text, text);
 
   text = gtk_label_new( "Rho" );
   gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4, 1, 2);
   gtk_widget_show(text);
 
-  text_rho = gtk_entry_new_with_max_length( 6 );
+  text_rho = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_rho, 4,5,1,2);
   gtk_widget_set_usize(GTK_WIDGET(text_rho),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_rho), "changed",
@@ -661,7 +680,7 @@ static void substrate_init(GtkWidget *parent)
   gtk_table_attach_defaults (GTK_TABLE(table), text, 3,4,2,3);
   gtk_widget_show(text);
 
-  text_rough = gtk_entry_new_with_max_length( 6 );
+  text_rough = gtk_entry_new_with_max_length( ENTRYLENGTH );
   gtk_table_attach_defaults (GTK_TABLE(table), text_rough, 4,5,2,3);
   gtk_widget_set_usize(GTK_WIDGET(text_rough),WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (text_rough), "changed",
@@ -757,14 +776,16 @@ void mscalc( GtkWidget *w, gpointer data )
 
   /* get the physical units */
   vstr = gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(combo_punits)->entry) ); 
-  if (strcmp(vstr,"mil")==0)
+  if (strcmp(vstr,MILSTR)==0)
     sf = 1.0;
-  else if (strcmp(vstr,"micron")==0)
+  else if (strcmp(vstr,UMSTR)==0)
     sf = MICRON2MIL(1.0);
-  else if (strcmp(vstr,"mm")==0)
+  else if (strcmp(vstr,MMSTR)==0)
     sf = MM2MIL(1.0);
-  else if (strcmp(vstr,"cm")==0)
+  else if (strcmp(vstr,CMSTR)==0)
     sf = CM2MIL(1.0);
+  else if (strcmp(vstr,MSTR)==0)
+    sf = M2MIL(1.0);
   else
     {
       fprintf(stderr,"bad phyusical units.  contact the author\n");
@@ -818,10 +839,10 @@ void mscalc( GtkWidget *w, gpointer data )
 
       mstr.z0=microstrip_calc(&mstr,freq);
       
-      sprintf(str,"%6.1f",mstr.z0);
+      sprintf(str,"%8f",mstr.z0);
       gtk_entry_set_text( GTK_ENTRY(text_Z0), str );
 			  
-      sprintf(str,"%6.1f",mstr.len);
+      sprintf(str,"%8f",mstr.len);
       gtk_entry_set_text( GTK_ENTRY(text_elen), str );
 
 
@@ -838,10 +859,10 @@ void mscalc( GtkWidget *w, gpointer data )
       microstrip_syn(&mstr,freq);
 
  
-      sprintf(str,"%6.1f",mstr.w/sf);
+      sprintf(str,"%8f",mstr.w/sf);
       gtk_entry_set_text( GTK_ENTRY(text_W), str );
 			  
-      sprintf(str,"%6.1f",mstr.l/sf);
+      sprintf(str,"%8f",mstr.l/sf);
       gtk_entry_set_text( GTK_ENTRY(text_L), str );
 
     }
@@ -850,16 +871,16 @@ void mscalc( GtkWidget *w, gpointer data )
       g_print("error in mstrip callback");
     }
 
-  sprintf(str,"%6.3f",mstr.keff);
+  sprintf(str,"%8f",mstr.keff);
   gtk_label_set_text( GTK_LABEL(label_keff), str );
   
-  sprintf(str,"%6.3f",mstr.loss);
+  sprintf(str,"%8f",mstr.loss);
   gtk_label_set_text( GTK_LABEL(label_loss), str );
   
-  sprintf(str,"%6.3f",mstr.losslen*sf);
+  sprintf(str,"%8f",mstr.losslen*sf);
   gtk_label_set_text( GTK_LABEL(label_losslen), str );
   
-  sprintf(str,"%6.3f",mstr.skindepth/sf);
+  sprintf(str,"%8f",mstr.skindepth/sf);
   gtk_label_set_text( GTK_LABEL(label_skindepth), str );
   
   gtk_label_set_text(GTK_LABEL(text_status), "");
@@ -891,18 +912,30 @@ static void tooltip_init(void)
   
 }
 
+static void change_units_text(void * , char *);
+
 static void cb_punits_menu_select( GtkWidget *item,
 				   gpointer data)
 {
+  char *units;
 
+  units = gtk_entry_get_text(GTK_ENTRY(data));
   /* Set the value position on both scale widgets */
-  /*  g_sf = sf; 
-      g_print("set global physical scale factor to %g\n",sf);
-      g_print("set global physical units to \"%s\"\n",punit);
+  /*
+  g_sf = sf; 
+  g_print("set global physical scale factor to %g\n",sf);
+  g_print("set global physical units to \"%s\"\n",punit);
+  g_print("cb_punits_menu_select():  \n");
   */
-  //g_print("cb_punits_menu_select():  \n");
+
+  g_list_foreach( phys_units_text,change_units_text, units );
 }
 
+
+static void change_units_text(void * text, char * label)
+{
+  gtk_label_set_text(GTK_LABEL(text),label);
+}
 
 /* Convenience functions */
 

@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.1 2001/02/11 19:26:25 dan Exp $ */
+/* $Id: microstrip.c,v 1.2 2001/02/17 16:56:35 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -36,6 +36,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "mathutil.h"
 #include "physconst.h"
