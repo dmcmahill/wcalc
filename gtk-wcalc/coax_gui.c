@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.24 2004/07/21 23:49:40 dan Exp $ */
+/* $Id: coax_gui.c,v 1.25 2004/07/23 22:11:54 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -461,7 +461,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_widget_set_sensitive(gui->text_fc,FALSE);
   gtk_widget_show(gui->text_fc);
 
-  text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
+  text = wc_units_menu_new(gui->line->units_fc, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
 		   7, 8, 2, 3, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
 
