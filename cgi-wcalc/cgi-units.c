@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.3 2002/06/12 11:30:02 dan Exp $ */
+/* $Id: cgi-units.c,v 1.4 2004/07/22 02:51:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -84,11 +84,17 @@ char * cgi_units_menu_show(const units_data *units, char *name, int ind)
 }
 
 static void cgi_units_submenu(const wc_units_data *units, 
-			      char * name, int index)
+			      char * name, int index, int sub)
 {
   int i;
 
-  fprintf(cgiOut, "<SELECT NAME=\"%s\">\n", name);
+  /* XXX
+  fprintf(cgiOut, "<SELECT NAME=\"%s_%d\" "
+	  "onChange=\"document.coax.rhobu.value=document.coax.%s_%d.value\""
+	  ">\n",
+	  name, sub, name, sub);
+  */
+  fprintf(cgiOut, "<SELECT NAME=\"%s_%d\">\n", name, sub);
 
   /* populate the menu */
   i = 0;
@@ -97,7 +103,7 @@ static void cgi_units_submenu(const wc_units_data *units,
     fprintf(cgiOut,"    <OPTION VALUE=\"%s\"", units[i].name);
 
     if (i == index)
-      fprintf(cgiOut," SELECTED");
+      fprintf(cgiOut," SELECTED ");
 
     fprintf(cgiOut,">%s\n", units[i].name);
     
@@ -108,17 +114,18 @@ static void cgi_units_submenu(const wc_units_data *units,
 }
 char * cgi_units_menu(const wc_units *units, char *name)
 {
-  int i;
+  int i, j;
 
   assert(units != NULL);
 
+  j = 0;
   /* Create the numerator menus */
   if (units->nnum == 0) {
     fprintf(cgiOut, "1");
   } else {
     for ( i = 0; i < units->nnum; i++) {
 
-      cgi_units_submenu(units->num[i], name, units->numi[i]);
+      cgi_units_submenu(units->num[i], name, units->numi[i], j++);
 
       if (i < (units->nnum - 1)) 
 	fprintf(cgiOut, "-\n");
@@ -131,7 +138,7 @@ char * cgi_units_menu(const wc_units *units, char *name)
     fprintf(cgiOut, "/\n");
       
       for (i=0; i<units->nden; i++) {
-	cgi_units_submenu(units->den[i], name, units->deni[i]);
+	cgi_units_submenu(units->den[i], name, units->deni[i], j++);
 	
 	if (i < (units->nden - 1)) 
 	  fprintf(cgiOut, "-\n");

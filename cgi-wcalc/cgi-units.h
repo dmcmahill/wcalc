@@ -1,7 +1,7 @@
-/* $Id: cgi-units.h,v 1.2 2002/05/10 22:52:27 dan Exp $ */
+/* $Id: cgi-units.h,v 1.3 2002/06/12 11:30:02 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,8 +38,10 @@
 
 /* for units stuff */
 #include "misc.h"
+#include "units.h"
 
 char * cgi_units_menu_show(const units_data *u, char *name, int ind);
 char ** cgi_units_inductance(void);
+char * cgi_units_menu(const wc_units *units, char *name);
 
 #endif /* __CGI_UNITS_H__ */

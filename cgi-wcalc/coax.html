@@ -1,4 +1,4 @@
-<!-- $Id: coax.html,v 1.6 2004/07/22 01:32:26 dan Exp $ -->
+<!-- $Id: coax.html,v 1.7 2004/07/22 02:51:02 dan Exp $ -->
 <!--
  * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -45,7 +45,6 @@
 <meta name="keywords" content="
 coax
 ">
-
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000">
@@ -55,7 +54,7 @@ coax
 <P>
 
 
-<FORM METHOD=GET ACTION="coax.cgi">
+<FORM NAME="coax" METHOD=GET ACTION="coax.cgi">
 <TABLE>
 <TR>
 <TD>
@@ -205,7 +204,9 @@ coax
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOB)</A></TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhob" VALUE="<@g@line->rho_b@>"></TD>
-<TD>[relative to Cu]</TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE="xxxxx" NAME="rhobu">
+</TD>
 </TR>
 
 
