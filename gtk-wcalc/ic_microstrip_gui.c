@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip_gui.c,v 1.3 2002/05/10 22:52:40 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.4 2002/06/12 11:30:13 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -724,84 +724,84 @@ static void calculate( ic_microstrip_gui *gui, GtkWidget *w, gpointer data )
   int rslt=0;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 
-  gui->line->w=atof(vstr)*gui->line->w_sf;
+  gui->line->w=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  w = %g\n",gui->line->w);
+  g_print("ic_microstrip_gui.c:calculate():  w = %g\n", gui->line->w);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
-  gui->line->l=atof(vstr)*gui->line->l_sf;
+  gui->line->l=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  l = %g\n",gui->line->l);
+  g_print("ic_microstrip_gui.c:calculate():  l = %g\n", gui->line->l);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) ); 
-  gui->line->subs->h=atof(vstr)*gui->line->subs->h_sf;
+  gui->line->subs->h=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  h = %g\n",gui->line->subs->h);
+  g_print("ic_microstrip_gui.c:calculate():  h = %g\n", gui->line->subs->h);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tox) ); 
-  gui->line->subs->tox=atof(vstr)*gui->line->subs->tox_sf;
+  gui->line->subs->tox=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  tox = %g\n",gui->line->subs->tox);
+  g_print("ic_microstrip_gui.c:calculate():  tox = %g\n", gui->line->subs->tox);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_es) ); 
   gui->line->subs->es=atof(vstr);
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  es = %g\n",gui->line->subs->es);
+  g_print("ic_microstrip_gui.c:calculate():  es = %g\n", gui->line->subs->es);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_es) ); 
   gui->line->subs->es=atof(vstr);
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  es = %g\n",gui->line->subs->es);
+  g_print("ic_microstrip_gui.c:calculate():  es = %g\n", gui->line->subs->es);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_sigmas) ); 
   gui->line->subs->sigmas=atof(vstr);
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  tand = %g\n",gui->line->subs->sigmas);
+  g_print("ic_microstrip_gui.c:calculate():  tand = %g\n", gui->line->subs->sigmas);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Ro) ); 
   gui->line->Ro=atof(vstr);
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  z0 = %g\n",gui->line->Ro);
+  g_print("ic_microstrip_gui.c:calculate():  z0 = %g\n", gui->line->Ro);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
   gui->line->len=atof(vstr);
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  elen = %g\n",gui->line->len);
+  g_print("ic_microstrip_gui.c:calculate():  elen = %g\n", gui->line->len);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) ); 
-  gui->line->subs->tmet=atof(vstr)*gui->line->subs->tmet_sf;
+  gui->line->subs->tmet=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  tmet = %g\n",gui->line->subs->tmet);
+  g_print("ic_microstrip_gui.c:calculate():  tmet = %g\n", gui->line->subs->tmet);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
-  gui->line->subs->rho=atof(vstr)*gui->line->subs->rho_sf;
+  gui->line->subs->rho=atof(vstr)*gui->line->units_rho->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  rho = %g\n",gui->line->subs->rho);
+  g_print("ic_microstrip_gui.c:calculate():  rho = %g\n", gui->line->subs->rho);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
-  gui->line->subs->rough=atof(vstr)*gui->line->subs->rough_sf;
+  gui->line->subs->rough=atof(vstr)*gui->line->units_rough->sf;
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  rough = %g\n",gui->line->subs->rough);
+  g_print("ic_microstrip_gui.c:calculate():  rough = %g\n", gui->line->subs->rough);
 #endif
 
 
   /* get the frequency */
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
-  gui->line->freq=atof(vstr)*gui->line->freq_sf;
+  gui->line->freq=atof(vstr)*gui->line->units_freq->sf;
 
 #ifdef DEBUG
-  g_print("ic_microstrip_gui.c:calculate():  freq = %g\n",gui->line->freq);
+  g_print("ic_microstrip_gui.c:calculate():  freq = %g\n", gui->line->freq);
 #endif
 
 #ifdef DEBUG
@@ -811,16 +811,16 @@ static void calculate( ic_microstrip_gui *gui, GtkWidget *w, gpointer data )
 
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
-    rslt=ic_microstrip_calc(gui->line,gui->line->freq);
+    rslt=ic_microstrip_calc(gui->line, gui->line->freq);
   }
   else if( strcmp(data,"synthesize_w")==0) {
-    rslt=ic_microstrip_syn(gui->line,gui->line->freq,IC_MLISYN_W);
+    rslt=ic_microstrip_syn(gui->line, gui->line->freq, IC_MLISYN_W);
   }
   else if( strcmp(data,"synthesize_h")==0) {
-    rslt=ic_microstrip_syn(gui->line,gui->line->freq,IC_MLISYN_H);
+    rslt=ic_microstrip_syn(gui->line, gui->line->freq, IC_MLISYN_H);
   }
   else if( strcmp(data,"synthesize_tox")==0) {
-    rslt=ic_microstrip_syn(gui->line,gui->line->freq,IC_MLISYN_TOX);
+    rslt=ic_microstrip_syn(gui->line, gui->line->freq, IC_MLISYN_TOX);
   }
   else{
     fprintf(stderr,"ic_microstrip_gui.c:  error in ic_microstrip callback\n"
@@ -853,22 +853,22 @@ static void update_display(ic_microstrip_gui *gui)
 
   /* the entries */
 
-  sprintf(str,"%.4g",gui->line->w/gui->line->w_sf);
+  sprintf(str,"%.4g",gui->line->w/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_w), str );
 
-  sprintf(str,"%.4g",gui->line->l/gui->line->l_sf);
+  sprintf(str,"%.4g",gui->line->l/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_l), str );
 
-  sprintf(str,"%.4g",gui->line->subs->h/gui->line->subs->h_sf);
+  sprintf(str,"%.4g",gui->line->subs->h/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_h), str );
 
   sprintf(str,"%.4g",gui->line->subs->es);
   gtk_entry_set_text( GTK_ENTRY(gui->text_es), str );
 
-  sprintf(str,"%.4g",gui->line->subs->sigmas/gui->line->subs->sigmas_sf);
+  sprintf(str,"%.4g",gui->line->subs->sigmas/gui->line->units_sigmas->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_sigmas), str );
 
-  sprintf(str,"%.4g",gui->line->subs->tox/gui->line->subs->tox_sf);
+  sprintf(str,"%.4g",gui->line->subs->tox/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tox), str );
 
   sprintf(str,"%.4g",gui->line->subs->eox);
@@ -880,16 +880,16 @@ static void update_display(ic_microstrip_gui *gui)
   sprintf(str,"%.4g",gui->line->len);
   gtk_entry_set_text( GTK_ENTRY(gui->text_elen), str );
 
-  sprintf(str,"%.4g",gui->line->subs->tmet/gui->line->subs->tmet_sf);
+  sprintf(str,"%.4g",gui->line->subs->tmet/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tmet), str );
   
   sprintf(str,"%.4g",gui->line->subs->rho);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
   
-  sprintf(str,"%.4g",gui->line->subs->rough/gui->line->subs->rough_sf);
+  sprintf(str,"%.4g",gui->line->subs->rough/gui->line->units_rough->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rough), str );
   
-  sprintf(str,"%.4g",gui->line->freq/gui->line->freq_sf);
+  sprintf(str,"%.4g",gui->line->freq/gui->line->units_freq->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
   
 
@@ -964,26 +964,6 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
 }
 
-/*
-static void len_units_changed(GtkWidget *widget, gpointer data )
-{
-  ic_microstrip_gui *gui;
-  char *vstr;
-
-  gui = WC_IC_MICROSTRIP_GUI(data);
-
-  if(WC_WCALC(data)->init_done){
-    vstr = gtk_entry_get_text( GTK_ENTRY(widget) ); 
-    gui->line->len_units = vstr;
-    gui->line->len_sf = phys_units_get_sf(vstr);
-#ifdef DEBUG
-    g_print("ic_microstrip_gui.c:len_units_changed:  units=\"%s\", sf=%g\n",
-	    gui->line->len_units, gui->line->len_sf);
-#endif
-  }
-}
-*/
-
 static void freq_units_changed(GtkWidget *widget, gpointer data )
 {
   ic_microstrip_gui *gui;
@@ -1038,27 +1018,27 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
 
   fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->w,gui->line->w_units);
+	  gui->line->w,gui->line->units_lwht->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->h,gui->line->subs->h_units);
+	  gui->line->subs->h,gui->line->units_lwht->name);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->l,gui->line->l_units);
+	  gui->line->l,gui->line->units_lwht->name);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->tmet,gui->line->subs->tmet_units);
+	  gui->line->subs->tmet,gui->line->units_lwht->name);
   fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->rho,gui->line->subs->rho_units);
+	  gui->line->subs->rho,gui->line->units_rho->name);
   fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
-	  gui->line->subs->rough,gui->line->subs->rough_units);
+	  gui->line->subs->rough,gui->line->units_rough->name);
   fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->subs->es);
-  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
-	  gui->line->subs->sigmas);
+  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->subs->sigmas, gui->line->units_sigmas->name);
   fprintf(fp,"\n");
   fprintf(fp,"col2x coly moveto \n");
   fprintf(fp,"/leftcol col2x def\n");
   fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g + j %g ) show (W) symbolshow newline\n",
-	  gui->line->Ro,gui->line->Xo);
+	  gui->line->Ro, gui->line->Xo);
   fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
 	  gui->line->len);
   fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
@@ -1070,14 +1050,14 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(metal skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
 	  gui->line->met_skindepth);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
-	  gui->line->Lmis);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
-	  gui->line->Rmis);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
-	  gui->line->Cmis);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
-	  gui->line->Gmis);
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Lmis, gui->line->units_L->name);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Rmis, gui->line->units_R->name);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Cmis, gui->line->units_C->name);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Gmis, gui->line->units_G->name);
   
 }
 

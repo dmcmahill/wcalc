@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.3 2002/05/09 23:49:58 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.4 2002/06/12 11:30:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -85,17 +85,39 @@ static fspec * get_fspec(int which_one)
     /*
      * The desired user units
      */
-    fspec_add_comment(linespec,"Desired user units and associated scale factors");
+    fspec_add_comment(linespec, "User units");
 
-    fspec_add_key(linespec,"l_sf","Length scale factor (meters/unit)",'d',&line->l_sf);
-    fspec_add_key(linespec,"l_units","Length units",'s',&line->l_units);
+    fspec_add_key(linespec, 
+		  "units_lwht", "Length, width, oxide, substrate and metal thickness units",
+		  'u', &line->units_lwht);
 
-    fspec_add_key(linespec,"w_sf","Width scale factor (meters/unit)",'d',&line->w_sf);
-    fspec_add_key(linespec,"w_units","Width units",'s',&line->w_units);
-
+    fspec_add_key(linespec, "units_L", "Incremental inductance units",  
+		  'u', &line->units_L);
+    fspec_add_key(linespec, "units_R", "Incremental resistance units",  
+		  'u', &line->units_R);
+    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 
+		  'u', &line->units_C);
+    fspec_add_key(linespec, "units_G", "Incremental conductance units", 
+		  'u', &line->units_G);
+    fspec_add_key(linespec, "units_len", "Line physical length units",  
+		  'u', &line->units_len);
+    fspec_add_key(linespec, "units_freq", "Frequency units",  
+		  'u', &line->units_freq);
+    fspec_add_key(linespec, "units_loss", "Loss units",  
+		  'u', &line->units_loss);
+    fspec_add_key(linespec, "units_losslen", "Loss/length units",  
+		  'u', &line->units_losslen);
+    fspec_add_key(linespec, "units_rho", "Resistivity units",  
+		  'u', &line->units_rho);
+    fspec_add_key(linespec, "units_rough", "Surface roughness units (RMS)",  
+		  'u', &line->units_rough);
+    fspec_add_key(linespec, "units_delay", "Delay units",
+		  'u', &line->units_delay);
+    fspec_add_key(linespec, "units_depth", "Skin depth units",  
+		  'u', &line->units_depth);
+    fspec_add_key(linespec, "units_deltal", "End correction units",  
+		  'u', &line->units_deltal);
     
-    fspec_add_key(linespec,"freq_sf","Frequency scale factor (Hz/unit)",'d',&line->freq_sf);
-    fspec_add_key(linespec,"freq_units","Frequency units",'s',&line->freq_units);
   }
 
   if (subspec == NULL) {
@@ -103,38 +125,14 @@ static fspec * get_fspec(int which_one)
 
     subspec=fspec_add_sect(NULL,"substrate");
 
-    fspec_add_key(subspec,"TMET","Metalization thickness (meters)",'d',&subs->tmet);
-    fspec_add_key(subspec,"RHO","Metalization resistivity relative to copper",'d',&subs->rho);
-    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
-    fspec_add_key(subspec,"Eox","Oxide relative dielectric constant",'d',&subs->eox);
-    fspec_add_key(subspec,"Tox","Oxide thickness (meters)",'d',&subs->tox);
-    fspec_add_key(subspec,"H","Substrate thickness (meters)",'d',&subs->h);
-    fspec_add_key(subspec,"Es","Substrate relative dielectric constant",'d',&subs->es);
-    fspec_add_key(subspec,"sigmas","Substrate conductivity (1/(ohm-meters))",'d',&subs->sigmas);
-
-    /*
-     * The desired user units
-     */
-    fspec_add_comment(subspec,"Desired user units and associated scale factors");
-
-    fspec_add_key(subspec,"tmet_sf","Tmet scale factor (meters/unit)",'d',&subs->tmet_sf);
-    fspec_add_key(subspec,"tmet_units","Tmet units",'s',&subs->tmet_units);
-
-    fspec_add_key(subspec,"rho_sf","Resistivity scale factor (ohm-meters/unit)",'d',&subs->rho_sf);
-    fspec_add_key(subspec,"rho_units","Resistivity units",'s',&subs->rho_units);
-
-    fspec_add_key(subspec,"rough_sf"," scale factor (meters/unit)",'d',&subs->rough_sf);
-    fspec_add_key(subspec,"rough_units"," units",'s',&subs->rough_units);
-
-    fspec_add_key(subspec,"tox_sf","Oxide thickness scale factor (meters/unit)",'d',&subs->tox_sf);
-    fspec_add_key(subspec,"tox_units","Oxide thickness units",'s',&subs->tox_units);
-
-    fspec_add_key(subspec,"h_sf","Substrate thickness scale factor (meters/unit)",'d',&subs->h_sf);
-    fspec_add_key(subspec,"h_units","Substrate thickness units",'s',&subs->h_units);
-
-    fspec_add_key(subspec,"sigmas_sf",
-		  "Substrate conductivity scale factor (siemens/meter/unit)",'d',&subs->sigmas_sf);
-    fspec_add_key(subspec,"sigmas_units","Substrate thickness units",'s',&subs->sigmas_units);
+    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)", 'd', &subs->tmet);
+    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper", 'd', &subs->rho);
+    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)", 'd', &subs->rough);
+    fspec_add_key(subspec, "Eox", "Oxide relative dielectric constant", 'd', &subs->eox);
+    fspec_add_key(subspec, "Tox", "Oxide thickness (meters)", 'd', &subs->tox);
+    fspec_add_key(subspec, "H", "Substrate thickness (meters)", 'd', &subs->h);
+    fspec_add_key(subspec, "Es", "Substrate relative dielectric constant", 'd', &subs->es);
+    fspec_add_key(subspec, "sigmas", "Substrate conductivity (1/(ohm-meters))", 'd', &subs->sigmas);
 
   }
 

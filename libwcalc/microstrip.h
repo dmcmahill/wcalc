@@ -1,7 +1,7 @@
-/* $Id: microstrip.h,v 1.5 2002/07/04 02:10:37 dan Exp $ */
+/* $Id: microstrip.h,v 1.6 2003/01/24 11:11:51 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -36,6 +36,7 @@
 #ifndef __MICROSTRIP_H__
 #define __MICROSTRIP_H__
 
+#include "units.h"
 
 typedef struct MICROSTRIP_SUBS
 {
@@ -49,9 +50,8 @@ typedef struct MICROSTRIP_LINE
 {
 
   /* length and width */
-  double l,l_sf;
-  double w,w_sf;
-  char *l_units,*w_units;
+  double l;
+  double w;
 
   /* characteristic impedance (ohms) */
   double z0;
@@ -62,7 +62,7 @@ typedef struct MICROSTRIP_LINE
   /* open end length correction */
   double deltal;
 
-  double keff,loss,losslen,skindepth;
+  double keff, loss, losslen, skindepth;
   double alpha_c, alpha_d;
 
   /* incremental circuit model */
@@ -72,8 +72,19 @@ typedef struct MICROSTRIP_LINE
   double Ro, Xo;
 
   /* the frequency of analysis (Hz) */
-  double freq,freq_sf;
-  char *freq_units;
+  double freq;
+
+  wc_units *units_lwht;
+  wc_units *units_L, *units_R, *units_C, *units_G;
+  wc_units *units_len;
+  wc_units *units_freq;
+  wc_units *units_loss;
+  wc_units *units_losslen;
+  wc_units *units_rho;
+  wc_units *units_rough;
+  wc_units *units_delay;
+  wc_units *units_depth;
+  wc_units *units_deltal;
 
   microstrip_subs *subs;
 

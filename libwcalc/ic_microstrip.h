@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.h,v 1.5 2002/05/10 22:52:52 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.6 2002/06/12 11:30:27 dan Exp $ */
 
 /*
- * Copyright (c)  2001, 2002 Dan McMahill
+ * Copyright (c)  2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -36,23 +36,18 @@
 #ifndef __IC_MICROSTRIP_H__
 #define __IC_MICROSTRIP_H__
 
+#include "units.h"
 
 typedef struct IC_MICROSTRIP_SUBS
 {
   /* top metal parameters */
-  double tmet,rho,rough;
-  double tmet_sf,rho_sf,rough_sf;
-  char *tmet_units,*rho_units,*rough_units;
+  double tmet, rho, rough;
 
   /* dielectric (oxide) paramters */
   double eox, tox;
-  double tox_sf;
-  char *tox_units;
 
   /* substrate (silicon typically) parameters */
   double h, es, sigmas;
-  double h_sf,sigmas_sf;
-  char *h_units,*sigmas_units;
 
 } ic_microstrip_subs;
 
@@ -60,9 +55,8 @@ typedef struct IC_MICROSTRIP_LINE
 {
 
   /* length and width */
-  double l,l_sf;
-  double w,w_sf;
-  char *l_units,*w_units;
+  double l;
+  double w;
 
   /* characteristic impedance Ro + j Xo (ohms) */
   double Ro, Xo;
@@ -88,6 +82,19 @@ typedef struct IC_MICROSTRIP_LINE
   /* frequency of operation */
   double freq,freq_sf;
   char *freq_units;
+
+  wc_units *units_lwht;
+  wc_units *units_L, *units_R, *units_C, *units_G;
+  wc_units *units_len;
+  wc_units *units_freq;
+  wc_units *units_loss;
+  wc_units *units_losslen;
+  wc_units *units_rho;
+  wc_units *units_rough;
+  wc_units *units_delay;
+  wc_units *units_depth;
+  wc_units *units_deltal;
+  wc_units *units_sigmas;
 
 } ic_microstrip_line;
 

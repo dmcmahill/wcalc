@@ -49,7 +49,8 @@
 
 #include "alert.h"
 #include "microstrip.h"
-#include "microstrip_loadsave.h"
+#include "coupled_microstrip.h"
+#include "coupled_microstrip_loadsave.h"
 #include "units.h"
 #include "wcalc_loadsave.h"
 
@@ -67,20 +68,21 @@ static fspec * get_fspec(int which_one)
 {
   static fspec *linespec=NULL;
   static fspec *subspec=NULL;
-  microstrip_line *line=0;
+  coupled_microstrip_line *line=0;
   microstrip_subs *subs=0;
 
   if (linespec == NULL) {
     /* Build up the list which describes the file format */
 
-    linespec=fspec_add_sect(NULL,"microstrip");
-    fspec_add_key(linespec,"file_version","Microstrip file version",'f',FILE_VERSION);
+    linespec=fspec_add_sect(NULL, "coupled_microstrip");
+    fspec_add_key(linespec, "file_version", "Coupled microstrip file version",
+		  'f', FILE_VERSION);
 
-    fspec_add_key(linespec,"L","Length (meters)",'d',&line->l);
-    fspec_add_key(linespec,"W","Width (meters)",'d',&line->w);
-    fspec_add_key(linespec,"Z0","Characteristic Impedance (ohms)",'d',&line->z0);
-    fspec_add_key(linespec,"Elen","Electrical Length (degrees)",'d',&line->len);
-    fspec_add_key(linespec,"freq","Frequency of operation",'d',&line->freq);
+    fspec_add_key(linespec, "L", "Length (meters)", 'd', &line->l);
+    fspec_add_key(linespec, "W", "Width (meters)", 'd', &line->w);
+    fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 'd', &line->z0);
+    fspec_add_key(linespec, "Elen", "Electrical Length (degrees)", 'd', &line->len);
+    fspec_add_key(linespec, "freq", "Frequency of operation", 'd', &line->freq);
 
     /*
      * The desired user units
@@ -89,16 +91,7 @@ static fspec * get_fspec(int which_one)
 
     fspec_add_key(linespec, 
 		  "units_lwht", "Length, width, substrate and metal thickness units",
-		  'u', &line->units_lwht);
-
-    fspec_add_key(linespec, "units_L", "Incremental inductance units",  
-		  'u', &line->units_L);
-    fspec_add_key(linespec, "units_R", "Incremental resistance units",  
-		  'u', &line->units_R);
-    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 
-		  'u', &line->units_C);
-    fspec_add_key(linespec, "units_G", "Incremental conductance units", 
-		  'u', &line->units_G);
+		  'u', &line->units_lwst);
     fspec_add_key(linespec, "units_len", "Line physical length units",  
 		  'u', &line->units_len);
     fspec_add_key(linespec, "units_freq", "Frequency units",  
@@ -140,7 +133,7 @@ static fspec * get_fspec(int which_one)
     return subspec;
 }
 
-int microstrip_load(microstrip_line *line, FILE *fp)
+int coupled_microstrip_load(coupled_microstrip_line *line, FILE *fp)
 {
   fspec *myspec;
   char *val;
@@ -149,13 +142,13 @@ int microstrip_load(microstrip_line *line, FILE *fp)
   assert(fp!=NULL);
 
   /* read the model version  */
-  if ( (val=file_read_val(fp,"[microstrip]","file_version")) == NULL ){
-    alert("Could not determine the microstrip file_version\n");
+  if ( (val=file_read_val(fp,"[coupled_microstrip]","file_version")) == NULL ){
+    alert("Could not determine the coupled_microstrip file_version\n");
     return -1;
   }
 
 #ifdef DEBUG
-  printf("microstrip_loadsave.c:microstrip_load():  Got file_version=\"%s\"\n",
+  printf("coupled_microstrip_loadsave.c:coupled_microstrip_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
 
@@ -178,11 +171,11 @@ int microstrip_load(microstrip_line *line, FILE *fp)
 }
 
 
-void microstrip_save(microstrip_line *line, FILE *fp, char *fname)
+void coupled_microstrip_save(coupled_microstrip_line *line, FILE *fp, char *fname)
 {
   fspec *myspec;
 
-  wcalc_save_header(fp, fname, FILE_MICROSTRIP);
+  wcalc_save_header(fp, fname, FILE_COUPLED_MICROSTRIP);
 
   myspec=get_fspec(LINE_SPEC);
   fspec_write_file(myspec,fp,(unsigned long) line);
@@ -193,7 +186,7 @@ void microstrip_save(microstrip_line *line, FILE *fp, char *fname)
 
 
 /* XXX need to handle both line and substrate specs */
-char * microstrip_save_string(microstrip_line *line)
+char * coupled_microstrip_save_string(coupled_microstrip_line *line)
 {
   fspec *myspec;
   char *str;
@@ -204,7 +197,7 @@ char * microstrip_save_string(microstrip_line *line)
 }
 
 /* XXX write me! */
-int microstrip_load_string(microstrip_line *line, char *str)
+int coupled_microstrip_load_string(coupled_microstrip_line *line, char *str)
 {
   return 0;
 }

@@ -1,7 +1,8 @@
-## $Id: Makefile.am,v 1.17 2003/01/15 01:07:17 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.18 2004/07/18 16:09:37 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -61,6 +62,8 @@ libwcalc_la_SOURCES = \
 	coax_loadsave.h \
 	coupled_microstrip.c \
 	coupled_microstrip.h \
+	coupled_microstrip_loadsave.c \
+	coupled_microstrip_loadsave.h \
 	ic_microstrip.c \
 	ic_microstrip.h \
 	ic_microstrip_loadsave.c \

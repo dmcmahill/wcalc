@@ -1,4 +1,4 @@
-/* $Id: units.h,v 1.4 2004/07/21 17:34:54 dan Exp $ */
+/* $Id: units.h,v 1.5 2004/07/23 22:11:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -91,6 +91,7 @@ typedef struct WC_UNITS
     WC_UNITS_CAPACITANCE_PER_LEN,
     WC_UNITS_CONDUCTANCE,
     WC_UNITS_CONDUCTANCE_PER_LEN,
+    WC_UNITS_CONDUCTIVITY,
     WC_UNITS_CURRENT,
     WC_UNITS_DB,
     WC_UNITS_DB_PER_LEN,

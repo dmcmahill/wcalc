@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.6 2002/05/10 22:52:43 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.7 2002/06/12 11:30:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -918,11 +918,11 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
 
   fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->w,gui->line->w_units);
+	  gui->line->w,gui->line->units_lwht->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->h,gui->line->subs->h_units);
+	  gui->line->subs->h,gui->line->units_lwht->name);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->l,gui->line->l_units);
+	  gui->line->l,gui->line->units_lwht->name);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
 	  gui->line->subs->tmet,gui->line->subs->tmet_units);
@@ -951,14 +951,14 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
 	  gui->line->skindepth);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
-	  gui->line->Ls);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
-	  gui->line->Rs);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
-	  gui->line->Cs);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
-	  gui->line->Gs);
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Ls, gui->line->units_L->name);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Rs, gui->line->units_R->name);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Cs, gui->line->units_C->name);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Gs, gui->line->units_G->name);
   
 }
 

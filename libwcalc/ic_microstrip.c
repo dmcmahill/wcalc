@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.12 2003/10/02 03:05:29 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.13 2004/01/10 14:42:04 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -48,6 +48,7 @@
 #include "mathutil.h"
 #include "physconst.h"
 #include "ic_microstrip.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -879,26 +880,21 @@ ic_microstrip_line *ic_microstrip_line_new(void)
   newline->subs->rho   = 1.0;
   newline->subs->rough = 0.0;
 
-  newline->l_sf = 1.0;
-  newline->w_sf = 1.0;
-  newline->freq_sf = 1.0;
-  newline->subs->tox_sf = 1.0;
-  newline->subs->h_sf = 1.0;
-  newline->subs->sigmas_sf = 1.0;
-  newline->subs->tmet_sf = 1.0;
-  newline->subs->rho_sf = 1.0;
-  newline->subs->rough_sf = 1.0;
-
-
-  newline->l_units = "m";
-  newline->w_units = "m";
-  newline->freq_units = "Hz";
-  newline->subs->tox_units = "m";
-  newline->subs->h_units = "m";
-  newline->subs->sigmas_units = "1 / ohm-m";
-  newline->subs->tmet_units = "m";
-  newline->subs->rho_units = "ohm-m";
-  newline->subs->rough_units = "m";
+  newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
+  newline->units_R       = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
+  newline->units_C       = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
+  newline->units_G       = wc_units_new(WC_UNITS_CONDUCTANCE_PER_LEN);
+  newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
+  newline->units_loss    = wc_units_new(WC_UNITS_DB);
+  newline->units_losslen = wc_units_new(WC_UNITS_DB_PER_LEN);
+  newline->units_rho     = wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_rough   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_delay   = wc_units_new(WC_UNITS_TIME);
+  newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_sigmas  = wc_units_new(WC_UNITS_CONDUCTIVITY);
 
 #if defined(DEBUG_CALC) || defined(DEBUG_SYN)
   printf("ic_microstrip_line_new():  calling ic_microstrip_calc(%p,%g)\n",newline,newline->freq);
@@ -930,6 +926,21 @@ ic_microstrip_subs *ic_microstrip_subs_new(void)
 void ic_microstrip_line_free(ic_microstrip_line *line)
 {
   ic_microstrip_subs_free(line->subs);
+  wc_units_free(line->units_lwht);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
+  wc_units_free(line->units_len);
+  wc_units_free(line->units_freq);
+  wc_units_free(line->units_loss);
+  wc_units_free(line->units_losslen);
+  wc_units_free(line->units_rho);
+  wc_units_free(line->units_rough);
+  wc_units_free(line->units_delay);
+  wc_units_free(line->units_depth);
+  wc_units_free(line->units_deltal);
+  wc_units_free(line->units_sigmas);
   free(line);
 }
 

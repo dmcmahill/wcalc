@@ -1,7 +1,7 @@
-/* $Id: microstrip.c,v 1.8 2002/08/16 02:19:00 dan Exp $ */
+/* $Id: microstrip.c,v 1.9 2003/01/24 11:11:50 dan Exp $ */
 
 /*
- * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,6 +46,7 @@
 #include "mathutil.h"
 #include "physconst.h"
 #include "microstrip.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -948,6 +949,20 @@ static double z0_HandJ(double u)
 void microstrip_line_free(microstrip_line * line)
 {
   free(line->subs);
+  wc_units_free(line->units_lwht);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
+  wc_units_free(line->units_len);
+  wc_units_free(line->units_freq);
+  wc_units_free(line->units_loss);
+  wc_units_free(line->units_losslen);
+  wc_units_free(line->units_rho);
+  wc_units_free(line->units_rough);
+  wc_units_free(line->units_delay);
+  wc_units_free(line->units_depth);
+  wc_units_free(line->units_deltal);
   free(line);
 }
 
@@ -970,14 +985,6 @@ microstrip_line *microstrip_line_new()
   newline->w    = 110.0;
   newline->freq = 1.0e9;
 
-  /* XXX these should be initialized to real values */
-  newline->l_sf    = 1.0;
-  newline->l_units = "m";
-  newline->w_sf    = 1.0;
-  newline->w_units = "m";
-  newline->freq_sf    = 1.0;
-  newline->freq_units = "Hz";
-
   newline->subs->h     = 62.0;
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
@@ -985,14 +992,20 @@ microstrip_line *microstrip_line_new()
   newline->subs->rho   = 1.0;
   newline->subs->rough = 0.055;
 
-  newline->subs->h_sf    = 1.0;
-  newline->subs->h_units = "m";
-  newline->subs->tmet_sf    = 1.0;
-  newline->subs->tmet_units = "m";
-  newline->subs->rho_sf    = 1.0;
-  newline->subs->rho_units = "ohm-m";
-  newline->subs->rough_sf    = 1.0;
-  newline->subs->rough_units = "m";
+  newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
+  newline->units_R       = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
+  newline->units_C       = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
+  newline->units_G       = wc_units_new(WC_UNITS_CONDUCTANCE_PER_LEN);
+  newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
+  newline->units_loss    = wc_units_new(WC_UNITS_DB);
+  newline->units_losslen = wc_units_new(WC_UNITS_DB_PER_LEN);
+  newline->units_rho     = wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_rough   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_delay   = wc_units_new(WC_UNITS_TIME);
+  newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
+  newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   /* and do a calculation to finish the initialization */
   microstrip_calc(newline,newline->freq);
