@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.8 2004/07/24 17:39:06 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.9 2004/07/25 04:03:38 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1035,18 +1035,24 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"/leftcol col1x  def\n");
 
   fprintf(fp,"(W) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->w,gui->line->units_lwht->name);
+	  gui->line->w/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->h,gui->line->units_lwht->name);
+	  gui->line->subs->h/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->l,gui->line->units_lwht->name);
+	  gui->line->l/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->tmet,gui->line->units_lwht->name);
+	  gui->line->subs->tmet/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
   fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->subs->rho,gui->line->units_rho->name);
+	  gui->line->subs->rho/gui->line->units_rho->sf,
+	  gui->line->units_rho->name);
   fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g %s-rms) show newline\n",
-	  gui->line->subs->rough,gui->line->units_rough->name);
+	  gui->line->subs->rough/gui->line->units_rough->sf,
+	  gui->line->units_rough->name);
   fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
 	  gui->line->subs->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
@@ -1058,21 +1064,28 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->z0);
   fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
 	  gui->line->len);
-  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
-	  gui->line->loss);
-  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
-	  gui->line->losslen);
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
-	  gui->line->skindepth);
+  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->loss/gui->line->units_loss->sf,
+	  gui->line->units_loss->name);
+  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->losslen/gui->line->units_losslen->sf,
+	  gui->line->units_losslen->name);
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->skindepth/gui->line->units_depth->sf,
+	  gui->line->units_depth->name);
   fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
-	  gui->line->Ls);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
-	  gui->line->Rs);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
-	  gui->line->Cs);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
-	  gui->line->Gs);
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Ls/gui->line->units_L->sf,
+	  gui->line->units_L->name);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Rs/gui->line->units_R->sf,
+	  gui->line->units_R->name);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Cs/gui->line->units_C->sf,
+	  gui->line->units_C->name);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g %s) show newline\n",
+	  gui->line->Gs/gui->line->units_G->sf,
+	  gui->line->units_G->name);
   
 }
 
