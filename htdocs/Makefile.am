@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.23 2004/07/28 11:39:34 dan Exp $
+## $Id: Makefile.am,v 1.24 2004/09/02 00:51:41 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -72,7 +72,6 @@ SHTML_IN=	\
 	resistivity.shtml \
 	sci-wcalc.shtml \
 	stdio-wcalc.shtml \
-	screenshots.shtml \
 	stripline.shtml \
 	units.shtml
 
