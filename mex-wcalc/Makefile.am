@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/19 01:42:48 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/20 01:34:29 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,8 @@
 ##  SUCH DAMAGE.
 ##
 
+# list of all the mex files
+include $(top_srcdir)/sci-wcalc/mex.mk
 
 # the 'mex' command to compile the mex files
 MEX=	@MEX@
@@ -41,24 +43,26 @@ MEX=	@MEX@
 MEXSFX=	@MEXSFX@
 
 pkglibexecdir=	${libexecdir}/${packages}
-pkglibexec_PROGRAMS=	pipestage.${MEXSFX}
-pkglibexec_DATA= 
+#pkglibexec_PROGRAMS=	pipestage.${MEXSFX}
+noinst_SCRIPTS=		runmatlab
 
+MEX_FILES=	${MEX_SOURCES:.c=.${MEXSFX}}
 
-# list the dependencies
-pipestage.${MEXSFX}:	pipestage.c
+all-local:	${MEX_FILES}
 
 # copy over the source files
-pipestage.c: $(top_srcdir)/sci-wcalc/pipestage.c
-	cp -f $(top_srcdir)/sci-wcalc/pipestage.c pipestage.c
+air_coil_calc.c: $(top_srcdir)/sci-wcalc/air_coil_calc.c
+	cp -f $(top_srcdir)/sci-wcalc/air_coil_calc.c air_coil_calc.c
 
+runmatlab:	$(srcdir)/runmatlab.in
+	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > runmatlab
 
-BUILT_SOURCES=	pipestage.c
+#BUILT_SOURCES=	${MEX_SOURCES}
 
 # All the new suffix rules
 
 SUFFIXES = .c .${MEXSFX}
 
 .c.${MEXSFX} :
-	$(MEX) $*.c
+	$(MEX) -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc $*.c
 
