@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.9 2004/03/06 13:56:56 dan Exp $ */
+/* $Id: main.c,v 1.10 2004/03/09 00:12:09 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -102,6 +102,7 @@ static void exec_version(double *args);
 int main(int argc, char **argv)
 {
   char line[256];
+  char *tmps = NULL;
   char *tok, *nl;
   int narg;
   int cnt;
@@ -113,13 +114,30 @@ int main(int argc, char **argv)
     /* strip off the final newline */
     nl = strpbrk(line, "\n");
     if( nl != NULL ) *nl = '\0';
-    tok = strtok(line, " \t");
-    if(tok == NULL) {
-      fprintf(stderr, "stdio-wcalc: null token\n");
-      exit(1);
-    }
 
-    if(strcmp(tok, "version") == 0) {
+    /* make a copy for later use */
+    if( tmps != NULL )
+      free(tmps);
+
+    tmps = strdup(line);
+
+    tok = strtok(line, " \t");
+
+    /* read the command part of the line */
+    if(tok == NULL) {
+      /* blank line */
+      narg = -1;
+      fn = NULL;
+    } else if( ( strlen(tok) > 0 ) && (tok[0] == '#') ) {
+      /* a silent comment line */
+      narg = -1;
+      fn = NULL;
+    } else if( ( strlen(tok) > 0 ) && (tok[0] == '*') ) {
+      /* a verbose comment line */
+      narg = -1;
+      printf("%s\n", tmps);
+      fn = NULL;
+    } else if(strcmp(tok, "version") == 0) {
       narg = 0;
       fn = &exec_version;
     } else if(strcmp(tok, "air_coil_calc") == 0) {
@@ -145,22 +163,31 @@ int main(int argc, char **argv)
       exit(1);
     }
 
-    cnt = 0;
-    while( ((tok = strtok(NULL, " \t")) != NULL ) && 
-	   (cnt < sizeof(params)/sizeof(double)) ) {
-      if( cnt >= narg ) 
-	fprintf(stderr, "Ignoring extra argument: \"%s\"\n", tok);
-      else 
-	params[cnt] = strtod(tok, NULL);
-
-      cnt++;
+    /* 
+     * read in the rest of the line which contains arguments to the
+     * command 
+     */
+    if (narg >= 0) {
+      cnt = 0;
+      while( ((tok = strtok(NULL, " \t")) != NULL ) && 
+	     (cnt < sizeof(params)/sizeof(double)) ) {
+	if( cnt >= narg ) 
+	  fprintf(stderr, "Ignoring extra argument: \"%s\"\n", tok);
+	else 
+	  params[cnt] = strtod(tok, NULL);
+	
+	cnt++;
+      }
+      
+      /* make sure we got the right number of arguments */
+      if( cnt < narg ) {
+	fprintf(stderr, "Not enough arguments.  Needed %d, got %d on line %d\n",
+		narg, cnt, lineno);
+      } else {
+	/* and execute the command */
+	fn(params);
+      }
     }
-    
-    if( cnt < narg ) 
-      fprintf(stderr, "Not enough arguments.  Needed %d, got %d on line %d\n",
-	      narg, cnt, lineno);
-    else
-      fn(params);
 
     lineno++;
     fflush(stdout);
