@@ -1,7 +1,7 @@
-/* $Id: coax_loadsave.c,v 1.9 2002/06/12 11:30:24 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.10 2002/06/25 20:46:45 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -158,8 +158,10 @@ int coax_load(coax_line *line, FILE *fp)
   /*
    * parse the composite units data 
    */
-  resistivity_units_set(line->units_rhoa,line->rho_a_units);
-  resistivity_units_set(line->units_rhob,line->rho_b_units);
+  /* XXX
+     resistivity_units_set(line->units_rhoa,line->rho_a_units);
+     resaistivity_units_set(line->units_rhob,line->rho_b_units);
+  */
 
   return rslt;
 }
@@ -219,11 +221,14 @@ int coax_load_string(coax_line *line, char *str)
 #ifdef DEBUG
   printf("coax_loadsave.c:coax_load_string():  setting resistivity units\n");
 #endif
+  /* XXX */
+#ifdef notdef
   rslt = resistivity_units_set(line->units_rhoa,line->rho_a_units);
   if (rslt != 0) {
 	return rslt;
   }
   rslt = resistivity_units_set(line->units_rhob,line->rho_b_units);
+#endif
 
   return rslt;
 }

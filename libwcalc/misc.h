@@ -1,7 +1,7 @@
-/* $Id: misc.h,v 1.6 2002/06/12 11:30:31 dan Exp $ */
+/* $Id: misc.h,v 1.7 2002/07/05 23:12:52 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,30 +45,6 @@ typedef struct UNITS_DATA
   double sf;
 } units_data;
 
-typedef struct COMPOSITE_UNITS_DATA
-{
-  /* the various units which appear in the numerator and denominator */
-  const units_data **num;
-  const units_data **den;
-
-  /* indices */
-  int *numi, *deni;
-
-  /* number of numerator and denominator terms */
-  int nnum, nden;
-
-  /* what sort of units are these? */
-  enum {
-    UNITS_FREQUENCY,
-    UNITS_RESISTIVITY,
-    UNITS_INC_CAPACITANCE,
-    UNITS_INC_CONDUCTANCE,
-    UNITS_INC_INDUCTANCE,
-    UNITS_INC_RESISTANCE,
-  } type;
-
-} composite_units_data;
-
 extern const units_data capacitance_units[];
 extern const units_data conductance_units[];
 extern const units_data frequency_units[];
@@ -84,37 +60,6 @@ int units_size(const units_data *units);
 char ** units_strings_get(const units_data *units);
 int units_get_index(const units_data *units, double sf);
 int units_get_index_name(const units_data *units, char *name);
-
-composite_units_data * resistivity_units_new(void);
-void resistivity_units_free(composite_units_data *u);
-int resistivity_units_set(composite_units_data *units,char *str);
-
-composite_units_data * frequency_units_new(void);
-void frequency_units_free(composite_units_data *u);
-int frequency_units_set(composite_units_data *units,char *str);
-
-composite_units_data * inc_units_new(int type, const units_data *nu);
-void inc_units_free(composite_units_data *u);
-void inc_units_set(int type, const units_data *nu, composite_units_data *units,char *str);
-
-#define inc_capacitance_units_new() inc_units_new(UNITS_INC_CAPACITANCE,capacitance_units)
-#define inc_capacitance_units_free(u) inc_units_free((u))
-#define inc_capacitance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
-
-#define inc_conductance_units_new() inc_units_new(UNITS_INC_CONDUCTANCE,conductance_units)
-#define inc_conductance_units_free(u) inc_units_free((u))
-#define inc_conductance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
-
-#define inc_inductance_units_new() inc_units_new(UNITS_INC_INDUCTANCE,inductance_units)
-#define inc_inductance_units_free(u) inc_units_free((u))
-#define inc_inductance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
-
-#define inc_resistance_units_new() inc_units_new(UNITS_INC_RESISTANCE,resistance_units)
-#define inc_resistance_units_free(u) inc_units_free((u))
-#define inc_resistance_units_set(t,n,units,str) inc_units_set((t),(n), (units), (str))
-
-
-void units_update(composite_units_data *units, double *sf, char **name);
 
 double dia2awg(double dia);
 double awg2dia(double AWG);

@@ -1,7 +1,7 @@
-/* $Id: coax.h,v 1.7 2002/06/12 11:30:24 dan Exp $ */
+/* $Id: coax.h,v 1.8 2003/10/02 02:38:19 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -37,6 +37,7 @@
 #define __COAX_H__
 
 #include "misc.h"
+#include "units.h"
 
 typedef struct COAX_LINE
 {
@@ -113,8 +114,8 @@ typedef struct COAX_LINE
   char *fc_units,*freq_units;
   char *delay_units, *loss_units, *losslen_units;
 
-  composite_units_data *units_rhoa, *units_rhob;
-  composite_units_data *units_L, *units_R, *units_C, *units_G;
+  wc_units *units_rhoa, *units_rhob;
+  wc_units *units_L, *units_R, *units_C, *units_G;
 
 } coax_line;
 

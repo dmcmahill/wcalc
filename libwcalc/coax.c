@@ -1,7 +1,7 @@
-/* $Id: coax.c,v 1.14 2002/06/12 11:30:24 dan Exp $ */
+/* $Id: coax.c,v 1.15 2003/10/02 02:38:18 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -75,6 +75,7 @@
 #include "coax.h"
 #include "alert.h"
 #include "misc.h"
+#include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -594,8 +595,12 @@ int coax_syn(coax_line *line, double f, int flag)
 
 void coax_free(coax_line *line)
 {
-  resistivity_units_free(line->units_rhoa);
-  resistivity_units_free(line->units_rhob);
+  wc_units_free(line->units_rhoa);
+  wc_units_free(line->units_rhob);
+  wc_units_free(line->units_L);
+  wc_units_free(line->units_R);
+  wc_units_free(line->units_C);
+  wc_units_free(line->units_G);
   free(line);
 }
 
@@ -611,12 +616,12 @@ coax_line *coax_new()
       exit(1);
     }
 
-  newline->units_rhoa = resistivity_units_new();
-  newline->units_rhob = resistivity_units_new();
-  newline->units_L = inc_inductance_units_new();
-  newline->units_R = inc_resistance_units_new();
-  newline->units_C = inc_capacitance_units_new();
-  newline->units_G = inc_conductance_units_new();
+  newline->units_rhoa = wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_rhob =  wc_units_new(WC_UNITS_RESISTIVITY);
+  newline->units_L = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
+  newline->units_R = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
+  newline->units_C = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
+  newline->units_G = wc_units_new(WC_UNITS_CONDUCTANCE_PER_LEN);
   
   newline->a = 1.0;
   newline->b = 2.0;
