@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.10 2004/07/28 03:25:24 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.11 2004/07/29 00:02:13 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -940,6 +940,10 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(fill) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->coil->fill);
   fprintf(fp,"newline\n");
+  fprintf(fp,"(freq) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->coil->freq/gui->coil->units_freq->sf,
+	  gui->coil->units_freq->name);
   
 }
 

@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.11 2004/07/29 02:37:58 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.12 2004/07/29 12:36:13 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1103,6 +1103,11 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Keff) show tab1 (=) show tab2 (" WC_FMT_G 
 	  ") show newline\n",
 	  gui->line->keff);
+
+  fprintf(fp,"(freq) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->freq/gui->line->units_freq->sf,
+	  gui->line->units_freq->name);
 
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",

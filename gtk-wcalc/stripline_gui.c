@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.12 2004/07/29 00:02:18 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.13 2004/07/29 02:37:59 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1080,6 +1080,12 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->skindepth/gui->line->units_depth->sf,
 	  gui->line->units_depth->name);
+
+  fprintf(fp,"(freq) show tab1 (=) show tab2 (" 
+	  WC_FMT_G " %s) show newline\n",
+	  gui->line->freq/gui->line->units_freq->sf,
+	  gui->line->units_freq->name);
+
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->Ls/gui->line->units_L->sf,
