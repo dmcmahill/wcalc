@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: alert.c,v 1.1 2001/09/27 22:16:00 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -43,6 +43,7 @@
 #endif
 
 #include "alert.h"
+#include "cgic.h"
 
 void alert(const char *fmt,...)
 {
@@ -51,7 +52,7 @@ void alert(const char *fmt,...)
 
   /* extract the warning string */
   va_start(ap,fmt);
-  vprintf(fmt,ap);
+  vfprintf(cgiOut,fmt,ap);
   va_end(ap);
 }
 
