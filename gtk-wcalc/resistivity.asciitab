@@ -1,13 +1,19 @@
-Material| |Resistivity (Ohm-meter)
+Material| |Resistivity (Ohm-meter)|Temperature (C)|T.C.
 
-Aluminum|Al|3.2e-8
-Bismuth|Bi|119e-8
-Brass|??|??e-8
-Copper|Cu|1.72e-8
-Gold|Au|??e-8
-Iron|Fe|15e-8
-Lead|Pb|??e-8
-Mercury|Hg|94.1e-8
-Platinum|Pt|11e-8
-Silver|Ag|1.05e-8
-Tungsten|W|5.5e-8
+Aluminum|Al|2.62e-8|20|0.0039
+Bismuth|Bi|115e-8|20|0.004
+Brass|66 Cu 34 Zn|3.9e-8|20|0.002
+Copper|Cu|1.72e-8|20|0.0039
+Gold|Au|2.44e-8|20|0.0034
+Iron|Fe|9.71e-8|20|0.0052-0.0062
+Lead|Pb|21.9e-8|20|0.004
+Mercury|Hg|95.8e-8|20|0.00089
+Nichrome|65 Ni, 12 Cr, 23 Fe)|100e-8|20|0.00017
+Nickel|Ni|6.9e-8|20|0.0047
+Platinum|Pt|10.5e-8|20|0.003
+Silver|Ag|1.62e-8|20|0.0038
+Steel|0.4-0.5 C, balance Fe|13-22e-8|20|0.003
+Steel,manganese|13 Mn, 1C, 86 Fe|70e-8|20|0.001
+Steel,stainless|0.1 C, 18 Cr, 8 Ni, balance Fe|90e-8|20|
+Tungsten|W|5.48e-8|20|0.0045
+Zinc||6.0e-8|20|0.0037
