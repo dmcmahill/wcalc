@@ -1,4 +1,4 @@
-.\" $Id: air_coil_calc.man,v 1.4 2001/10/24 01:29:02 dan Exp $
+.\" $Id: air_coil_calc.man,v 1.5 2004/08/04 23:49:45 dan Exp $
 .\"
 .\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
@@ -93,7 +93,7 @@ fill_out
 lmax
 : maximum (closewound) inductance
 .SH DESCRIPTION
-function to analyze the electrical characteristics of a single layer,
+Function to analyze the electrical characteristics of a single layer,
 uniformly spaced, air core, solenoid inductor.  The physical
 dimensions of the coil are given as inputs and the inductance, quality
 factor, and self resonant frequency are calculated.
@@ -101,17 +101,17 @@ factor, and self resonant frequency are calculated.
 .nf
 N=5;              // number of turns
 len=0;            // we'll use the fill parameter instead
-fill=1.2;         // the coil is 20% longer than the minimum
+fill=1\.2;         // the coil is 20% longer than the minimum
 AWG=22;           // wire size
-rho=1;            // not used yet
-dia=0.25*0.0254;  // 0.25 inches inside diameter
+rho=1\.72e-8;      // resistivity of copper (ohm-m)
+dia=0\.25*0\.0254;  // 0\.25 inches inside diameter
 f=10e6;           // 10 MHz operation
 flag=1;           // use fill to calculate length
 [L,Q,SRF,len_out,fill_out,Lmax] = air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);
 disp(sprintf('L=%g nH',L*1e9));
 disp(sprintf('Q=%g at %g MHz',Q,f/1e6));
 disp(sprintf('Self Resonant Freq=%g MHz',SRF/1e6));
-disp(sprintf('Length=%g inches',len_out/0.0254));
+disp(sprintf('Length=%g inches',len_out/0\.0254));
 disp(sprintf('Fill=%g',fill_out));
 disp(sprintf('Lmax=%g nH',Lmax*1e9));
 .fi
