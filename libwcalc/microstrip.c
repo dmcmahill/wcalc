@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.14 2004/07/31 03:39:16 dan Exp $ */
+/* $Id: microstrip.c,v 1.15 2004/07/31 03:57:50 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -148,9 +148,9 @@ int microstrip_calc(microstrip_line *line, double f)
 static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 {
   int rslt=0;
-  double wmil,w,lmil,l;
+  double w, l;
 
-  double h,hmil,er,rho,tand,t,tmil,rough,roughmil;
+  double h, er, rho, tand, t, rough;
 
   double T;
   double u,deltau;
@@ -180,16 +180,13 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   double sigma;
 
 
-  wmil = line->w;
-  w = MIL2M(wmil);
+  w = line->w;
 
-  lmil = line->l;
-  l = MIL2M(lmil);
+  l = line->l;
 
 
-  /* Substrate dielectric thickness (mils) */
-  hmil = line->subs->h;
-  h = MIL2M(hmil);
+  /* Substrate dielectric thickness */
+  h = line->subs->h;
 
   /* Substrate relative permittivity */
   er = line->subs->er;
@@ -200,13 +197,11 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   /* Loss tangent of the dielectric material */
   tand = line->subs->tand;
 
-  /* Metal thickness (mils) */
-  tmil = line->subs->tmet;
-  t = MIL2M(tmil);
+  /* Metal thickness */
+  t = line->subs->tmet;
 
   /*   subs(6) = Metalization roughness */
-  roughmil = line->subs->rough;
-  rough = MIL2M(roughmil);
+  rough = line->subs->rough;
 
 #ifdef DEBUG_CALC
   printf("starting microstrip_calc_int() with %g MHz and ",f/1.0e6);
@@ -215,10 +210,10 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   else
     printf("WITHLOSS\n");
 
-  printf("L = %g mils\n",lmil);
-  printf("W = %g mils\n",wmil);
-  printf("Tmet = %g mils\n",M2MIL(t));
-  printf("er = %g\n",er);
+  printf("L = %g mil\n", M2MIL(l));
+  printf("W = %g mil\n", M2MIL(w));
+  printf("Tmet = %g mil\n", M2MIL(t));
+  printf("er = %g\n", er);
   printf("\n");
 
 #endif
@@ -404,7 +399,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
    deltal = h * z1 * z3 * z5 / z4;
 
-   line->deltal = M2MIL(deltal);
+   line->deltal = deltal;
 
    /* find the incremental circuit model */
    /*
@@ -481,13 +476,11 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
        delta = sqrt(1.0/(M_PI*f*mu*sigma));
        depth = delta;
  
-       /* skin depth in mils */
-       delta = M2MIL(delta);
- 
        
        /* warn the user if the loss calc is suspect. */
        if(t < 3.0*depth)
 	 {
+	   printf("depth = %g, t = %g\n", depth, t);
 	   alert("Warning:  The metal thickness is less than\n"
 		 "three skin depths.  Use the loss results with\n"
 		 "caution.\n");
@@ -515,17 +508,17 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   z2=line->z0;
 
 
-	   line->subs->h = hmil + delta;
-	   line->subs->tmet = tmil - delta;
-	   line->w = wmil-delta;
+	   line->subs->h = h + delta;
+	   line->subs->tmet = t - delta;
+	   line->w = w-delta;
 	   rslt=microstrip_calc_int(line,f,NOLOSS);
 	   if (rslt)
 	     return rslt;
 	   z1=line->z0;
 	   line->subs->er = er;
-	   line->subs->h = hmil;
-	   line->subs->tmet = tmil;
-	   line->w = wmil;
+	   line->subs->h = h;
+	   line->subs->tmet = t;
+	   line->w = w;
 
 	   /* conduction losses, nepers per meter */
 	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
@@ -569,7 +562,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	* the correct equation is penciled in my copy and was 
 	* found in Hammerstad and Bekkadal
 	*/
-       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((roughmil/delta),2.0)));
+       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((rough/delta),2.0)));
        line->alpha_c = lc;
    
        /* loss in dB */
@@ -750,19 +743,29 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
 #ifdef DEBUG_SYN
   printf("microstrip_syn(): --------------- Microstrip Synthesis -----------\n");
-  printf("microstrip_syn(): Metal width                 = %g mil\n",line->w);
-  printf("microstrip_syn(): Metal thickness             = %g mil\n",line->subs->tmet);
+  printf("microstrip_syn(): Metal width                 = %g m\n",line->w);
+  printf("microstrip_syn():                             = %g %s\n",
+	 line->w/line->w_sf,line->w_units);
+  printf("microstrip_syn(): Metal thickness             = %g m\n",line->subs->tmet);
+  printf("microstrip_syn():                             = %g %s\n",
+	 line->subs->tmet/line->subs->tmet_sf,line->subs->tmet_units);
   printf("microstrip_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("microstrip_syn(): Metal surface roughness     = %g mil-rms\n",line->subs->rough);
-  printf("microstrip_syn(): Substrate thickness         = %g mil\n",line->subs->h);
+  printf("microstrip_syn(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
+  printf("microstrip_syn():                             = %g %s\n",
+	 line->subs->rough/line->subs->rough_sf,line->subs->rough_units);
+  printf("microstrip_syn(): Substrate thickness         = %g m\n",line->subs->h);
+  printf("microstrip_syn():                             = %g %s\n",
+	 line->subs->h/line->subs->h_sf,line->subs->h_units);
   printf("microstrip_syn(): Substrate dielectric const. = %g \n",line->subs->er);
   printf("microstrip_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
   printf("microstrip_syn(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("microstrip_syn():                             = %g %s\n",
+	 f/line->f_sf,line->f_units);
   printf("microstrip_syn(): -------------- ---------------------- ----------\n");
-  printf("microstrip_syn(): Desired Zo                  = %g ohm\n",Ro);
-  printf("microstrip_syn(): Desired electrical length   = %g degrees\n",len);
+  printf("microstrip_syn(): Desired Zo                  = %g ohm\n", Ro);
+  printf("microstrip_syn(): Desired electrical length   = %g degrees\n", len);
   printf("microstrip_syn(): -------------- ---------------------- ----------\n");
-  printf("microstrip_syn(): Starting optimization value = %g\n",var);
+  printf("microstrip_syn(): Starting optimization value = %g\n", var);
   printf("microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
@@ -895,7 +898,7 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
   l = (len/360)*(v/f);
 
-  line->l=M2MIL(l);
+  line->l =l;
 
   /* recalculate using real length to find loss  */
   rslt = microstrip_calc(line,f);
@@ -903,9 +906,9 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
     return rslt;
   
 #ifdef DEBUG_SYN
-  printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
+  printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n", line->z0, line->len);
   printf("produced:\n");
-  printf("\twidth = %g [mil] \n\tlength = %g [mil]\n",line->w,line->l);
+  printf("\twidth = %g [m] \n\tlength = %g [m]\n", line->w, line->l);
 #endif
 
   return(0);
