@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.h,v 1.5 2004/07/24 04:07:24 dan Exp $ */
+/* $Id: microstrip_gui.h,v 1.6 2004/07/29 00:02:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -51,20 +51,6 @@ typedef struct MICROSTRIP_GUI
    */
   microstrip_line *line;
 
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
-
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
   /*
    * Values vbox and its contents
    */
@@ -79,6 +65,7 @@ typedef struct MICROSTRIP_GUI
   GtkWidget *outputs_vbox;
   GtkWidget *label_delay,*label_loss,*label_losslen,*label_depth;
   GtkWidget *label_deltal,*label_Ls,*label_Rs,*label_Cp,*label_Gp;
+  GtkWidget *label_keff;
 
   /*
    * Picture vbox and its contents

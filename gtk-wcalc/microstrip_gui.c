@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.10 2004/07/29 00:02:17 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.11 2004/07/29 02:37:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -599,6 +599,17 @@ static void outputs_init(microstrip_gui *gui, GtkWidget *parent)
   wc_units_attach_label(ug, gui->label_deltal, &(gui->line->deltal), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  /* ----------------  Effective dielectric constant -------------- */
+  text = gtk_label_new( "Keff" );
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_keff = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_keff, 
+		    1, 2, 5, 6, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_keff);
+
   /* ---------------- L -------------- */
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
@@ -945,6 +956,10 @@ static void update_display(microstrip_gui *gui)
   /* ---------------- deltal -------------- */
   sprintf(str,WC_FMT_G, gui->line->deltal/gui->line->units_deltal->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_deltal), str );
+
+  /* ---------------- keff -------------- */
+  sprintf(str,WC_FMT_G, gui->line->keff);
+  gtk_label_set_text( GTK_LABEL(gui->label_keff), str );
     
   /* ---------------- L -------------- */
   sprintf(str,WC_FMT_G, gui->line->Ls/gui->line->units_L->sf);
@@ -1077,9 +1092,18 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->losslen/gui->line->units_losslen->sf,
 	  gui->line->units_losslen->name);
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G 
+	  " %s) show newline\n",
 	  gui->line->skindepth/gui->line->units_depth->sf,
 	  gui->line->units_depth->name);
+  fprintf(fp,"(D) symbolshow (l) show tab1 (=) show tab2 (" WC_FMT_G 
+	  " %s) show newline\n",
+	  gui->line->deltal/gui->line->units_deltal->sf,
+	  gui->line->units_deltal->name);
+  fprintf(fp,"(Keff) show tab1 (=) show tab2 (" WC_FMT_G 
+	  ") show newline\n",
+	  gui->line->keff);
+
   fprintf(fp,"newline\n");
   fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->Ls/gui->line->units_L->sf,
