@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.9 2001/09/16 02:39:49 dan Exp $
+dnl $Id: configure.in,v 1.10 2001/09/17 15:52:10 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -39,6 +39,20 @@ AC_CONFIG_HEADER(config.h)
 
 dnl determine host type
 AC_CANONICAL_HOST
+
+AC_CYGWIN
+AC_EXEEXT
+AC_MINGW32
+WIN32=no
+AC_MSG_CHECKING("Checking for windows")
+if test "$CYGWIN" = "yes" -o "$MINGW32" = "yes"
+then
+    WIN32=yes
+fi
+AC_SUBST(WIN32)
+AC_MSG_RESULT($WIN32)
+AC_SUBST(EXEEXT)
+
 
 dnl see of make sets MAKE
 AC_PROG_MAKE_SET
