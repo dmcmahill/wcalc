@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.6 2004/07/22 20:45:12 dan Exp $ */
+/* $Id: cgi-units.c,v 1.7 2004/07/22 21:35:08 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -395,6 +395,12 @@ void cgi_units_menu_read(void)
       }  
     }
 
+    /* and sync the string and scale factor */
+    if( units->name != NULL )
+      free(units->name);
+    units->name = wc_units_to_str(units);
+    units->sf = wc_units_to_sf(units);
+    
     ml = ml->next;
   }
 
