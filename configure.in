@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.70 2004/11/04 04:39:49 dan Exp $
+dnl $Id: configure.in,v 1.71 2004/11/10 05:22:09 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -73,6 +73,7 @@ AC_PATH_PROG(NEQN, neqn)
 # of libwcalc that we can use
 PIXMAPS=pixmaps
 LIB_WCALC=
+INTLPO=
 WCALC_CFLAGS=-I\${top_srcdir}/libwcalc
 WCALC_LDADD=../libwcalc/libwcalc.la
 WCALC_LIBS=
@@ -87,16 +88,19 @@ AC_ARG_ENABLE([libwcalc],
 [
 if test "X$enable_libwcalc" = "Xno" ; then
 	LIB_WCALC=
+	INTLPO=
 	AC_MSG_RESULT([no])
 	wc_libwcalc_yesno=no
 else
 	LIB_WCALC=libwcalc
+	INTLPO=" intl po "
 	AC_MSG_RESULT([yes])
 	wc_libwcalc_yesno=yes
 fi
 ],
 [
 LIB_WCALC=libwcalc
+INTLPO=" intl po "
 AC_MSG_RESULT([yes])
 wc_libwcalc_yesno=yes
 ])
@@ -128,6 +132,7 @@ fi
 fi
 
 AC_SUBST(LIB_WCALC)
+AC_SUBST(INTLPO)
 AC_SUBST(PIXMAPS)
 AC_SUBST(WCALC_CFLAGS)
 AC_SUBST(WCALC_CONFIG)
@@ -666,17 +671,27 @@ AC_ARG_WITH([matlab],
 if test "X$with_matlab" = "Xno" ; then
 	MEX_WCALC=""
 	wc_mex_wcalc_yesno=no
+elif test "X$with_matlab" = "Xyes" ; then
+	AC_PATH_PROG(MEX, mex, no)
+	if test "X$MEX" = "Xno" ; then
+		AC_ERROR([No matlab mex could be found])
+	fi
+
+	MEX_WCALC=mex-wcalc
+	wc_mex_wcalc_yesno=yes
 else
-	MEX_WCALC="mex-wcalc"
 	MATLAB_DIR=$with_matlab
+
+	AC_PATH_PROG(MEX, mex, no, [$MATLAB_DIR/bin:$PATH])
+	if test "X$MEX" = "Xno" ; then
+		AC_ERROR([No matlab mex could be found])
+	fi
+
+	MEX_WCALC=mex-wcalc
 	wc_mex_wcalc_yesno=yes
 fi
-],
-[
-with_matlab=no
-MEX_WCALC=""
-wc_mex_wcalc_yesno=no
 ])
+
 AC_SUBST(MATLAB_DIR)
 AC_SUBST(MEX_WCALC)
 
@@ -692,7 +707,9 @@ AC_SUBST(MEX_WCALC)
 #	glnx86          - .mexglx
 #	Windows         - .dll
 
-AC_PATH_PROG(MEX, mex)
+MEXSFX="none"
+if test "X$MEX_WCALC" != "X" ; then
+
 AC_MSG_CHECKING([for matlab mex suffix])
 case $host in
 	rs6000-*-aix* )
@@ -762,8 +779,80 @@ case $host in
 
 esac
 AC_MSG_RESULT([$MEXSFX])
-
+fi
 AC_SUBST(MEXSFX)
+
+if test "X$MEX_WCALC" != "X"; then
+	AC_MSG_CHECKING([if $MEX is matlab mex])
+	AC_LANG(C)
+	ac_ext=c
+	ac_cpp='$MEX $CPPFLAGS'
+	ac_compile='$MEX -c conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+	ac_link='$MEX conftest.$ac_ext $LIBS >&AS_MESSAGE_LOG_FD'
+	ac_compiler_gnu=$ac_cv_c_compiler_gnu
+	save_ac_exeext=$ac_exeext
+	ac_exeext=.${MEXSFX}
+
+	AC_LINK_IFELSE([
+#include "mex.h"
+void mexFunction(
+                 int nlhs,
+                 mxArray *plhs[[]],
+                 int nrhs,
+#if !defined(V4_COMPAT) && !defined(SCI_MEX)
+                 const mxArray *prhs[[]]
+#else
+                 mxArray *prhs[[]]
+#endif
+                 )
+{
+	mexPrintf("Hello, world\n");
+}
+],
+	AC_MSG_RESULT([yes])
+,
+	AC_ERROR([$MEX is either broken or is not matlab mex])
+)
+
+	wc_save_LIBS="$LIBS"
+	for fl in "-Wl,-rpath " "-Wl,--rpath " "-rpath " "--rpath " "-Wl,-R" "-R" "-R " ; do
+	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
+	    LIBS="$wd_save_LIBS ${fl}path"
+	    AC_MSG_CHECKING([if $MEX accepts ${fl}path for runtime libraries])
+	    AC_LINK_IFELSE([
+#include "mex.h"
+void mexFunction(
+                 int nlhs,
+                 mxArray *plhs[[]],
+                 int nrhs,
+#if !defined(V4_COMPAT) && !defined(SCI_MEX)
+                 const mxArray *prhs[[]]
+#else
+                 mxArray *prhs[[]]
+#endif
+                 )
+{
+	mexPrintf("Hello, world\n");
+}
+],
+
+		AC_MSG_RESULT([yes])
+		rpath=$fl, 
+		AC_MSG_RESULT([no]))
+		test -n "$rpath" && break
+	done
+	if test -n "$rpath"; then
+	   MEX_RPATH="$rpath"
+	else
+	   MEX_RPATH=""
+	fi
+	LIBS="$wc_save_LIBS"
+
+	# restore the language settings
+	ac_exeext=$save_ac_exeext
+	AC_LANG(C)
+
+fi
 
 # ------------- end of matlab mex -------------------
 
