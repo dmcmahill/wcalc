@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.25 2004/07/23 22:11:54 dan Exp $ */
+/* $Id: coax_gui.c,v 1.26 2004/07/24 17:39:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -203,6 +203,9 @@ void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   update_display(gui);
 
   wc_units_menu_init( wcalc );
+  
+  /* run the analysis once since we've changed input units */
+  analyze(NULL, gui);
 }
 
 /*
