@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.3 2001/11/28 15:39:46 dan Exp $ */
+/* $Id: coax.c,v 1.4 2001/12/10 12:21:21 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -96,10 +96,11 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   double x;
   double mu0,e0;
   double v;
-  double Gc,Gs;
+  double Gc,Gs,Rc,Rs;
   double delta_c=1.0;
   double delta_s=1.0;
   double omega;
+  double db_per_np;
 
 #ifdef DEBUG_CALC
   printf("\n");
@@ -178,6 +179,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      * Current crowding more to one side of the conductor than another
      * when  c != 0 breaks these equations.
      */
+
     if (omega > 0) {
       /* center and shield skindepths */
       delta_c = sqrt(2*line->rho_a/(omega*mu0));
@@ -193,48 +195,65 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     /*
      * Resistance per length of shield (outer conductor)
      */
-    if ( (omega == 0) || (delta_s/line->tshield > 1e6) ) {
+    if (line->rho_b == 0) {
+      Rs = 0;
+    }
+    else if ( (omega == 0) || (delta_s/line->tshield > 1e6) ) {
       /* DC case */
-      Gs = 2.0 * M_PI * line->tshield * (line->b + line->tshield/2) / line->rho_b;
+      Gs = 2.0 * M_PI * line->tshield * 
+	(line->b + line->tshield/2) / line->rho_b;
+      Rs = 1/Gs;
     }
     else {
       /* frequency dependent case */
       Gs = ( (2.0 * M_PI * delta_s) / line->rho_b ) *
 	( (line->b + delta_s) - (line->b + line->tshield + delta_s) * 
 	  exp(-line->tshield/delta_s) );
+      Rs = 1/Gs;
     }
 
     /*
      * Resistance per length of center conductor
      */
-    if ( (omega == 0) || (delta_c/line->a > 1e6) ) {
+    if (line->rho_a == 0) {
+      Rc = 0;
+    }
+    else if ( (omega == 0) || (delta_c/line->a > 1e6) ) {
       /* DC case */
       Gc = M_PI * line->a * line->a / line->rho_a;
+      Rc = 1/Gc;
     }
     else {
       /* frequency dependent case */
       Gc = ( (2.0 * M_PI) / line->rho_a ) *
 	( line->a*delta_c - delta_c*delta_c*(1-exp(-line->a/delta_c)) );
+      Rc = 1/Gc;
     }
 
-    line->R = 1.0/Gs + 1.0/Gc;
+    line->R = Rs + Rc;
 #ifdef DEBUG_CALC
     printf("coax_calc():  Found resistances:\n");
-    printf("coax_calc():  Rshield = %g Ohms/meter\n",1.0/Gs);
-    printf("coax_calc():  Rcenter = %g Ohms/meter\n",1.0/Gc);
+    printf("coax_calc():  Rshield = %g Ohms/meter\n",Rs);
+    printf("coax_calc():  Rcenter = %g Ohms/meter\n",Rc);
 #endif
 
     /* 
      * compute conductor losses and dielectric losses 
      */
-    line->alpha_c = 0.5*line->R/line->z0;
-    line->alpha_d = 0.5*line->G*line->z0;
+    db_per_np = 20.0*log10(exp(1.0));
+    line->alpha_c = db_per_np*0.5*line->R/line->z0;
+    line->alpha_d = db_per_np*0.5*line->G*line->z0;
+
+    line->losslen = line->alpha_c + line->alpha_d;
+
+    line->loss = line->losslen*line->len;
   }
 
   /*
    * electrical length 2*pi*f*(180/pi) = 360*f
    */
-  line->elen = 360.0*line->freq*line->len/v;
+  line->delay = line->len/v;
+  line->elen = 360.0*line->freq*line->delay;
 
   /*
    * TE11 mode cutoff frequency
