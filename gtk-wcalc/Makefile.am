@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.24 2002/12/18 13:56:43 dan Exp $
+## $Id: Makefile.am,v 1.25 2004/07/29 00:02:12 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -91,7 +91,7 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
 EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS} ${pkgdata_DATA}
 
-DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
+DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" -DWCALC_RCDIR="\"$(pkgdatadir)\"" @DEFS@
 
 LIBS= @LIBINTL@ @LIBS@
 
