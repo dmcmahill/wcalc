@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.5 2001/09/20 02:02:58 dan Exp $ */
+/* $Id: start.c,v 1.6 2001/09/22 03:50:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill

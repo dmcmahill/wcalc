@@ -1,4 +1,4 @@
-/* $Id: menus.h,v 1.1 2001/02/11 19:26:25 dan Exp $ */
+/* $Id: menus.h,v 1.2 2001/09/15 23:56:38 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

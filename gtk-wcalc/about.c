@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.1 2001/02/11 19:26:17 dan Exp $ */
+/* $Id: about.c,v 1.2 2001/02/12 18:00:43 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

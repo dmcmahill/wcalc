@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.11 2001/09/23 17:38:10 dan Exp $ */
+/*      $Id: wcalc.h,v 1.12 2001/09/27 02:01:52 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

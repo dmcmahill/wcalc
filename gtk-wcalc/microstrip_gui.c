@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.11 2001/09/27 17:43:18 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.12 2001/09/28 00:26:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

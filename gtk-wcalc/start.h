@@ -1,7 +1,7 @@
-/* $Id: about.h,v 1.1 2001/02/11 19:26:18 dan Exp $ */
+/* $Id: start.h,v 1.1 2001/09/15 14:43:56 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Dan McMahill
+ * Copyright (c) 2001 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,10 +33,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __ABOUT_H__
-#define __ABOUT_H__
+#ifndef __START_H__
+#define __START_H__
 
-void about_popup(void);
-void copyright_popup(void);
+void start_popup(void);
 
-#endif /*__ABOUT_H__*/
+#endif /*__START_H__*/

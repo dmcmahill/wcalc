@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.6 2001/09/27 12:54:12 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.7 2001/09/27 17:47:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill

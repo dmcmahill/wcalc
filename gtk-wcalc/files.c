@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.4 2001/09/23 17:38:08 dan Exp $ */
+/* $Id: files.c,v 1.5 2001/09/27 02:01:49 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
