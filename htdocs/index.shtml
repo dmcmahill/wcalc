@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id$ -->
+<!-- $Id: index.shtml,v 1.1 2001/10/16 03:25:18 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -32,7 +32,7 @@ stripline synthesis,
     <br>
     <br>
 
-    <a href="../pixmaps/splash.png"><img src="../pixmaps/splash.png"
+    <a href="splash.png"><img src="splash.png"
      alt="Splash Image" border="0" width="363" height="179" hspace="10" vspace="5"></a>
     </center>
     <p>

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: gtk-wcalc.shtml,v 1.1 2001/10/16 04:15:33 dan Exp $ -->
+<!-- $Id: air_coil.shtml,v 1.1 2001/10/16 04:40:57 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -31,7 +31,7 @@ stripline synthesis,
     </font>
     <br>
     <br>
-    <img src="../pixmaps/air_coil.png"
+    <img src="air_coil.png"
     alt="Air Core Solenoid Image" width="332" height="197" hspace="10" vspace="5">
     </center>
     

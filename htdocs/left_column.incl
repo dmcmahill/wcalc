@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.1 2001/10/16 03:25:19 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.2 2001/10/16 13:11:08 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -6,7 +6,7 @@
   <table width="100%" cellspacing=0 cellpadding=0 border=0>
   <tr>
   <td>
-  <img src="../pixmaps/logo.png" width="197" height="161"
+  <img src="logo.png" width="197" height="161"
    alt="Wcalc Logo">
   </td></tr>
   </table>
