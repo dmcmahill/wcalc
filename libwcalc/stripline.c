@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.4 2001/11/11 15:54:21 dan Exp $ */
+/*      $Id: stripline.c,v 1.5 2002/01/14 02:50:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -271,6 +271,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
        line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
        delta = line->skindepth;
 
+#ifdef notdef
        /* warn the user if the loss calc is suspect. */
        if(line->subs->tmet < 3.0*line->skindepth)
 	 {
@@ -278,6 +279,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   printf("three skin depths.  Use the loss results with\n");
 	   printf("caution.\n");
 	 }
+#endif
 
        /*
 	* if the skinDepth is greater than Tmet, assume current
