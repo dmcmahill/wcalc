@@ -1,6 +1,6 @@
-.\" $Id: coupled_microstrip_syn.man,v 1.5 2001/11/03 19:21:49 dan Exp $
+.\" $Id: coupled_microstrip_syn.man,v 1.1 2001/11/04 19:23:11 dan Exp $
 .\"
-.\" Copyright (c) 2001 Dan McMahill
+.\" Copyright (c) 2001, 2004 Dan McMahill
 .\" All rights reserved.
 .\"
 .\" This code is derived from software written by Dan McMahill
@@ -38,10 +38,10 @@
 coupled_microstrip_syn - Coupled microstrip transmission line synthesis
 .SH CALLING SEQUENCE
 .nf
-[w_out,s_out,h_out,l_out,er_out,kev,kodd] = 
-    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
-[w_out,s_out,h_out,l_out,er_out,kev,kodd] = 
-    coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
+[w_out,s_out,l_out] = 
+    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,0);
+[w_out,s_out,l_out] = 
+    coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
 .fi
 .SH PARAMETERS
 .TP 10
@@ -98,11 +98,14 @@ flag=1
 : synthesize based on even and odd mode characteristic impedances
 .RE
 .TP
-kev
-: calculated even mode effective relative permitivitty
+w_out
+: calculated metal width
 .TP
-kedd
-: calculated odd mode effective relative permitivitty
+s_out
+: calculated gap
+.TP
+l_out
+: calculated metal length
 .SH DESCRIPTION
 function to synthesize the physical dimenstions of a
 coupled microstrip transmission line to achieve a desired characteristic
@@ -141,19 +144,16 @@ s=0;              // spacing (we'll synthesize this)
 h=15*sf;          // height
 l=1100*sf;        // length
 tmet=1.4*sf;      // metal thickness
-rho=1;            // resitivity relative to copper
+rho=1.72e-8;      // resitivity of copper
 rough=0.05*sf;    // metal surface roughness
 er=4.5;           // relative dielectric constant
 tand=0.01;        // loss tangent
 f=2.4e9;          // frequency
 flag=0;           // synthesize from z0 and k (instead
                   // of z0e and z0o)
-[w_out,s_out,h_out,l_out,er_out,kev,kodd] = ...
+[w_out,s_out,l_out] = ...
     coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
-disp(sprintf('w=%g mils, s=%g mils, l=%g mils',w_out/sf,w_out/sf,l_out/sf));
-disp(sprintf('er=%g',er_out));
-disp(sprintf('z0=%g ohms, length=%g degrees',z0,elen));
-disp(sprintf('kev=%g, kodd=%g',kev,kodd));
+disp(sprintf('w=%8.4g mils, s=%8.4g mils, l=%8.4g mils',w_out/sf,s_out/sf,l_out/sf));
 .fi
 .SH SEE ALSO
 coupled_microstrip_calc

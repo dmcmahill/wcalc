@@ -1,9 +1,9 @@
-/* $Id: coupled_microstrip_calc.c,v 1.3 2002/05/10 22:53:02 dan Exp $ */
+/* $Id: coupled_microstrip_calc.c,v 1.4 2002/06/12 11:30:36 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_microstrip_calc.c,v 1.3 2002/05/10 22:53:02 dan Exp $";
+static char vcid[] = "$Id: coupled_microstrip_calc.c,v 1.4 2002/06/12 11:30:36 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -75,6 +75,10 @@ static char vcid[] = "$Id: coupled_microstrip_calc.c,v 1.3 2002/05/10 22:53:02 d
 #define	Z0O_OUT	   plhs[3]
 #define	KEV_OUT    plhs[4]
 #define	KODD_OUT   plhs[5]
+#define	LOSSE_OUT  plhs[6]
+#define	LOSSO_OUT  plhs[7]
+#define	DELTAE_OUT  plhs[8]
+#define	DELTAO_OUT  plhs[9]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -126,7 +130,7 @@ void mexFunction(
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq;
 
   /* outputs */
-  double	*z0,*k,*z0e,*z0o,*kev,*kodd;
+  double	*z0,*k,*z0e,*z0o,*kev,*kodd, *losse, *losso, *deltale, *deltalo;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -159,9 +163,9 @@ void mexFunction(
 		 " (needs 10).");
   } 
 
-  if (nlhs > 4) {
+  if (nlhs > 10) {
     mexErrMsgTxt("wrong number of output arguments to COUPLED_MICROSTRIP_CALC"
-		 " (needs <= 4).");
+		 " (needs <= 10).");
   }
   
   
@@ -192,7 +196,11 @@ void mexFunction(
   Z0O_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   KEV_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   KODD_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  
+  LOSSE_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  LOSSO_OUT  = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  DELTAE_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  DELTAO_OUT = mxCreateDoubleMatrix(rows, cols, mxREAL);
+
   /* output pointers */
   z0     = mxGetPr(Z0_OUT);
   k      = mxGetPr(K_OUT);
@@ -200,6 +208,10 @@ void mexFunction(
   z0o    = mxGetPr(Z0O_OUT);
   kev    = mxGetPr(KEV_OUT);
   kodd   = mxGetPr(KODD_OUT);
+  losse  = mxGetPr(LOSSE_OUT);
+  losso  = mxGetPr(LOSSO_OUT);
+  deltale= mxGetPr(DELTAE_OUT);
+  deltalo= mxGetPr(DELTAO_OUT);
 
   /* the actual computation */
   line = coupled_microstrip_line_new();
@@ -232,6 +244,10 @@ void mexFunction(
     z0o[ind]    = line->z0o;
     kev[ind]    = line->kev;
     kodd[ind]   = line->kodd;
+    losse[ind]  = line->loss_ev;
+    losso[ind]  = line->loss_odd;
+    deltale[ind]= line->deltale;
+    deltalo[ind]= line->deltalo;
   }
 
   /* clean up */

@@ -1,6 +1,6 @@
-/* $Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 dan Exp $ */
+/* $Id: coupled_microstrip_syn.c,v 1.6 2004/08/03 02:15:27 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 dan Exp $";
+static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.6 2004/08/03 02:15:27 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 da
 #endif
 
 /*
- * function [w_out,s_out,l_out,er_out,kev,kodd] = 
+ * function [w_out,s_out,l_out] = 
  *       coupled_microstrip_syn(z0,k,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
  */
 
@@ -75,13 +75,7 @@ static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.5 2002/06/12 11:30:37 da
 
 #define	W_OUT	   plhs[0]
 #define	S_OUT	   plhs[1]
-#define	H_OUT	   plhs[2]
-#define	L_OUT	   plhs[3]
-#define	ER_OUT	   plhs[4]
-#define	KEV_OUT    plhs[5]
-#define	KODD_OUT   plhs[6]
-
-
+#define	L_OUT	   plhs[2]
 
 #define CHECK_INPUT(x,y,z,v)                                          \
 m = mxGetM(x);                                                        \
@@ -133,7 +127,7 @@ void mexFunction(
   unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq,*ind_flag;
 
   /* outputs */
-  double *w_out,*s_out,*l_out,*h_out,*er_out,*kev,*kodd;
+  double *w_out,*s_out,*l_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -166,9 +160,9 @@ void mexFunction(
 		 " (needs 14).");
   } 
 
-  if (nlhs > 7) {
+  if (nlhs > 3) {
     mexErrMsgTxt("wrong number of output arguments to COUPLED_MICROSTRIP_SYN"
-		 " (needs <= 7).");
+		 " (needs <= 3).");
   }
   
   
@@ -200,19 +194,11 @@ void mexFunction(
   W_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   S_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  H_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  ER_OUT     = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  KEV_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
-  KODD_OUT   = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   w_out  = mxGetPr(W_OUT);
   s_out  = mxGetPr(S_OUT);
   l_out  = mxGetPr(L_OUT);
-  h_out  = mxGetPr(H_OUT);
-  er_out = mxGetPr(ER_OUT);
-  kev    = mxGetPr(KEV_OUT);
-  kodd   = mxGetPr(KODD_OUT);
 
   /* the actual computation */
   line = coupled_microstrip_line_new();
@@ -254,10 +240,6 @@ void mexFunction(
     w_out[ind]  = line->w;
     s_out[ind]  = line->s;
     l_out[ind]  = line->l;
-    h_out[ind]  = line->subs->h;
-    er_out[ind] = line->subs->er;
-    kev[ind]    = line->kev;
-    kodd[ind]   = line->kodd;
   }
 
   /* clean up */

@@ -1,9 +1,9 @@
-/* $Id: ic_microstrip_syn.c,v 1.3 2002/05/10 22:53:04 dan Exp $ */
+/* $Id: ic_microstrip_syn.c,v 1.4 2002/06/12 11:30:37 dan Exp $ */
 
-static char vcid[] = "$Id: ic_microstrip_syn.c,v 1.3 2002/05/10 22:53:04 dan Exp $";
+static char vcid[] = "$Id: ic_microstrip_syn.c,v 1.4 2002/06/12 11:30:37 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,7 +50,7 @@ static char vcid[] = "$Id: ic_microstrip_syn.c,v 1.3 2002/05/10 22:53:04 dan Exp
 #endif
 
 /*
- * function [z0,keff,loss,deltal] = 
+ * function [w, h, tox, l] =
  *       ic_microstrip_syn(z0,elen,w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f,flag);
  */
 
@@ -75,7 +75,8 @@ static char vcid[] = "$Id: ic_microstrip_syn.c,v 1.3 2002/05/10 22:53:04 dan Exp
 
 #define	W_OUT	   plhs[0]
 #define	H_OUT	   plhs[1]
-#define	L_OUT	   plhs[2]
+#define	TOX_OUT	   plhs[2]
+#define	L_OUT	   plhs[3]
 
 
 #define CHECK_INPUT(x,y,z,v)                                          \
@@ -129,7 +130,7 @@ void mexFunction(
   unsigned int *ind_rough,*ind_freq,*ind_flag;
 
   /* outputs */
-  double *w_out,*l_out,*h_out;
+  double *w_out, *l_out, *h_out, *tox_out;
 
   /* number of rows and columns */
   unsigned int rows=1,cols=1;
@@ -162,7 +163,7 @@ void mexFunction(
 		 " (needs 14).");
   } 
 
-  if (nlhs > 3) {
+  if (nlhs > 4) {
     mexErrMsgTxt("wrong number of output arguments to IC_MICROSTRIP_SYN"
 		 " (needs <= 4).");
   }
@@ -196,11 +197,13 @@ void mexFunction(
   W_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   L_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
   H_OUT      = mxCreateDoubleMatrix(rows, cols, mxREAL);
+  TOX_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
   
   /* output pointers */
   w_out  = mxGetPr(W_OUT);
   l_out  = mxGetPr(L_OUT);
   h_out  = mxGetPr(H_OUT);
+  tox_out= mxGetPr(TOX_OUT);
 
   /* the actual computation */
   line = ic_microstrip_line_new();
@@ -227,8 +230,8 @@ void mexFunction(
     line->Ro          = z0[*ind_z0];
     line->len         = elen[*ind_elen];
     
-    if ((flag[*ind_flag] > 3) || (flag[*ind_flag] < 0) ) {
-      mexErrMsgTxt("flag must be one of 0,1,2,3 in IC_MICROSTRIP_SYN");
+    if ((flag[*ind_flag] > 2) || (flag[*ind_flag] < 0) ) {
+      mexErrMsgTxt("flag must be one of 0,1,2 in IC_MICROSTRIP_SYN");
     }
 
     /* run the calculation */
@@ -238,6 +241,7 @@ void mexFunction(
     w_out[ind]  = line->w;
     l_out[ind]  = line->l;
     h_out[ind]  = line->subs->h;
+    tox_out[ind]= line->subs->tox;
   }
 
   /* clean up */
