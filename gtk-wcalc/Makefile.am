@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.18 2002/05/15 11:20:43 dan Exp $
+## $Id: Makefile.am,v 1.19 2002/05/16 19:29:18 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -82,7 +82,10 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
 EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS}
 
-INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" -DWCALC_DATADIR=\"$(pkgdatadir)\" -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -I$(top_srcdir) ${DMALLOC_CFLAGS}
+INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
+	-DWCALC_DATADIR=\"$(pkgdatadir)\" \
+	-I$(top_srcdir)/include -I$(top_srcdir)/libwcalc \
+	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 
 LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
@@ -103,7 +106,7 @@ runwcalc:	$(srcdir)/runwcalc.in
 
 AWG.c: AWG.asciitab
 
-AWG.asciitab: Makefile
+AWG.asciitab: $(srcdir)/Makefile.am
 	${AWK}  'BEGIN{ \
 				printf("Wire Size (AWG)|Diameter (mil)|Diameter (mm)\n\n"); \
 				for(awg=8;awg<=42;awg++){ \
