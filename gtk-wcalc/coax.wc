@@ -1,0 +1,110 @@
+# $Id$
+#
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/coax.wc
+# Modified:  Tue Jul 27 22:10:42 2004
+# Wcalc Version 0.5
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = coax
+
+
+[coax]
+
+# Coax file version
+file_version = 0.1
+
+# Physical parameters
+
+# Radius of inner conductor (meters)
+a = 0.0028625702530844
+
+# Inner radius of outer conductor (meters)
+b = 0.01
+
+# Offset of inner conductor from center (meters)
+c = 0
+
+# Thickness of outer conductor (meters)
+tshield = 0.001
+
+# Resistivity of inner conductor (ohms/meter)
+rho_a = 3e-08
+
+# Resistivity of outer conductor (ohms/meter)
+rho_b = 3e-08
+
+# Dielectric relative permitivity
+er = 1
+
+# Dielectric loss tangent
+tand = 1e-06
+
+# Physical length of line (meters)
+len = 10.0014109027778
+
+# Electrical parameters
+
+# Characteristic impedance of line (Ohms)
+z0 = 75.0000000061101
+
+# Electrical length of line (degrees)
+elen = 1201
+
+# Frequency of operation (Hz)
+freq = 100000000
+
+# User units
+
+# Max. electric field units
+wc_units_emax = 5-4
+# [kV/m]
+
+# TE10 cutoff frequency units
+wc_units_fc = 4
+# [GHz]
+
+# Delay units
+wc_units_delay = 3
+# [ns]
+
+# Loss units
+wc_units_loss = 0
+# [dB]
+
+# Loss/length units
+wc_units_losslen = 0-4
+# [dB/m]
+
+# A,B,C, Tshield units
+wc_units_abct = 3
+# [cm]
+
+# Line physical length units
+wc_units_len = 4
+# [m]
+
+# Frequency units
+wc_units_freq = 3
+# [MHz]
+
+# Resistivity units
+wc_units_rho = 1-4
+# [Ohm-m]
+
+# Incremental inductance units
+wc_units_L = 1-4
+# [nH/m]
+
+# Incremental resistance units
+wc_units_R = 0-4
+# [mOhm/m]
+
+# Incremental capacitance units
+wc_units_C = 1-4
+# [pF/m]
+
+# Incremental conductance units
+wc_units_G = 0-4
+# [uMho/m]
+
