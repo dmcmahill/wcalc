@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.h,v 1.4 2002/06/12 11:30:19 dan Exp $ */
+/* $Id: stripline_gui.h,v 1.5 2004/07/24 04:07:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -50,20 +50,6 @@ typedef struct STRIPLINE_GUI
    * the stripline which is being analyzed
    */
   stripline_line *line;
-
-  /* 
-   * Frequency/Units/Model vbox and its contents 
-   */
-  GtkWidget *units_vbox;
-
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
 
   /*
    * Values vbox and its contents
