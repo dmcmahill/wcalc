@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.h,v 1.6 2004/07/29 00:02:18 dan Exp $ */
+/* $Id: coupled_microstrip_gui.h,v 1.1 2004/07/29 02:38:24 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -56,21 +56,14 @@ typedef struct COUPLED_MICROSTRIP_GUI
    */
   GtkWidget *units_vbox;
 
-  /* frequency units */
-  GtkWidget *combo_funits;
-
-  /* model selection */
-  GtkWidget *combo_model;
-
-  /* physical units */
-  GtkWidget *combo_punits;
-
   /*
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
   GtkWidget *text_w,*text_l,*text_h,*text_er,*text_tand;
-  GtkWidget *text_z0,*text_elen,*text_tmet,*text_rho,*text_rough;
+  GtkWidget *text_z0, *text_k;
+  GtkWidget *text_z0e, *text_z0o;
+  GtkWidget *text_elen,*text_tmet,*text_rho,*text_rough;
   GtkWidget *text_freq;
 
   /*
@@ -79,6 +72,7 @@ typedef struct COUPLED_MICROSTRIP_GUI
   GtkWidget *outputs_vbox;
   GtkWidget *label_delay,*label_loss,*label_losslen,*label_depth;
   GtkWidget *label_deltal,*label_Ls,*label_Rs,*label_Cp,*label_Gp;
+  GtkWidget *label_keffe, *label_keffo;
 
   /*
    * Picture vbox and its contents
