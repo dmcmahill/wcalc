@@ -1,4 +1,4 @@
-/* $Id: microstrip.cgi.c,v 1.3 2002/05/10 22:52:32 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.4 2002/06/12 11:30:06 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -116,19 +116,19 @@ int cgiMain(void){
 
 
   /* Metal resistivity relative to copper */
-  if(cgiFormDoubleBounded("rho",&rho,0.0001,1000.0,defRHO) !=
+  if(cgiFormDoubleBounded("rho",&rho,0.0,1000.0,defRHO) !=
      cgiFormSuccess){
     input_err=1;
   }
 
   /* Metal thickness (m) */
-  if(cgiFormDoubleBounded("tmet",&tmet,0.0001,1000.0,defTMET) !=
+  if(cgiFormDoubleBounded("tmet",&tmet,0.0,1000.0,defTMET) !=
      cgiFormSuccess){
     input_err=1;
   }
 
   /* Metalization roughness */
-  if(cgiFormDoubleBounded("rough",&rough,0.0001,1000.0,defRGH) !=
+  if(cgiFormDoubleBounded("rough",&rough,0.0,1000.0,defRGH) !=
      cgiFormSuccess){
     input_err=1;
   }
