@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.8 2004/07/23 22:11:58 dan Exp $ */
+/* $Id: units.c,v 1.9 2004/07/26 22:22:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -398,7 +398,6 @@ wc_units * wc_units_new(int type)
     u->nden = 0;
     break;
 
-  case WC_UNITS_CONDUCTIVITY:
   case WC_UNITS_RESISTIVITY:
     u->nnum = 2;
     u->nden = 0;
@@ -406,6 +405,7 @@ wc_units * wc_units_new(int type)
 
   case WC_UNITS_CAPACITANCE_PER_LEN:
   case WC_UNITS_CONDUCTANCE_PER_LEN:
+  case WC_UNITS_CONDUCTIVITY:
   case WC_UNITS_DB_PER_LEN:
   case WC_UNITS_ELECTRIC_FIELD:
   case WC_UNITS_INDUCTANCE_PER_LEN:
@@ -474,7 +474,7 @@ wc_units * wc_units_new(int type)
 
   case WC_UNITS_CONDUCTIVITY:
     u->num[0] = wc_units_conductance;
-    u->num[1] = wc_units_length;
+    u->den[0] = wc_units_length;
     break;
 
   case WC_UNITS_CURRENT:
