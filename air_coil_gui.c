@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.1 2001/09/22 03:50:14 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.2 2001/09/22 04:46:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -677,35 +677,35 @@ static void update_display(air_coil_gui *gui)
 {
   char str[80];
 
-  sprintf(str,"%8f",gui->coil->Nf);
+  sprintf(str,"%.4g",gui->coil->Nf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_Nf), str );
 
-  sprintf(str,"%8f",gui->coil->dia/gui->coil->dia_sf);
+  sprintf(str,"%.4g",gui->coil->dia/gui->coil->dia_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_dia), str );
 
-  sprintf(str,"%8f",gui->coil->len/gui->coil->len_sf);
+  sprintf(str,"%.4g",gui->coil->len/gui->coil->len_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_len), str );
 
-  sprintf(str,"%8f",gui->coil->L/gui->coil->L_sf);
+  sprintf(str,"%.4g",gui->coil->L/gui->coil->L_sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_L), str );
   
-  sprintf(str,"%8f",gui->coil->rho);
+  sprintf(str,"%.4g",gui->coil->rho);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
   
-  sprintf(str,"%8f",gui->coil->AWGf);
+  sprintf(str,"%.4g",gui->coil->AWGf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
   
 
-  sprintf(str,"%8f",gui->coil->Q);
+  sprintf(str,"%8.4g",gui->coil->Q);
   gtk_label_set_text( GTK_LABEL(gui->label_Q), str );
   
-  sprintf(str,"%8f",gui->coil->SRF*1e-6);
+  sprintf(str,"%8.4g",gui->coil->SRF*1e-6);
   gtk_label_set_text( GTK_LABEL(gui->label_SRF), str );
   
-  sprintf(str,"%8f",gui->coil->Lmax/gui->coil->L_sf);
+  sprintf(str,"%8.4g",gui->coil->Lmax/gui->coil->L_sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Lmax), str );
   
-  sprintf(str,"%8f",gui->coil->fill);
+  sprintf(str,"%8.4g",gui->coil->fill);
   gtk_label_set_text( GTK_LABEL(gui->label_fill), str );
 
 }
