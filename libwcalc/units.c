@@ -1,4 +1,4 @@
-/* $Id: units.c,v 1.1 2004/07/18 16:09:38 dan Exp $ */
+/* $Id: units.c,v 1.2 2004/07/19 22:36:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -342,6 +342,7 @@ wc_units * wc_units_new(int type)
   /* fill in the number of terms in numerator and denominator */
   switch (type) {
   case WC_UNITS_FREQUENCY:
+  case WC_UNITS_LENGTH:
     u->nnum = 1;
     u->nden = 0;
     break;
@@ -399,15 +400,6 @@ wc_units * wc_units_new(int type)
 
   /* initialize the units */
   switch (type) {
-  case WC_UNITS_FREQUENCY:
-    u->num[0] = wc_units_frequency;
-    break;
-
-  case WC_UNITS_RESISTIVITY:
-    u->num[0] = wc_units_resistance;
-    u->num[1] = wc_units_length;
-    break;
-
   case WC_UNITS_CAPACITANCE_PER_LEN:
     u->num[0] = wc_units_capacitance;
     u->den[0] = wc_units_length;
@@ -418,14 +410,27 @@ wc_units * wc_units_new(int type)
     u->den[0] = wc_units_length;
     break;
 
+  case WC_UNITS_FREQUENCY:
+    u->num[0] = wc_units_frequency;
+    break;
+
   case WC_UNITS_INDUCTANCE_PER_LEN:
     u->num[0] = wc_units_inductance;
     u->den[0] = wc_units_length;
     break;
 
+  case WC_UNITS_LENGTH:
+    u->num[0] = wc_units_length;
+    break;
+
   case WC_UNITS_RESISTANCE_PER_LEN:
     u->num[0] = wc_units_resistance;
     u->den[0] = wc_units_length;
+    break;
+
+  case WC_UNITS_RESISTIVITY:
+    u->num[0] = wc_units_resistance;
+    u->num[1] = wc_units_length;
     break;
 
   default:

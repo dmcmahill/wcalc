@@ -1,4 +1,4 @@
-/* $Id: units.h,v 1.1 2004/07/18 16:09:38 dan Exp $ */
+/* $Id: units.h,v 1.2 2004/07/19 22:36:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -81,12 +81,13 @@ typedef struct WC_UNITS
 
   /* what sort of units are these? */
   enum {
-    WC_UNITS_FREQUENCY,
-    WC_UNITS_RESISTIVITY,
     WC_UNITS_CAPACITANCE_PER_LEN,
     WC_UNITS_CONDUCTANCE_PER_LEN,
+    WC_UNITS_FREQUENCY,
     WC_UNITS_INDUCTANCE_PER_LEN,
+    WC_UNITS_LENGTH,
     WC_UNITS_RESISTANCE_PER_LEN,
+    WC_UNITS_RESISTIVITY,
   } type;
 
 } wc_units;
@@ -124,6 +125,7 @@ char *wc_units_to_str( const wc_units *units );
  */
 char *wc_units_to_savestr( const wc_units *units );
 
+int wc_savestr_to_units( const char *str,  wc_units *units );
 
 wc_units *wc_units_new(int type);
 
