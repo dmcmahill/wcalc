@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: coax_test.c,v 1.1 2001/11/27 04:46:32 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -36,7 +36,8 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "coax.c"
+#include "coax.h"
+#include "coax_loadsave.h"
 
 
 int main(int argc, char **argv)
@@ -49,6 +50,7 @@ int main(int argc, char **argv)
   int i;
   int npts = sizeof(b)/sizeof(double);
   double freq;
+  char *str;
 
   coax_line *line;
 
@@ -66,6 +68,7 @@ int main(int argc, char **argv)
   line->a=1;
   line->c=0;
   coax_calc(line,freq);
+
   printf("Coefficient for Rosloniec (6.2) page 184 = %g\n",line->z0);
   printf("Adjusting er to produce 59.952\n");
   line->er = pow(line->z0/59.952,2.0);
@@ -122,5 +125,9 @@ int main(int argc, char **argv)
   printf("%-6.5g\t%.0e\t%.3e\t%.0e\t%.3g\n",line->z0,2*line->b,2*line->a,line->c,line->er);
   printf("------------ ---------------------- ------------\n");
 
+
+  str=coax_save_string(line);
+  printf("Example of coax_save_string() output:\n\"%s\"\n\n",str);
+	
   return 0;
 }
