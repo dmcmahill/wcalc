@@ -1,4 +1,4 @@
-## $Id: mex.mk,v 1.2 2001/10/20 01:34:30 dan Exp $
+## $Id: mex.mk,v 1.3 2001/10/22 11:31:30 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -34,5 +34,6 @@
 ##
 
 MEX_SOURCES=	\
-	air_coil_calc.c
+	air_coil_calc.c \
+	air_coil_syn.c
 
