@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.2 2002/01/03 03:54:46 dan Exp $ */
+/* $Id: about.c,v 1.3 2002/01/07 10:57:20 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -183,9 +183,6 @@ void permitivity_popup(void)
   /* create the "Permitivities" window */
   window = gtk_dialog_new();
   
-  /* made it modal */
-  gtk_grab_add(window);
-
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW (window), "Permitivities of Common Materials");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
@@ -225,9 +222,6 @@ void resistivity_popup(void)
   /* create the "Resistivities" window */
   window = gtk_dialog_new();
   
-  /* made it modal */
-  gtk_grab_add(window);
-
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW (window), "Resistivities of Common Materials");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
