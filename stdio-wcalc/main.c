@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.3 2004/01/10 05:43:01 dan Exp $ */
+/* $Id: main.c,v 1.4 2004/01/10 06:16:25 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
   char *tok;
   int narg;
   int cnt;
-  void *fn;
+  void (*fn) (double *);
   double params[15];
   int lineno = 1;
 
@@ -95,12 +95,10 @@ int main(int argc, char **argv)
       exit(1);
     }
 
-    if(strcmp(tok, "ic_microstrip_calc") ) {
-      fprintf(stderr, "ic_microstrip_calc\n");
+    if(strcmp(tok, "ic_microstrip_calc") == 0) {
       narg = 11;
-      fn = &exedic_microstrip_calc;
-    } else if(strcmp(tok, "microstrip_calc") ) {
-      fprintf(stderr, "microstrip_calc\n");
+      fn = &exec_ic_microstrip_calc;
+    } else if(strcmp(tok, "microstrip_calc") == 0) {
       narg = 9;
       fn = &exec_microstrip_calc;
     } else {
@@ -114,7 +112,7 @@ int main(int argc, char **argv)
       if( cnt >= narg ) 
 	fprintf(stderr, "Ignoring extra argument: \"%s\"\n", tok);
       else 
-	params[cnt] = strtod(tok);
+	params[cnt] = strtod(tok, NULL);
 
       cnt++;
     }
@@ -123,7 +121,8 @@ int main(int argc, char **argv)
       fprintf(stderr, "Not enough arguments.  Needed %d, got %d on line %d\n",
 	      narg, cnt, lineno);
     else
-      *fn(params);
+      fn(params);
+      /* exec_ic_microstrip_calc(params); */
 
     lineno++;
   }
@@ -193,7 +192,7 @@ static void exec_microstrip_calc(double *args)
   
   /* print the outputs */
   printf("%g %g %g %g\n", line->z0, line->keff,
-	 line->loss, line->deltal;
+	 line->loss, line->deltal);
 
   /* clean up */
   microstrip_line_free(line);
