@@ -1,0 +1,92 @@
+#! /usr/bin/awk -f
+#
+# $Id: html2c,v 1.1 2001/10/05 00:56:07 dan Exp $
+#
+# Copyright (c) 2001 Dan McMahill
+# All rights reserved.
+#
+# This code is derived from software written by Dan McMahill
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#        This product includes software developed by Dan McMahill
+#  4. The name of the author may not be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+# 
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+#  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+#  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+#  SUCH DAMAGE.
+#
+# purpose:  parse html, find lines like:
+#  <!--#include virtual="/user_footer.incl"-->
+# and do the include.  should help in generating static web pages
+#
+# Usage:
+#   awk -f shtml2html in.shtml > out.html
+#
+
+
+BEGIN {
+  
+} 
+
+{
+  line=$0;
+  
+
+  if (line ~ /<\!--\#include.*-->/){
+# print the part of the line before the #include
+    pre = gensub(/(.*)<\!--\#include.*-->/,"\\1",1,line);
+    printf("%s",pre);
+
+# pick out just the <!--#include ...... --> part
+    cmd = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\2",1,line);
+    printf("processing directive \"%s\"\n",cmd) > "/dev/stderr";
+
+#figure out the included file name
+    file = gensub(/(.*)virtual=\"([^\"]*)\"(.*)/,"\\2",1,cmd);
+
+    if ( file != cmd) {
+      printf("[%s]",file) > "/dev/stderr";
+      while ( getline < file ){ print; }
+      close(file);
+    }
+    else {
+      printf("ERROR:  could not find the file name in the directive\n") \
+	> "/dev/stderr";
+      printf("        \"%s\"\n\n",cmd)  > "/dev/stderr";
+      exit 1;
+    }
+
+    printf("\n") > "/dev/stderr";
+
+    post = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\3",1,line);
+    printf("%s\n",post);
+
+  }
+  else{
+    print;
+  }
+}
+
+
+END {
+  close("/dev/stderr");
+}
+
