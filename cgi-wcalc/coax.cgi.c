@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.1 2002/01/14 20:24:39 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.2 2002/01/14 23:18:30 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -112,7 +112,7 @@ int cgiMain(void){
    * access the CGI URL that gives the problem, then change foo.cgi to
    * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
    */
-  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
+  /*cgiReadEnvironment("/tmp/capcgi.dat"); */
   
   /* Put out the CGI header */
   cgiHeaderContentType("text/html");  
@@ -166,7 +166,7 @@ int cgiMain(void){
        cgiFormSuccess){
       input_err=1;
     }
-
+    
     /* Metal resistivity relative to copper */
     if(cgiFormDoubleBounded("rhob",&rhob,0.0,1000.0,defRHOB) !=
        cgiFormSuccess){
@@ -187,11 +187,6 @@ int cgiMain(void){
     line->tshield_sf = length_units[i].sf;
 
 
-    /* Coax inner conductor radius */
-    if(cgiFormDoubleBounded("a",&a,0.0001,1000.0,defA) !=
-       cgiFormSuccess){
-      input_err=1;
-    }
     /* units */
     if (cgiFormRadio("a_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
@@ -200,11 +195,12 @@ int cgiMain(void){
     line->a_units = length_units[i].name;
     line->a_sf = length_units[i].sf;
 
-    /* Coax outer conductor radius */
-    if(cgiFormDoubleBounded("b",&b,0.0001,1000.0,defB) !=
+    /* Coax inner conductor radius */
+    if(cgiFormDoubleBounded("a",&a,0.0,1000.0,defA) !=
        cgiFormSuccess){
       input_err=1;
     }
+
     /* units */
     if (cgiFormRadio("b_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
@@ -213,11 +209,13 @@ int cgiMain(void){
     line->b_units = length_units[i].name;
     line->b_sf = length_units[i].sf;
 
-    /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c",&a,0.0001,1000.0,defC) !=
+    /* Coax outer conductor radius */
+    if(cgiFormDoubleBounded("b",&b,a*line->a_sf/line->b_sf,1000.0,defB) !=
        cgiFormSuccess){
       input_err=1;
+      fprintf(cgiOut,"<pre>ERROR:  b must be > a\n</pre>\n");
     }
+
     /* units */
     if (cgiFormRadio("c_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
@@ -226,8 +224,15 @@ int cgiMain(void){
     line->c_units = length_units[i].name;
     line->c_sf = length_units[i].sf;
 
+    /* Coax inner conductor offset */
+    if(cgiFormDoubleBounded("c",&c,(b*line->b_sf-a*line->a_sf)/line->c_sf,1000.0,defC) !=
+       cgiFormSuccess){
+      input_err=1;
+      fprintf(cgiOut,"<pre>ERROR:  c must be < b-a\n</pre>\n");
+    }
+
     /* Coax length */
-    if(cgiFormDoubleBounded("len",&len,1.0,100000.0,defLEN) !=
+    if(cgiFormDoubleBounded("len",&len,0.0,100000.0,defLEN) !=
        cgiFormSuccess){
       input_err=1;
     }
@@ -277,30 +282,30 @@ int cgiMain(void){
       input_err=1;
     } 
 
-  /* copy data over to the line structure */
-  line->a           = a*line->a_sf;
-  line->b           = b*line->b_sf;
-  line->c           = c*line->c_sf;
-  line->tshield     = tshield*line->tshield_sf;
-  line->len         = len*line->len_sf;
+    /* copy data over to the line structure */
+    line->a           = a*line->a_sf;
+    line->b           = b*line->b_sf;
+    line->c           = c*line->c_sf;
+    line->tshield     = tshield*line->tshield_sf;
+    line->len         = len*line->len_sf;
 
-  line->freq = freq * line->freq_sf;
+    line->freq = freq * line->freq_sf;
   
-  /* copy over the other parameters */
-  line->tand  = tand;
-  line->er    = er;
-  line->rho_a = rhoa;
-  line->rho_b = rhob;
-
-  line->z0 = Ro;
-  /* XXX do i want to add these?  
-  line->Ro = Ro;
-  line->Xo = 0.0;
-  */
-  line->len = elen;
-
+    /* copy over the other parameters */
+    line->tand  = tand;
+    line->er    = er;
+    line->rho_a = rhoa;
+    line->rho_b = rhob;
+    
+    line->z0 = Ro;
+    /* XXX do i want to add these?  
+       line->Ro = Ro;
+       line->Xo = 0.0;
+    */
+    line->elen = elen;
+    
   } /* if ( (action != RESET) && (action != LOAD) ) */
-
+  
   
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
@@ -309,20 +314,32 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"CGI: Inner Radius                = %g %s\n",
 	    line->a/line->a_sf,line->a_units);
-    fprintf(cgiOut,"CGI: Inner Radius                = %g %s\n",
-	    line->a/line->a_sf,line->a_units);
-    fprintf(cgiOut,"CGI: Inner Radius                = %g %s\n",
-	    line->a/line->a_sf,line->a_units);
-    fprintf(cgiOut,"CGI: Metal length                = %g %s\n",
-	    line->l/line->len_sf,line->len_units);
-    fprintf(cgiOut,"CGI: Metal thickness             = %g %s\n",
+    fprintf(cgiOut,"CGI:                             = %g m\n",
+	    line->a);
+    fprintf(cgiOut,"CGI: Shield Radius               = %g %s\n",
+	    line->b/line->b_sf,line->b_units);
+    fprintf(cgiOut,"CGI:                             = %g m\n",
+	    line->b);
+    fprintf(cgiOut,"CGI: Offset                      = %g %s\n",
+	    line->c/line->c_sf,line->c_units);
+    fprintf(cgiOut,"CGI:                             = %g m\n",
+	    line->c);
+    fprintf(cgiOut,"CGI: Line length                 = %g %s\n",
+	    line->len/line->len_sf,line->len_units);
+    fprintf(cgiOut,"CGI:                             = %g m\n",
+	    line->len);
+    fprintf(cgiOut,"CGI: Shield thickness            = %g %s\n",
 	    line->tshield/line->tshield_sf,line->tshield_units);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rhoa);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rhob);
+    fprintf(cgiOut,"CGI:                             = %g m\n",
+	    line->tshield);
+    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rho_a);
+    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rho_b);
     fprintf(cgiOut,"CGI: Relative dielectric const.  = %g \n",line->er);
     fprintf(cgiOut,"CGI: Dielectric loss tangent     = %g \n",line->tand);
     fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",
 	    line->freq/line->freq_sf, line->freq_units); 
+    fprintf(cgiOut,"CGI:                             = %g Hz\n",
+	    line->freq);
     fprintf(cgiOut,"CGI: -------------- ---------------------- ----------\n");
     fprintf(cgiOut,"</pre>\n");
 #endif
