@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.16 2004/07/29 00:02:20 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.17 2004/07/31 03:57:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -45,9 +45,11 @@
 #include <stdlib.h>
 
 #include "alert.h"
+#include "defaults.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "ic_microstrip.h"
+#include "ic_microstrip_loadsave.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -490,7 +492,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 
   /* XXX I probably should avoid 'keff' unless I can show 'mueff' = 1
    */
-  line->keff = slowwave;
+  line->keff = slowwave*slowwave;
 
 
   /* XXX fix these */
@@ -667,9 +669,9 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   Xo = line->Xo;
 
 
-  /* Metal width, length, and thicknexx */
+  /* Metal width, length, and thickness */
   w = line->w;
-  len = line->l;
+  len = line->len;
   tmet = line->subs->tmet;
 
   /* oxide thickness and relative permitivity */
@@ -684,7 +686,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 
   /* temp value for l used while finding w */
   l = 1000.0;
-  line->l=l;
+  line->l = l;
 
 
 #ifdef DEBUG_SYN
@@ -699,7 +701,8 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   printf("ic_microstrip_syn(): Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
   printf("ic_microstrip_syn(): Frequency                   = %g GHz\n",freq/1e9); 
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
-  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",Ro);
+  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n", Ro);
+  printf("ic_microstrip_syn(): Desired electrical length   = %g degrees\n", len);
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
   printf("ic_microstrip_syn(): Starting optimization value = %g\n",var);
   printf("ic_microstrip_syn(): Optimization flag           = %d\n",flag);
@@ -840,21 +843,35 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   line->l = (len/360.0)*(v/freq);
 
   /* recalculate using real length to find loss  */
-  ic_microstrip_calc(line,freq);
+  ic_microstrip_calc(line, freq);
 
 #ifdef DEBUG_SYN  
   printf("ic_microstrip_syn(): -------------- -  Synthesis Results -  ----------\n");
-  printf("ic_microstrip_syn(): Metal width                 = %g um\n",line->w*1e6);
-  printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",line->subs->tox*1e6);
-  printf("ic_microstrip_syn(): Oxide dielectric const.     = %g \n",line->subs->eox);
-  printf("ic_microstrip_syn(): Substrate thickness         = %g um\n",line->subs->h*1e6);
-  printf("ic_microstrip_syn(): Substrate dielectric const. = %g \n",line->subs->es);
-  printf("ic_microstrip_syn(): Substrate conductivity      = %g 1/(ohm-cm)\n",line->subs->sigmas*0.01);
-  printf("ic_microstrip_syn(): Substrate resistivity       = %g ohm-cm\n",100.0/(line->subs->sigmas));
-  printf("ic_microstrip_syn(): Frequency                   = %g GHz\n",freq/1e9); 
+  printf("ic_microstrip_syn(): Metal width                 = %g um\n", 
+	 line->w*1e6);
+  printf("ic_microstrip_syn(): Oxide thickness             = %g um\n",
+	 line->subs->tox*1e6);
+  printf("ic_microstrip_syn(): Oxide dielectric const.     = %g \n",
+	 line->subs->eox);
+  printf("ic_microstrip_syn(): Substrate thickness         = %g um\n",
+	 line->subs->h*1e6);
+  printf("ic_microstrip_syn(): Substrate dielectric const. = %g \n",
+	 line->subs->es);
+  printf("ic_microstrip_syn(): Substrate conductivity      = %g 1/(ohm-cm)\n",
+	 line->subs->sigmas*0.01);
+  printf("ic_microstrip_syn(): Substrate resistivity       = %g ohm-cm\n",
+	 100.0/(line->subs->sigmas));
+  printf("ic_microstrip_syn(): Frequency                   = %g GHz\n",
+	 freq/1e9); 
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
-  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",Ro);
-  printf("ic_microstrip_syn(): Achieved Ro                 = %g ohm\n",line->Ro);
+  printf("ic_microstrip_syn(): Desired Ro                  = %g ohm\n",
+	 Ro);
+  printf("ic_microstrip_syn(): Achieved Ro                 = %g ohm\n",
+	 line->Ro);
+  printf("ic_microstrip_syn(): Desired electrical length   = %g degrees\n",
+	 len);
+  printf("ic_microstrip_syn(): Achieved electrical length  = %g degrees\n",
+	 line->len);
   printf("ic_microstrip_syn(): -------------- ---------------------- ----------\n");
 #endif
 
@@ -874,19 +891,7 @@ ic_microstrip_line *ic_microstrip_line_new(void)
 
   newline->subs = ic_microstrip_subs_new();
 
-  /* initialize the values to something */
-  newline->l    = 1000.0e-6;
-  newline->w    = 150.0e-6;
-  newline->freq = 2.4e9;
-
-  newline->subs->tox   = 1.0e-6;
-  newline->subs->eox   = 4.0;
-  newline->subs->h     = 250e-6;
-  newline->subs->es    = 11.8;
-  newline->subs->sigmas= 1e3;
-  newline->subs->tmet  = 1.4e-6;
-  newline->subs->rho   = 1.0;
-  newline->subs->rough = 0.0;
+  /* Create the units */
 
   newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
@@ -907,6 +912,9 @@ ic_microstrip_line *ic_microstrip_line_new(void)
 #if defined(DEBUG_CALC) || defined(DEBUG_SYN)
   printf("ic_microstrip_line_new():  calling ic_microstrip_calc(%p,%g)\n",newline,newline->freq);
 #endif
+
+  /* load in the defaults */
+  ic_microstrip_load_string(newline, default_ic_microstrip);
 
   /* and do a calculation to finish the initialization */
   ic_microstrip_calc(newline, newline->freq);
