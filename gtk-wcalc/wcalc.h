@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.8 2002/12/17 15:29:38 dan Exp $ */
+/*      $Id: wcalc.h,v 1.9 2002/12/17 16:10:47 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -47,6 +47,9 @@
 #endif
 
 #include "gettext.h"
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 
 #ifndef _
 #define _(String) gettext (String)
