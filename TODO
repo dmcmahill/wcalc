@@ -1,0 +1,12 @@
+$Id$
+
+- Air Coil.  Make complete write up.  Also, does rho come in to play?  It
+  should...  
+
+- Air Coil.  Read RF Design, Jan 1998 and Applied Microwave & Wireless, 
+  Nov/Dec 1997 for transmission line based model for helical coils.
+  Maybe get a better Q/SRF prediction? 
+
+- everything.  Make all the units for calculation be consistant!
+
+
