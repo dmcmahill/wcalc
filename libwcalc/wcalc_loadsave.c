@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.c,v 1.21 2004/08/31 21:38:25 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.22 2005/01/06 22:54:15 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -101,6 +101,11 @@ int wcalc_load(FILE *fp)
 
 
   val = file_read_val(fp, "[wcalc]", "wcalc_file_version");
+  if( val == NULL ) {
+    alert("The selected file does not have the mandatory\n"
+	  "[wcalc] section");
+    return -1;
+  }
 
 #ifdef DEBUG
   printf("wcalc_load():  wcalc_file_version = \"%s\"\n",val);
@@ -113,7 +118,11 @@ int wcalc_load(FILE *fp)
   }
 
   val = file_read_val(fp,"[wcalc]", "model_name");
-
+  if( val == NULL ) {
+    alert("The selected file does not have the mandatory\n"
+	  "key \"model_name\" in the [wcalc] section");
+    return -1;
+  }
 #ifdef DEBUG
   printf("wcalc_load():  model_name = \"%s\"\n",val);
 #endif
