@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.27 2004/09/02 05:23:23 dan Exp $
+## $Id: Makefile.am,v 1.28 2004/09/03 02:09:53 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
@@ -71,15 +71,21 @@ SCIHTML=	${SCIMANS:.man=.htm}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
 
-DISTCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
+DISTCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
-	${RUN_TESTS} ${REF_FILES}
+	${RUN_TESTS} ${TEST_FILES} ${TEST_REF}
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
 
 RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
+TEST_FILES=	\
+	air_coil_calc.tst \
+	air_coil_syn.tst
+
+TEST_OUT=	${TEST_FILES:.tst=.dia}
+TEST_REF=	${TEST_OUT:=.ref}
 
 TESTS=	${RUN_TESTS}
 
