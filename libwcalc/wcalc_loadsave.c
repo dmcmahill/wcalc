@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.2 2001/10/04 02:12:07 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.1 2001/10/05 00:37:36 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -76,8 +76,8 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
   fprintf(fp,"\n");
 
   fprintf(fp,"[wcalc]\n");
-  fprintf(fp,"wcalc_file_version %s\n",WCALC_FILE_VERSION);
-  fprintf(fp,"model_name %s\n",model_name);
+  fprintf(fp,"wcalc_file_version = %s\n",WCALC_FILE_VERSION);
+  fprintf(fp,"model_name = %s\n",model_name);
 
   fprintf(fp,"\n");
 
@@ -89,6 +89,8 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
 
 #define SEC_WCALC 0
 #define SEC_OTHER 1
+
+#define FIELDSEP " ="
 
 void wcalc_load(FILE *fp)
 {
@@ -112,28 +114,21 @@ void wcalc_load(FILE *fp)
 	   (tok[0] != '*') ){
 	do {
 	  if (strcmp(tok,"[wcalc]") == 0){
-	    section=SEC_STRIP;
-	  }
-	  else if (strcmp(tok,"[substrate]") == 0){
-	    section=SEC_SUBS;
+	    section=SEC_WCALC;
 	  }
 	  else if ( (tok[0] == '[') && (tok[strlen(tok)-1] == ']') ){
 	    section=SEC_OTHER;
 	  }
-	  else if ( (section==SEC_STRIP) || (section==SEC_SUBS) ){
+	  else if (section==SEC_WCALC) {
 	    if ( (val = strtok(NULL,FIELDSEP)) == NULL ) {
 	      fprintf(stderr,"wcalc_load:  could not read value to go"
-		      " with %s= in \"%s\"\n",tok,fname);
+		      " with %s= \n",tok);
 	      exit(1);
 	    }
 	    
 	    if (strcmp(tok,"w") == 0){
-	      mymstrip->w = atof(val);
-	      got_w = 1;
 	    }
 	    else if (strcmp(tok,"l") == 0){
-	      mymstrip->l = atof(val);
-	      got_l = 1;
 	    }
 	    else {
 	      fprintf(stderr,"wcalc_load:  unknown token \"%s\"\n",tok);
@@ -152,14 +147,12 @@ void wcalc_load(FILE *fp)
     }
   }
   
-  if (!got_l) {  
-    fprintf(stderr,"wcalc_load:  missing data: L\n");   
-    exit(1);  
-  }
+#ifdef notdef
   if (!got_w) {  
     fprintf(stderr,"wcalc_load:  missing data: W\n");   
     exit(1);  
   }
+#endif
   
   fclose(fp);
 }

@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.2 2001/09/27 02:01:49 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.1 2001/10/05 00:37:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -349,18 +349,12 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
 
   now = time(NULL);
 
-  fprintf(fp,"# air_coil:%s\n",FILE_VERSION);
-  fprintf(fp,"#\n");
-  if (fname != NULL){
-    fprintf(fp,"# File:      %s\n",fname);
-  }
-  fprintf(fp,"# Modified:  %s",ctime(&now));
-  fprintf(fp,"#\n");
-  fprintf(fp,"\n");
+  wcalc_save_header(fp, fname, FILE_AIR_COIL);
 
   fprintf(fp,"[air_coil]\n");
-  fprintf(fp,"\n");
+  fprintf(fp,"\n#\n#file format version\n#\n\n");
 
+  fprintf(fp,"file_version = %s\n\n",FILE_VERSION);
   /*
    * The input values
    */
