@@ -1,0 +1,69 @@
+# $Id$
+#
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/air_coil.wc
+# Modified:  Tue Jul 27 21:42:35 2004
+# Wcalc Version 0.5
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = air_coil
+
+
+[air_coil]
+
+# Air coil file version
+file_version = 0.1
+
+# Number of turns
+Nf = 7
+
+# Length of coil (meters)
+len = 0.00715998463415004
+
+# Ratio of coil length to close wound length
+fill = 1.5
+
+# Wire size (AWG)
+AWGf = 22
+
+# Wire resistivity (ohms/meter)
+rho = 3e-08
+
+# Inside diameter of coil (meters)
+dia = 0.00635
+
+# Desired Inductance (H)
+L = 2.30007185750448e-07
+
+# Frequency of operation (Hz)
+freq = 100000000
+
+# Use fill to calculate length?
+use_fill = 1
+
+# Desired user units and associated scale factors
+
+# Length units
+units_len = 6
+# [inch]
+
+# Diameter units
+units_dia = 6
+# [inch]
+
+# Inductance units
+units_L = 1
+# [nH]
+
+# Self resonant frequency units
+units_SRF = 4
+# [GHz]
+
+# Resistivity units
+units_rho = 1-4
+# [Ohm-m]
+
+# Frequency units
+units_freq = 3
+# [MHz]
+
