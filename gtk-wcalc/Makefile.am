@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.22 2002/12/10 10:42:14 dan Exp $
+## $Id: Makefile.am,v 1.23 2002/12/17 15:29:34 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -106,7 +106,8 @@ distclean-local:
 	-rm AWG.asciitab AWG.c
 
 runwcalc:	$(srcdir)/runwcalc.in
-	sed "s;@BUILDDIR@;`pwd`;g" $< > $@
+	sed	-e "s;@BUILDDIR@;`pwd`;g" \
+		-e 's;@TOPSRCDIR@;${top_srcdir};g' $< > $@
 	chmod 755 $@
 
 AWG.c: AWG.asciitab

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wcalc 0.3\n"
-"POT-Creation-Date: 2002-12-13 22:36-0500\n"
+"POT-Creation-Date: 2002-12-17 10:36-0500\n"
 "PO-Revision-Date: 2002-12-14 15:05-0500\n"
 "Last-Translator: Dan McMahill <dmcmahill@netbsd.org>\n"
 "Language-Team: Dan McMahill <dmcmahill@netbsd.org>\n"
@@ -14,94 +14,105 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtk-wcalc/start.c:55
-msgid ""
-"WaveCalc\n"
-"\n"
-"Version "
+#: gtk-wcalc/menus.c:87
+msgid "/_File"
 msgstr ""
 
-#: gtk-wcalc/start.c:59
-msgid ""
-"\n"
-"A transmission line calculator.\n"
-"\n"
-"Written by,\n"
-"Dan McMahill, <mcmahill@alum.mit.edu>\n"
-"\n"
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002\n"
-"Dan McMahill."
-msgstr ""
-"\n"
-"A transmission line calculator.\n"
-"\n"
-"Escrito por,\n"
-"Dan McMahill, <mcmahill@alum.mit.edu>\n"
-"\n"
-"WaveCalc es copyright (C) 1999, 2000, 2001, 2002\n"
-"Dan McMahill."
-
-#: gtk-wcalc/start.c:108
-#, c-format
-msgid "new_pressed():  Found entry at index %d\n"
+#: gtk-wcalc/menus.c:88
+msgid "/File/_New"
 msgstr ""
 
-#: gtk-wcalc/start.c:116
-#, c-format
-msgid "start.c:new_pressed():  could not find \"%s\" in the model list\n"
+#: gtk-wcalc/menus.c:89
+msgid "/File/sep1"
 msgstr ""
 
-#: gtk-wcalc/start.c:121
-#, c-format
-msgid "start.c:new_pressed():  length of global_model_names is %d\n"
+#: gtk-wcalc/menus.c:90
+msgid "/File/_Open"
 msgstr ""
 
-#: gtk-wcalc/start.c:123
-#, c-format
-msgid "start.c:new_pressed():  Model \"Microstrip\" is entry # %d\n"
+#: gtk-wcalc/menus.c:91
+msgid "/File/_Save"
 msgstr ""
 
-#: gtk-wcalc/start.c:124
-msgid "Microstrip"
+#: gtk-wcalc/menus.c:92
+msgid "/File/Save _As"
 msgstr ""
 
-#: gtk-wcalc/start.c:125
-#, c-format
-msgid "start.c:new_pressed():  Model \"%s\" is entry # %d\n"
+#: gtk-wcalc/menus.c:93
+msgid "/File/sep2"
 msgstr ""
 
-#: gtk-wcalc/start.c:133
-#, c-format
-msgid "start.c:new_pressed():  Sorry, I don't know how to create \"%s\"\n"
+#: gtk-wcalc/menus.c:94
+msgid "/File/_Print"
 msgstr ""
 
-#: gtk-wcalc/start.c:152
-msgid "start.c:open_pressed():\n"
+#: gtk-wcalc/menus.c:95
+msgid "/File/sep3"
 msgstr ""
 
-#: gtk-wcalc/start.c:169
-msgid "start.c:quit_pressed():\n"
+#: gtk-wcalc/menus.c:96
+msgid "/File/Close"
 msgstr ""
 
-#: gtk-wcalc/start.c:205
-msgid "WaveCalc"
+#: gtk-wcalc/menus.c:97
+msgid "/File/Quit"
 msgstr ""
 
-#: gtk-wcalc/start.c:209
-msgid "delete_event"
+#: gtk-wcalc/menus.c:98
+msgid "/_Options"
 msgstr ""
 
-#: gtk-wcalc/start.c:214
-msgid "destroy_event"
+#: gtk-wcalc/menus.c:99
+msgid "/Options/tearoff"
+msgstr ""
+
+#: gtk-wcalc/menus.c:100
+msgid "/_Window"
+msgstr ""
+
+#: gtk-wcalc/menus.c:101
+msgid "/Window/tearoff"
+msgstr ""
+
+#: gtk-wcalc/menus.c:102
+msgid "/_Help"
+msgstr ""
+
+#: gtk-wcalc/menus.c:103
+msgid "/_Help/About"
+msgstr ""
+
+#: gtk-wcalc/menus.c:104
+msgid "/_Help/Copyright"
+msgstr ""
+
+#: gtk-wcalc/menus.c:105
+msgid "/_Help/_Material Properties"
+msgstr ""
+
+#: gtk-wcalc/menus.c:106
+msgid "/_Help/_Material Properties/_Permeabilities"
+msgstr ""
+
+#: gtk-wcalc/menus.c:108
+msgid "/_Help/_Material Properties/_Permitivities"
+msgstr ""
+
+#: gtk-wcalc/menus.c:110
+msgid "/_Help/_Material Properties/_Resistivities"
+msgstr ""
+
+#: gtk-wcalc/menus.c:112
+msgid "/_Help/_Material Properties/_Units"
+msgstr ""
+
+#: gtk-wcalc/menus.c:114
+msgid "/_Help/_Material Properties/_Wire Sizes"
 msgstr ""
 
 #: gtk-wcalc/start.c:241
 msgid "Open..."
 msgstr "Abrir..."
-
-#: gtk-wcalc/start.c:242 gtk-wcalc/start.c:252 gtk-wcalc/start.c:271
-msgid "clicked"
-msgstr ""
 
 #: gtk-wcalc/start.c:251
 msgid "New"
@@ -125,3 +136,21 @@ msgstr ""
 "Unless you're a developer you should not be using\n"
 "this."
 
+#~ msgid ""
+#~ "\n"
+#~ "A transmission line calculator.\n"
+#~ "\n"
+#~ "Written by,\n"
+#~ "Dan McMahill, <mcmahill@alum.mit.edu>\n"
+#~ "\n"
+#~ "WaveCalc is copyright (C) 1999, 2000, 2001, 2002\n"
+#~ "Dan McMahill."
+#~ msgstr ""
+#~ "\n"
+#~ "A transmission line calculator.\n"
+#~ "\n"
+#~ "Escrito por,\n"
+#~ "Dan McMahill, <mcmahill@alum.mit.edu>\n"
+#~ "\n"
+#~ "WaveCalc es copyright (C) 1999, 2000, 2001, 2002\n"
+#~ "Dan McMahill."

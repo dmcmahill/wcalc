@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id$
+# $Id: runwcalc.in,v 1.1 2001/10/28 22:56:08 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -40,6 +40,19 @@
 
 WCALC_DATADIR=@BUILDDIR@/../pixmaps
 export WCALC_DATADIR
+
+localedir=@BUILDDIR@/locale
+WCALC_LOCALEDIR=localedir
+export WCALC_LOCALEDIR
+
+
+if [ ! -d $localedir ]; then
+	mkdir $localedir
+fi
+
+for f in @TOPSRCDIR@/po/*.gmo ; do
+	d=`basename $f .gmo`
+done
 
 @BUILDDIR@/wcalc $*
 

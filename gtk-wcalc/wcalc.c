@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.12 2002/06/25 20:51:22 dan Exp $ */
+/* $Id: wcalc.c,v 1.13 2002/12/17 15:29:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -154,9 +154,16 @@ static void wcalc_destroy_sig( GtkWidget *widget,
 int main( int   argc,
           char *argv[] )
 {
+  char *localedir;
+
   setlocale (LC_ALL, "");
-  /* XXX add a check for WCALC_LOCALEDIR env variable for pre-install testing */
-  bindtextdomain (PACKAGE, LOCALEDIR);
+  /* This lets you set a directory for the locale stuff for pre-install testing */
+  if( (localedir=getenv("WCALC_LOCALEDIR")) == NULL ) {
+    bindtextdomain (PACKAGE, LOCALEDIR);
+  } else {
+    g_print("binding to localedir=\"%s\"\n",localedir);
+    bindtextdomain (PACKAGE, localedir);
+  }
   textdomain (PACKAGE);
 
   gtk_init (&argc, &argv);
