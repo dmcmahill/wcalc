@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 2001/09/13 19:13:23 dan Exp $
+# $Id: Makefile.in,v 1.13 2001/09/13 21:16:48 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -65,6 +65,7 @@ LIBS = @LIBS@
 CFILES = \
         about.c \
 	air_coil.c \
+	coupled_microstrip.c \
         files.c \
         mathutil.c \
         menus.c \
