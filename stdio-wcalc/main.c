@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1 2004/01/10 04:45:30 dan Exp $ */
+/* $Id: main.c,v 1.2 2004/01/10 05:42:13 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -42,6 +42,22 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+
+/* i18n */
+#include "gettext.h"
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
+#ifndef _
+#define _(String) gettext (String)
+#endif
+#ifndef gettext_noop
+#define gettext_noop(String) (String)
+#endif
+#ifndef N_
+#define N_(String) gettext_noop (String)
 #endif
 
 /* Headers for the various structures we can analyze */
