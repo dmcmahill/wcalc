@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 2001/09/07 18:40:03 dan Exp $
+# $Id: Makefile,v 1.2 2001/09/12 14:35:56 dan Exp $
 #
 
 # Copyright (c) 2001 Dan McMahill
@@ -41,13 +41,25 @@ TGIF_SRCS=	\
 		stripline.obj
 
 XPMS=	${TGIF_SRCS:.obj=.xpm}
+GIFS=	${TGIF_SRCS:.obj=.gif}
+PNGS=	${TGIF_SRCS:.obj=.png}
 
-all:	${XPMS}
+TGIF=		tgif
+TGIF_FLAGS=	-print -color
 
-.SUFFIXES : .obj .xpm .xbm
+all:	${XPMS} ${GIFS} ${PNGS}
+
+.SUFFIXES : .obj .xpm .xbm .gif
+
+.obj.gif :
+	$(TGIF) $(TGIF_FLAGS) -gif $*.obj
+
+.obj.png :
+	$(TGIF) $(TGIF_FLAGS) -png $*.obj
 
 .obj.xbm :
-	tgif -color -print -xbm $*.obj
+	$(TGIF) $(TGIF_FLAGS) -xbm $*.obj
 
 .xbm.xpm:
 	convert $*.xbm xpm:- | sed "s/magick/$*/g" > $*.xpm
+
