@@ -1,4 +1,4 @@
-/*      $Id: gtk-units.h,v 1.4 2002/06/25 21:19:27 dan Exp $ */
+/*      $Id: gtk-units.h,v 1.5 2002/06/26 11:01:30 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -74,6 +74,12 @@ typedef struct _WC_UNITS_GUI
   /* ist of the names of the various models */
   GList *menu_num, *menu_den;
 
+  /*
+   * list of gtk_label's and gtk_entry's which we want to update when
+   * the units are changed 
+   */
+  GList *update_list;
+
 } wc_units_gui;
 #define WC_UNITS_GUI(x)      ((wc_units_gui *) (x))
 
@@ -102,7 +108,7 @@ typedef struct _WC_UNITS_MENU_DATA
 
 GtkWidget *units_menu_new(const units_data *units, 
 			  int initial,
-			  Wcalc *gui,
+			  gpointer gui,
 			  void (*callback)(GtkWidget *, gpointer));
 
 void  set_sf_menu(GtkWidget *menu,
@@ -111,7 +117,7 @@ void  set_sf_menu(GtkWidget *menu,
 
 GtkWidget *wc_composite_units_menu_new(const composite_units_data *units, 
 				       Wcalc *gui,
-				       wc_units_gui *ug,
+				       wc_units_gui **ug,
 				       void (*callback)(GtkWidget *, gpointer));
 
 wc_label_units *wc_label_units_new(const composite_units_data *units, 
@@ -119,5 +125,20 @@ wc_label_units *wc_label_units_new(const composite_units_data *units,
 				   void (*callback)(GtkWidget *, gpointer));
 
 void wc_composite_units_menu_changed( GtkWidget *w, gpointer data);
+
+
+void  wc_composite_units_attach(wc_units_gui *ug, 
+				GtkWidget *widget, 
+				double *mks_val, 
+				double *sf,
+				char *units_str, 
+				const char *fmt_string,
+				int type);
+
+#define wc_composite_units_attach_entry(ug,widget,mks_val,sf,units_str,fmt_string)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),0))
+
+#define wc_composite_units_attach_label(ug,widget,mks_val,sf,units_str,fmt_string)      \
+       (wc_composite_units_attach((ug),(widget),(mks_val),(sf),(units_str),(fmt_string),1))
 
 #endif /* __GTK_UNITS_H__ */
