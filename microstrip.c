@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.5 2001/09/13 19:13:24 dan Exp $ */
+/* $Id: microstrip.c,v 1.6 2001/09/17 15:27:28 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
-//#define DEBUG_SYN    /* debug the microstrip_syn() function */
+//#define DEBUG_CALC   /* debug the microstrip_calc() function */
+//#define DEBUG_SYN    /* debug the microstrip_syn() function  */
 
 #include <math.h>
 #include <stdio.h>
@@ -195,7 +195,7 @@ static double microstrip_calc_int(microstrip_line *line, double f, int flag)
   roughmil = line->subs->rough;
   rough = MIL2M(roughmil);
 
-#ifdef DEBUG
+#ifdef DEBUG_CALC
   printf("starting microstrip_calc_int() with %g MHz and ",f/1.0e6);
   if(flag == NOLOSS)
     printf("NOLOSS\n");

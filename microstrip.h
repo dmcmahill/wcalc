@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.2 2001/02/17 16:56:36 dan Exp $ */
+/* $Id: microstrip.h,v 1.3 2001/09/13 17:52:53 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -65,6 +65,9 @@ typedef struct MICROSTRIP_LINE
 
   /* the actual characteristic impedance is Ro + j Xo */
   double Ro, Xo;
+
+  /* the frequency of analysis (Hz) */
+  double freq;
 
   microstrip_subs *subs;
 

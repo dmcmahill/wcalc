@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.8 2001/09/16 05:14:54 dan Exp $ */
+/* $Id: wcalc.c,v 1.9 2001/09/17 14:32:30 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-//#define DEBUG
+#define DEBUG
 
 #include <gtk/gtk.h>
 
@@ -793,9 +793,6 @@ void mscalc_synthesize( GtkWidget *w, gpointer data )
 
 void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
 {
-
-  microstrip_subs subs;
-  microstrip_line mstr;
   double freq;
   char str[80];
   char *vstr;
@@ -822,25 +819,24 @@ void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
 
   /* get the substrate parameters */
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_H) ); 
-  subs.h=sf*atof(vstr);
+  wcalc->line->subs->h=sf*atof(vstr);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_er) ); 
-  subs.er=atof(vstr);
+  wcalc->line->subs->er=atof(vstr);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_tand) ); 
-  subs.tand=atof(vstr);
+  wcalc->line->subs->tand=atof(vstr);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_tmet) ); 
-  subs.tmet=sf*atof(vstr);
+  wcalc->line->subs->tmet=sf*atof(vstr);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_rough) ); 
-  subs.rough=sf*atof(vstr);
+  wcalc->line->subs->rough=sf*atof(vstr);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_rho) ); 
-  subs.rho=atof(vstr);
+  wcalc->line->subs->rho=atof(vstr);
 
 
-  mstr.subs=&subs;
 
   /* get the frequency */
   vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_freq) ); 
@@ -859,18 +855,18 @@ void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
   if( strcmp(data,"analyze")==0)
     {
       vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_W) ); 
-      mstr.w=sf*atof(vstr);
+      wcalc->line->w=sf*atof(vstr);
       
       vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_L) ); 
-      mstr.l=sf*atof(vstr);
+      wcalc->line->l=sf*atof(vstr);
 
 
-      mstr.z0=microstrip_calc(&mstr,freq);
+      wcalc->line->z0=microstrip_calc(wcalc->line,freq);
       
-      sprintf(str,"%8f",mstr.z0);
+      sprintf(str,"%8f",wcalc->line->z0);
       gtk_entry_set_text( GTK_ENTRY(wcalc->text_Z0), str );
 			  
-      sprintf(str,"%8f",mstr.len);
+      sprintf(str,"%8f",wcalc->line->len);
       gtk_entry_set_text( GTK_ENTRY(wcalc->text_elen), str );
 
 
@@ -879,19 +875,19 @@ void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
     {
       /* if "synthesize" get z0 and len */
       vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_Z0) ); 
-      mstr.z0 = atof(vstr);
-      mstr.Ro = mstr.z0;
+      wcalc->line->z0 = atof(vstr);
+      wcalc->line->Ro = wcalc->line->z0;
 
       vstr = gtk_entry_get_text( GTK_ENTRY(wcalc->text_elen) ); 
-      mstr.len = atof(vstr);
+      wcalc->line->len = atof(vstr);
 
-      microstrip_syn(&mstr,freq,MLISYN_W);
+      microstrip_syn(wcalc->line,freq,MLISYN_W);
 
  
-      sprintf(str,"%8f",mstr.w/sf);
+      sprintf(str,"%8f",wcalc->line->w/sf);
       gtk_entry_set_text( GTK_ENTRY(wcalc->text_W), str );
 			  
-      sprintf(str,"%8f",mstr.l/sf);
+      sprintf(str,"%8f",wcalc->line->l/sf);
       gtk_entry_set_text( GTK_ENTRY(wcalc->text_L), str );
 
     }
@@ -900,16 +896,16 @@ void mscalc( Wcalc *wcalc, GtkWidget *w, gpointer data )
       g_print("error in mstrip callback");
     }
 
-  sprintf(str,"%8f",mstr.keff);
+  sprintf(str,"%8f",wcalc->line->keff);
   gtk_label_set_text( GTK_LABEL(wcalc->label_keff), str );
   
-  sprintf(str,"%8f",mstr.loss);
+  sprintf(str,"%8f",wcalc->line->loss);
   gtk_label_set_text( GTK_LABEL(wcalc->label_loss), str );
   
-  sprintf(str,"%8f",mstr.losslen*sf);
+  sprintf(str,"%8f",wcalc->line->losslen*sf);
   gtk_label_set_text( GTK_LABEL(wcalc->label_losslen), str );
   
-  sprintf(str,"%8f",mstr.skindepth/sf);
+  sprintf(str,"%8f",wcalc->line->skindepth/sf);
   gtk_label_set_text( GTK_LABEL(wcalc->label_skindepth), str );
   
   gtk_label_set_text(GTK_LABEL(wcalc->text_status), "");
@@ -1004,8 +1000,15 @@ static Wcalc *Wcalc_new(void)
   new->init_done=0;
   new->phys_units_text = NULL;
 
+  /*
+   * create the microstrip line which will be used
+   */
+  new->line = microstrip_line_new();
+
 #ifdef DEBUG
   printf("Wcalc_new():  New pointer is %p\n",new);
+  printf("Wcalc_new():  wcalc->line = %p\n",new->line);
+  printf("Wcalc_new():  wcalc->line->subs = %p\n",new->line->subs);
 #endif
 
   return(new);

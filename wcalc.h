@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.2 2001/09/15 14:43:58 dan Exp $ */
+/*      $Id: wcalc.h,v 1.3 2001/09/15 23:56:40 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include <strings.h>
 
-
+#include "microstrip.h"
 
 typedef struct WCALC
 {
@@ -109,6 +109,12 @@ typedef struct WCALC
    * list of labels which change when we change physical units
    */
   GList *phys_units_text;
+
+
+  /*
+   * the microstrip line which is being analyzed
+   */
+  microstrip_line *line;
 
 } Wcalc;
 

@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: print.h,v 1.1 2001/09/15 23:56:39 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -36,6 +36,9 @@
 #ifndef __PRINT_H__
 #define __PRINT_H__
 
-void print_popup(void);
+/* data should be a pointer to the current wcalc */
+void print_popup(gpointer data,
+		 guint action,
+		 GtkWidget *widget);
 
 #endif /*__PRINT_H__*/

@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.3 2001/09/17 14:31:38 dan Exp $ */
+/* $Id: print.c,v 1.4 2001/09/17 19:32:59 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,8 @@
  * SUCH DAMAGE.
  */
 
+#define DEBUG
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +44,7 @@
 #include <gtk/gtk.h>
 
 #include "print.h"
+#include "wcalc.h"
 
 
 static void print_browse_file(void);
@@ -50,8 +53,8 @@ static void browse_cancel_sel (GtkWidget *w, GtkWidget *window);
 
 static void save_state(void);
 
-static int print_ps_header(FILE *fp);
-static void do_print(void);
+static int print_ps_header(Wcalc *wcalc, FILE *fp);
+static void do_print(GtkWidget *w, gpointer data);
 
 
 /* the print command */
@@ -121,9 +124,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   else
     printf("ok_pressed():  print to UNKNOWN\n");
 
-  
-  do_print();
-
+ 
   /* unmake it modal */
   gtk_grab_remove(window);
 
@@ -158,7 +159,9 @@ static void save_state()
   g_string_assign(print_file,str);
 }
  
-void print_popup(void)
+void print_popup(gpointer data,
+		 guint action,
+		 GtkWidget *widget)
 {
   GtkWidget *button;
   GtkWidget *label;
@@ -210,6 +213,9 @@ void print_popup(void)
 
   /* Add the "Print" button and set its action */
   button = gtk_button_new_with_label ("Print");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(do_print),
+		     data);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
@@ -417,10 +423,17 @@ static void browse_cancel_sel (GtkWidget *w, GtkWidget *window)
 }
 
 
-static void do_print()
+static void do_print(GtkWidget *w, gpointer data)
 {
+  Wcalc *wcalc;
   FILE *fp;
   char *str;
+
+  wcalc = (Wcalc *) data;
+
+#ifdef DEBUG
+  printf("do_print():  Called\n");
+#endif
 
   switch(where_print){
   case PRINT_TO_FILE:
@@ -429,7 +442,7 @@ static void do_print()
       fprintf(stderr,"do_print():  fopen of \"%s\"failed\n\n",str);
       return;
     }
-    print_ps_header(fp);
+    print_ps_header(wcalc,fp);
     fclose(fp);
     break;
 
@@ -439,7 +452,7 @@ static void do_print()
       fprintf(stderr,"do_print():  popen of \"%s\"failed\n\n",str);
       return;
     }
-    print_ps_header(fp);
+    print_ps_header(wcalc,fp);
     pclose(fp);
     break;
 
@@ -454,7 +467,7 @@ static void do_print()
 }
 
 
-static int print_ps_header(FILE *fp)
+static int print_ps_header(Wcalc *wcalc,FILE *fp)
 {
   double fontsize=12;
   double leftmargin=1.0;
@@ -468,6 +481,8 @@ static int print_ps_header(FILE *fp)
   double tab4=0.5;
 
   time_t now;
+  
+  const char *name="Microstrip Analysis/Synthesis";
 
   int bbox_llx, bbox_lly, bbox_urx, bbox_ury;
 
@@ -484,5 +499,66 @@ static int print_ps_header(FILE *fp)
 
 #include "ps_header.c"
 
+#include "ps_microstrip.c"
+
+
+  fprintf(fp,"%% spit out the numbers\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"newline\n");
+  fprintf(fp,"/col1x currentpoint pop def\n");
+  fprintf(fp,"/col2x %g 2 div inch def\n",paperwidth);
+  fprintf(fp,"/coly currentpoint exch pop def\n");
+  fprintf(fp,"/linespace 1.5 def\n");
+  fprintf(fp,"\n");
+  fprintf(fp,"col1x coly moveto\n");
+  fprintf(fp,"/leftcol col1x  def\n");
+  fprintf(fp,"(W) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  wcalc->line->w);
+  fprintf(fp,"(H) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  wcalc->line->subs->h);
+  fprintf(fp,"(L) show tab1 (=) show tab2 (%g mils ) show newline\n",
+	  wcalc->line->l);
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (%g mils) show newline\n",
+	  wcalc->line->subs->tmet);
+  fprintf(fp,"(Rho) show tab1 (=) show tab2 (%g) show newline\n",
+	  wcalc->line->subs->rho);
+  fprintf(fp,"(Rough) show tab1 (=) show tab2 (%g mils-rms) show newline\n",
+	  wcalc->line->subs->rough);
+  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (%g) show newline\n",
+	  wcalc->line->subs->er);
+  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (%g) show newline\n",
+	  wcalc->line->subs->tand);
+  fprintf(fp,"\n");
+  fprintf(fp,"col2x coly moveto \n");
+  fprintf(fp,"/leftcol col2x def\n");
+  fprintf(fp,"(Z0) show tab1 (=) show tab2 (%g ) show (W) symbolshow newline\n",
+	  wcalc->line->z0);
+  fprintf(fp,"(keff) show tab1 (=) show tab2 (%g) show newline\n",
+	  wcalc->line->keff);
+  fprintf(fp,"(elen) show tab1 (=) show tab2 (%g deg) show newline\n",
+	  wcalc->line->len);
+  fprintf(fp,"(Loss) show tab1 (=) show tab2 (%g dB) show newline\n",
+	  wcalc->line->loss);
+  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (%g dB/mil) show newline\n",
+	  wcalc->line->losslen);
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (%g mil) show newline\n",
+	  wcalc->line->skindepth);
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(Ls) show tab1 (=) show tab2 (%g nH/mil) show newline\n",
+	  wcalc->line->Ls);
+  fprintf(fp,"(Rs) show tab1 (=) show tab2 (%g ) show (W) symbolshow (/mil) show newline\n",
+	  wcalc->line->Rs);
+  fprintf(fp,"(Cs) show tab1 (=) show tab2 (%g pF/mil) show newline\n",
+	  wcalc->line->Cs);
+  fprintf(fp,"(Gs) show tab1 (=) show tab2 (%g 1/) show (W) symbolshow (-mil) show newline\n",
+	  wcalc->line->Gs);
+  
+#include "ps_footer.c"
+
+
   return 0;
 }
+
+

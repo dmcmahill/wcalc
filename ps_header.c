@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: ps_header.c,v 1.1 2001/09/16 19:56:03 dan Exp $ */
 
 /* ********* Automatically Generated.  Do not edit! ******** */
 /* *********         Created with html2c            ******** */
@@ -154,7 +154,7 @@ fprintf(fp,"%%\n");
 fprintf(fp,"%% larger font\n");
 fprintf(fp,"currfont fsize 2.0 mul scalefont setfont\n");
 fprintf(fp,"(WaveCalc:  Version-0.1) centertopshow newlinecenter\n");
-fprintf(fp,"(Microstrip Analysis/Synthesis) centertopshow newlinecenter\n");
+fprintf(fp,"(%s) centertopshow newlinecenter\n",name);
 fprintf(fp,"newlinecenter\n");
 fprintf(fp,"currfont fsize scalefont setfont\n");
 fprintf(fp,"\n");
@@ -163,84 +163,8 @@ fprintf(fp,"%% The figure of the structure being analyzed\n");
 fprintf(fp,"%%\n");
 fprintf(fp,"\n");
 fprintf(fp,"%%\n");
-fprintf(fp,"%% We are currently where the top center of the figure should be.\n");
-fprintf(fp,"%% First figure out where the text will be when we continue\n");
-fprintf(fp,"%% after the figure\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"currentpoint %d %d sub sub\n",bbox_ury,bbox_lly);
-fprintf(fp,"gsave\n");
-fprintf(fp,"currentpoint pop %d %d add 2 div sub\n",bbox_llx, bbox_urx);
-fprintf(fp,"currentpoint exch pop %d sub \n",bbox_ury);
-fprintf(fp,"translate\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"%%include the EPS file\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"BEGINEPSFILE\n");
-fprintf(fp,"\n");
 
 
-#include "ps_microstrip.c"
-
-
-fprintf(fp,"\n");
-fprintf(fp,"ENDEPSFILE\n");
-fprintf(fp,"grestore\n");
-fprintf(fp,"moveto\n");
-fprintf(fp,"%% spit out the numbers\n");
-fprintf(fp,"newline\n");
-fprintf(fp,"newline\n");
-fprintf(fp,"newline\n");
-fprintf(fp,"/col1x currentpoint pop def\n");
-fprintf(fp,"/col2x currentpoint pop %g inch 2 div add def\n",paperwidth);
-fprintf(fp,"/coly currentpoint exch pop def\n");
-fprintf(fp,"/linespace 1.5 def\n");
-fprintf(fp,"\n");
-fprintf(fp,"col1x coly moveto\n");
-fprintf(fp,"/leftcol col1x  def\n");
-fprintf(fp,"(W) show tab1 (=) show tab2 (50 mils) show newline\n");
-fprintf(fp,"(H) show tab1 (=) show tab2 (62 mils) show newline\n");
-fprintf(fp,"(L) show tab1 (=) show tab2 (1000 mils ) show newline\n");
-fprintf(fp,"newline\n");
-fprintf(fp,"(Tmet) show tab1 (=) show tab2 (1.4 mils) show newline\n");
-fprintf(fp,"(Rho) show tab1 (=) show tab2 (1) show newline\n");
-fprintf(fp,"(Rough) show tab1 (=) show tab2 (0.05 mils-rms) show newline\n");
-fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (4.8) show newline\n");
-fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (0.01) show newline\n");
-fprintf(fp,"\n");
-fprintf(fp,"col2x coly moveto \n");
-fprintf(fp,"/leftcol col2x def\n");
-fprintf(fp,"(Z0) show tab1 (=) show tab2 (50 ) show (W) symbolshow newline\n");
-fprintf(fp,"(keff) show tab1 (=) show tab2 (3.38 ) show newline\n");
-fprintf(fp,"(elen) show tab1 (=) show tab2 ( deg) show newline\n");
-fprintf(fp,"(Loss) show tab1 (=) show tab2 ( dB) show newline\n");
-fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 ( dB/mil) show newline\n");
-fprintf(fp,"(skin depth) show tab1 (=) show tab2 (mil) show newline\n");
-fprintf(fp,"newline\n");
-fprintf(fp,"(Ls) show tab1 (=) show tab2 (nH/mil) show newline\n");
-fprintf(fp,"(Rs) show tab1 (=) show tab2 (W) symbolshow (/mil) show newline\n");
-fprintf(fp,"(Cs) show tab1 (=) show tab2 (pF/mil) show newline\n");
-fprintf(fp,"(Gs) show tab1 (=) show tab2 (1/) show (W) symbolshow (-mil) show newline\n");
-fprintf(fp,"\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"%% All done with data output.\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"%% add the time stamp\n");
-fprintf(fp,"%%\n");
-fprintf(fp,"\n");
-fprintf(fp,"%g inch 2 div\n",paperwidth);
-fprintf(fp,"%g inch \n",bottommargin);
-fprintf(fp,"moveto\n");
-fprintf(fp,"(%s) centerbotshow\n",ctime(&now));
-fprintf(fp,"\n");
-fprintf(fp,"showpage\n");
-fprintf(fp,"\n");
-fprintf(fp,"%%%%Trailer\n");
-fprintf(fp,"%%MatchingCreationDate: \n");
-fprintf(fp,"%%%%DocumentFonts: Symbol\n");
-fprintf(fp,"%%%%+ Helvetica Times-Roman\n");
-fprintf(fp,"%%%%EOF\n");
 
 /* *********        End of Generated Code           ******** */
 
