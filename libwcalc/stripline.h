@@ -1,7 +1,7 @@
-/*      $Id: stripline.h,v 1.4 2002/01/14 02:50:38 dan Exp $ */
+/*      $Id: stripline.h,v 1.5 2002/06/12 11:30:32 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -37,12 +37,11 @@
 #define __STRIPLINE_H_
 
 
+#include "units.h"
+
 typedef struct STRIPLINE_SUBS
 {
-  double h,er,tmet,rho,rough,tand;
-  double h_sf,tmet_sf,rho_sf,rough_sf;
-
-  char *h_units, *tmet_units, *rho_units, *rough_units;
+  double h, er, tmet, rho, rough, tand;
 
 } stripline_subs;
 
@@ -50,9 +49,8 @@ typedef struct STRIPLINE_LINE
 {
 
   /* length and width */
-  double l,l_sf;
-  double w,w_sf;
-  char *l_units, *w_units;
+  double l;
+  double w;
 
   /* characteristic impedance (ohms) */
   double z0;
@@ -60,27 +58,30 @@ typedef struct STRIPLINE_LINE
   /* electrical length (degrees) */
   double len;
   double delay;
-  double delay_sf;
-  char *delay_units;
 
   /* open end length correction */
-  double deltal,deltal_sf;
-  char *deltal_units;
+  double deltal;
 
-  double loss,losslen,losslen_sf,skindepth,skindepth_sf;
-  char *losslen_units, *skindepth_units;
+  double loss, losslen, skindepth;
 
   /* incremental circuit model */
   double Ls, Rs, Cs, Gs;
-  double Ls_sf, Rs_sf, Cs_sf, Gs_sf;
-  char *Ls_units, *Rs_units, *Cs_units, *Gs_units;
 
   /* the actual characteristic impedance is Ro + j Xo */
   double Ro, Xo;
 
   /* frequency of analysis (Hertz) */
-  double freq,freq_sf;
-  char *freq_units;
+  double freq;
+
+  wc_units *units_lwht;
+  wc_units *units_L, *units_R, *units_C, *units_G;
+  wc_units *units_len;
+  wc_units *units_freq;
+  wc_units *units_loss;
+  wc_units *units_losslen;
+  wc_units *units_rho;
+  wc_units *units_rough;
+  wc_units *units_delay;
 
   stripline_subs *subs;
 

@@ -1,7 +1,7 @@
-/* $Id: stripline_loadsave.c,v 1.4 2002/05/09 23:50:04 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.5 2002/06/12 11:30:32 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -50,6 +50,7 @@
 #include "alert.h"
 #include "stripline.h"
 #include "stripline_loadsave.h"
+#include "units.h"
 #include "wcalc_loadsave.h"
 
 #ifdef DMALLOC
@@ -73,28 +74,39 @@ static fspec * get_fspec(int which_one)
     /* Build up the list which describes the file format */
 
     linespec=fspec_add_sect(NULL,"stripline");
-    fspec_add_key(linespec,"file_version","Stripline file version",'f',FILE_VERSION);
+    fspec_add_key(linespec,"file_version","Stripline file version",'f',
+		  FILE_VERSION);
 
-    fspec_add_key(linespec,"L","Length (meters)",'d',&line->l);
-    fspec_add_key(linespec,"W","Width (meters)",'d',&line->w);
-    fspec_add_key(linespec,"Z0","Characteristic Impedance (ohms)",'d',&line->z0);
-    fspec_add_key(linespec,"Elen","Electrical Length (degrees)",'d',&line->len);
-    fspec_add_key(linespec,"freq","Frequency of operation",'d',&line->freq);
+    fspec_add_key(linespec, "L", "Length (meters)", 'd', &line->l);
+    fspec_add_key(linespec, "W", "Width (meters)", 'd', &line->w);
+    fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 
+		  'd', &line->z0);
+    fspec_add_key(linespec,"Elen","Electrical Length (degrees)", 
+		  'd', &line->len);
+    fspec_add_key(linespec,"freq","Frequency of operation",
+		  'd', &line->freq);
 
     /*
      * The desired user units
      */
-    fspec_add_comment(linespec,"Desired user units and associated scale factors");
+    fspec_add_comment(linespec, "User units");
 
-    fspec_add_key(linespec,"l_sf","Length scale factor (meters/unit)",'d',&line->l_sf);
-    fspec_add_key(linespec,"l_units","Length units",'s',&line->l_units);
+    fspec_add_key(linespec, "units_lwht", "Length, width, substrate and metal thickness units",
+		  'u', &line->units_lwht);
 
-    fspec_add_key(linespec,"w_sf","Width scale factor (meters/unit)",'d',&line->w_sf);
-    fspec_add_key(linespec,"w_units","Width units",'s',&line->w_units);
-
+    fspec_add_key(linespec, "units_L", "Incremental inductance units",  'u', &line->units_L);
+    fspec_add_key(linespec, "units_R", "Incremental resistance units",  'u', &line->units_R);
+    fspec_add_key(linespec, "units_C", "Incremental capacitance units", 'u', &line->units_C);
+    fspec_add_key(linespec, "units_G", "Incremental conductance units", 'u', &line->units_G);
+    fspec_add_key(linespec, "units_len", "Line physical length units",  'u', &line->units_len);
+    fspec_add_key(linespec, "units_freq", "Frequency units",  'u', &line->units_freq);
+    fspec_add_key(linespec, "units_loss", "Loss units",  'u', &line->units_loss);
+    fspec_add_key(linespec, "units_losslen", "Loss/length units",  'u', &line->units_losslen);
+    fspec_add_key(linespec, "units_rho", "Resistivity units",  'u', &line->units_rho);
+    fspec_add_key(linespec, "units_rough", "Surface roughness units (RMS)",  
+		  'u', &line->units_rough);
+    fspec_add_key(linespec, "units_delay", "Delay units",  'u', &line->units_delay);
     
-    fspec_add_key(linespec,"freq_sf","Frequency scale factor (Hz/unit)",'d',&line->freq_sf);
-    fspec_add_key(linespec,"freq_units","Frequency units",'s',&line->freq_units);
   }
 
   if (subspec == NULL) {
@@ -109,22 +121,6 @@ static fspec * get_fspec(int which_one)
     fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",'d',&subs->rough);
     fspec_add_key(subspec,"TAND","Dielectric loss tangent",'d',&subs->tand);
 
-    /*
-     * The desired user units
-     */
-    fspec_add_comment(subspec,"Desired user units and associated scale factors");
-
-    fspec_add_key(subspec,"h_sf","Height scale factor (meters/unit)",'d',&subs->h_sf);
-    fspec_add_key(subspec,"h_units","Height units",'s',&subs->h_units);
-
-    fspec_add_key(subspec,"tmet_sf","Tmet scale factor (meters/unit)",'d',&subs->tmet_sf);
-    fspec_add_key(subspec,"tmet_units","Tmet units",'s',&subs->tmet_units);
-
-    fspec_add_key(subspec,"rho_sf","Resistivity scale factor (ohm-meters/unit)",'d',&subs->rho_sf);
-    fspec_add_key(subspec,"rho_units","Resistivity units",'s',&subs->rho_units);
-
-    fspec_add_key(subspec,"rough_sf"," scale factor (meters/unit)",'d',&subs->rough_sf);
-    fspec_add_key(subspec,"rough_units"," units",'s',&subs->rough_units);
   }
 
   if (which_one == LINE_SPEC)
