@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: cgic.h,v 1.1 2001/09/11 22:52:07 dan Exp $ */
 /* The CGI_C library, by Thomas Boutell, version 1.0. CGI_C is intended
 	to be a high-quality API to simplify CGI programming tasks. */
 
@@ -39,6 +39,7 @@ extern char *cgiContentType;
 extern char *cgiAccept;
 extern char *cgiUserAgent;
 extern char *cgiReferrer;
+extern char *cgiCookie;
 /* A macro providing the same incorrect spelling that is
 	found in the HTTP/CGI specifications */
 #define cgiReferer cgiReferrer
@@ -63,6 +64,13 @@ extern FILE *cgiOut;
 	be read from in order to retrieve the contents. */
 
 extern FILE *cgiIn;
+
+/* possible return codes from the parsing functions */
+typedef enum {
+	cgiParseSuccess,
+	cgiParseMemory,
+	cgiParseIO
+} cgiParseResultType;
 
 /* Possible return codes from the cgiForm family of functions (see below). */
 

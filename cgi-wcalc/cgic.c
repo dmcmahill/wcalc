@@ -1,4 +1,4 @@
-/* $Id: cgic.c,v 1.2 2001/09/17 15:27:29 dan Exp $ */
+/* $Id: cgic.c,v 1.3 2001/09/18 21:08:58 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \
@@ -21,6 +21,7 @@
 #include <unistd.h>
 #endif /* NO_UNISTD */
 #include "cgic.h"
+#include "cookie.h"
 
 #define cgiStrEq(a, b) (!strcmp((a), (b)))
 
@@ -44,6 +45,7 @@ int cgiContentLength;
 char *cgiAccept;
 char *cgiUserAgent;
 char *cgiReferrer;
+char *cgiCookie;
 
 FILE *cgiIn;
 FILE *cgiOut;
@@ -63,12 +65,6 @@ static cgiFormEntry *cgiFormEntryFirst;
 static int cgiRestored = 0;
 
 static void cgiGetenv(char **s, char *var);
-
-typedef enum {
-	cgiParseSuccess,
-	cgiParseMemory,
-	cgiParseIO
-} cgiParseResultType;
 
 static cgiParseResultType cgiParseGetFormInput();
 static cgiParseResultType cgiParsePostFormInput();
@@ -102,6 +98,7 @@ int main(int argc, char *argv[]) {
 	cgiGetenv(&cgiAccept, "HTTP_ACCEPT");
 	cgiGetenv(&cgiUserAgent, "HTTP_USER_AGENT");
 	cgiGetenv(&cgiReferrer, "HTTP_REFERER");
+	cgiGetenv(&cgiCookie, "HTTP_COOKIE");
 #ifdef CGICDEBUG
 	CGICDEBUGSTART
 	fprintf(dout, "%d\n", cgiContentLength);
@@ -177,6 +174,16 @@ int main(int argc, char *argv[]) {
 #endif /* CGICDEBUG */
 		}
 	}
+	if (cgiParseCookieInput() != cgiParseSuccess) {
+#ifdef CGICDEBUG
+	  CGICDEBUGSTART
+	    fprintf(dout, "CookieInput failed\n");
+	  CGICDEBUGEND	
+#endif /* CGICDEBUG */
+	    cgiFreeResources();
+	  return -1;
+	}	
+
 	result = cgiMain();
 	cgiFreeResources();
 	return result;
@@ -370,6 +377,9 @@ static void cgiFreeResources() {
 		free(c);
 		c = n;
 	}
+
+	cookieFreeResources();
+
 	/* If the cgi environment was restored from a saved environment,
 		then these are in allocated space and must also be freed */
 	if (cgiRestored) {
@@ -392,6 +402,7 @@ static void cgiFreeResources() {
 		free(cgiAccept);
 		free(cgiUserAgent);
 		free(cgiReferrer);
+		free(cgiCookie);
 	}
 }
 
@@ -849,6 +860,9 @@ cgiEnvironmentResultType cgiWriteEnvironment(char *filename) {
 	if (!cgiWriteString(out, cgiReferrer)) {
 		goto error;
 	}
+	if (!cgiWriteString(out, cgiCookie)) {
+		goto error;
+	}
 	if (!cgiWriteInt(out, cgiContentLength)) {
 		goto error;
 	}
@@ -959,6 +973,9 @@ cgiEnvironmentResultType cgiReadEnvironment(char *filename) {
 		goto error;
 	}
 	if (!cgiReadString(in, &cgiReferrer)) {
+		goto error;
+	}
+	if (!cgiReadString(in, &cgiCookie)) {
 		goto error;
 	}
 	if (!cgiReadInt(in, &cgiContentLength)) {
