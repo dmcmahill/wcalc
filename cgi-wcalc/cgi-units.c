@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.4 2004/07/22 02:51:02 dan Exp $ */
+/* $Id: cgi-units.c,v 1.5 2004/07/22 13:06:22 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -56,6 +56,9 @@
 #include <dmalloc.h>
 #endif
 
+
+static cgi_menu_list * all_menus=NULL;
+
 char * cgi_units_menu_show(const units_data *units, char *name, int ind)
 {
   int i;
@@ -88,13 +91,8 @@ static void cgi_units_submenu(const wc_units_data *units,
 {
   int i;
 
-  /* XXX
   fprintf(cgiOut, "<SELECT NAME=\"%s_%d\" "
-	  "onChange=\"document.coax.rhobu.value=document.coax.%s_%d.value\""
-	  ">\n",
-	  name, sub, name, sub);
-  */
-  fprintf(cgiOut, "<SELECT NAME=\"%s_%d\">\n", name, sub);
+	  "onChange=\"changed_%s(); valsChanged();\">\n", name, sub, name);
 
   /* populate the menu */
   i = 0;
@@ -112,9 +110,17 @@ static void cgi_units_submenu(const wc_units_data *units,
   fprintf(cgiOut, "</SELECT>\n");
 
 }
-char * cgi_units_menu(const wc_units *units, char *name)
+
+char * cgi_units_menu_display(cgi_units_menu *menu)
 {
   int i, j;
+  wc_units * units;
+  char * name;
+
+  assert(menu != NULL);
+
+  units = menu->units;
+  name = menu->name;
 
   assert(units != NULL);
 
@@ -174,3 +180,168 @@ char ** cgi_units_inductance(void)
   return u;
 }
 
+cgi_units_menu * cgi_units_menu_new(wc_units *units)
+{
+  static int mid=0;
+  cgi_units_menu *um;
+  cgi_menu_list *el;
+
+  /* create the menu */
+  if( (um = (cgi_units_menu *) malloc(sizeof(cgi_units_menu))) == NULL ) {
+    fprintf(stderr,"cgi_units_menu_new():  malloc() failed\n");
+    exit(1);
+  }
+  
+  sprintf(um->name, "wc_unit_menu_%d", mid++);
+  um->units = units;
+  um->ul = NULL;
+
+  /* add to the master list */
+  if( all_menus == NULL ) {
+    if( (all_menus = (cgi_menu_list *) malloc(sizeof(cgi_menu_list))) == NULL ) {
+      fprintf(stderr,"cgi_units_menu_new():  malloc() failed\n");
+      exit(1);
+    }
+    all_menus->prev = NULL;
+    all_menus->next = NULL;
+    all_menus->menu = um;
+  } else {
+    el = all_menus;
+    while(el->next != NULL)
+      el = el->next;
+
+    if( (el->next = (cgi_menu_list *) malloc(sizeof(cgi_menu_list))) == NULL ) {
+      fprintf(stderr,"cgi_units_menu_new():  malloc() failed\n");
+      exit(1);
+    }
+    el->next->prev = el;
+    el->next->next = NULL;
+    el->next->menu = um;
+  }
+
+  return um;
+}
+
+void cgi_units_attach_entry(cgi_units_menu *menu, char *name)
+{
+  entry_list *el;
+
+  if( menu->ul == NULL ) {
+    if( (menu->ul = (entry_list *) malloc(sizeof(entry_list))) == NULL ) {
+      fprintf(stderr,"cgi_units_attach_entry():  malloc() failed\n");
+      exit(1);
+    }
+    menu->ul->prev = NULL;
+    menu->ul->next = NULL;
+    menu->ul->name = name;
+  } else {
+    el = menu->ul;
+    while(el->next != NULL)
+      el = el->next;
+
+    if( (el->next = (entry_list *) malloc(sizeof(entry_list))) == NULL ) {
+      fprintf(stderr,"cgi_units_attach_entry():  malloc() failed\n");
+      exit(1);
+    }
+    el->next->prev = el;
+    el->next->next = NULL;
+    el->next->name = name;
+  }
+
+}
+
+/* 
+ * cgi_units_menu_init()
+ *
+ * This function spits out JavaScript code in the HTML document head
+ * to define menu changed callbacks.
+ */
+char * cgi_units_menu_init()
+{
+  cgi_menu_list *ml=all_menus;
+  entry_list *el;
+  wc_units * units;
+  int i,j;
+  
+  fprintf(cgiOut, "<SCRIPT LANGUAGE=\"LiveScript\">\n");
+  fprintf(cgiOut, "<!-- hide this script tag's contents from old browsers\n\n");
+
+  fprintf(cgiOut, "\nfunction valsChanged()\n{\n");
+  fprintf(cgiOut, "\tdocument.wcalc.status.value = 'Values Out of Sync';\n");
+  fprintf(cgiOut, "}\n\n");
+
+  while( ml != NULL ) {
+    fprintf(cgiOut, "function changed_%s()\n", ml->menu->name);
+    fprintf(cgiOut, "{\n");
+    el = ml->menu->ul;
+    units = ml->menu->units;
+    
+    fprintf(cgiOut, "\tvar i;\n");
+    fprintf(cgiOut, "\tvar tmps;\n");
+
+    fprintf(cgiOut, "\ttmps = '';\n");
+
+    j = 0;
+    /* Emit the numerator terms */
+    if (units->nnum == 0) {
+      fprintf(cgiOut, "\ttmps = tmps + '1';\n");
+    } else {
+      for ( i = 0; i < units->nnum; i++) {
+	
+	fprintf(cgiOut, "\ti = document.wcalc.%s_%d.selectedIndex;\n", 
+		ml->menu->name, j);
+	fprintf(cgiOut, "\ttmps = tmps + document.wcalc.%s_%d[i].value;\n", 
+		ml->menu->name, j);
+	j++;
+
+	if (i < (units->nnum - 1)) 
+	  fprintf(cgiOut, "\ttmps = tmps + '-';\n");
+	
+      }  
+      
+    }
+    
+    /* Emit the denominator terms */
+    if (units->nden > 0) {
+      fprintf(cgiOut, "\ttmps = tmps + '/';\n");
+      
+      for (i=0; i<units->nden; i++) {
+	fprintf(cgiOut, "\ti = document.wcalc.%s_%d.selectedIndex;\n",
+		ml->menu->name, j);
+	fprintf(cgiOut, "\ttmps = tmps + document.wcalc.%s_%d[i].value;\n",
+		ml->menu->name, j);
+	j++;
+	
+	if (i < (units->nden - 1)) 
+	  fprintf(cgiOut, "\ttmps = tmps + '-';\n");
+      }
+    }
+
+    while( el != NULL ) {
+      fprintf(cgiOut, "\tdocument.wcalc.%s.value = tmps;\n", el->name);
+      
+      el = el->next;
+    }
+    fprintf(cgiOut, "}\n\n");
+
+    ml = ml->next;
+  }
+
+  /*
+   * Emit a function which will tickle all the SELECT changed
+   * functions when the form is loaded.  This will initialize the
+   * entries which track various menus.
+   */
+
+  fprintf(cgiOut, "function units_init()\n{\n");
+  ml = all_menus;
+  while( ml != NULL ) {
+    fprintf(cgiOut, "\tchanged_%s();\n", ml->menu->name);
+    ml = ml->next;
+  }
+  fprintf(cgiOut, "}\n\n");
+
+  fprintf(cgiOut, "-->\n</SCRIPT>\n");
+
+  return "";
+}

@@ -1,4 +1,4 @@
-<!-- $Id: coax.html,v 1.7 2004/07/22 02:51:02 dan Exp $ -->
+<!-- $Id: coax.html,v 1.8 2004/07/22 13:06:23 dan Exp $ -->
 <!--
  * Copyright (c) 2002, 2004 Dan McMahill
  * All rights reserved.
@@ -45,16 +45,17 @@
 <meta name="keywords" content="
 coax
 ">
+<@s@cgi_units_menu_init()@>
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000">
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
 
 <H1 ALIGN="CENTER">Coax Analysis/Synthesis Calculator</H1>
 
 <P>
 
 
-<FORM NAME="coax" METHOD=GET ACTION="coax.cgi">
+<FORM NAME="wcalc" METHOD=GET ACTION="coax.cgi">
 <TABLE>
 <TR>
 <TD>
@@ -63,6 +64,10 @@ coax
 <TR ALIGN="CENTER">
 <TD><IMG SRC="<@s@HTMLPATH@>coax.png" WIDTH=327 HEIGHT=265 
      ALT="[Coax Cross-section]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE="JUST LOADED"></TD>
 </TR>
 
 <!--
@@ -79,25 +84,33 @@ coax
 <TR>
 <TD>L =</TD>
 <TD><@g@line->L/line->units_L->sf@></TD>
-<TD><@s@line->units_L->name@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_L)@>
+</TD>
 </TR>
 
 <TR>
 <TD>R =</TD>
 <TD><@g@line->R/line->units_R->sf@></TD>
-<TD><@s@line->units_R->name@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_R)@>
+</TD>
 </TR>
 
 <TR>
 <TD>C =</TD>
 <TD><@g@line->C/line->units_C->sf@></TD>
-<TD><@s@line->units_C->name@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_C)@>
+</TD>
 </TR>
 
 <TR>
 <TD>G =</TD>
 <TD><@g@line->G/line->units_G->sf@></TD>
-<TD><@s@line->units_G->name@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_G)@>
+</TD>
 </TR>
 
 
@@ -143,50 +156,50 @@ coax
 
 <TR>
 <TD>Inner Radius (A)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" VALUE="<@g@line->a/line->units_abct->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" VALUE="<@g@line->a/line->units_abct->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- A units menu -->
-<@s@cgi_units_menu_show(length_units,"a_units",units_get_index_name(length_units,line->units_abct->name))@>
+<@s@cgi_units_menu_display(menu_abct)@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_a" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Outer Radius (B)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" VALUE="<@g@line->b/line->units_abct->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" VALUE="<@g@line->b/line->units_abct->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- B units menu -->
-<@s@cgi_units_menu_show(length_units,"b_units",units_get_index_name(length_units,line->units_abct->name))@>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_b">
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_b" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Offset (C)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="c" VALUE="<@g@line->c/line->units_abct->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="c" VALUE="<@g@line->c/line->units_abct->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- C units menu -->
-<@s@cgi_units_menu_show(length_units,"c_units",units_get_index_name(length_units,line->units_abct->name))@>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_c">
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_c" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD>Shield Thickness (T)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tshield" VALUE="<@g@line->tshield/line->units_abct->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tshield" VALUE="<@g@line->tshield/line->units_abct->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- Tshield units menu -->
-<@s@cgi_units_menu_show(length_units,"tshield_units",units_get_index_name(length_units,line->units_abct->name))@>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_t">
 </TD>
 <TD></TD>
 </TR>
 
 <TR>
 <TD>Line length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@line->len/line->units_len->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="len" VALUE="<@g@line->len/line->units_len->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- length units menu -->
-<@s@cgi_units_menu_show(length_units,"len_units",units_get_index_name(length_units,line->units_len->name))@>
+<@s@cgi_units_menu_display(menu_len)@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
 </TR>
@@ -194,42 +207,42 @@ coax
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOA)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhoa" VALUE="<@g@line->rho_a@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhoa" VALUE="<@g@line->rho_a@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- Resistivity units menu -->
-<@s@cgi_units_menu(line->units_rho, "rho_units")@>
+<@s@cgi_units_menu_display(menu_rho)@>
 </TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHOB)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhob" VALUE="<@g@line->rho_b@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rhob" VALUE="<@g@line->rho_b@>" onChange="valsChanged()"></TD>
 <TD>
-<INPUT TYPE="TEXT" DISABLED VALUE="xxxxx" NAME="rhobu">
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_rhob">
 </TD>
 </TR>
 
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Relative dielectric constant (Er)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="er" VALUE="<@g@line->er@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="er" VALUE="<@g@line->er@>" onChange="valsChanged()"></TD>
 <TD></TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_er" VALUE="calc"></TD>
 </TR>
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>permitivity.html">Dielectric loss tangent (tand)</A></TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->tand@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->tand@>" onChange="valsChanged()"></TD>
 <TD></TD>
 </TR>
 
 
 <TR>
 <TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>" onChange="valsChanged()"></TD>
 <TD>
 <!-- freq units menu -->
-<@s@cgi_units_menu_show(frequency_units,"freq_units",units_get_index_name(frequency_units,line->units_freq->name))@>
+<@s@cgi_units_menu_display(menu_freq)@>
 </TD>
 </TR>
 
@@ -240,13 +253,13 @@ coax
 
 <TR>
 <TD>Characteristic Impedance</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->z0@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->z0@>" onChange="valsChanged()"></TD>
 <TD>[ohms]</TD>
 </TR>
 
 <TR>
 <TD>Electrical Length</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->elen@>"></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->elen@>" onChange="valsChanged()"></TD>
 <TD>[degrees]</TD>
 </TR>
 

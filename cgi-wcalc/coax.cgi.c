@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.8 2002/06/12 11:30:03 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.9 2004/07/22 01:32:26 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2004 Dan McMahill
@@ -117,6 +117,8 @@ int cgiMain(void){
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
   cgiCookieType *cookie;
+  cgi_units_menu *menu_rho, *menu_abct, *menu_freq, *menu_len;
+  cgi_units_menu *menu_L, *menu_R, *menu_C, *menu_G;
 
   input_err = 0;
 
@@ -132,6 +134,22 @@ int cgiMain(void){
   printf("coax.cgi:  calling coax_new()\n");
 #endif
   line = coax_new();
+
+  menu_rho = cgi_units_menu_new(line->units_rho);
+  cgi_units_attach_entry(menu_rho, "entry_rhob");
+
+  menu_abct = cgi_units_menu_new(line->units_abct);
+  cgi_units_attach_entry(menu_abct, "entry_b");
+  cgi_units_attach_entry(menu_abct, "entry_c");
+  cgi_units_attach_entry(menu_abct, "entry_t");
+
+  menu_len = cgi_units_menu_new(line->units_len);
+  menu_freq = cgi_units_menu_new(line->units_freq);
+
+  menu_L = cgi_units_menu_new(line->units_L);
+  menu_R = cgi_units_menu_new(line->units_R);
+  menu_C = cgi_units_menu_new(line->units_C);
+  menu_G = cgi_units_menu_new(line->units_G);
 
 #ifdef DEBUG
   printf("coax.cgi:  checking out which button was pressed\n");

@@ -1,4 +1,4 @@
-/* $Id: cgi-units.h,v 1.3 2002/06/12 11:30:02 dan Exp $ */
+/* $Id: cgi-units.h,v 1.4 2004/07/22 13:06:23 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -40,8 +40,44 @@
 #include "misc.h"
 #include "units.h"
 
+typedef struct _ENTRY_LIST
+{
+  /* the name of the HTML entry */
+  char *name;
+
+  /* pointers to prev/next node in list */
+  struct _ENTRY_LIST *next, *prev;
+  
+} entry_list;
+
+typedef struct _CGI_MENU_LIST
+{
+  /* the menu */
+  struct _CGI_UNITS_MENU *menu;
+
+  /* pointers to prev/next node in list */
+  struct _CGI_MENU_LIST *next, *prev;
+  
+} cgi_menu_list;
+
+typedef struct _CGI_UNITS_MENU
+{
+  wc_units *units;
+
+  /* the name of the HTML select */
+  char name[80];
+
+  /* list of HTML text entries which are attached to this menu */
+  struct _ENTRY_LIST *ul;
+
+} cgi_units_menu;
+
 char * cgi_units_menu_show(const units_data *u, char *name, int ind);
 char ** cgi_units_inductance(void);
-char * cgi_units_menu(const wc_units *units, char *name);
+char * cgi_units_menu_display(cgi_units_menu *menu);
+
+cgi_units_menu * cgi_units_menu_new(wc_units *units);
+void cgi_units_attach_entry(cgi_units_menu *menu, char *name);
+char * cgi_units_menu_init();
 
 #endif /* __CGI_UNITS_H__ */
