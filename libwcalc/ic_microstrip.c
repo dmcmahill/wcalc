@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.7 2002/05/08 10:38:17 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.8 2002/05/09 23:49:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -35,6 +35,7 @@
 
 /* Debug the analysis routine */
 /* #define DEBUG_CALC */
+/* #define DEBUG_ZUSTRIP */
 
 /* Debug the synthesis routine */
 /* #define DEBUG_SYN */
@@ -104,7 +105,20 @@ static double Zustrip(double h, double w, double t, double er);
 int ic_microstrip_calc(ic_microstrip_line *line, double f)
 {
   double omega;
+  
+  /* XXX please fixme!  I get segfaults without this.  happens on
+     NetBSD-1.4.3, NetBSD-1.5.1, solaris-2.6, solaris-2.8 with 
+     gcc version egcs-2.91.60 19981201 (egcs-1.1.1 release) 
+     gcc version 2.95.1 19990816 (release)
+     gcc version 2.95.2 19991024 (release)
+  */
+
+#if (defined(sparc) || defined(__sparc__)) && defined(__GNUC__)
+  static double mu0, e0;
+#else
   double mu0, e0;
+#endif
+
   double Cox;
   double Csemi, Gsemi, Lsemi, Z0semi;
 
@@ -143,7 +157,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* permeability and permitivitty of free space (H/m and F/m) */
   mu0 = 4.0*M_PI*1.0e-7;
   e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
-  
+
 #ifdef DEBUG_CALC
   printf("ic_microstrip_calc(): -------------- IC Microstrip Analysis ----------\n");
   printf("ic_microstrip_calc(): Metal width                 = %g um\n",line->w*1e6);
@@ -163,7 +177,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* 
    * Find the oxide capacitance assuming tox << w
    */
-  Cox = (line->subs->eox*e0/line->subs->tox)*line->w;
+  Cox = ((line->subs->eox)*e0/(line->subs->tox))*line->w;
 #ifdef DEBUG_CALC
   printf("Finding oxide capacitance\n");
   printf("Cox = %g fF/um\n",Cox*1e9);
@@ -241,7 +255,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * \/
    *
    */
-  num = c_complex_p(0,omega*mu0,num);
+  num = c_complex_p(0.0,omega*mu0,num);
   den = c_complex_p(line->subs->sigmas,omega*line->subs->es*e0,den);
   Zsemi = c_div_p(num,den,Zsemi);
   Zsemi = c_sqrt_p(Zsemi,Zsemi);
@@ -258,7 +272,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *             \/
    *
    */
-  den = c_complex_p(0,line->w,den);
+  den = c_complex_p(0.0,line->w,den);
   Zsemi = c_div_p(Zsemi,den,Zsemi);
 
 #ifdef DEBUG_CALC
@@ -271,7 +285,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *          \/                \                      /
    *
    */
-  betas = c_complex_p(-omega*omega*mu0*line->subs->es*e0,omega*mu0*line->subs->sigmas,betas);
+  betas = c_complex_p(-omega*omega*mu0*(line->subs->es)*e0,omega*mu0*(line->subs->sigmas),betas);
   betas = c_sqrt_p(betas,betas);
 
   /* j betas a */
@@ -331,8 +345,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   Zsemi = c_mul_p(Zsemi, tmpc1, Zsemi);
 
   /* find the oxide impedance and propagation constant */
-  Zi = sqrt(mu0/(line->subs->eox*e0))/line->w;
-  gammai = c_complex_p(0,omega*sqrt(mu0*line->subs->eox*e0),gammai);
+  Zi = sqrt(mu0/((line->subs->eox)*e0))/line->w;
+  gammai = c_complex_p(0.0,omega*sqrt(mu0*(line->subs->eox)*e0),gammai);
 
   /* combine to find the total MIS incremental series impedance */
 
@@ -829,6 +843,7 @@ ic_microstrip_line *ic_microstrip_line_new(void)
   newline->subs->rho_sf = 1.0;
   newline->subs->rough_sf = 1.0;
 
+
   newline->l_units = "m";
   newline->w_units = "m";
   newline->freq_units = "Hz";
@@ -868,7 +883,7 @@ ic_microstrip_subs *ic_microstrip_subs_new(void)
 
 void ic_microstrip_line_free(ic_microstrip_line *line)
 {
-  free(line->subs);
+  ic_microstrip_subs_free(line->subs);
   free(line);
 }
 
@@ -895,7 +910,7 @@ static double Zustrip(double h, double w, double t, double er)
   double wp;
   double e;
 
-  e = exp(1);
+  e = exp(1.0);
   deltaw = (t/M_PI)*
     ((1.0 + (1.0/er))/2.0)*
     log(4*e/sqrt(pow(t/h,2.0) +	 pow((1/M_PI)/(1.1 + w/t),2.0)));
@@ -909,6 +924,12 @@ static double Zustrip(double h, double w, double t, double er)
 	      (4*h/wp)*(b + sqrt(pow(b,2.0) + 
 				 0.5*(1.0 + 1.0/er)*pow(M_PI,2.0))));
 
-  return(z0);
+
+#ifdef DEBUG_ZUSTRIP
+  printf("Zustrip(h=%g,w=%g,t=%g,er=%g) = %g Ohms\n",h,w,t,er,z0);
+#endif
+
+  return z0;
 }
+
 
