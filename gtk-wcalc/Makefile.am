@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.19 2002/05/16 19:29:18 dan Exp $
+## $Id: Makefile.am,v 1.20 2002/05/16 19:51:55 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -72,7 +72,8 @@ ASCIITABS=\
 	AWG.asciitab \
 	permeability.asciitab \
 	permitivity.asciitab \
-	resistivity.asciitab
+	resistivity.asciitab \
+	units.asciitab
 
 GTKTABS=	${ASCIITABS:.asciitab=.c}
 

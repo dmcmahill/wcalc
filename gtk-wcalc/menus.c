@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.4 2002/05/14 00:39:22 dan Exp $ */
+/* $Id: menus.c,v 1.5 2002/06/12 11:30:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -109,6 +109,8 @@ static GtkItemFactoryEntry static_menu_items[] = {
                         NULL,          permitivity_popup,0, NULL },
   { "/_Help/_Material Properties/_Resistivities", 
                         NULL,          resistivity_popup,0, NULL },
+  { "/_Help/_Material Properties/_Units", 
+                        NULL,          units_popup,0, NULL },
   { "/_Help/_Material Properties/_Wire Sizes", 
                         NULL,          AWG_popup,0, NULL },
 };

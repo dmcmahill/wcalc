@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.7 2002/05/14 00:39:22 dan Exp $ */
+/* $Id: about.c,v 1.8 2002/06/12 11:30:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -239,6 +239,13 @@ void resistivity_popup(void)
   extern GtkWidget * resistivity_table(void);
   asciitab_popup(resistivity_table,
 		 "Resistivities of Common Materials");
+}
+
+void units_popup(void)
+{
+  extern GtkWidget * units_table(void);
+  asciitab_popup(units_table,
+		 "Unit Conversion Factors");
 }
 
 

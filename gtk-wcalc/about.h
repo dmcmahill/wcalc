@@ -1,4 +1,4 @@
-/* $Id: about.h,v 1.5 2002/05/14 00:39:22 dan Exp $ */
+/* $Id: about.h,v 1.6 2002/06/12 11:30:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -48,5 +48,6 @@ void AWG_popup(void);
 void permeability_popup(void);
 void permitivity_popup(void);
 void resistivity_popup(void);
+void units_popup(void);
 
 #endif /*__ABOUT_H__*/
