@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.5 2001/12/15 23:12:17 dan Exp $ */
+/* $Id: coax.c,v 1.6 2001/12/16 17:59:08 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -247,6 +247,23 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     line->losslen = line->alpha_c + line->alpha_d;
 
     line->loss = line->losslen*line->len;
+
+    /*
+     * TE10 mode cutoff frequency
+     * XXX This is only for line->c == 0 despite the fact that this
+     * equation was found in Rosloniec along with the eccentric line
+     * impedance formula
+     */
+
+    /* 
+     * approximate value
+     */
+    line->fc = v/(M_PI*(line->a + line->b));
+    
+    /*
+     * exact solution
+     */
+    
   }
 
   /*
@@ -254,14 +271,6 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
    */
   line->delay = line->len/v;
   line->elen = 360.0*line->freq*line->delay;
-
-  /*
-   * TE11 mode cutoff frequency
-   * XXX This is only for line->c == 0 despite the fact that this
-   * equation was found in Rosloniec along with the eccentric line
-   * impedance formula
-   */
-  line->fc = v/(M_PI*(line->a + line->b));
 
   return 0;
 }
