@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.17 2001/11/05 01:29:11 dan Exp $
+## $Id: Makefile.am,v 1.18 2002/05/10 22:52:59 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
@@ -71,7 +71,7 @@ all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce
 clean-local:
 	-rm ${SCICATS} whatis load_wcalc.sce test_wcalc.sce load_wcalc.sce.in
 
-EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce
+EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS}
 
 BUILT_SOURCES= libsci_wcalc.c  whatis ${SCICATS}
 
