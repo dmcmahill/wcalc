@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.14 2001/10/31 04:38:07 dan Exp $
+## $Id: Makefile.am,v 1.15 2001/11/03 02:11:49 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -159,7 +159,7 @@ whatis: ${SCIMANS}
 	@${AWK} 'BEGIN{s=0;} \
 		/^\.SH/ {s=0}; \
 		s==1{ \
-			printf("%-20s - ",$$1); \
+			printf("%-26s - ",$$1); \
 			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
 			printf("\n"); \
 		} \
