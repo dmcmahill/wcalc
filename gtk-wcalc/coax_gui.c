@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.26 2004/07/24 17:39:04 dan Exp $ */
+/* $Id: coax_gui.c,v 1.27 2004/07/25 04:04:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  */
 
-#define DEBUG
+/* #define DEBUG */
 
 #include "config.h"
 
@@ -201,11 +201,12 @@ void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
-
-  wc_units_menu_init( wcalc );
   
+
   /* run the analysis once since we've changed input units */
+  wc_units_menu_init( wcalc );
   analyze(NULL, gui);
+  wc_units_menu_init( wcalc );
 }
 
 /*
@@ -726,7 +727,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   wc_units_attach_units_label(ug, text);
 
-  /* Inductance per length */
+  /* ---------------- L -------------- */
   text = gtk_label_new( "L" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,XPAD,YPAD);
 
@@ -735,12 +736,15 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
   gui->label_L = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_L, 5, 6, 0, 1, 0, 0, XPAD, YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_L, 
+		    5, 6, 0, 1, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_L);
 
   /* attach inductance label to the units gui */
-  wc_units_attach_label(ug, gui->label_L, &(gui->line->L), NULL, NULL, "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_L, 
+			&(gui->line->L), NULL, NULL, "%8.4g", 1);
 
+  /* ---------------- R -------------- */
   text = gtk_label_new( "R" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0, 0, XPAD, YPAD);
 
@@ -750,13 +754,17 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
 
   gui->label_R = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_R, 5, 6, 1, 2, 0, 0, XPAD, YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_R, 
+		    5, 6, 1, 2, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_R);
 
-  wc_units_attach_label(ug, gui->label_R, &(gui->line->R), NULL, NULL, "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_R, 
+			&(gui->line->R), NULL, NULL, "%8.4g", 1);
 
+  /* ---------------- C -------------- */
   text = gtk_label_new( "C" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0, 0, XPAD, YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   4, 5, 2, 3, 0, 0, XPAD, YPAD);
 
   text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
 
@@ -764,10 +772,14 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
 
   gui->label_C = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_C, 5, 6, 2, 3, 0, 0, XPAD, YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_C, 
+		    5, 6, 2, 3, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_C);
 
-  wc_units_attach_label(ug, gui->label_C, &(gui->line->C), NULL, NULL, "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_C, 
+			&(gui->line->C), NULL, NULL, "%8.4g", 1);
+
+  /* ---------------- G -------------- */
   text = gtk_label_new( "G" );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0, 0, XPAD, YPAD);
 
@@ -778,10 +790,12 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
 
 
   gui->label_G = gtk_label_new( OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_G, 5, 6, 3, 4, 0, 0, XPAD, YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_G, 
+		    5, 6, 3, 4, 0, 0, XPAD, YPAD);
   gtk_widget_show(gui->label_G);
 
-  wc_units_attach_label(ug, gui->label_G, &(gui->line->G), NULL, NULL, "%8.4g", 1);
+  wc_units_attach_label(ug, gui->label_G, 
+			&(gui->line->G), NULL, NULL, "%8.4g", 1);
 
   /* spacer */
   text = gtk_label_new( "                " );
@@ -882,7 +896,6 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
 {
   char *vstr;
   int rslt=0;
-  char *tmps;
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) ); 
   gui->line->a=atof(vstr)*wc_units_to_sf(gui->line->units_abct);
@@ -1275,12 +1288,12 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"newline\n");
   tmps = wc_units_to_str(gui->line->units_L);
   fprintf(fp,"(L) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->L/wc_units_to_sf(gui->line->units_L),
+	  gui->line->L/gui->line->units_L->sf,
 	  tmps);
   free(tmps);
   tmps = wc_units_to_str(gui->line->units_R);
   fprintf(fp,"(R) show tab1 (=) show tab2 (%g %s) show newline\n",
-	  gui->line->R/wc_units_to_sf(gui->line->units_R),
+	  gui->line->R/gui->line->units_R->sf,
 	  tmps);
   free(tmps);
   tmps = wc_units_to_str(gui->line->units_C);

@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.9 2004/07/25 04:03:38 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.10 2004/07/25 04:14:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -204,6 +204,7 @@ void stripline_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
   wc_units_menu_init( wcalc );
   analyze(NULL, gui);
+  wc_units_menu_init( wcalc );
 
 }
 
@@ -213,13 +214,11 @@ void stripline_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
 static void values_init(stripline_gui *gui, GtkWidget *parent)
 {
-  GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *lwht;
   GtkWidget *button;
   GtkWidget *frame;
-  GtkWidget *combo;
   wc_units_gui *ug;
 
 
@@ -853,16 +852,16 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
     rslt=stripline_calc(gui->line, gui->line->freq);
   }
   else if( strcmp(data,"synthesize_w")==0) {
-    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_W);
+    rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_W);
   }
   else if( strcmp(data,"synthesize_l")==0) {
-    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_L);
+    rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_L);
   }
   else if( strcmp(data,"synthesize_h")==0) {
-    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_H);
+    rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_H);
   }
   else if( strcmp(data,"synthesize_er")==0) {
-    rslt=stripline_syn(gui->line, gui->line->freq,SLISYN_ER);
+    rslt=stripline_syn(gui->line, gui->line->freq, SLISYN_ER);
   }
   else{
     fprintf(stderr,"stripline_gui.c:  error in stripline callback\n"
@@ -890,8 +889,6 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
 static void update_display(stripline_gui *gui)
 {
   char str[80];
-  char *vstr;
-  double sf;
 
   /* the entries */
 

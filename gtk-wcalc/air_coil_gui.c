@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.8 2003/01/02 06:40:07 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.9 2004/07/26 01:06:49 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -209,23 +209,16 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
   wcalc->init_done=1;
 
-#ifdef DEBUG
-    g_print(_("air_coil_gui.c:air_coil_gui_init():  updating display\n"));
-#endif
-
   update_display(gui);
 
-#ifdef DEBUG
-    g_print(_("air_coil_gui.c:air_coil_gui_init():  initializing units\n"));
-#endif
-
-  wc_units_menu_init( wcalc );
   
   /* run the analysis once since we've changed input units */
 #ifdef DEBUG
     g_print(_("air_coil_gui.c:air_coil_gui_init():  running analysis\n"));
 #endif
+  wc_units_menu_init( wcalc );
   analyze(NULL, gui);
+  wc_units_menu_init( wcalc );
 
 }
 
@@ -782,8 +775,6 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 static void update_display(air_coil_gui *gui)
 {
   char str[80];
-  char *vstr;
-  double sf;
 
   sprintf(str, "%.4g", gui->coil->Nf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_Nf), str );

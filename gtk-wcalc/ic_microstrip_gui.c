@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.4 2002/06/12 11:30:13 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.5 2004/07/26 22:22:25 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -49,12 +49,14 @@
 #include "epscat.h"
 #include "menus.h"
 #include "misc.h"
+#include "units.h"
 
 #include "ic_microstrip.h"
 #include "ic_microstrip_gui.h"
 #include "ic_microstrip_loadsave.h"
 #include "physconst.h"
 
+#include "gtk-units.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -62,13 +64,6 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
-
-static void dia_units_changed(GtkWidget *w, gpointer data );
-static void len_units_changed(GtkWidget *widget, gpointer data );
-static void use_len_pressed(GtkWidget *widget, gpointer data );
-static void use_fill_pressed(GtkWidget *widget, gpointer data );
-static void L_units_changed(GtkWidget *widget, gpointer data );
-static void freq_units_changed(GtkWidget *widget, gpointer data );
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
@@ -204,6 +199,11 @@ void ic_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
+  
+  wc_units_menu_init( wcalc );
+  analyze(NULL, gui);
+  wc_units_menu_init( wcalc );
+
 }
 
 /*
@@ -212,12 +212,10 @@ void ic_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
 static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
 {
-  GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *button;
   GtkWidget *frame;
-  GtkWidget *combo;
   GList *PhysUnits=NULL;
   GList *IndUnits=NULL;
   GList *FreqUnits=NULL;
@@ -312,29 +310,6 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,XPAD,YPAD);
   gtk_widget_show(text);
 
-  /*
-  combo =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(combo), PhysUnits);
-  gtk_combo_set_use_arrows( GTK_COMBO(combo), 1);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo)->entry), FALSE);
-  gtk_table_attach(GTK_TABLE(table), combo, 2, 3, 1, 2, 0,0,XPAD,YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(combo),60,0);
-  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry),
-		     gui->line->dia_units);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), 
-		      (gpointer) gui);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (dia_units_changed), 
-		      (gpointer) gui);
-  gtk_signal_connect (GTK_OBJECT(GTK_COMBO(combo)->entry),
-		      "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), 
-		      (gpointer) gui);
-  gtk_widget_show(combo);
-  */
 
   /* Height */
   text = gtk_label_new( "Substrate Height (H)" );
@@ -848,8 +823,6 @@ static void calculate( ic_microstrip_gui *gui, GtkWidget *w, gpointer data )
 static void update_display(ic_microstrip_gui *gui)
 {
   char str[80];
-  char *vstr;
-  double sf;
 
   /* the entries */
 
@@ -964,19 +937,6 @@ static void vals_changedCB(GtkWidget *widget, gpointer data )
     gtk_label_set_text(GTK_LABEL(gui->text_status), "Values Out Of Sync");
 }
 
-static void freq_units_changed(GtkWidget *widget, gpointer data )
-{
-  ic_microstrip_gui *gui;
-  char *vstr;
-
-  gui = WC_IC_MICROSTRIP_GUI(data);
-
-  if(WC_WCALC(data)->init_done){
-    vstr = gtk_entry_get_text( GTK_ENTRY(widget) ); 
-    gui->line->freq_units = vstr;
-    gui->line->freq_sf = freq_units_get_sf(vstr);
-  }
-}
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
