@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.8 2004/08/30 22:59:17 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.9 2005/01/06 22:54:46 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -1372,27 +1372,36 @@ static void update_display(coupled_microstrip_gui *gui)
   sprintf(str, WC_FMT_G,gui->line->deltalo/gui->line->units_deltal->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_deltal_od), str );
 
+  /* ---------------- L -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Lev/gui->line->units_L->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Lev), str );
+  sprintf(str,WC_FMT_G, gui->line->Lodd/gui->line->units_L->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Lodd), str );
+    
+  /* ---------------- R -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Rev/gui->line->units_R->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Rev), str );
+  sprintf(str,WC_FMT_G, gui->line->Rodd/gui->line->units_R->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Rodd), str );
+    
+  /* ---------------- C -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Cev/gui->line->units_C->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Cev), str );
+  sprintf(str,WC_FMT_G, gui->line->Codd/gui->line->units_C->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Codd), str );
+    
+  /* ---------------- G -------------- */
+  sprintf(str,WC_FMT_G, gui->line->Gev/gui->line->units_G->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Gev), str );
+  sprintf(str,WC_FMT_G, gui->line->Godd/gui->line->units_G->sf);
+  gtk_label_set_text( GTK_LABEL(gui->label_Godd), str );
+
   /* XXX */
 #ifdef notdef
   /* ---------------- delay -------------- */
   sprintf(str,WC_FMT_G, gui->line->delay/gui->line->units_delay->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_delay), str );
   
-  /* ---------------- L -------------- */
-  sprintf(str,WC_FMT_G, gui->line->Ls/gui->line->units_L->sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_Ls), str );
-    
-  /* ---------------- R -------------- */
-  sprintf(str,WC_FMT_G, gui->line->Rs/gui->line->units_R->sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_Rs), str );
-    
-  /* ---------------- C -------------- */
-  sprintf(str,WC_FMT_G, gui->line->Cs/gui->line->units_C->sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_Cp), str );
-    
-  /* ---------------- R -------------- */
-  sprintf(str,WC_FMT_G, gui->line->Gs/gui->line->units_G->sf);
-  gtk_label_set_text( GTK_LABEL(gui->label_Gp), str );
 #endif
 
 }
