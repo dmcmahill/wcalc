@@ -1,0 +1,6 @@
+#!/bin/sh
+# 
+# $Id$
+#
+
+rsync -e ssh -vax --exclude 'CVS/' --include '*/' --include '*.html' --include '*.png' --exclude '*' . mcmahill@bitter.mit.edu:public_html/wcalc
