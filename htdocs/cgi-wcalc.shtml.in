@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml.in,v 1.1 2001/10/18 03:29:45 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml.in,v 1.2 2001/10/18 03:39:01 dan Exp $ -->
 <!-- Copyright (c) 2001
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -32,7 +32,7 @@ stripline synthesis,
     <br>
     <br>
 
-    <a href="../pixmaps/splash.png"><img src="../pixmaps/splash.png"
+    <a href="splash.png"><img src="splash.png"
      alt="Splash Image" border="0" width="363" height="179" hspace="10" vspace="5"></a>
     </center>
     <p>
