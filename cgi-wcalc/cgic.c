@@ -1,4 +1,4 @@
-/* $Id: cgic.c,v 1.3 2001/09/18 21:08:58 dan Exp $ */
+/* $Id: cgic.c,v 1.4 2002/01/25 12:26:29 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \
@@ -297,7 +297,7 @@ static cgiParseResultType cgiParseFormInput(char *data, int length) {
 	return cgiParseSuccess;
 }
 
-static int cgiHexValue[256];
+int cgiHexValue[256];
 
 cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len) {
 	char *s;
@@ -797,6 +797,7 @@ static int cgiWriteInt(FILE *out, int i);
 cgiEnvironmentResultType cgiWriteEnvironment(char *filename) {
 	FILE *out;
 	cgiFormEntry *e;
+	cgiCookieEntry *c;
 	/* Be sure to open in binary mode */
 	out = fopen(filename, "wb");
 	if (!out) {
@@ -876,6 +877,16 @@ cgiEnvironmentResultType cgiWriteEnvironment(char *filename) {
 		}
 		e = e->next;
 	}
+	c = cgiCookieEntryFirst;
+	while (c) {
+		if (!cgiWriteString(out, c->attr)) {
+			goto error;
+		}
+		if (!cgiWriteString(out, c->value)) {
+			goto error;
+		}
+		c = c->next;
+	}
 	fclose(out);
 	return cgiEnvironmentSuccess;
 error:
@@ -910,6 +921,7 @@ static int cgiReadInt(FILE *out, int *i);
 cgiEnvironmentResultType cgiReadEnvironment(char *filename) {
 	FILE *in;
 	cgiFormEntry *e, *p;
+	cgiCookieEntry *c, *n;
 	/* Free any existing data first */
 	cgiFreeResources();
 	/* Be sure to open in binary mode */
@@ -998,6 +1010,7 @@ cgiEnvironmentResultType cgiReadEnvironment(char *filename) {
 			free(e);
 			goto error;
 		}
+		printf("read form \"%s\" = \"%s\" from save file\n",e->attr,e->value);
 		e->next = 0;
 		if (p) {
 			p->next = e;
@@ -1006,7 +1019,39 @@ cgiEnvironmentResultType cgiReadEnvironment(char *filename) {
 		}	
 		p = e;
 	}
+	printf("reading cookies from save file\n");
+	n = NULL;
+	while (1) {
+		c = (cgiCookieEntry *) malloc(sizeof(cgiCookieEntry));
+		if (!c) {
+		  printf("malloc failed\n");
+			cgiFreeResources();
+			fclose(in);
+			return cgiEnvironmentMemory;
+		}
+		if (!cgiReadString(in, &c->attr)) {
+		  printf("read of attribute failed\n");
+			/* This means we've reached the end of the list. */
+			free(c);
+			break;
+		}
+		if (!cgiReadString(in, &c->value)) {
+			free(c);
+			goto error;
+		}
+		printf("read \"%s\" = \"%s\" from save file\n",c->attr,c->value);
+
+		c->next = NULL;
+		if (n!=NULL) {
+			n->next = c;
+		} else {
+			cgiCookieEntryFirst = c;
+		}	
+		n = c;
+	}
 	fclose(in);
+	cgiCookieEntryFirst = NULL;
+	cgiParseCookieInput();
 	cgiRestored = 1;
 	return cgiEnvironmentSuccess;
 error:

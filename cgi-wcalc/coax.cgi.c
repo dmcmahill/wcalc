@@ -1,4 +1,4 @@
-/* $Id: coax.cgi.c,v 1.2 2002/01/14 23:18:30 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.3 2002/01/15 01:49:19 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -45,10 +45,13 @@
 
 /* CGI specific */
 #include "cgic.h"
+#include "cgi-common.h"
 #include "cgi-units.h"
+#include "cookie.h"
 
 /* libwcalc */
 #include "coax.h"
+#include "coax_loadsave.h"
 #include "misc.h"
 #include "physconst.h"
 
@@ -86,15 +89,19 @@
 #define defRO     50.0
 #define defELEN   90.0
 
+/* XXX find a better way... */
+#define COOKIE_MAX 512
+
 static const char *name_string="coax.cgi";
+static int input_err;
+
 
 int cgiMain(void){
-
+  
   /* CGI variables */
   char str_action[ACTION_LEN];
-
+  
   int action;
-  int input_err = 0;
 
   /* coax variables */
   coax_line *line;
@@ -105,22 +112,28 @@ int cgiMain(void){
   double Ro=0.0;
   double elen;
   int i;
+  char *cookie_str;
+  char cookie_load_str[COOKIE_MAX+1];
+  cgiCookieType *cookie;
 
+  input_err = 0;
 
   /* 
    * uncomment to be able to run in the debugger. 
    * access the CGI URL that gives the problem, then change foo.cgi to
    * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
    */
-  /*cgiReadEnvironment("/tmp/capcgi.dat"); */
-  
-  /* Put out the CGI header */
-  cgiHeaderContentType("text/html");  
+  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
   /* create the coax line */
-  fprintf(cgiOut,"<pre>");
+#ifdef DEBUG
+  printf("coax.cgi:  calling coax_new()\n");
+#endif
   line = coax_new();
-  fprintf(cgiOut,"</pre>");
+
+#ifdef DEBUG
+  printf("coax.cgi:  checking out which button was pressed\n");
+#endif
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
@@ -128,118 +141,122 @@ int cgiMain(void){
     action = ANALYZE;
   }
   else if(cgiFormStringNoNewlines("synth_a",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = SYNTH_A;
   }
   else if(cgiFormStringNoNewlines("synth_b",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = SYNTH_B;
   }
   else if(cgiFormStringNoNewlines("synth_c",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = SYNTH_C;
   }
   else if(cgiFormStringNoNewlines("synth_er",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = SYNTH_ER;
   }
   else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = SYNTH_L;
   }
   else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
+	  cgiFormSuccess){
     action = LOAD;
   }
   else{
     action = LOAD;
   }
-
+  
   /*
    * extract the parameters from the CGI form and use them to populate
    * the coax structure
    */
-
+  
   if ( (action != RESET) && (action != LOAD) ) {
+#ifdef DEBUG
+    printf("coax.cgi:  reading form values\n");
+#endif
+    
     /* Metal resistivity relative to copper */
     if(cgiFormDoubleBounded("rhoa",&rhoa,0.0,1000.0,defRHOB) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     
     /* Metal resistivity relative to copper */
     if(cgiFormDoubleBounded("rhob",&rhob,0.0,1000.0,defRHOB) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
-
+    
     /* shield thickness (m) */
     if(cgiFormDoubleBounded("tshield",&tshield,0.0,1000.0,defTSHIELD) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     /* units */
     if (cgiFormRadio("tshield_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->tshield_units = length_units[i].name;
     line->tshield_sf = length_units[i].sf;
-
+    
 
     /* units */
     if (cgiFormRadio("a_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->a_units = length_units[i].name;
     line->a_sf = length_units[i].sf;
-
+    
     /* Coax inner conductor radius */
     if(cgiFormDoubleBounded("a",&a,0.0,1000.0,defA) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
 
     /* units */
     if (cgiFormRadio("b_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->b_units = length_units[i].name;
     line->b_sf = length_units[i].sf;
-
+    
     /* Coax outer conductor radius */
     if(cgiFormDoubleBounded("b",&b,a*line->a_sf/line->b_sf,1000.0,defB) !=
        cgiFormSuccess){
-      input_err=1;
-      fprintf(cgiOut,"<pre>ERROR:  b must be > a\n</pre>\n");
+      inputErr(&input_err);
+      printFormError("b must be &gt a");
     }
-
+    
     /* units */
     if (cgiFormRadio("c_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->c_units = length_units[i].name;
     line->c_sf = length_units[i].sf;
-
+    
     /* Coax inner conductor offset */
-    if(cgiFormDoubleBounded("c",&c,(b*line->b_sf-a*line->a_sf)/line->c_sf,1000.0,defC) !=
+    if(cgiFormDoubleBounded("c",&c,0.0,(b*line->b_sf-a*line->a_sf)/line->c_sf,defC) !=
        cgiFormSuccess){
-      input_err=1;
-      fprintf(cgiOut,"<pre>ERROR:  c must be < b-a\n</pre>\n");
+      inputErr(&input_err);
+      printFormError("c must be &lt b-a");
     }
 
     /* Coax length */
     if(cgiFormDoubleBounded("len",&len,0.0,100000.0,defLEN) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     /* units */
     if (cgiFormRadio("len_units",units_strings_get(length_units),units_size(length_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->len_units = length_units[i].name;
     line->len_sf = length_units[i].sf;
@@ -248,24 +265,24 @@ int cgiMain(void){
     /* Dielectric relative permittivity */
     if(cgiFormDoubleBounded("er",&er,1.0,1000.0,defER) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
-
+    
     /* Dielectric loss tangent */
     if(cgiFormDoubleBounded("tand",&tand,0.0,1000.0,defTAND) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
-
+    
     /* Frequency of operation  */
     if(cgiFormDoubleBounded("freq",&freq,1e-6,1e6,defFREQ) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     /* Frequency of operation units */
     if (cgiFormRadio("freq_units",units_strings_get(frequency_units),units_size(frequency_units),&i,0) !=
 	cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
     line->freq_units = frequency_units[i].name;
     line->freq_sf = frequency_units[i].sf;
@@ -274,12 +291,12 @@ int cgiMain(void){
     /* electrical parameters: */
     if(cgiFormDoubleBounded("Ro",&Ro,0.0001,1000.0,defRO) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     }
 
     if(cgiFormDoubleBounded("elen",&elen,0.0001,1000.0,defELEN) !=
        cgiFormSuccess){
-      input_err=1;
+      inputErr(&input_err);
     } 
 
     /* copy data over to the line structure */
@@ -305,8 +322,41 @@ int cgiMain(void){
     line->elen = elen;
     
   } /* if ( (action != RESET) && (action != LOAD) ) */
+  else {
+
+#ifdef DEBUG
+    printf("coax.cgi:  checking for a cookie to load\n");
+#endif
+    /* load a stored cookie if it exists */
+    if(cgiCookieStringNoNewlines(name_string,cookie_load_str,COOKIE_MAX) ==
+       cgiCookieSuccess) {
+#ifdef DEBUG
+    printf("coax.cgi:  loading cookie \"%s\"\n",cookie_load_str);
+#endif
+      coax_load_string(line,cookie_load_str);
+#ifdef DEBUG
+    printf("coax.cgi:  finished loading cookie\n");
+#endif
+    }
+    
+  }
   
-  
+  if (!input_err){
+    cookie_str = coax_save_string(line);
+    cookie = cgiCookie_new(name_string,cookie_str);
+    cgiCookie_MaxAge_set(cookie,60*60*24);
+    cgiHeaderSetCookie(cookie);
+    
+    /* Put out the CGI header */
+    cgiHeaderContentType("text/html");  
+  }
+  else {
+    fprintf(cgiOut,"<P>There were errors in your input values.  "
+	    "Please hit the \"back\" button on your browser, "
+	    "correct the errors, and resubmit the form."
+	    "</P><HR>\n");
+  }
+
 #ifdef DEBUG
     fprintf(cgiOut,"<pre>\n");
     fprintf(cgiOut,"CGI: --------------- Coax  Analysis -----------\n");
@@ -332,8 +382,10 @@ int cgiMain(void){
 	    line->tshield/line->tshield_sf,line->tshield_units);
     fprintf(cgiOut,"CGI:                             = %g m\n",
 	    line->tshield);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rho_a);
-    fprintf(cgiOut,"CGI: Metal resistivity rel to Cu = %g \n",line->rho_b);
+    fprintf(cgiOut,"CGI: Center metal resistivity    = %g %s\n",
+	    line->rho_a/line->rho_a_sf,line->rho_a_units);
+    fprintf(cgiOut,"CGI: Shield metal resistivity    = %g %s\n",
+	    line->rho_b/line->rho_b_sf,line->rho_b_units);
     fprintf(cgiOut,"CGI: Relative dielectric const.  = %g \n",line->er);
     fprintf(cgiOut,"CGI: Dielectric loss tangent     = %g \n",line->tand);
     fprintf(cgiOut,"CGI: Frequency                   = %g %s\n",

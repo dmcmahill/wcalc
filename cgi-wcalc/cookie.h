@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: cookie.h,v 1.1 2002/01/25 12:26:30 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
@@ -12,6 +12,17 @@
 #include <stdio.h>
 
 #include "cgic.h"
+
+/* One cookie, consisting of an attribute-value pair. */
+
+typedef struct cgiCookieEntryStruct {
+  char *attr;
+  char *value;
+  struct cgiCookieEntryStruct *next;
+} cgiCookieEntry;
+
+/* The first form entry. */
+extern cgiCookieEntry *cgiCookieEntryFirst;
 
 
 /* Possible return codes from the cgiCookie family of functions (see below). */
@@ -71,32 +82,33 @@ cgiCookieResultType cgiCookieDoubleBounded(char *name,
 					   double max,
 					   double defaultV);
 
+typedef enum {
+	cgiCookieInsecure,
+	cgiCookieSecure,
+} cgiCookieSecureType;
+
 typedef struct {
   char *NAME;
   char *VALUE;
 
-  char *Comment;
   char *Domain;
-  char *MaxAge;
+  char *Expires;
   char *Path;
-  char *Secure;
-  char *Version;
+  cgiCookieSecureType   Secure;
+
 } cgiCookieType;
+
+void cgiCookiePrintAll(FILE *fp);
 
 cgiCookieType *cgiCookie_new(const char *NAME, const char *VALUE);
 void cgiCookie_free(cgiCookieType *cookie);
-char *cgiCookie_Comment_get(cgiCookieType *cookie);
-void cgiCookie_Comment_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Domain_get(cgiCookieType *cookie);
 void cgiCookie_Domain_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_MaxAge_get(cgiCookieType *cookie);
-void cgiCookie_MaxAge_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Path_get(cgiCookieType *cookie);
+void cgiCookie_Expires_set(cgiCookieType *cookie, char *val);
+void cgiCookie_MaxAge_set(cgiCookieType *cookie, long int secs);
+#define cgiCookie_MaxAge_max(cookie) (cgiCookie_MaxAge_set((cookie),(365*24*60*60)))
+
 void cgiCookie_Path_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Secure_get(cgiCookieType *cookie);
-void cgiCookie_Secure_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Version_get(cgiCookieType *cookie);
-void cgiCookie_Version_set(cgiCookieType *cookie, char *val);
+void cgiCookie_Secure_set(cgiCookieType *cookie, cgiCookieSecureType secure);
 
 void cgiHeaderSetCookie(cgiCookieType *cookie);
 

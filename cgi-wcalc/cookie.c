@@ -1,14 +1,20 @@
-/* $Id$ */
+/* $Id: cookie.c,v 1.1 2002/01/25 12:26:30 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 
  * Thomas Boutell's cgic 
  */
 
+/*
+ * See http://www.netscape.com/newsref/std/cookie_spec.html
+ * for infomation on cookies.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <time.h>
 #ifndef NO_UNISTD
 #include <unistd.h>
 #endif /* NO_UNISTD */
@@ -22,19 +28,12 @@
 extern char *cgiCookie;
 extern FILE *cgiIn;
 extern FILE *cgiOut;
+extern int cgiHexValue[256];
 
-/* One form entry, consisting of an attribute-value pair. */
-
-typedef struct cgiCookieEntryStruct {
-  char *attr;
-  char *value;
-  struct cgiCookieEntryStruct *next;
-} cgiCookieEntry;
 
 /* The first form entry. */
-static cgiCookieEntry *cgiCookieEntryFirst;
+cgiCookieEntry *cgiCookieEntryFirst;
 
-static void cgiSetupConstants();
 static int cgiStrEqNc(char *s1, char *s2);
 
 
@@ -54,7 +53,7 @@ static cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len);
 cgiParseResultType cgiParseCookieInput(void) 
 {
   /* Scan for pairs, unescaping and storing them as they are
-     found. */
+     found.  Note: cookies are separated  by ';'*/
   int length;
   int pos = 0;
   cgiCookieEntry *n;
@@ -64,11 +63,20 @@ cgiParseResultType cgiParseCookieInput(void)
 
   while (pos != length) {
     int foundEq = 0;
-    int foundAmp = 0;
+    int foundSem = 0;
     int start = pos;
     int len = 0;
     char *attr;
     char *value;
+
+    /* skip over leading whitespace in the attribute name */
+    while (pos != length) {
+      if (cgiCookie[pos] != ' ') {
+	break;
+      }
+      pos++;
+      start++;
+    }
     while (pos != length) {
       if (cgiCookie[pos] == '=') {
 	foundEq = 1;
@@ -88,15 +96,15 @@ cgiParseResultType cgiParseCookieInput(void)
     start = pos;
     len = 0;
     while (pos != length) {
-      if (cgiCookie[pos] == '&') {
-	foundAmp = 1;
+      if (cgiCookie[pos] == ';') {
+	foundSem = 1;
 	pos++;
 	break;
       }
       pos++;
       len++;
     }
-    /* The last pair probably won't be followed by a &, but
+    /* The last pair probably won't be followed by a ;, but
        that's fine, so check for that after accepting it */
     if (cgiUnescapeChars(&value, cgiCookie+start, len)
 	!= cgiUnescapeSuccess) {
@@ -109,21 +117,22 @@ cgiParseResultType cgiParseCookieInput(void)
     }
     n->attr = attr;
     n->value = value;
-    n->next = 0;
-    if (!l) {
+    n->next = NULL;
+    if (l==NULL) {
       cgiCookieEntryFirst = n;
     } else {
       l->next = n;
     }
     l = n;
-    if (!foundAmp) {
+    if (!foundSem) {
       break;
     }			
   }
+
   return cgiParseSuccess;
 }
 
-static int cgiHexValue[256];
+extern int cgiHexValue[256];
 
 cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len) {
   char *s;
@@ -131,6 +140,7 @@ cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len) {
   int escapedValue = 0;
   int srcPos = 0;
   int dstPos = 0;
+  
   s = (char *) malloc(len + 1);
   if (!s) {
     return cgiUnescapeMemory;
@@ -164,34 +174,6 @@ cgiUnescapeResultType cgiUnescapeChars(char **sp, char *cp, int len) {
   return cgiUnescapeSuccess;
 }		
 	
-static void cgiSetupConstants() {
-  int i;
-  for (i=0; (i < 256); i++) {
-    cgiHexValue[i] = 0;
-  }
-  cgiHexValue['0'] = 0;	
-  cgiHexValue['1'] = 1;	
-  cgiHexValue['2'] = 2;	
-  cgiHexValue['3'] = 3;	
-  cgiHexValue['4'] = 4;	
-  cgiHexValue['5'] = 5;	
-  cgiHexValue['6'] = 6;	
-  cgiHexValue['7'] = 7;	
-  cgiHexValue['8'] = 8;	
-  cgiHexValue['9'] = 9;
-  cgiHexValue['A'] = 10;
-  cgiHexValue['B'] = 11;
-  cgiHexValue['C'] = 12;
-  cgiHexValue['D'] = 13;
-  cgiHexValue['E'] = 14;
-  cgiHexValue['F'] = 15;
-  cgiHexValue['a'] = 10;
-  cgiHexValue['b'] = 11;
-  cgiHexValue['c'] = 12;
-  cgiHexValue['d'] = 13;
-  cgiHexValue['e'] = 14;
-  cgiHexValue['f'] = 15;
-}
 
 void cookieFreeResources(void) 
 {
@@ -206,14 +188,16 @@ void cookieFreeResources(void)
   }
 }
 
-static cgiCookieResultType cgiCookieEntryString(
-						cgiCookieEntry *e, char *result, int max, int newlines);
+static cgiCookieResultType cgiCookieEntryString(cgiCookieEntry *e, 
+						char *result, 
+						int max, 
+						int newlines);
 
 static cgiCookieEntry *cgiCookieEntryFindFirst(char *name);
 static cgiCookieEntry *cgiCookieEntryFindNext();
 
-cgiCookieResultType cgiCookieString(
-				    char *name, char *result, int max) {
+cgiCookieResultType cgiCookieString(char *name, char *result, int max) 
+{
   cgiCookieEntry *e;
   e = cgiCookieEntryFindFirst(name);
   if (!e) {
@@ -223,8 +207,10 @@ cgiCookieResultType cgiCookieString(
   return cgiCookieEntryString(e, result, max, 1);
 }
 
-cgiCookieResultType cgiCookieStringNoNewlines(
-					      char *name, char *result, int max) {
+cgiCookieResultType cgiCookieStringNoNewlines(char *name, 
+					      char *result, 
+					      int max) 
+{
   cgiCookieEntry *e;
   e = cgiCookieEntryFindFirst(name);
   if (!e) {
@@ -234,8 +220,9 @@ cgiCookieResultType cgiCookieStringNoNewlines(
   return cgiCookieEntryString(e, result, max, 0);
 }
 
-cgiCookieResultType cgiCookieStringMultiple(
-					    char *name, char ***result) {
+cgiCookieResultType cgiCookieStringMultiple(char *name, 
+					    char ***result) 
+{
   char **stringArray;
   cgiCookieEntry *e;
   int i;
@@ -262,7 +249,7 @@ cgiCookieResultType cgiCookieStringMultiple(
   e = cgiCookieEntryFindFirst(name);
 #ifdef CGICDEBUG
   CGICDEBUGSTART
-    fprintf(dout, "StringMultiple Beginning\n");
+    fprintf(dout, "CookieStringMultiple Beginning\n");
   CGICDEBUGEND
 #endif /* CGICDEBUG */
     if (e) {
@@ -283,7 +270,7 @@ cgiCookieResultType cgiCookieStringMultiple(
       *result = stringArray;
 #ifdef CGICDEBUG
       CGICDEBUGSTART
-	fprintf(dout, "StringMultiple Succeeding\n");
+	fprintf(dout, "CookieStringMultiple Succeeding\n");
       CGICDEBUGEND
 #endif /* CGICDEBUG */
 	return cgiCookieSuccess;
@@ -291,15 +278,16 @@ cgiCookieResultType cgiCookieStringMultiple(
       *result = stringArray;
 #ifdef CGICDEBUG
       CGICDEBUGSTART
-	fprintf(dout, "StringMultiple found nothing\n");
+	fprintf(dout, "CookieStringMultiple found nothing\n");
       CGICDEBUGEND
 #endif /* CGICDEBUG */
 	return cgiCookieNotFound;
     }	
 }
 
-cgiCookieResultType cgiCookieStringSpaceNeeded(
-					       char *name, int *result) {
+cgiCookieResultType cgiCookieqStringSpaceNeeded(char *name, 
+						int *result) 
+{
   cgiCookieEntry *e;
   e = cgiCookieEntryFindFirst(name);
   if (!e) {
@@ -310,8 +298,11 @@ cgiCookieResultType cgiCookieStringSpaceNeeded(
   return cgiCookieSuccess;
 }
 
-static cgiCookieResultType cgiCookieEntryString(
-						cgiCookieEntry *e, char *result, int max, int newlines) {
+static cgiCookieResultType cgiCookieEntryString(cgiCookieEntry *e, 
+						char *result, 
+						int max, 
+						int newlines) 
+{
   char *dp, *sp;
   int truncated = 0;
   int len = 0;
@@ -322,11 +313,9 @@ static cgiCookieResultType cgiCookieEntryString(
   sp = e->value;	
   while (1) {
     int ch;
-    /* 1.07: don't check for available space now.
+    /* don't check for available space now.
        We check for it immediately before adding
-       an actual character. 1.06 handled the
-       trailing null of the source string improperly,
-       resulting in a cgiCookieTruncated error. */
+       an actual character. */
     ch = *sp;
     /* Fix the CR/LF, LF, CR nightmare: watch for
        consecutive bursts of CRs and LFs in whatever
@@ -367,7 +356,7 @@ static cgiCookieResultType cgiCookieEntryString(
 	/* The end of the source string */
 	break;				
       }	
-      /* 1.06: check available space before adding
+      /* check available space before adding
 	 the character, because a previously added
 	 LF may have brought us to the limit */
       if (len >= avail) {
@@ -392,8 +381,10 @@ static cgiCookieResultType cgiCookieEntryString(
 
 static int cgiFirstNonspaceChar(char *s);
 
-cgiCookieResultType cgiCookieInteger(
-				     char *name, int *result, int defaultV) {
+cgiCookieResultType cgiCookieInteger(char *name, 
+				     int *result, 
+				     int defaultV) 
+{
   cgiCookieEntry *e;
   int ch;
   e = cgiCookieEntryFindFirst(name);
@@ -415,8 +406,12 @@ cgiCookieResultType cgiCookieInteger(
   }
 }
 
-cgiCookieResultType cgiCookieIntegerBounded(
-					    char *name, int *result, int min, int max, int defaultV) {
+cgiCookieResultType cgiCookieIntegerBounded(char *name, 
+					    int *result, 
+					    int min, 
+					    int max, 
+					    int defaultV) 
+{
   cgiCookieResultType error = cgiCookieInteger(name, result, defaultV);
   if (error != cgiCookieSuccess) {
     return error;
@@ -432,8 +427,10 @@ cgiCookieResultType cgiCookieIntegerBounded(
   return cgiCookieSuccess;
 }
 
-cgiCookieResultType cgiCookieDouble(
-				    char *name, double *result, double defaultV) {
+cgiCookieResultType cgiCookieDouble(char *name, 
+				    double *result, 
+				    double defaultV) 
+{
   cgiCookieEntry *e;
   int ch;
   e = cgiCookieEntryFindFirst(name);
@@ -455,8 +452,12 @@ cgiCookieResultType cgiCookieDouble(
   }
 }
 
-cgiCookieResultType cgiCookieDoubleBounded(
-					   char *name, double *result, double min, double max, double defaultV) {
+cgiCookieResultType cgiCookieDoubleBounded(char *name, 
+					   double *result, 
+					   double min, 
+					   double max, 
+					   double defaultV) 
+{
   cgiCookieResultType error = cgiCookieDouble(name, result, defaultV);
   if (error != cgiCookieSuccess) {
     return error;
@@ -473,7 +474,8 @@ cgiCookieResultType cgiCookieDoubleBounded(
 }
 
 
-static void cgiCookieEscape(FILE *fp,char *str) {
+static void cgiCookieEscape(FILE *fp,char *str) 
+{
   long int i;
   
   for (i=0; i<strlen(str); i++) {
@@ -513,73 +515,48 @@ static void cgiCookieUnEscape(char *str) {
       i++;
       tmp[1] = tolower(str[i]);
 
-      if ( ('0' <= tmp[0]) && (tmp[0] <= '9') ) {
-	ch = 16*(tmp[0]-'0');
-      }
-      else if ( ('a' <= tmp[0]) && (tmp[0] <= 'f') ) {
-	ch = 16*(tmp[0]-'a' + 10);
-      }
-      else {
-	return;
-      }
+      ch = (cgiHexValue[tmp[0]] << 4) + 
+	cgiHexValue[tmp[1]];
 
-      if ( ('0' <= tmp[1]) && (tmp[1] <= '9') ) {
-	ch = ch + (tmp[1]-'0');
-      }
-      else if ( ('a' <= tmp[1]) && (tmp[1] <= 'f') ) {
-	ch = ch + (tmp[1]-'a' + 10);
-      }
-      else {
-	return;
-      }
       printf("%c",ch);
     }
     
   }
 }
  
-void cgiHeaderSetCookie(cgiCookieType *cookie) {
+void cgiHeaderSetCookie(cgiCookieType *cookie) 
+{
 
   if (cookie->NAME == NULL) {
     return;
   }
-  cgiCookieUnEscape("coax%2Ecgi=0%2E1%20Farads%2Fm; ");
-  printf("\n");
+
   fprintf(cgiOut, "Set-Cookie: ");
   cgiCookieEscape(cgiOut,cookie->NAME);
   fprintf(cgiOut,"=");
   cgiCookieEscape(cgiOut,cookie->VALUE);
   
-  if (cookie->Comment != NULL) {
-    fprintf(cgiOut, "; Comment=");
-    cgiCookieEscape(cgiOut,cookie->Comment);
-  }
   if (cookie->Domain != NULL) {
-    fprintf(cgiOut, "; Domain=");
+    fprintf(cgiOut, "; domain=");
     cgiCookieEscape(cgiOut,cookie->Domain);
   }
-  if (cookie->MaxAge != NULL) {
-    fprintf(cgiOut, "; Max-Age=");
-    cgiCookieEscape(cgiOut,cookie->MaxAge);
+  if (cookie->Expires != NULL) {
+    fprintf(cgiOut, "; expires=%s",cookie->Expires);
   }
   if (cookie->Path != NULL) {
-    fprintf(cgiOut, "; Path=");
+    fprintf(cgiOut, "; path=");
     cgiCookieEscape(cgiOut,cookie->Path);
   }
-  if (cookie->Secure != NULL) {
-    fprintf(cgiOut, "; Secure=");
-    cgiCookieEscape(cgiOut,cookie->Secure);
-  }
-  if (cookie->Version != NULL) {
-    fprintf(cgiOut, "; Version=");
-    cgiCookieEscape(cgiOut,cookie->Version);
+  if (cookie->Secure == cgiCookieSecure) {
+    fprintf(cgiOut, "; secure");
   }
   
   fprintf(cgiOut,"%c",10);
 }
 
 
-static int cgiStrEqNc(char *s1, char *s2) {
+static int cgiStrEqNc(char *s1, char *s2) 
+{
   while(1) {
     if (!(*s1)) {
       if (!(*s2)) {
@@ -639,12 +616,10 @@ cgiCookieType *cgiCookie_new(const char *NAME, const char *VALUE) {
   c->NAME  = strdup(NAME);
   c->VALUE = strdup(VALUE);
 
-  c->Comment = NULL;
   c->Domain  = NULL;
-  c->MaxAge  = NULL;
+  c->Expires = NULL;
   c->Path    = NULL;
-  c->Secure  = NULL;
-  c->Version = strdup("1");
+  c->Secure  = cgiCookieInsecure;
 
   return c;
 }
@@ -657,37 +632,98 @@ void cgiCookie_free(cgiCookieType *cookie) {
   if (cookie->VALUE == NULL)
     free(cookie->VALUE);
   
-  if (cookie->Comment != NULL)
-    free(cookie->Comment);
-
   if (cookie->Domain != NULL)
     free(cookie->Domain);
 
-  if (cookie->MaxAge != NULL)
-    free(cookie->MaxAge);
+  if (cookie->Expires != NULL)
+    free(cookie->Expires);
 
   if (cookie->Path != NULL)
     free(cookie->Path);
 
-  if (cookie->Secure != NULL)
-    free(cookie->Secure);
 
-  if (cookie->Version != NULL)
-    free(cookie->Version);
-  
 }
 
-char *cgiCookie_Comment_get(cgiCookieType *cookie);
-void cgiCookie_Comment_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Domain_get(cgiCookieType *cookie);
-void cgiCookie_Domain_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_MaxAge_get(cgiCookieType *cookie);
-void cgiCookie_MaxAge_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Path_get(cgiCookieType *cookie);
-void cgiCookie_Path_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Secure_get(cgiCookieType *cookie);
-void cgiCookie_Secure_set(cgiCookieType *cookie, char *val);
-char *cgiCookie_Version_get(cgiCookieType *cookie);
-void cgiCookie_Version_set(cgiCookieType *cookie, char *val);
+void cgiCookie_Domain_set(cgiCookieType *cookie, char *val)
+{
+  if (cookie == NULL)
+    return ;
 
+  cookie->Domain=strdup(val);
+}
 
+void cgiCookie_Expires_set(cgiCookieType *cookie, char *val)
+{
+  if (cookie == NULL)
+    return ;
+
+  cookie->Expires=strdup(val);
+}
+
+#define EXPIRES_LEN 28
+/* set Expires to be 'secs' seconds in the future */
+void cgiCookie_MaxAge_set(cgiCookieType *cookie, long int secs)
+{
+  time_t when;
+  char *str;
+  struct tm *t;
+  int day;
+
+  /*
+   * these are the allowed days.  Note:  we want these, not the
+   * versions set by the users current locale 
+   */
+  char *days[]={"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+  if (cookie == NULL)
+    return ;
+
+  if ( (str=malloc((EXPIRES_LEN+1)*sizeof(char))) == NULL) {
+    exit(1);
+  }
+
+  
+  when = time(NULL) + secs;
+  
+
+  t=gmtime(&when);
+  strftime(str,EXPIRES_LEN,"%w",t);
+  day=atoi(str);
+  strftime(str,EXPIRES_LEN,"   , %d-%m-%Y %H:%M:%S GMT",t);
+  str[0]=days[day][0];
+  str[1]=days[day][1];
+  str[2]=days[day][2];
+
+  cookie->Expires=str;
+
+}
+
+void cgiCookie_Path_set(cgiCookieType *cookie, char *val)
+{
+  if (cookie == NULL)
+    return ;
+
+  cookie->Path=strdup(val);
+}
+
+void cgiCookie_Secure_set(cgiCookieType *cookie, 
+			  cgiCookieSecureType secure)
+{
+  if (cookie == NULL)
+    return ;
+
+  cookie->Secure=secure;
+
+}
+
+void cgiCookiePrintAll(FILE *fp)
+{
+    cgiCookieEntry *c = cgiCookieEntryFirst;
+
+    while(c != NULL) {
+      fprintf(fp,"cookie:  attr  = \"%s\"\n",c->attr);
+      fprintf(fp,"         value = \"%s\"\n",c->value);
+      c=c->next;
+    }
+
+}

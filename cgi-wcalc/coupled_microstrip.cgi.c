@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.2 2001/09/15 02:57:38 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.1 2001/10/05 01:28:29 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -37,7 +37,7 @@
  * a cgi interface to the coupled_microstrip calculator
  */
 
-//#define DEBUG
+/* #define DEBUG */
 
 #include <stdio.h>
 #include "cgic.h"
@@ -353,7 +353,7 @@ int cgiMain(void){
 
   case SYNTH_H:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_H);
+    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_H); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     h = line->subs->h;
@@ -361,7 +361,7 @@ int cgiMain(void){
 
   case SYNTH_W:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_W);
+    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_W); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     w = line->w;
@@ -369,7 +369,7 @@ int cgiMain(void){
 
   case SYNTH_S:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_W);
+    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_W); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     s = line->s;
@@ -377,7 +377,7 @@ int cgiMain(void){
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_ES);
+    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_ES); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
@@ -385,7 +385,7 @@ int cgiMain(void){
 
   case SYNTH_L:
     fprintf(cgiOut,"<pre>");
-    //coupled_microstrip_syn(line,freq_Hz,SLISYN_L);
+    /* coupled_microstrip_syn(line,freq_Hz,SLISYN_L); */
     fprintf(cgiOut,"Not Implemented Yet\n");
     fprintf(cgiOut,"</pre>\n");
     l = line->l;

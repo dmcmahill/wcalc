@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: cookie.cgi.c,v 1.1 2002/01/18 14:21:12 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -45,6 +45,7 @@
 
 /* CGI specific */
 #include "cgic.h"
+#include "cookie.h"
 
 #define ACTION_LEN 20
 #define VAL_LEN 20
@@ -69,6 +70,7 @@ int cgiMain(void){
   
   /* create and set a fixed value cookie */
   cookie = cgiCookie_new("visited","yes i have");
+  cgiCookie_MaxAge_set(cookie,60*60*24);
   cgiHeaderSetCookie(cookie);
 
   if(cgiFormStringNoNewlines("send",str_action,ACTION_LEN) ==
@@ -84,6 +86,7 @@ int cgiMain(void){
     cookie = cgiCookie_new(nm,val);
 
     /* send out the cookie header */
+    cgiCookie_MaxAge_max(cookie);
     cgiHeaderSetCookie(cookie);
   }
   /* Put out the rest of the header */
