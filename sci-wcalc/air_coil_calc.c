@@ -1,6 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.10 2004/08/05 23:46:45 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.11 2004/08/07 03:27:47 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.10 2004/08/05 23:46:45 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.11 2004/08/07 03:27:47 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -220,9 +220,6 @@ void mexFunction(
 
   /* the actual computation */
   coil = air_coil_new();
-
-  /* XXX get from flags */
-
 
   for (ind=0; ind<(rows*cols); ind++){
     /*

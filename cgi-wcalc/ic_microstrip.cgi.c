@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.7 2004/08/30 22:21:16 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.8 2004/08/31 21:53:05 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -325,7 +325,6 @@ int cgiMain(void){
     line->freq = freq * line->units_freq->sf;
   
     /* copy over the other parameters */
-    /* XXX */
     line->subs->sigmas = sigmas*line->units_sigmas->sf;
     line->subs->eox    = eox;
     line->subs->es     = es;
