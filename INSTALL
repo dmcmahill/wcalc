@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.1 2001/02/11 19:26:15 dan Exp $
+$Id: INSTALL,v 1.2 2004/11/23 00:49:41 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -9,7 +9,7 @@ Wcalc includes several different frontends.  Because all users
 may not want to install all frontends (and the requesite dependencies)
 the build system is designed to allow the user to pick and choose
 which frontends to build and install.  In addition, the build 
-system is designed to allow additional frontends to be build and
+system is designed to allow additional frontends to be built and
 added to an existing installation.
 
 Please refer to the output of
@@ -25,6 +25,11 @@ to change from the default.  For example if you may wish to
 use http://yourserver/~someuser/cgi-bin/ instead of
 http://yourserver/cgi-bin/ for the CGI frontend.
 
+If you wish to install the Wcalc web pages, add --enable-htdocs
+to the configure arguments.  There are some additional arguments
+which can specify the installation directory and also a URL to
+access the web pages by.  These latter two options are useful if
+you are installing Wcalc on an internal web server.
 
 -------- Standard GNU INSTALL Instructions Follow --------------------
 
