@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.13 2004/07/29 22:08:53 dan Exp $ */
+/* $Id: microstrip.c,v 1.14 2004/07/31 03:39:16 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -581,11 +581,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    
        loss = ld + lc;
    
-       /*
-	* Skin depth 
-	* in mils
-	*/
-       depth = M2MIL(depth);
      }
    else
      {
