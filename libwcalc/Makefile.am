@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.21 2004/08/09 12:56:21 dan Exp $
+## $Id: Makefile.am,v 1.22 2004/08/11 13:04:37 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004 Dan McMahill
@@ -60,17 +60,24 @@ pkginclude_DATA =  \
 pkgconfigdir            = $(libdir)/pkgconfig
 pkgconfig_DATA          = wcalc.pc
 
-noinst_PROGRAMS = coax_test coupled_microstrip_test ic_microstrip_test mathutil_test \
-	microstrip_test units_test
+noinst_PROGRAMS = coax_test coupled_microstrip_test \
+	ic_microstrip_test mathutil_test \
+	make_defaults microstrip_test units_test
 
-coax_test_SOURCES = alert.c coax_test.c 
+coax_test_SOURCES = alert.c coax_test.c
 coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c 
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 microstrip_test_SOURCES = alert.c microstrip_test.c 
 units_test_SOURCES = alert.c units_test.c
+make_defaults_SOURCES = alert.c make_defaults.c
 
 EXTRA_DIST=	coupled_microstrip.data wcalc-config.in wcalc.pc.in libwcalc.h
+
+BUILT_SOURCES=	defaults.c
+
+@MAINTAINER_MODE_TRUE@defaults.c: make_defaults
+@MAINTAINER_MODE_TRUE@	./make_defaults > $@
 
 LDADD = libwcalc.la
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
@@ -88,6 +95,8 @@ libwcalc_la_SOURCES = \
 	coupled_microstrip.h \
 	coupled_microstrip_loadsave.c \
 	coupled_microstrip_loadsave.h \
+	defaults.c \
+	defaults.h \
 	ic_microstrip.c \
 	ic_microstrip.h \
 	ic_microstrip_loadsave.c \

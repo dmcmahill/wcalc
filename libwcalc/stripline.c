@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.13 2004/07/31 03:39:17 dan Exp $ */
+/*      $Id: stripline.c,v 1.14 2004/08/06 11:15:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -59,10 +59,12 @@
 #include <stdlib.h>
 
 #include "alert.h"
+#include "defaults.h"
 #include "mathutil.h"
 #include "misc.h"
 #include "physconst.h"
 #include "stripline.h"
+#include "stripline_loadsave.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -764,19 +766,7 @@ stripline_line *stripline_line_new()
 
   newline->subs = stripline_subs_new();
 
-  /* XXX need better units initialization */
-  /* initialize the values to something */
-  newline->l    = 1000.0;
-  newline->w    = 110.0;
-  newline->freq = 900e6;
-
-  newline->subs->h     = 62.0;
-  newline->subs->er    = 4.8;
-  newline->subs->tand  = 0.01;
-  newline->subs->tmet  = 1.4;
-  newline->subs->rho   = 1.0;
-  newline->subs->rough = 0.055;
-
+  /* create the units */
   newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
   newline->units_R       = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
@@ -791,6 +781,9 @@ stripline_line *stripline_line_new()
   newline->units_delay   = wc_units_new(WC_UNITS_TIME);
   newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
+
+  /* load in the defaults */
+  stripline_load_string(newline, default_stripline);
 
   /* and do a calculation to finish the initialization */
   stripline_calc(newline, newline->freq);

@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.8 2004/08/02 21:02:12 dan Exp $ */
+/* $Id: air_coil.c,v 1.9 2004/08/28 05:24:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -40,11 +40,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mathutil.h"
-#include "physconst.h"
 #include "air_coil.h"
+#include "air_coil_loadsave.h"
 #include "alert.h"
+#include "defaults.h"
+#include "mathutil.h"
 #include "misc.h"
+#include "physconst.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -546,35 +548,17 @@ air_coil_coil *air_coil_new()
       exit(1);
     }
 
-  newcoil->Nf = 7.0;
-  newcoil->len = INCH2M(0.2);
-  newcoil->AWGf = 22.0;
-  /* initialize to resistivity of copper */
-  newcoil->rho = 1.72e-8;
-  newcoil->dia = INCH2M(0.14);
-  newcoil->freq = 10e6;
+  /* Create the units */
 
-  newcoil->use_fill = 0;
-
-  /* create the units and initialize them */
-  /* XXX should have a way of initializing them more easily */
   newcoil->units_len = wc_units_new(WC_UNITS_LENGTH);
-  wc_savestr_to_units( "6", newcoil->units_len);
-
   newcoil->units_dia = wc_units_new(WC_UNITS_LENGTH);
-  wc_savestr_to_units( "6", newcoil->units_dia);
-
   newcoil->units_L = wc_units_new(WC_UNITS_INDUCTANCE);
-  wc_savestr_to_units( "1", newcoil->units_L);
-
   newcoil->units_SRF = wc_units_new(WC_UNITS_FREQUENCY);
-  wc_savestr_to_units( "3", newcoil->units_SRF);
-
   newcoil->units_rho = wc_units_new(WC_UNITS_RESISTIVITY);
-  wc_savestr_to_units( "2-4", newcoil->units_rho);
-
   newcoil->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
-  wc_savestr_to_units( "3", newcoil->units_freq);
+
+  /* load in the defaults */
+  air_coil_load_string(newcoil, default_air_coil);
 
   /* get the rest of the entries in sync */
   air_coil_calc(newcoil, newcoil->freq);

@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.h,v 1.5 2002/05/10 22:52:51 dan Exp $ */
+/* $Id: air_coil_loadsave.h,v 1.6 2002/06/12 11:30:23 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -44,7 +44,7 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname);
  */
 int air_coil_load(air_coil_coil *coil, FILE *fp);
 
-int air_coil_load_string(air_coil_coil *coil, char *str);
+int air_coil_load_string(air_coil_coil *coil, const char *str);
 char * air_coil_save_string(air_coil_coil *coil);
 
 #endif /*__AIR_COIL_LOADSAVE_H__*/

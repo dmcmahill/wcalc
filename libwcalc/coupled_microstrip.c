@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.21 2004/08/02 21:01:57 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.22 2004/08/30 22:23:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -43,10 +43,12 @@
 #define _(String) String
 
 #include "alert.h"
+#include "defaults.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "units.h"
 #include "coupled_microstrip.h"
+#include "coupled_microstrip_loadsave.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -1172,21 +1174,7 @@ coupled_microstrip_line *coupled_microstrip_line_new()
 
   newline->subs = microstrip_subs_new();
 
-  /* initialize the values to something */
-  newline->l    = MIL2M(1000.0);
-  newline->s    = MIL2M(15.0);
-  newline->w    = MIL2M(110.0);
-  newline->freq = 1.0e9;
-
-  newline->subs->h     = MIL2M(62.0);
-  newline->subs->er    = 4.8;
-  newline->subs->tand  = 0.01;
-  newline->subs->tmet  = MIL2M(2.8);
-  newline->subs->rho   = 3e-8;
-  newline->subs->rough = MIL2M(0.055);
-
-  newline->use_z0k = 1;
-
+  /* create the units */
   newline->units_lwst    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_len     = wc_units_new(WC_UNITS_LENGTH);
   newline->units_freq    = wc_units_new(WC_UNITS_FREQUENCY);
@@ -1198,7 +1186,9 @@ coupled_microstrip_line *coupled_microstrip_line_new()
   newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
-  
+  /* load in the defaults */
+  coupled_microstrip_load_string(newline, default_coupled_microstrip);
+
   /* and do a calculation to finish the initialization */
   coupled_microstrip_calc(newline, newline->freq);
 

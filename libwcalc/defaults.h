@@ -1,7 +1,7 @@
-/* $Id: stripline_loadsave.h,v 1.4 2004/08/05 21:42:29 dan Exp $ */
+/* $Id$ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,13 +33,14 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __STRIPLINE_LOADSAVE_H__
-#define __STRIPLINE_LOADSAVE_H__
+#ifndef __DEFAULTS_H__
+#define __DEFAULTS_H__
 
-void stripline_save(stripline_line *line, FILE *fp, char *fname);
-int stripline_load(stripline_line *line, FILE *fp);
+extern const char *default_air_coil;
+extern const char *default_coax;
+extern const char *default_coupled_microstrip;
+extern const char *default_ic_microstrip;
+extern const char *default_microstrip;
+extern const char *default_stripline;
 
-int stripline_load_string(stripline_line *line, const char *str);
-char * stripline_save_string(stripline_line *line);
-
-#endif /*__STRIPLINE_LOADSAVE_H__*/
+#endif /* __DEFAULTS_H__ */

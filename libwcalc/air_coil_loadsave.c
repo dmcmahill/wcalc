@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.10 2004/07/26 01:09:16 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.11 2004/07/28 03:28:41 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -157,7 +157,7 @@ void air_coil_save(air_coil_coil *coil, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) coil);
 }
 
-int air_coil_load_string(air_coil_coil *coil, char *str)
+int air_coil_load_string(air_coil_coil *coil, const char *str)
 {
   fspec *myspec;
   char *val;
@@ -170,10 +170,12 @@ int air_coil_load_string(air_coil_coil *coil, char *str)
   printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
 #endif
 
-  mystr=strdup(str);
+  mystr = strdup(str);
 
   /* XXX fixme*/
   val = strtok(mystr," ");
+
+  free(mystr);
 
   /* read the model version  */
   if ( val == NULL ){
@@ -182,7 +184,8 @@ int air_coil_load_string(air_coil_coil *coil, char *str)
   }
 
 #ifdef DEBUG
-  printf("air_coil_loadsave.c:air_coil_load_string():  Got file_version=\"%s\"\n",
+  printf("air_coil_loadsave.c:air_coil_load_string():  "
+	 "Got file_version=\"%s\"\n",
 	 val);
 #endif
   /*
@@ -190,16 +193,14 @@ int air_coil_load_string(air_coil_coil *coil, char *str)
    * routines to read old style formats.
    */
 
-  myspec=get_fspec();
+  myspec = get_fspec();
 #ifdef DEBUG
   printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
 #endif
-  rslt=fspec_read_string(myspec,str,(unsigned long) coil);
+  rslt = fspec_read_string(myspec, str, (unsigned long) coil);
   if (rslt != 0) {
 	return rslt;
   }
-
-  /* XXX any composite units to init */
 
   return rslt;
 }

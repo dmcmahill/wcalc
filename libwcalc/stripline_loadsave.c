@@ -1,4 +1,4 @@
-/* $Id: stripline_loadsave.c,v 1.9 2004/07/31 03:39:18 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.10 2004/08/05 21:42:29 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -208,19 +208,89 @@ void stripline_save(stripline_line *line, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) line->subs);
 }
 
-/* XXX need to handle both line and substrate specs */
 char * stripline_save_string(stripline_line *line)
 {
   fspec *myspec;
-  char *str;
+  char *str1;
+  char *str2;
+  char *str3;
 
   myspec = get_fspec(LINE_SPEC);
-  str = fspec_write_string(myspec,(unsigned long) line);
-  return str;
+  str1 = fspec_write_string(myspec, (unsigned long) line);
+
+  myspec = get_fspec(SUBSTRATE_SPEC);
+  str2 = fspec_write_string(myspec, (unsigned long) line->subs);
+
+  str3 = (char *) malloc( (strlen(str1) + strlen(str2) + 2) * sizeof(char));
+  if( str3 == NULL) {
+    fprintf(stderr, "malloc failed in stripline_save_string()\n");
+    exit(1);
+  }
+
+  sprintf(str3, "%s %s", str1, str2);
+
+  return str3;
 }
 
-/* XXX write me! */
-int stripline_load_string(stripline_line *line, char *str)
+int stripline_load_string(stripline_line *line, const char *str)
 {
-  return 0;
+  fspec *myspec;
+  char *val;
+  char *mystr;
+  int rslt;
+
+  assert(str!=NULL);
+
+#ifdef DEBUG
+  printf("stripline_loadsave.c:stripline_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+
+  mystr = strdup(str);
+
+  /* XXX fixme*/
+  val = strtok(mystr," ");
+
+  /* read the model version  */
+  if ( val == NULL ){
+    alert("Could not determine the stripline file_version\n");
+    return -1;
+  }
+
+#ifdef DEBUG
+  printf("stripline_loadsave.c:stripline_load_string():  "
+	 "Got file_version=\"%s\"\n",
+	 val);
+#endif
+  /*
+   * If the file format changes, this is where we would call legacy
+   * routines to read old style formats.
+   */
+
+  mystr = strdup(str);
+  myspec = get_fspec(LINE_SPEC);
+#ifdef DEBUG
+  printf("stripline_loadsave.c:stripline_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, mystr, (unsigned long) line);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  free(mystr);
+  mystr = strdup(str);
+  myspec = get_fspec(SUBSTRATE_SPEC);
+#ifdef DEBUG
+  printf("stripline_loadsave.c:stripline_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, mystr, (unsigned long) line->subs);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  free(mystr);
+
+  return rslt;
 }

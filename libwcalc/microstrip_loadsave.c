@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.c,v 1.8 2004/07/28 03:28:42 dan Exp $ */
+/* $Id: microstrip_loadsave.c,v 1.9 2004/07/31 03:39:17 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -74,13 +74,17 @@ static fspec * get_fspec(int which_one)
     /* Build up the list which describes the file format */
 
     linespec=fspec_add_sect(NULL,"microstrip");
-    fspec_add_key(linespec,"file_version","Microstrip file version",'f',FILE_VERSION);
+    fspec_add_key(linespec,"file_version","Microstrip file version",
+		  'f',FILE_VERSION);
 
     fspec_add_key(linespec,"L","Length (meters)",'d',&line->l);
     fspec_add_key(linespec,"W","Width (meters)",'d',&line->w);
-    fspec_add_key(linespec,"Z0","Characteristic Impedance (ohms)",'d',&line->z0);
-    fspec_add_key(linespec,"Elen","Electrical Length (degrees)",'d',&line->len);
-    fspec_add_key(linespec,"freq","Frequency of operation",'d',&line->freq);
+    fspec_add_key(linespec,"Z0","Characteristic Impedance (ohms)",
+		  'd',&line->z0);
+    fspec_add_key(linespec,"Elen","Electrical Length (degrees)",
+		  'd',&line->len);
+    fspec_add_key(linespec,"freq","Frequency of operation",
+		  'd',&line->freq);
 
     /*
      * The desired user units
@@ -88,7 +92,8 @@ static fspec * get_fspec(int which_one)
     fspec_add_comment(linespec, "User units");
 
     fspec_add_key(linespec, 
-		  "units_lwht", "Length, width, substrate and metal thickness units",
+		  "units_lwht", "Length, width, substrate and "
+		  "metal thickness units",
 		  'u', &line->units_lwht);
 
     fspec_add_key(linespec, "units_L", "Incremental inductance units",  
@@ -132,8 +137,8 @@ static fspec * get_fspec(int which_one)
 		  'd',&subs->tmet);
     fspec_add_key(subspec,"RHO","Metalization resistivity (ohm-meters)",
 		  'd',&subs->rho);
-    fspec_add_key(subspec,"ROUGH","Metalization surface roughness (meters-RMS)",
-		  'd',&subs->rough);
+    fspec_add_key(subspec,"ROUGH","Metalization surface roughness"
+		  " (meters-RMS)", 'd',&subs->rough);
     fspec_add_key(subspec,"TAND","Dielectric loss tangent",
 		  'd',&subs->tand);
 
@@ -178,14 +183,14 @@ int microstrip_load(microstrip_line *line, FILE *fp)
    */
 
 
-  myspec=get_fspec(LINE_SPEC);
-  rslt=fspec_read_file(myspec,fp,(unsigned long) line);
+  myspec = get_fspec(LINE_SPEC);
+  rslt = fspec_read_file(myspec, fp, (unsigned long) line);
   rewind(fp);
-  myspec=get_fspec(SUBSTRATE_SPEC);
-  tmpi=fspec_read_file(myspec,fp,(unsigned long) line->subs);
+  myspec = get_fspec(SUBSTRATE_SPEC);
+  tmpi = fspec_read_file(myspec, fp, (unsigned long) line->subs);
 
   if (tmpi != 0)
-    rslt=tmpi;
+    rslt = tmpi;
 
   return rslt;
 }
@@ -205,19 +210,89 @@ void microstrip_save(microstrip_line *line, FILE *fp, char *fname)
 }
 
 
-/* XXX need to handle both line and substrate specs */
 char * microstrip_save_string(microstrip_line *line)
 {
   fspec *myspec;
-  char *str;
+  char *str1;
+  char *str2;
+  char *str3;
 
-  myspec=get_fspec(LINE_SPEC);
-  str=fspec_write_string(myspec,(unsigned long) line);
-  return str;
+  myspec = get_fspec(LINE_SPEC);
+  str1 = fspec_write_string(myspec, (unsigned long) line);
+
+  myspec = get_fspec(SUBSTRATE_SPEC);
+  str2 = fspec_write_string(myspec, (unsigned long) line->subs);
+
+  str3 = (char *) malloc( (strlen(str1) + strlen(str2) + 2) * sizeof(char));
+  if( str3 == NULL) {
+    fprintf(stderr, "malloc failed in microstrip_save_string()\n");
+    exit(1);
+  }
+
+  sprintf(str3, "%s %s", str1, str2);
+
+  return str3;
 }
 
-/* XXX write me! */
-int microstrip_load_string(microstrip_line *line, char *str)
+int microstrip_load_string(microstrip_line *line, const char *str)
 {
-  return 0;
+  fspec *myspec;
+  char *val;
+  char *mystr;
+  int rslt;
+
+  assert(str!=NULL);
+
+#ifdef DEBUG
+  printf("microstrip_loadsave.c:microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+
+  mystr = strdup(str);
+
+  /* XXX fixme*/
+  val = strtok(mystr," ");
+
+  /* read the model version  */
+  if ( val == NULL ){
+    alert("Could not determine the microstrip file_version\n");
+    return -1;
+  }
+
+#ifdef DEBUG
+  printf("microstrip_loadsave.c:microstrip_load_string():  "
+	 "Got file_version=\"%s\"\n",
+	 val);
+#endif
+  /*
+   * If the file format changes, this is where we would call legacy
+   * routines to read old style formats.
+   */
+  free(mystr);
+  mystr = strdup(str);
+
+  myspec = get_fspec(LINE_SPEC);
+#ifdef DEBUG
+  printf("microstrip_loadsave.c:microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, mystr, (unsigned long) line);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  free(mystr);
+  mystr = strdup(str);
+
+  myspec = get_fspec(SUBSTRATE_SPEC);
+#ifdef DEBUG
+  printf("microstrip_loadsave.c:microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, mystr, (unsigned long) line->subs);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  return rslt;
 }

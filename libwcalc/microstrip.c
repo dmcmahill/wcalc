@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.17 2004/08/04 23:47:53 dan Exp $ */
+/* $Id: microstrip.c,v 1.18 2004/08/06 02:16:58 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -43,9 +43,11 @@
 #include <stdlib.h>
 
 #include "alert.h"
+#include "defaults.h"
 #include "mathutil.h"
 #include "physconst.h"
 #include "microstrip.h"
+#include "microstrip_loadsave.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -1004,18 +1006,7 @@ microstrip_line *microstrip_line_new()
 
   newline->subs = microstrip_subs_new();
 
-  /* initialize the values to something */
-  newline->l    = MIL2M(1000.0);
-  newline->w    = MIL2M(110.0);
-  newline->freq = 2.4e9;
-
-  newline->subs->h     = MIL2M(62.0);
-  newline->subs->er    = 4.8;
-  newline->subs->tand  = 0.01;
-  newline->subs->tmet  = MIL2M(1.4);
-  newline->subs->rho   = 3e-8;
-  newline->subs->rough = MIL2M(0.055);
-
+  /* Create the units */
   newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
   newline->units_R       = wc_units_new(WC_UNITS_RESISTANCE_PER_LEN);
@@ -1030,6 +1021,9 @@ microstrip_line *microstrip_line_new()
   newline->units_delay   = wc_units_new(WC_UNITS_TIME);
   newline->units_depth   = wc_units_new(WC_UNITS_LENGTH);
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
+
+  /* load in the defaults */
+  microstrip_load_string(newline, default_microstrip);
 
   /* and do a calculation to finish the initialization */
   microstrip_calc(newline, newline->freq);

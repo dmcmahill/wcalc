@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.19 2004/07/22 01:12:55 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.20 2004/07/28 03:28:43 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -725,6 +725,13 @@ char * fspec_write_string(fspec *list, unsigned long base)
       switch (cur->spec_type) {
 	
       case SPEC_SECTION:
+	sprintf(tmps,"%s", cur->key);
+	if (!pass)
+	  len = len + 1 + strlen(tmps);
+	else {
+	  strcat(str,tmps);
+	  strcat(str," ");
+	}
 	break;
       
       case SPEC_KEY:
@@ -755,7 +762,8 @@ char * fspec_write_string(fspec *list, unsigned long base)
 	    break;
 
 	  default:
-	    fprintf(stderr,"fspec_write_string():  Invalid type, '%c' in fspec\n",cur->type);
+	    fprintf(stderr,"fspec_write_string():  Invalid "
+		    "type, '%c' in fspec\n",cur->type);
 	    exit(1);
 	  }
 	}
@@ -801,24 +809,70 @@ char * fspec_write_string(fspec *list, unsigned long base)
   return str;
 }
 
-int fspec_read_string(fspec *list, char *str, unsigned long base)
+int fspec_read_string(fspec *list, const char *str, unsigned long base)
 {
   fspec *cur;
   void *addr;
   int rslt=0;
   char *tok;
+  char *section;
+  char *mystr;
 
   assert(list != NULL);
 
+  mystr = strdup(str);
+
+  /* 
+   * search until we find the section name
+   */
   cur = list;
-  if ( (tok=strtok(str," ")) == NULL ) {
+  while ( (cur != NULL) && (cur->spec_type != SPEC_SECTION) )
+    cur = cur->next;
+  if( cur != NULL) {
+    section = cur->key;
+#ifdef DEBUG
+    printf("section = %s\n", section);
+#endif
+  } else {
     return -1;
   }
 
+  if ( (tok=strtok(mystr," ")) == NULL ) {
+    return -1;
+  }
+
+  /* 
+   * search until we find the section in the savestring
+   */
+
+  while( (tok != NULL) && (strcmp(tok, section) != 0) ) {
+#ifdef DEBUG
+    printf("does \"%s\" = \"%s\"?\n", tok, section);
+#endif
+    tok = strtok(NULL, " ");
+  }
+  if(tok == NULL)
+    return -1;
+
+#ifdef DEBUG
+  printf("loading string\n");
+#endif
+
+  cur = list;
   while ( cur != NULL) {
     switch (cur->spec_type) {
       
     case SPEC_SECTION:
+      /* read the section tag and move on */
+#ifdef DEBUG
+      printf("tok = \"%s\"\n", tok);
+#endif
+      if ( (tok = strtok(NULL, " ")) == NULL ) {
+	return -1;
+      }
+#ifdef DEBUG
+      printf("tok = \"%s\"\n", tok);
+#endif
       break;
       
     case SPEC_KEY:
@@ -897,6 +951,7 @@ int fspec_read_string(fspec *list, char *str, unsigned long base)
     cur = cur->next;
   }
   
+  free(mystr);
   return rslt;
 }
 

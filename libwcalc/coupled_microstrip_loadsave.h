@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.h,v 1.5 2002/08/07 00:45:44 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.h,v 1.1 2004/07/26 22:22:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -36,10 +36,12 @@
 #ifndef __COUPLED_MICROSTRIP_LOADSAVE_H__
 #define __COUPLED_MICROSTRIP_LOADSAVE_H__
 
-void coupled_microstrip_save(coupled_microstrip_line *line, FILE *fp, char *fname);
+void coupled_microstrip_save(coupled_microstrip_line *line, FILE *fp, 
+			     char *fname);
 int coupled_microstrip_load(coupled_microstrip_line *line, FILE *fp);
 
-int coupled_microstrip_load_string(coupled_microstrip_line *line, char *str);
+int coupled_microstrip_load_string(coupled_microstrip_line *line,
+				   const char *str);
 char * coupled_microstrip_save_string(coupled_microstrip_line *line);
 
 #endif /*__COUPLED_MICROSTRIP_LOADSAVE_H__*/

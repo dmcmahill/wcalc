@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.21 2004/08/02 21:01:42 dan Exp $ */
+/* $Id: coax.c,v 1.22 2004/08/28 05:25:49 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -70,11 +70,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mathutil.h"
-#include "physconst.h"
-#include "coax.h"
 #include "alert.h"
+#include "coax.h"
+#include "coax_loadsave.h"
+#include "defaults.h"
+#include "mathutil.h"
 #include "misc.h"
+#include "physconst.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -633,6 +635,8 @@ coax_line *coax_new()
       exit(1);
     }
 
+  /* create the units */
+
   newline->units_emax    = wc_units_new(WC_UNITS_ELECTRIC_FIELD);
   newline->units_fc      = wc_units_new(WC_UNITS_FREQUENCY);
   newline->units_delay   = wc_units_new(WC_UNITS_TIME);
@@ -648,19 +652,8 @@ coax_line *coax_new()
   newline->units_C = wc_units_new(WC_UNITS_CAPACITANCE_PER_LEN);
   newline->units_G = wc_units_new(WC_UNITS_CONDUCTANCE_PER_LEN);
   
-  newline->a = 1.0;
-  newline->b = 2.0;
-  newline->c = 0.0;
-  newline->tshield = 0.1;
-  newline->len = 1.0;
-
-  newline->rho_a = 3e-8;
-  newline->rho_b = 3e-8;
-  newline->er    = 1.0;
-  newline->tand  = 1e-6;
-  newline->freq  = 10e6;
-  newline->emax  = 1e8;
-
+  /* load in the defaults */
+  coax_load_string(newline, default_coax);
 
   /* get the rest of the entries in sync */
   coax_calc(newline,newline->freq);

@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.7 2004/07/26 22:22:29 dan Exp $ */
+/* $Id: microstrip.h,v 1.8 2004/07/27 20:55:00 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -41,9 +41,6 @@
 typedef struct MICROSTRIP_SUBS
 {
   double h,er,tmet,rho,rough,tand;
-  double h_sf,tmet_sf,rho_sf,rough_sf;
-  char *h_units,*tmet_units,*rho_units,*rough_units;
-
 } microstrip_subs;
 
 typedef struct MICROSTRIP_LINE

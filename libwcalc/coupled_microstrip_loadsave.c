@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_loadsave.c,v 1.3 2004/07/30 04:15:30 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.c,v 1.4 2004/07/31 03:39:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -211,19 +211,86 @@ void coupled_microstrip_save(coupled_microstrip_line *line, FILE *fp, char *fnam
 }
 
 
-/* XXX need to handle both line and substrate specs */
 char * coupled_microstrip_save_string(coupled_microstrip_line *line)
 {
   fspec *myspec;
-  char *str;
+  char *str1;
+  char *str2;
+  char *str3;
 
-  myspec=get_fspec(LINE_SPEC);
-  str=fspec_write_string(myspec,(unsigned long) line);
-  return str;
+  myspec = get_fspec(LINE_SPEC);
+  str1 = fspec_write_string(myspec, (unsigned long) line);
+
+  myspec = get_fspec(SUBSTRATE_SPEC);
+  str2 = fspec_write_string(myspec, (unsigned long) line->subs);
+
+  str3 = (char *) malloc( (strlen(str1) + strlen(str2) + 2) * sizeof(char));
+  if( str3 == NULL) {
+    fprintf(stderr, "malloc failed in coupled_microstrip_save_string()\n");
+    exit(1);
+  }
+
+  sprintf(str3, "%s %s", str1, str2);
+
+  return str3;
 }
 
-/* XXX write me! */
-int coupled_microstrip_load_string(coupled_microstrip_line *line, char *str)
+int coupled_microstrip_load_string(coupled_microstrip_line *line, 
+				   const char *str)
 {
-  return 0;
+  fspec *myspec;
+  char *val;
+  char *mystr;
+  int rslt;
+
+  assert(str!=NULL);
+
+#ifdef DEBUG
+  printf("coupled_microstrip_loadsave.c:coupled_microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+
+  mystr = strdup(str);
+
+  /* XXX fixme*/
+  val = strtok(mystr," ");
+
+  free(mystr);
+  /* read the model version  */
+  if ( val == NULL ){
+    alert("Could not determine the coupled_microstrip file_version\n");
+    return -1;
+  }
+
+#ifdef DEBUG
+  printf("coupled_microstrip_loadsave.c:coupled_microstrip_load_string():  "
+	 "Got file_version=\"%s\"\n",
+	 val);
+#endif
+  /*
+   * If the file format changes, this is where we would call legacy
+   * routines to read old style formats.
+   */
+
+  myspec = get_fspec(LINE_SPEC);
+#ifdef DEBUG
+  printf("coupled_microstrip_loadsave.c:coupled_microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, str, (unsigned long) line);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  myspec = get_fspec(SUBSTRATE_SPEC);
+#ifdef DEBUG
+  printf("coupled_microstrip_loadsave.c:coupled_microstrip_load_string():  "
+	 "loading \"%s\"\n",str);
+#endif
+  rslt = fspec_read_string(myspec, str, (unsigned long) line->subs);
+  if (rslt != 0) {
+	return rslt;
+  }
+
+  return rslt;
 }

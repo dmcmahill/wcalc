@@ -1,4 +1,4 @@
-/* $Id: microstrip_test.c,v 1.1 2002/08/19 11:30:57 dan Exp $ */
+/* $Id: microstrip_test.c,v 1.2 2004/08/02 21:03:01 dan Exp $ */
 
 /*
  * Copyright (c) 2002 Dan McMahill
@@ -65,18 +65,33 @@ int main(int argc, char **argv)
   int npts = sizeof(b)/sizeof(double);
 #endif
   double freq;
-
+  char *str, *str2;
   char rline[MAXLINELEN];
   char *tok;
   FILE *fp;
 
-  microstrip_line *line;
+  microstrip_line *line, *line2;
 
   line = microstrip_line_new();
+  line2 = microstrip_line_new();
+  line2->w=500;
+  line2->subs->er=9.3;
 
-/*  str=microstrip_save_string(line);
+  str = microstrip_save_string(line);
   printf("Example of microstrip_save_string() output:\n\"%s\"\n\n",str);
-	*/
+
+  str2 = microstrip_save_string(line2);
+  printf("Example of microstrip_save_string() output:\n\"%s\"\n\n",str2);
+
+  microstrip_load_string(line2, str);
+  str2 = microstrip_save_string(line2);
+  printf("Example of microstrip_save_string() output:\n\"%s\"\n\n",str2);
+
+  if(strcmp(str, str2) != 0) {
+    printf("ERROR:  str != str2\n");
+    printf("%s\n%s\n", str, str2);
+  }
+
   if (argc < 2) {
     printf("No input args \n");
     return 0;

@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.8 2002/06/12 11:30:33 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.9 2004/07/21 22:18:06 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -112,7 +112,7 @@ fspec * fspec_add_comment(fspec *list,char *comment);
 int fspec_write_file(fspec *list,FILE *fp,unsigned long base);
 int fspec_read_file(fspec *list,FILE *fp,unsigned long base);
 char *fspec_write_string(fspec *list,unsigned long base);
-int fspec_read_string(fspec *list,char *str,unsigned long base);
+int fspec_read_string(fspec *list, const char *str,unsigned long base);
 
 
 /* Model types.  Used to identify models in the file */

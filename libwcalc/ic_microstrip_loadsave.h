@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.h,v 1.3 2002/06/12 11:30:27 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.h,v 1.4 2004/08/05 21:42:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -39,7 +39,7 @@
 void ic_microstrip_save(ic_microstrip_line *line, FILE *fp, char *fname);
 int ic_microstrip_load(ic_microstrip_line *line, FILE *fp);
 
-int ic_microstrip_load_string(ic_microstrip_line *line, char *str);
+int ic_microstrip_load_string(ic_microstrip_line *line, const char *str);
 char * ic_microstrip_save_string(ic_microstrip_line *line);
 
 #endif /*__IC_MICROSTRIP_LOADSAVE_H__*/
