@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# $Id$
+# $Id: format_tab,v 1.1 2002/01/05 02:55:11 dan Exp $
 #
 # Copyright (c) 2002 Dan McMahill
 # All rights reserved.
@@ -113,6 +113,10 @@ first==1 {
     printf("</font>\n");
     printf("</CAPTION>\n");
   }
+  else {
+    printf("ERROR:  unknown \"type\" = \"%s\"\n",type) > /dev/stderr;
+    exit(1);
+  }
   first=0;
 }
 
@@ -173,6 +177,7 @@ END {
       printf("    GTK_FILL, GTK_FILL,%d,%d);\n\n",
         gtk_xpad,gtk_ypad);
     }
+    printf("  gtk_widget_show_all(tab);\n\n");
     printf("  return tab;\n}\n");
   }
   else if (type == "html") {
