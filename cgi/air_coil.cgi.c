@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: air_coil.cgi.c,v 1.1 2001/09/14 01:59:06 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -63,6 +63,8 @@
 #define defLEN    0.50
 #define defFREQ   10.0
 #define defIND    100.0
+
+static const char *name_string="air_coil.cgi";
 
 int cgiMain(void){
 

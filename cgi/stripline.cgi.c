@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: stripline.cgi.c,v 1.1 2001/09/13 19:13:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -73,6 +73,8 @@
 
 #define defRO     50.0
 #define defELEN   90.0
+
+static const char *name_string="stripline.cgi";
 
 int cgiMain(void){
 

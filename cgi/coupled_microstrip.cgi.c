@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: coupled_microstrip.cgi.c,v 1.1 2001/09/15 02:43:07 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -85,6 +85,7 @@
 #define NSTYPE    2
 static char *stypeStrings[]={"zk" , "evod"};
 	     
+static const char *name_string="coupled_microstrip.cgi";
 		
 int cgiMain(void){
 

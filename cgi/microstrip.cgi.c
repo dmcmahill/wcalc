@@ -1,4 +1,4 @@
-/* $Id: microstrip.cgi.c,v 1.1 2001/09/13 14:52:02 dan Exp $ */
+/* $Id: microstrip.cgi.c,v 1.2 2001/09/13 17:52:53 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -73,6 +73,8 @@
 
 #define defRO     50.0
 #define defELEN   90.0
+
+static const char *name_string="microstrip.cgi";
 
 int cgiMain(void){
 

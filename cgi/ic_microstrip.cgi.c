@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.cgi.c,v 1.1 2001/09/12 23:51:49 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.2 2001/09/13 14:52:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -69,6 +69,7 @@
 
 #define defFREQ   1000.0
 
+static const char *name_string="ic_microstrip.cgi";
 
 int cgiMain(void){
 
