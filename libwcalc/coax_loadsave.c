@@ -1,7 +1,7 @@
-/* $Id: coax_loadsave.c,v 1.2 2002/01/03 03:54:54 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.3 2002/01/18 03:03:09 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.c,v 1.9 2002/01/18 02:43:25 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.10 2002/01/18 02:54:56 dan Exp $ */
 
 /*
- * Copyright (c) 2001 Dan McMahill
+ * Copyright (c) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
