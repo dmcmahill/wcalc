@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.39 2002/02/06 01:33:56 dan Exp $
+dnl $Id: configure.in,v 1.40 2002/02/16 13:41:04 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -194,7 +194,7 @@ AC_SUBST(CGIBINDIR)
 # path to the CGI programs on the webserver
 
 AC_MSG_CHECKING([URI path to  the CGI programs])
-AC_ARG_WITH([cgibin],
+AC_ARG_WITH([cgipath],
 [  --with-cgipath=cgipath  Path used by the web server to access
                           the CGI programs. [default = /cgi-bin/]],
 [
@@ -473,15 +473,16 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 # print a summary of paths and such since there are a bunch
-#AC_MSG_NOTICE([
-#--------------------------------------------
-#html directory = $HTMLDIR
-#html path      = $HTMLPATH
-#cgi directory  = $CGIBINDIR
-#cgi path       = $CGIPATH
-#prefix         = $prefix
-#--------------------------------------------
-#])
+AC_MSG_NOTICE([
+--------------------------------------------
+   cgi-wcalc options
+--------------------------------------------
+html directory = $HTMLDIR
+html path      = $HTMLPATH
+cgi directory  = $CGIBINDIR
+cgi path       = $CGIPATH
+--------------------------------------------
+])
 
 AC_OUTPUT(
 	Makefile 
