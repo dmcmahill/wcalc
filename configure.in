@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.74 2004/11/12 04:42:55 dan Exp $
+dnl $Id: configure.in,v 1.75 2004/11/13 03:34:03 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -344,8 +344,7 @@ void mexFunction(
 
 	wc_save_LIBS="$LIBS"
 	rpath=""
-	for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
-	    xlib_rpath=`echo $xlib_path | sed "s/-L/$fl/g"`
+	for fl in "-R" "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
 	    AC_LINK_IFELSE([
