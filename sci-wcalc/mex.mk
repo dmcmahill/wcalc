@@ -1,4 +1,4 @@
-## $Id: mex.mk,v 1.1 2001/10/19 01:45:14 dan Exp $
+## $Id: mex.mk,v 1.2 2001/10/20 01:34:30 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,6 @@
 ##  SUCH DAMAGE.
 ##
 
-#MEX_FILES=	mex_air_coil.c
-#XXX just for testing:
-MEX_FILES=	pipestage.c
+MEX_SOURCES=	\
+	air_coil_calc.c
 
