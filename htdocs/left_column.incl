@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.5 2001/11/29 03:06:28 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.6 2002/01/10 18:15:14 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -92,6 +92,7 @@
     </td></tr>
     <tr><td bgcolor="#FFFFFF" nowrap>
       <font face="helvetica, arial" size="-1">
+	&nbsp;<a href="permitivity.html">Permitivities</a><br>
 	&nbsp;<a href="resistivity.html">Resistivities</a><br>
       </font>
     </td></tr></table>

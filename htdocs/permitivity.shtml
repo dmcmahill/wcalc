@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: resistivity.shtml,v 1.1 2002/01/10 18:15:14 dan Exp $ -->
+<!-- Copyright (c) 2002
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Permitivities of Common Materials</title>
+<meta name="DESCRIPTION" content="Wcalc:  Permitivities of common materials">
+<meta name="KEYWORDS" content="
+dielectric,
+dielectric constant,
+permitivity,
+relative dielectric constant,
+relative permitivity,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Permitivities of Common Materials
+    </font>
+    <br>
+    <br>
+
+    <table border=2>
+    <!--#include virtual="permitivity.incl"-->
+    </table>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.13 2001/11/29 03:06:28 dan Exp $
+## $Id: Makefile.am,v 1.14 2002/01/10 18:15:14 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -62,6 +62,7 @@ SHTML_IN=	\
 	mex-wcalc.shtml \
 	microstrip.shtml \
 	obtaining.shtml \
+	permitivity.shtml \
 	projects.shtml \
 	resistivity.shtml \
 	sci-wcalc.shtml \
@@ -75,6 +76,7 @@ INCL_FILES=\
 	${BUILT_INCL_FILES}
 
 BUILT_INCL_FILES=\
+	permitivity.incl \
 	resistivity.incl
 
 HTML_OUT=	${SHTML_IN:.shtml=.html}
@@ -100,6 +102,6 @@ FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=html html_no_table=y
 SUFFIXES=	.asciitab
 
 .asciitab.incl:
-	${FORMAT_TAB} $< > $@
+	${FORMAT_TAB} $(srcdir)/$< > $@
 
 include $(srcdir)/shtml.mk
