@@ -1,4 +1,4 @@
-/* $Id: air_coil_loadsave.c,v 1.9 2002/06/12 11:30:23 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.10 2004/07/26 01:09:16 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -68,21 +68,31 @@ static fspec * get_fspec(void)
     /* Build up the list which describes the file format */
 
     myspec=fspec_add_sect(NULL,"air_coil");
-    fspec_add_key(myspec,"file_version","Air coil file version",'f',FILE_VERSION);
-    fspec_add_key(myspec,"Nf","Number of turns",'d',&coil->Nf);
-    fspec_add_key(myspec,"len","Length of coil (meters)",'d',&coil->len);
-    fspec_add_key(myspec,"fill","Ratio of coil length to close wound length",'d',&coil->fill);
-    fspec_add_key(myspec,"AWGf","Wire size (AWG)",'d',&coil->AWGf);
-    fspec_add_key(myspec,"rho","Wire resistivity (ohms/meter)",'d',&coil->rho);
-    fspec_add_key(myspec,"dia","Inside diameter of coil (meters)",'d',&coil->dia);
-    fspec_add_key(myspec,"L","Desired Inductance (H)",'d',&coil->L);
-    fspec_add_key(myspec,"freq","Frequency of operation (Hz)",'d',&coil->freq);
-    fspec_add_key(myspec,"use_fill","Use fill to calculate length?",'i',&coil->use_fill);
+    fspec_add_key(myspec, "file_version","Air coil file version",
+		  'f', FILE_VERSION);
+    fspec_add_key(myspec, "Nf","Number of turns",
+		  'd', &coil->Nf);
+    fspec_add_key(myspec, "len","Length of coil (meters)",
+		  'd', &coil->len);
+    fspec_add_key(myspec, "fill","Ratio of coil length to close wound length",
+		  'd', &coil->fill);
+    fspec_add_key(myspec, "AWGf","Wire size (AWG)",
+		  'd', &coil->AWGf);
+    fspec_add_key(myspec, "rho","Wire resistivity (ohms/meter)",
+		  'd', &coil->rho);
+    fspec_add_key(myspec, "dia","Inside diameter of coil (meters)",
+		  'd', &coil->dia);
+    fspec_add_key(myspec, "L","Desired Inductance (H)",
+		  'd', &coil->L);
+    fspec_add_key(myspec, "freq","Frequency of operation (Hz)",
+		  'd', &coil->freq);
+    fspec_add_key(myspec, "use_fill","Use fill to calculate length?",
+		  'i', &coil->use_fill);
 
     /*
      * The desired user units
      */
-    fspec_add_comment(myspec,"Desired user units and associated scale factors");
+    fspec_add_comment(myspec, "Desired user units and associated scale factors");
     fspec_add_key(myspec, "units_len", "Length units",  
 		  'u', &coil->units_len);
     fspec_add_key(myspec, "units_dia", "Diameter units",  
@@ -110,7 +120,7 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
   assert(fp!=NULL);
 
   /* read the model version  */
-  if ( (val=file_read_val(fp,"[air_coil]","file_version")) == NULL ){
+  if ( (val = file_read_val(fp, "[air_coil]", "file_version")) == NULL ){
     alert("Could not determine the air_coil file_version\n");
     return -1;
   }
@@ -120,13 +130,19 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 	 val);
 #endif
 
+  if (strcmp(val, FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc air_coil file with air_coil file version\n"
+	  "\"%s\".  I only understand version \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
   /*
    * If the file format changes, this is where we would call legacy
    * routines to read old style file formats.
    */
 
-  myspec=get_fspec();
-  rslt=fspec_read_file(myspec,fp,(unsigned long) coil);
+  myspec = get_fspec();
+  rslt = fspec_read_file(myspec, fp,(unsigned long) coil);
 
   return rslt;
 }

@@ -1,4 +1,4 @@
-/* $Id: coax_loadsave.c,v 1.13 2004/07/21 23:49:39 dan Exp $ */
+/* $Id: coax_loadsave.c,v 1.14 2004/07/23 22:11:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -67,43 +67,69 @@ static fspec * get_fspec(void)
     /* Build up the list which describes the file format */
 
     myspec=fspec_add_sect(NULL,"coax");
-    fspec_add_key(myspec,"file_version","Coax file version",'f',FILE_VERSION);
-    fspec_add_comment(myspec,"Physical parameters");
-    fspec_add_key(myspec,"a","Radius of inner conductor (meters)",'d',&line->a);
-    fspec_add_key(myspec,"b","Inner radius of outer conductor (meters)",'d',&line->b);
-    fspec_add_key(myspec,"c","Offset of inner conductor from center (meters)",'d',&line->c);
-    fspec_add_key(myspec,"tshield","Thickness of outer conductor (meters)",'d',&line->tshield);
-    fspec_add_key(myspec,"rho_a","Resistivity of inner conductor (ohms/meter)",'d',&line->rho_a);
-    fspec_add_key(myspec,"rho_b","Resistivity of outer conductor (ohms/meter)",'d',&line->rho_b);
-    fspec_add_key(myspec,"er","Dielectric relative permitivity",'d',&line->er);
-    fspec_add_key(myspec,"tand","Dielectric loss tangent",'d',&line->tand);
-    fspec_add_key(myspec,"len","Physical length of line (meters)",'d',&line->len);
+    fspec_add_key(myspec, "file_version","Coax file version",
+		  'f', FILE_VERSION);
+    fspec_add_comment(myspec, "Physical parameters");
+    fspec_add_key(myspec, "a","Radius of inner conductor (meters)",
+		  'd', &line->a);
+    fspec_add_key(myspec, "b","Inner radius of outer conductor (meters)",
+		  'd', &line->b);
+    fspec_add_key(myspec, "c","Offset of inner conductor from center (meters)",
+		  'd', &line->c);
+    fspec_add_key(myspec, "tshield","Thickness of outer conductor (meters)",
+		  'd', &line->tshield);
+    fspec_add_key(myspec, "rho_a","Resistivity of inner conductor (ohms/meter)",
+		  'd', &line->rho_a);
+    fspec_add_key(myspec, "rho_b","Resistivity of outer conductor (ohms/meter)",
+		  'd', &line->rho_b);
+    fspec_add_key(myspec, "er","Dielectric relative permitivity",
+		  'd', &line->er);
+    fspec_add_key(myspec, "tand","Dielectric loss tangent",
+		  'd', &line->tand);
+    fspec_add_key(myspec, "len","Physical length of line (meters)",
+		  'd', &line->len);
 
-    fspec_add_comment(myspec,"Electrical parameters");
-    fspec_add_key(myspec,"z0","Characteristic impedance of line (Ohms)",'d',&line->z0);
-    fspec_add_key(myspec,"elen","Electrical length of line (degrees)",'d',&line->elen);
-    fspec_add_key(myspec,"freq","Frequency of operation (Hz)",'d',&line->freq);
+    fspec_add_comment(myspec, "Electrical parameters");
+    fspec_add_key(myspec, "z0","Characteristic impedance of line (Ohms)",
+		  'd', &line->z0);
+    fspec_add_key(myspec, "elen","Electrical length of line (degrees)",
+		  'd', &line->elen);
+    fspec_add_key(myspec, "freq","Frequency of operation (Hz)",
+		  'd', &line->freq);
 
     /*
      * The desired user units
      */
-    fspec_add_comment(myspec,"User units");
+    fspec_add_comment(myspec, "User units");
 
 
-    fspec_add_key(myspec, "wc_units_emax", "Max. electric field units",  'u', &line->units_emax);
-    fspec_add_key(myspec, "wc_units_fc", "TE10 cutoff frequency units",  'u', &line->units_fc);
-    fspec_add_key(myspec, "wc_units_delay", "Delay units",  'u', &line->units_delay);
-    fspec_add_key(myspec, "wc_units_loss", "Loss units",  'u', &line->units_loss);
-    fspec_add_key(myspec, "wc_units_losslen", "Loss/length units",  'u', &line->units_losslen);
+    fspec_add_key(myspec, "wc_units_emax", "Max. electric field units",
+		  'u', &line->units_emax);
+    fspec_add_key(myspec, "wc_units_fc", "TE10 cutoff frequency units",
+		  'u', &line->units_fc);
+    fspec_add_key(myspec, "wc_units_delay", "Delay units",
+		  'u', &line->units_delay);
+    fspec_add_key(myspec, "wc_units_loss", "Loss units",
+		  'u', &line->units_loss);
+    fspec_add_key(myspec, "wc_units_losslen", "Loss/length units",
+		  'u', &line->units_losslen);
 
-    fspec_add_key(myspec, "wc_units_abct", "A,B,C, Tshield units",  'u', &line->units_abct);
-    fspec_add_key(myspec, "wc_units_len", "Line physical length units",  'u', &line->units_len);
-    fspec_add_key(myspec, "wc_units_freq", "Frequency units",  'u', &line->units_freq);
-    fspec_add_key(myspec, "wc_units_rho", "Resistivity units",  'u', &line->units_rho);
-    fspec_add_key(myspec, "wc_units_L", "Incremental inductance units",  'u', &line->units_L);
-    fspec_add_key(myspec, "wc_units_R", "Incremental resistance units",  'u', &line->units_R);
-    fspec_add_key(myspec, "wc_units_C", "Incremental capacitance units", 'u', &line->units_C);
-    fspec_add_key(myspec, "wc_units_G", "Incremental conductance units", 'u', &line->units_G);
+    fspec_add_key(myspec, "wc_units_abct", "A,B,C, Tshield units",
+		  'u', &line->units_abct);
+    fspec_add_key(myspec, "wc_units_len", "Line physical length units",
+		  'u', &line->units_len);
+    fspec_add_key(myspec, "wc_units_freq", "Frequency units",
+		  'u', &line->units_freq);
+    fspec_add_key(myspec, "wc_units_rho", "Resistivity units",
+		  'u', &line->units_rho);
+    fspec_add_key(myspec, "wc_units_L", "Incremental inductance units",
+		  'u', &line->units_L);
+    fspec_add_key(myspec, "wc_units_R", "Incremental resistance units",
+		  'u', &line->units_R);
+    fspec_add_key(myspec, "wc_units_C", "Incremental capacitance units",
+		  'u', &line->units_C);
+    fspec_add_key(myspec, "wc_units_G", "Incremental conductance units",
+		  'u', &line->units_G);
   }
 
   return myspec;
@@ -127,6 +153,13 @@ int coax_load(coax_line *line, FILE *fp)
   printf("coax_loadsave.c:coax_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
+
+  if (strcmp(val, FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc coax file with coax file version\n"
+	  "\"%s\".  I only understand version \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
 
   /*
    * If the file format changes, this is where we would call legacy

@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.18 2004/07/21 22:18:05 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.19 2004/07/22 01:12:55 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -77,15 +77,15 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
 
   fprintf(fp,"#\n");
   if (fname != NULL){
-    fprintf(fp,"# File:      %s\n",fname);
+    fprintf(fp,"# File:      %s\n", fname);
   }
-  fprintf(fp,"# Modified:  %s",ctime(&now));
-  fprintf(fp,"# Wcalc Version %s\n",VER);
+  fprintf(fp,"# Modified:  %s", ctime(&now));
+  fprintf(fp,"# Wcalc Version %s\n", VER);
   fprintf(fp,"\n");
 
   fprintf(fp,"[wcalc]\n");
-  fprintf(fp,"wcalc_file_version = %s\n",WCALC_FILE_VERSION);
-  fprintf(fp,"model_name = %s\n",model_name);
+  fprintf(fp,"wcalc_file_version = %s\n", WCALC_FILE_VERSION);
+  fprintf(fp,"model_name = %s\n", model_name);
 
   fprintf(fp,"\n");
 
@@ -95,39 +95,45 @@ void wcalc_save_header(FILE *fp, char *fname, char *model_name)
 int wcalc_load(FILE *fp)
 {
   char *val;
-
+  
   /* we should never be given a NULL file pointer */
   assert(fp != NULL);
 
 
-  val=file_read_val(fp,"[wcalc]","wcalc_file_version");
+  val = file_read_val(fp, "[wcalc]", "wcalc_file_version");
 
 #ifdef DEBUG
   printf("wcalc_load():  wcalc_file_version = \"%s\"\n",val);
 #endif
+  
+  if( strcmp(val, WCALC_FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc file with file version\n"
+	  "\"%s\"\n", val);
+    return -1;
+  }
 
-  val=file_read_val(fp,"[wcalc]","model_name");
+  val = file_read_val(fp,"[wcalc]", "model_name");
 
 #ifdef DEBUG
   printf("wcalc_load():  model_name = \"%s\"\n",val);
 #endif
   
-  if (strcmp(val,FILE_AIR_COIL) == 0) {
+  if (strcmp(val, FILE_AIR_COIL) == 0) {
     return MODEL_AIR_COIL;
   }
-  else if (strcmp(val,FILE_COAX) == 0) {
+  else if (strcmp(val, FILE_COAX) == 0) {
     return MODEL_COAX;
   }
-  else if (strcmp(val,FILE_COUPLED_MICROSTRIP) == 0) {
+  else if (strcmp(val, FILE_COUPLED_MICROSTRIP) == 0) {
     return MODEL_COUPLED_MICROSTRIP;
   }
-  else if (strcmp(val,FILE_IC_MICROSTRIP) == 0) {
+  else if (strcmp(val, FILE_IC_MICROSTRIP) == 0) {
     return MODEL_IC_MICROSTRIP;
   }
-  else if (strcmp(val,FILE_MICROSTRIP) == 0) {
+  else if (strcmp(val, FILE_MICROSTRIP) == 0) {
     return MODEL_MICROSTRIP;
   }
-  else if (strcmp(val,FILE_STRIPLINE) == 0) {
+  else if (strcmp(val, FILE_STRIPLINE) == 0) {
     return MODEL_STRIPLINE;
   }
 
@@ -609,7 +615,9 @@ int fspec_read_file(fspec *list, FILE *fp, unsigned long base)
 	      break;
 	    }
 
+#ifdef DEBUG
 	    printf("checking for NULL cur (%p) \n", cur);
+#endif
 	    if (cur != NULL){
 	      addr = (void *) (base + cur->ofs);
 	    }

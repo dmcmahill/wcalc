@@ -1,4 +1,4 @@
-/* $Id: stripline_loadsave.c,v 1.6 2004/07/24 03:47:33 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.7 2004/07/25 04:05:34 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -129,12 +129,18 @@ static fspec * get_fspec(int which_one)
 
     subspec=fspec_add_sect(NULL, "substrate");
 
-    fspec_add_key(subspec, "H", "Height (meters)",'d',&subs->h);
-    fspec_add_key(subspec, "ER", "Relative dielectric constant",'d',&subs->er);
-    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)",'d',&subs->tmet);
-    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper",'d',&subs->rho);
-    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)",'d',&subs->rough);
-    fspec_add_key(subspec, "TAND", "Dielectric loss tangent",'d',&subs->tand);
+    fspec_add_key(subspec, "H", "Height (meters)",
+		  'd',&subs->h);
+    fspec_add_key(subspec, "ER", "Relative dielectric constant",
+		  'd',&subs->er);
+    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)",
+		  'd',&subs->tmet);
+    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper",
+		  'd',&subs->rho);
+    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)",
+		  'd',&subs->rough);
+    fspec_add_key(subspec, "TAND", "Dielectric loss tangent",
+		  'd',&subs->tand);
 
   }
 
@@ -162,6 +168,13 @@ int stripline_load(stripline_line *line, FILE *fp)
   printf("stripline_loadsave.c:stripline_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
+
+  if (strcmp(val, FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc stripline file with stripline file version\n"
+	  "\"%s\".  I only understand version \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
 
   /*
    * If the file format changes, this is where we would call legacy

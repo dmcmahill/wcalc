@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.4 2002/06/12 11:30:27 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.5 2004/07/26 22:22:28 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -125,14 +125,22 @@ static fspec * get_fspec(int which_one)
 
     subspec=fspec_add_sect(NULL,"substrate");
 
-    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)", 'd', &subs->tmet);
-    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper", 'd', &subs->rho);
-    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)", 'd', &subs->rough);
-    fspec_add_key(subspec, "Eox", "Oxide relative dielectric constant", 'd', &subs->eox);
-    fspec_add_key(subspec, "Tox", "Oxide thickness (meters)", 'd', &subs->tox);
-    fspec_add_key(subspec, "H", "Substrate thickness (meters)", 'd', &subs->h);
-    fspec_add_key(subspec, "Es", "Substrate relative dielectric constant", 'd', &subs->es);
-    fspec_add_key(subspec, "sigmas", "Substrate conductivity (1/(ohm-meters))", 'd', &subs->sigmas);
+    fspec_add_key(subspec, "TMET", "Metalization thickness (meters)", 
+		  'd', &subs->tmet);
+    fspec_add_key(subspec, "RHO", "Metalization resistivity relative to copper", 
+		  'd', &subs->rho);
+    fspec_add_key(subspec, "ROUGH", "Metalization surface roughness (meters-RMS)",
+		  'd', &subs->rough);
+    fspec_add_key(subspec, "Eox", "Oxide relative dielectric constant", 
+		  'd', &subs->eox);
+    fspec_add_key(subspec, "Tox", "Oxide thickness (meters)", 
+		  'd', &subs->tox);
+    fspec_add_key(subspec, "H", "Substrate thickness (meters)", 
+		  'd', &subs->h);
+    fspec_add_key(subspec, "Es", "Substrate relative dielectric constant", 
+		  'd', &subs->es);
+    fspec_add_key(subspec, "sigmas", "Substrate conductivity (1/(ohm-meters))", 
+		  'd', &subs->sigmas);
 
   }
 
@@ -160,6 +168,14 @@ int ic_microstrip_load(ic_microstrip_line *line, FILE *fp)
   printf("ic_microstrip_loadsave.c:ic_microstrip_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
+
+  if (strcmp(val, FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc ic_microstrip file\n"
+	  "with ic_microstrip file version\n"
+	  "\"%s\".  I only understand version \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
 
   /*
    * If the file format changes, this is where we would call legacy

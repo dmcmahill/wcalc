@@ -1,4 +1,4 @@
-/* $Id: microstrip_loadsave.c,v 1.6 2002/08/07 00:45:44 dan Exp $ */
+/* $Id: coupled_microstrip_loadsave.c,v 1.1 2004/07/26 22:22:27 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -151,6 +151,14 @@ int coupled_microstrip_load(coupled_microstrip_line *line, FILE *fp)
   printf("coupled_microstrip_loadsave.c:coupled_microstrip_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
+
+  if (strcmp(val, FILE_VERSION) != 0) {
+    alert("Unable to load a wcalc coupled_microstrip file\n"
+	  "with coupled_microstrip file version\n"
+	  "\"%s\".  I only understand version \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
 
   /*
    * If the file format changes, this is where we would call legacy
