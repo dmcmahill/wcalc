@@ -1,7 +1,7 @@
-/* $Id: coax_gui.c,v 1.17 2002/08/07 01:22:34 dan Exp $ */
+/* $Id: coax_gui.c,v 1.18 2003/01/02 06:40:08 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -164,7 +164,7 @@ coax_gui *coax_gui_new(void)
   return new_gui;
 }
 
-void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
+void coax_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 {
   GtkWidget *values_vbox;
   GtkWidget *outputs_vbox;
@@ -352,7 +352,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), hbox,
 		   2, 3, 0, 1, GTK_EXPAND|GTK_FILL, 0,XPAD,YPAD);
   gui->menu_abct_units =
-    units_menu_new(length_units,0,(gpointer) gui,abct_units_changed);
+    units_menu_new(length_units, 0, (gpointer) gui, abct_units_changed);
   gtk_box_pack_start (GTK_BOX (hbox),gui->menu_abct_units,FALSE,FALSE,0);
 
   text = gtk_label_new( "b" );
@@ -378,84 +378,84 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   */
 
   text = gtk_label_new( "c" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
 
   gui->units_c = gtk_label_new("");
   gtk_table_attach(GTK_TABLE(table), gui->units_c, 2, 3, 2, 3, 
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(gui->units_c),0,0);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(gui->units_c), 0, 0);
 
 
   text = gtk_label_new( _("Length") );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
 
   hbox=gtk_hbox_new(FALSE,0);
   gtk_table_attach(GTK_TABLE(table), hbox,
-		   2, 3, 3, 4, GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+		   2, 3, 3, 4, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
   gui->menu_len_units =
-    units_menu_new(length_units,0,(gpointer) gui,len_units_changed);
-  gtk_box_pack_start (GTK_BOX (hbox),gui->menu_len_units,FALSE,FALSE,0);
+    units_menu_new(length_units, 0, (gpointer) gui, len_units_changed);
+  gtk_box_pack_start (GTK_BOX (hbox), gui->menu_len_units, FALSE, FALSE, 0);
 
 
   text = gtk_label_new( _("Er") );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, XPAD, YPAD);
 
   text = gtk_label_new( _("Tand") );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 0, 0, XPAD, YPAD);
 
   text = gtk_label_new( "Emax" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 6, 7, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 6, 7, 0, 0, XPAD, YPAD);
 
   text = gtk_label_new( "V/m" );
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 6, 7, 
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text),0,0);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
 
 
   text = gtk_label_new( "t" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 7, 8, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 7, 8, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
 
   gui->units_t = gtk_label_new("");
   gtk_table_attach(GTK_TABLE(table), gui->units_t, 2, 3, 7, 8, 
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(gui->units_t),0,0);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(gui->units_t), 0, 0);
 
 
   /* ---------------- Characteristic impedance -------------- */
 
   text = gtk_label_new( "Z0" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
 
   text = gtk_label_new( "ohms" );
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 0, 1,
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text),0,0);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
 
   /* ---------------- Electrical length -------------- */
 
   text = gtk_label_new( "Elen" );
   gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2,
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
 
   text = gtk_label_new( "degrees" );
   gtk_table_attach(GTK_TABLE(table), text, 7, 8, 1, 2,
-		   GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text),0,0);
+		   GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
 
   /* ---------------- TE10 Cutoff -------------- */
 
   text = gtk_label_new( _("TE10 Cutoff") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,XPAD,YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0, 0, XPAD, YPAD);
   gtk_widget_show(text);
 
   gui->units_fc = gtk_label_new( "" );
   gtk_table_attach(GTK_TABLE(table), gui->units_fc, 
-		   7, 8, 2, 3, GTK_EXPAND|GTK_FILL,0,XPAD,YPAD);
-  gtk_misc_set_alignment(GTK_MISC(gui->units_fc),0,0);
+		   7, 8, 2, 3, GTK_EXPAND|GTK_FILL, 0, XPAD, YPAD);
+  gtk_misc_set_alignment(GTK_MISC(gui->units_fc), 0, 0);
 
 
   /* ---------------- Frequency label/entry/units menu -------------- */
