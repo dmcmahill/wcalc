@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.4 2002/06/12 11:29:58 dan Exp $
+dnl $Id: acinclude.m4,v 1.5 2004/09/02 00:52:51 dan Exp $
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
 dnl All rights reserved.
@@ -88,6 +88,11 @@ AC_DEFUN(AC_AWK_STRFTIME,
 AC_TRY_AWK([{print strftime()}] ,[$1] ,[$2])
 ])dnl
 
+
+#------------------------------------------------
+#
+# This is from pkg-config
+#
 
 dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
