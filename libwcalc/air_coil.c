@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.10 2004/08/31 21:38:16 dan Exp $ */
+/* $Id: air_coil.c,v 1.11 2004/09/02 00:47:48 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -296,8 +296,6 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   Q0 = A * turndiam * sqrt(freq*1e-6);
 
   /*
-   * XXX need to account for the wire resistivity! 
-   *
    * The Geffe article assumes copper.  For a simple series R-L
    * circuit, Q = 2*pi*freq*L/R.  So, we should be able to apply a
    * correction factor to get
