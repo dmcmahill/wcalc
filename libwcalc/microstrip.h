@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.6 2003/01/24 11:11:51 dan Exp $ */
+/* $Id: microstrip.h,v 1.7 2004/07/26 22:22:29 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -58,6 +58,9 @@ typedef struct MICROSTRIP_LINE
 
   /* electrical length (degrees) */
   double len;
+
+  /* delay (seconds) */
+  double delay;
 
   /* open end length correction */
   double deltal;
