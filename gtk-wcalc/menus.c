@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.8 2003/01/02 06:40:10 dan Exp $ */
+/* $Id: menus.c,v 1.9 2004/08/05 12:12:13 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -180,8 +180,11 @@ void get_main_menu( Wcalc *wcalc,
 
   /* Attach the new accelerator group to the window. */
   // XXX gtk-2.2
-  //gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+#if GTK_CHECK_VERSION(2,0,0)
   _gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+#else
+  gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+#endif
 
   if (menubar){
     /* Finally, return the actual menu bar created by the item factory. */ 
