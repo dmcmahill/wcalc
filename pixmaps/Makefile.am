@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2001/10/13 02:09:28 dan Exp $
+## $Id: Makefile.am,v 1.6 2001/10/13 23:35:58 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,17 @@
 ##  SUCH DAMAGE.
 ##
 
-pkgdata_DATA=	${PNGS} ${EPSS}
+# Note, we let the user pick some arbitrary directory for the PNG files
+# because we simply don't know how the user will organize their web server.
+# For example, someone might install this in their personal public_html
+# directory and need to look for images in ~randomuser/images, or perhaps
+# this is installed by the webadmin under /wcalc.
+
+pkgimgdatadir= @HTMLDIR@
+pkgimgdata_DATA= ${PNGS}
+
+pkgdata_DATA=	${EPSS}
+
 
 EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
 

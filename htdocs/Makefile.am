@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2001/10/16 03:25:19 dan Exp $
+## $Id: Makefile.am,v 1.2 2001/10/16 04:40:57 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -39,8 +39,8 @@
 # directory and need to look for images in ~randomuser/images, or perhaps
 # this is installed by the webadmin under /wcalc.
 
-pkgimgdatadir= $(datadir)/@PACKAGE@
-pkgimgdata_DATA= ${PNGS}
+pkgimgdatadir= @HTMLDIR@
+pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
 
 
 SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html

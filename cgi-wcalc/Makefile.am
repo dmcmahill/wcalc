@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.7 2001/10/13 01:09:38 dan Exp $
+## $Id: Makefile.am,v 1.8 2001/10/14 03:30:28 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -59,7 +59,7 @@ microstrip_cgi_SOURCES = microstrip.cgi.c ${COMMON}
 
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
-INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc
+INCLUDES =  -I$(top_srcdir)/include -I$(top_srcdir)/libwcalc -DHTMLPATH=\"@HTMLPATH@\"
 
 LDADD = ../libwcalc/libwcalc.la
 
