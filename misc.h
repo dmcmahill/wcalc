@@ -1,4 +1,4 @@
-/* $Id: misc.h,v 1.2 2001/09/22 03:50:16 dan Exp $ */
+/* $Id: misc.h,v 1.3 2001/09/27 02:01:51 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -36,7 +36,16 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
+typedef struct UNITS_DATA
+{
+  /* the name of the units, "inch" */
+  char *name;
 
+  /* the scale factor, mks_units/unit, for example meter/inch */
+  double sf;
+} units_data;
+
+  
 double dia2awg(double dia);
 double awg2dia(double AWG);
 double phys_units_get_sf(char *str);

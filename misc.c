@@ -1,4 +1,4 @@
-/* $Id: misc.c,v 1.3 2001/09/22 03:50:16 dan Exp $ */
+/* $Id: misc.c,v 1.4 2001/09/27 02:01:51 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -49,6 +49,50 @@
 #include "mathutil.h"
 
 #include "misc.h"
+
+
+static const units_data capacitance_units[]=
+{
+  {"fF", 1e-15},
+  {"pF", 1e-12},
+  {"nF", 1e-9},
+  {"uF", 1e-6},
+  {"mF", 1e-3},
+  {"F", 1.0},
+  {"kF", 1e3}
+};
+
+static const units_data frequency_units[]=
+{
+  {"mHz", 1e-3},
+  {"Hz", 1.0},
+  {"kHz", 1e3},
+  {"MHz", 1e3},
+  {"GHz", 1e3}
+};
+
+static const units_data inductance_units[]=
+{
+  {"pH", 1e-12},
+  {"nH", 1e-9},
+  {"uH", 1e-6},
+  {"mH", 1e-3},
+  {"H", 1.0},
+  {"kH", 1e3}
+};
+
+static const units_data length_units[]=
+{
+  {"nm", 1e-9},
+  {"um", 1e-6},
+  {"mm", 1e-3},
+  {"cm", 1e-2},
+  {"m", 1.0},
+  {"mil", 25.4e-6},
+  {"inch", 25.4e-3}
+};
+
+
 
 /*
  * AWG2DIA    Calculate diameter of wire from A.W.G.
@@ -215,10 +259,10 @@ char *eng_units(double value, const char *base_units, double *sf)
     *sf = (*sf)*1e3;
 
   if (prefix[p] == ' '){
-    snprintf(str,len,"%s",base_units);
+    sprintf(str,"%s",base_units);
   }
   else{
-    snprintf(str,len,"%c%s",prefix[p],base_units);
+    sprintf(str,"%c%s",prefix[p],base_units);
   }
   return str;
 }
