@@ -1,15 +1,34 @@
-# $Id$
+# $Id: air_coil.dat,v 1.1 2004/08/03 02:03:19 dan Exp $
 #
 # air_coil test data
 #
-#
-#  [L,Q,SRF,len_out,fill_out] = 
-#    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
-#
 
+*
+*  [L,Q,SRF,len_out,fill_out] = 
+*    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+*
+
+*
 * Air coil calculation using length
+*
 air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
 
+*
 * Air coil calculation using fill
+*
 air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
 
+*
+*  [N, LEN, FILL, Q, SRF, Lmax] = 
+*      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
+*
+
+*
+* Air coil synthesis, flag == 0 (minimize # of turns)
+*
+air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+
+*
+* Air coil synthesis, flag == 1 (fixed # of turns)
+*
+air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
