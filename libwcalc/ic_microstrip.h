@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.h,v 1.2 2001/11/03 02:13:31 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.3 2001/11/12 04:02:50 dan Exp $ */
 
 /*
  * Copyright (c)  2001 Dan McMahill
@@ -33,8 +33,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __IC_MICROSTRIP_H_
-#define __IC_MICROSTRIP_H_
+#ifndef __IC_MICROSTRIP_H__
+#define __IC_MICROSTRIP_H__
 
 
 typedef struct IC_MICROSTRIP_SUBS
