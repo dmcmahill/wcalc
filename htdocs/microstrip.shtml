@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: microstrip.shtml,v 1.1 2001/10/16 04:40:56 dan Exp $ -->
-<!-- Copyright (c) 2001
+<!-- $Id: microstrip.shtml,v 1.2 2001/10/18 23:15:55 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <title>Wcalc Microstrip Model</title>
@@ -36,6 +36,37 @@ stripline synthesis,
     </center>
     
     <font face="helvetica, arial">
+    <H2><A NAME="References">Selected References</A></H2>
+    <P>
+    E. Hammerstad and O. Jensen, "Accurate Models for Microstrip Computer-
+    Aided Design" IEEE MTT-S, <em>International Symposium Digest</em>, Washington
+    D.C., May 1980, pp. 407-409
+    </P>
+
+    <P>
+     M. Kirschning and R. H. Jansen, "Accurate Model for Effective Dielectric
+     Constant of Microstrip with Validity up to Millimetre-Wave Frequencies",
+     <em>Electronics Letters</em>, Vol 18, No. 6, March 18th, 1982, pp
+     272-273.
+     </P>
+
+     <P>
+     Stanislaw Rosloniec,
+     <em>Algorithms For Computer-Aided Design of Linear Microwave Circuits</em>,
+     Archtech House, 1990
+     </P>
+
+     <P>
+     E. H. Fooks and R. A. Zakarevicius,
+     <em>Microwave Engineering using Microstrip Circuits</em>,
+     Prentice-Hall, 1990
+     </P>
+     <P>
+     E. O. Hammerstad, Edited by F. Bekkadal,
+     <em>Microstrip Handbook</em>, ELAB Report No. STF44 A74169,
+     University of Trondheim, 1975.
+     </P>
+
     </font>
 
   </td>
