@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.20 2002/06/18 01:24:46 dan Exp $
+## $Id: Makefile.am,v 1.21 2002/06/25 21:34:43 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2004 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -69,6 +69,7 @@ SHTML_IN=	\
 	projects.shtml \
 	resistivity.shtml \
 	sci-wcalc.shtml \
+	stdio-wcalc.shtml \
 	screenshots.shtml \
 	stripline.shtml \
 	units.shtml

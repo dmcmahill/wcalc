@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: octave-wcalc.shtml,v 1.1 2002/06/18 01:24:47 dan Exp $ -->
+<!-- Copyright (c) 2004
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Wcalc and Octave</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Stdio-Wcalc
+    </font>
+    <br>
+    <br>
+    </center>
+    
+    <font face="helvetica, arial">
+    <H2>What is it?</H2>
+    <p>
+    Stdio-Wcalc is the very simplified standard in/out interface
+    to the
+    wcalc routines.  This interface allows the user to access the
+    design and analysis of the various Wcalc supported structures
+    from tools which are not able to directly link to Wcalc.  For
+    example, <a href="http://www.gnu.org/software/gawk/gawk.html">gawk</a>
+    can make use of Wcalc by opening a two way pipe to the
+    <tt>stdio-wcalc</tt> binary.
+    </p>
+
+    <H2>Using Stdio-Wcalc</H2>
+
+    <H2>Examples</H2>
+
+    <H2>Currently available functions</H2>
+    <p>
+    You can view the Octave man pages for the Octave-Wcalc functions
+    online which covers the functions supported by Stdio-Wcalc.  Eventually I'll
+    get to filling out this page:
+    <table>
+    <!--#include virtual="octave-man/whatis.incl"-->
+    </table>
+    </p>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>
