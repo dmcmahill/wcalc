@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2001/10/29 11:57:38 dan Exp $
+## $Id: Makefile.am,v 1.5 2001/10/30 03:46:23 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -58,7 +58,8 @@ clean-local:
 BUILT_SOURCES= left_column.incl main_footer.incl
 EXTRA_DIST=	man_start.incl man_end.incl
 
-CP_INCL=	sed 's;a href=";a href="../;g' 
+CP_INCL=	sed  -e 's;a href=";a href="../;g' \
+		     -e 's;img src=";img src="../;g'
 
 left_column.incl: $(srcdir)/../left_column.incl
 	$(CP_INCL) $< > $@
