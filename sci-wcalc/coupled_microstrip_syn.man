@@ -1,0 +1,161 @@
+.\" $Id: coupled_microstrip_syn.man,v 1.5 2001/11/03 19:21:49 dan Exp $
+.\"
+.\" Copyright (c) 2001 Dan McMahill
+.\" All rights reserved.
+.\"
+.\" This code is derived from software written by Dan McMahill
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and.\"or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"        This product includes software developed by Dan McMahill
+.\"  4. The name of the author may not be used to endorse or promote products
+.\"     derived from this software without specific prior written permission.
+.\" 
+.\"  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\"  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\"  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\"  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\"  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+.\"  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\"  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+.\"  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+.\"  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\"  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\"  SUCH DAMAGE.
+.\"
+
+.TH coupled_microstrip_syn 1 "March 2001" "Dan McMahill" "Wcalc"
+.\".so ../sci.an
+.SH NAME
+coupled_microstrip_syn - Coupled microstrip transmission line synthesis
+.SH CALLING SEQUENCE
+.nf
+[w_out,s_out,h_out,l_out,er_out,kev,kodd] = 
+    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
+[w_out,s_out,h_out,l_out,er_out,kev,kodd] = 
+    coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
+.fi
+.SH PARAMETERS
+.TP 10
+z0
+: desired characteristic impedance (Ohms)
+.TP
+k
+: desired coupling coefficient
+.TP
+z0e
+: desired even mode characteristic impedance (Ohms)
+.TP
+z0o
+: desired odd mode characteristic impedance (Ohms)
+.TP
+w
+: width of coupled microstrip line (meters)
+.TP
+s
+: spacing between coupled microstrip lines (meters)
+.TP
+h
+: substrate thickness (meters)
+.TP
+l
+: lentgh of coupled_microstrip line (meters)
+.TP
+tmet
+: metal thickness (meters)
+.TP
+rho
+: resistivity of wire (relative to copper)
+.TP
+rough
+: conductor surface roughness (meters-rms)
+.TP
+er
+: substrate relative permitivitty
+.TP
+tand
+: substrate loss tangent
+.TP
+f
+: synthesis frequency (Hz)
+.TP
+flag
+: indicates which parameters should be optimized
+.RS
+.TP 5
+flag=0
+: synthesize based on characteristic impedance and coupling coefficient
+.TP
+flag=1
+: synthesize based on even and odd mode characteristic impedances
+.RE
+.TP
+kev
+: calculated even mode effective relative permitivitty
+.TP
+kedd
+: calculated odd mode effective relative permitivitty
+.SH DESCRIPTION
+function to synthesize the physical dimenstions of a
+coupled microstrip transmission line to achieve a desired characteristic
+impedance and electrical length.  The desired characteristic
+impedance and some of the physical
+dimensions of the coupled_microstrip line are given as inputs and the
+remaining dimensions are calculated.
+
+The line may be specified either in terms of an even mode and
+odd mode characteristic impedance or a characteristic impedance and 
+coupling coefficient.
+
+The model accounts for dispersion (frequency dependent propagation
+velocity).
+.nf
+
+              |<--W-->|<-S->|<--W-->|
+               _______       -------
+              | metal |     | metal | <- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\\     (
+    )   er,tand                       H   |       )
+   (                                     \\|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+.fi
+.SH EXAMPLE
+.nf
+sf=25.4e-6;       // mils to meters conversion factor
+z0=75;            // desired impedance 
+k=0.3;            // desired coupling
+elen=90;          // desired electrical length (degrees)
+w=0;              // width (we'll synthesize this)
+s=0;              // spacing (we'll synthesize this)
+h=15*sf;          // height
+l=1100*sf;        // length
+tmet=1.4*sf;      // metal thickness
+rho=1;            // resitivity relative to copper
+rough=0.05*sf;    // metal surface roughness
+er=4.5;           // relative dielectric constant
+tand=0.01;        // loss tangent
+f=2.4e9;          // frequency
+flag=0;           // synthesize from z0 and k (instead
+                  // of z0e and z0o)
+[w_out,s_out,h_out,l_out,er_out,kev,kodd] = ...
+    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);
+disp(sprintf('w=%g mils, s=%g mils, l=%g mils',w_out/sf,w_out/sf,l_out/sf));
+disp(sprintf('er=%g',er_out));
+disp(sprintf('z0=%g ohms, length=%g degrees',z0,elen));
+disp(sprintf('kev=%g, kodd=%g',kev,kodd));
+.fi
+.SH SEE ALSO
+coupled_microstrip_calc
+.SH AUTHOR
+Dan McMahill
