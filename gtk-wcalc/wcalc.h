@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.7 2002/06/28 23:00:00 dan Exp $ */
+/*      $Id: wcalc.h,v 1.8 2002/12/17 15:29:38 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -48,9 +48,15 @@
 
 #include "gettext.h"
 
+#ifndef _
 #define _(String) gettext (String)
+#endif
+#ifndef gettext_noop
 #define gettext_noop(String) (String)
+#endif
+#ifndef N_
 #define N_(String) gettext_noop (String)
+#endif
 
 #include "misc.h"
 #include "print.h"
