@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id$ -->
+<!-- Copyright (c) 2002
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<title>Resistivities of Common Materials</title>
+<meta name="DESCRIPTION" content="Wcalc:  Resistivities of common materials">
+<meta name="KEYWORDS" content="
+conductivity,
+resistivity,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Resistivities of Common Materials
+    </font>
+    <br>
+    <br>
+
+    <table border=2>
+    <!--#include virtual="resistivity.incl"-->
+    </table>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

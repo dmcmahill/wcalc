@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.7 2001/10/30 23:52:53 dan Exp $
+## $Id: Makefile.am,v 1.8 2001/11/04 19:27:11 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -36,7 +36,6 @@
 vpath %.man $(top_srcdir)/sci-wcalc
 
 include $(top_srcdir)/sci-wcalc/mex.mk
-#MEX_SRCS=air_coil_calc.c
 
 pkgimgdatadir= @HTMLDIR@/sci-man
 pkgimgdata_DATA= ${SCIMANHTML}

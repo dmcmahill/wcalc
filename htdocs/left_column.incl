@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.4 2001/10/27 16:05:43 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.5 2001/11/29 03:06:28 dan Exp $ -->
 <!-- Copyright (c) 2001 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -74,6 +74,25 @@
 	&nbsp;<a href="gtk-wcalc.html">GTK-Wcalc (GUI Interface)</a><br>
 	&nbsp;<a href="mex-wcalc.html">MEX-Wcalc (Matlab Interface)</a><br>
 	&nbsp;<a href="sci-wcalc.html">SCI-Wcalc (Scilab Interface)</a><br>
+      </font>
+    </td></tr></table>
+    </tr>
+  </table>
+
+  <br>
+
+  <table width="100%" cellspacing=0 cellpadding=2 border=0>
+  <tr>
+  <td bgcolor="#000000">
+    <table width="100%" cellspacing=0 cellpadding=4 border=0>
+  <tr><td bgcolor="#e0e0f0" nowrap>
+    <font face="helvetica, arial" color="#000066">
+      <b>Misc. Info.</b>
+    </font>
+    </td></tr>
+    <tr><td bgcolor="#FFFFFF" nowrap>
+      <font face="helvetica, arial" size="-1">
+	&nbsp;<a href="resistivity.html">Resistivities</a><br>
       </font>
     </td></tr></table>
     </tr>

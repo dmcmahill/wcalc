@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2001/11/04 18:05:45 dan Exp $
+## $Id: Makefile.am,v 1.13 2001/11/29 03:06:28 dan Exp $
 ##
 
 ## Copyright (c) 2001 Dan McMahill
@@ -33,14 +33,16 @@
 ##  SUCH DAMAGE.
 ##
 
+# search for the .asciitab files (for the resistivity table, etc)
+vpath %.asciitab $(top_srcdir)/gtk-wcalc
+
+SUBDIRS=	sci-man  mex-man
+
 # Note, we let the user pick some arbitrary directory for the PNG files
 # because we simply don't know how the user will organize their web server.
 # For example, someone might install this in their personal public_html
 # directory and need to look for images in ~randomuser/images, or perhaps
 # this is installed by the webadmin under /wcalc.
-
-SUBDIRS=	sci-man  mex-man
-
 pkgimgdatadir= @HTMLDIR@
 pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
 
@@ -61,6 +63,7 @@ SHTML_IN=	\
 	microstrip.shtml \
 	obtaining.shtml \
 	projects.shtml \
+	resistivity.shtml \
 	sci-wcalc.shtml \
 	screenshots.shtml \
 	stripline.shtml
@@ -68,7 +71,11 @@ SHTML_IN=	\
 INCL_FILES=\
 	left_column.incl \
 	main_footer.incl \
-	page_start.incl
+	page_start.incl \
+	${BUILT_INCL_FILES}
+
+BUILT_INCL_FILES=\
+	resistivity.incl
 
 HTML_OUT=	${SHTML_IN:.shtml=.html}
 
@@ -79,6 +86,7 @@ PNGS=\
 clean-local:	
 	-rm ${HTML_OUT}
 
+BUILT_SOURCES=	${BUILT_INCL_FILES}
 EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} shtml.mk
 
 # add the dependency on the .incl files
@@ -86,6 +94,12 @@ ${HTML_OUT} : ${INCL_FILES}
 
 CGIPATH=	@CGIPATH@
 
-SUFFIXES= 
-include $(srcdir)/shtml.mk
 
+FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=html html_no_table=yes
+
+SUFFIXES=	.asciitab
+
+.asciitab.incl:
+	${FORMAT_TAB} $< > $@
+
+include $(srcdir)/shtml.mk
