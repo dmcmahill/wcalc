@@ -1,4 +1,4 @@
-# $Id$
+# $Id: mexopts.sh.in,v 1.1 2004/11/18 14:12:33 dan Exp $
 #
 # Copyright (c) 2004 Dan McMahill
 # All rights reserved.
@@ -37,11 +37,24 @@ TMW_ROOT="$MATLAB"
 MFLAGS=''
 MLIBS="-L$TMW_ROOT/bin/$Arch -lmx -lmex"
 
+
+exec_prefix=@exec_prefix@
+prefix=@prefix@
+libdir=@libdir@
+
+RPATH_FLAG="@RPATH_FLAG@"
+
+if "X$RPATH_FLAG" = "X" ; then
+	rpath=""
+else
+	rpath="${RPATH_FLAG}${libdir}"
+fi
+
 CC="@CC@"
 CFLAGS="@CFLAGS@"
 COPTIMFLAGS="@CFLAGS@"
 CDEBUGFLAGS="@CFLAGS@"
-CLIBS="@LIBS@"
+CLIBS="@LIBS@ $rpath"
 
 # we actually don't care about this part.  Wcalc does not
 # use fortran
