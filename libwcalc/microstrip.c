@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.10 2004/07/26 22:22:29 dan Exp $ */
+/* $Id: microstrip.c,v 1.11 2004/07/27 20:58:17 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -414,8 +414,8 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
     * 
     * this gives the result below
     */
-   line->Ls = line->z0/v;
-   line->Cs = 1.0/(line->z0*v);
+   line->Ls = z0/v;
+   line->Cs = 1.0/(z0*v);
    
    /* resistance will be updated below */
    line->Rs = 0.0;
@@ -998,16 +998,16 @@ microstrip_line *microstrip_line_new()
   newline->subs = microstrip_subs_new();
 
   /* initialize the values to something */
-  newline->l    = 1000.0;
-  newline->w    = 110.0;
+  newline->l    = MIL2M(1000.0);
+  newline->w    = MIL2M(110.0);
   newline->freq = 1.0e9;
 
-  newline->subs->h     = 62.0;
+  newline->subs->h     = MIL2M(62.0);
   newline->subs->er    = 4.8;
   newline->subs->tand  = 0.01;
-  newline->subs->tmet  = 1.4;
-  newline->subs->rho   = 1.0;
-  newline->subs->rough = 0.055;
+  newline->subs->tmet  = MIL2M(1.4);
+  newline->subs->rho   = 3e-8;
+  newline->subs->rough = MIL2M(0.055);
 
   newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
   newline->units_L       = wc_units_new(WC_UNITS_INDUCTANCE_PER_LEN);
@@ -1025,7 +1025,7 @@ microstrip_line *microstrip_line_new()
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   /* and do a calculation to finish the initialization */
-  microstrip_calc(newline,newline->freq);
+  microstrip_calc(newline, newline->freq);
   
   return(newline);
 }
