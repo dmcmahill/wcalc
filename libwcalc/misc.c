@@ -1,7 +1,7 @@
-/* $Id: misc.c,v 1.9 2002/07/05 03:20:34 dan Exp $ */
+/* $Id: misc.c,v 1.10 2002/07/05 23:12:51 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -505,9 +505,9 @@ void units_update(composite_units_data *units, double *sf, char **name)
   int i;
 
 #ifdef DEBUG
-  printf("units_update():  units->nnum = %d\n",units->nnum);
-  printf("units_update():  units->nden = %d\n",units->nden);
-  printf("units->num[0][1].name = %s\n",units->num[0][1].name);
+  printf("units_update():  units->nnum = %d\n", units->nnum);
+  printf("units_update():  units->nden = %d\n", units->nden);
+  printf("units->num[0][1].name = %s\n", units->num[0][1].name);
 #endif
 
   for(i=0; i<units->nnum; i++) {
@@ -543,22 +543,22 @@ void units_update(composite_units_data *units, double *sf, char **name)
   }
 
   if (units->nnum > 0)
-    sprintf(str,"%s",units->num[0][units->numi[0]].name);
+    sprintf(str, "%s", units->num[0][units->numi[0]].name);
   else
-    sprintf(str,"1");
+    sprintf(str, "1");
 
   for(i=1; i<units->nnum; i++)
-    sprintf(str,"%s-%s",str,units->num[i][units->numi[i]].name);
+    sprintf(str, "%s-%s", str, units->num[i][units->numi[i]].name);
 
   if (units->nden > 0)
-    sprintf(str,"%s/%s",str,units->den[0][units->deni[0]].name);
+    sprintf(str, "%s/%s" ,str, units->den[0][units->deni[0]].name);
 
   for(i=1; i<units->nden; i++)
-    sprintf(str,"%s-%s",str,units->den[i][units->deni[i]].name);
+    sprintf(str, "%s-%s", str,units->den[i][units->deni[i]].name);
 
 #ifdef DEBUG
-    printf("units_update():  final sf    = %g\n",s);
-    printf("units_update():  final units = \"%s\"\n",str);
+    printf("units_update():  final sf    = %g\n", s);
+    printf("units_update():  final units = \"%s\"\n", str);
 #endif
     
     if (sf != NULL)
