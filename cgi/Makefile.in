@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.9 2001/09/13 19:13:26 dan Exp $
+# $Id: Makefile.in,v 1.10 2001/09/14 01:59:05 dan Exp $
 
 #
 # Copyright (c) 2001 Dan McMahill
@@ -65,6 +65,7 @@ HTML2C  = ${AWK} -f ../html2c out=cgiOut
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
 PROGS = air_coil.cgi \
+	coupled_microstrip.cgi \
 	ic_microstrip.cgi \
 	microstrip.cgi \
 	stripline.cgi
@@ -120,6 +121,7 @@ COUPLED_MICROSTRIP_CGI_CFILES=	coupled_microstrip.cgi.c \
 
 COUPLED_MICROSTRIP_CGI_OFILES=	${COUPLED_MICROSTRIP_CGI_CFILES:.c=.o} \
 				../coupled_microstrip.o \
+				../microstrip.o \
 				../mathutil.o 
 
 ../coupled_microstrip.o: $(srcdir)/../coupled_microstrip.c

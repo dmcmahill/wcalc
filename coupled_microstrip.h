@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.h,v 1.2 2001/02/17 16:56:34 dan Exp $ */
+/* $Id: coupled_microstrip.h,v 1.3 2001/09/14 01:59:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001 Dan McMahill
@@ -42,13 +42,15 @@
 typedef struct COUPLED_MICROSTRIP_LINE
 {
 
-  /* length and width */
+  /* length, width, and spacing */
   double l;
   double w;
   double s;
 
-  /* characteristic impedance (ohms) */
+  /* characteristic impedance (ohms) and coupling factor */
   double z0,k;
+
+  /* even and odd mode impedance */
   double z0e;
   double z0o;
 
@@ -56,7 +58,13 @@ typedef struct COUPLED_MICROSTRIP_LINE
   double len;
 
 
-  double keff,loss,losslen,skindepth;
+  /* open circuit end line correction */
+  double deltale, deltalo;
+
+  /* even and odd mode effective relative permitivitty */
+  double kev,kodd;
+
+  double loss,losslen,skindepth;
 
   microstrip_subs *subs;
 
@@ -65,6 +73,19 @@ typedef struct COUPLED_MICROSTRIP_LINE
 
 double coupled_microstrip_calc(coupled_microstrip_line *line, double f);
 int coupled_microstrip_syn(coupled_microstrip_line *line, double f);
+
+void coupled_microstrip_line_free(coupled_microstrip_line * line);
+coupled_microstrip_line *coupled_microstrip_line_new(void);
+
+/*
+ * Flags for synthesis
+ */
+
+/* these aren't used yet */
+#define CMLISYN_W    0    /* Synthesize the metal width         */
+#define CMLISYN_H    1    /* Synthesize the substrate thickness */
+#define CMLISYN_ES   2    /* Synthesize the dielectric constant */
+#define CMLISYN_L    3    /* Synthesize the length */
 
 
 #endif /*__COUPLED_MICROSTRIP_H_*/
