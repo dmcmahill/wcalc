@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.c,v 1.1 2001/10/05 00:37:31 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.2 2001/11/03 02:13:30 dan Exp $ */
 
 /*
  * Copyright (c) 2001 Dan McMahill
@@ -760,6 +760,26 @@ ic_microstrip_line *ic_microstrip_line_new(void)
   newline->subs->tmet  = 1.4e-6;
   newline->subs->rho   = 1.0;
   newline->subs->rough = 0.0;
+
+  newline->l_sf = 1.0;
+  newline->w_sf = 1.0;
+  newline->freq_sf = 1.0;
+  newline->subs->tox_sf = 1.0;
+  newline->subs->h_sf = 1.0;
+  newline->subs->sigmas_sf = 1.0;
+  newline->subs->tmet_sf = 1.0;
+  newline->subs->rho_sf = 1.0;
+  newline->subs->rough_sf = 1.0;
+
+  newline->l_units = "m";
+  newline->w_units = "m";
+  newline->freq_units = "Hz";
+  newline->subs->tox_units = "m";
+  newline->subs->h_units = "m";
+  newline->subs->sigmas_units = "1 / ohm-m";
+  newline->subs->tmet_units = "m";
+  newline->subs->rho_units = "ohm-m";
+  newline->subs->rough_units = "m";
 
 #if defined(DEBUG_CALC) || defined(DEBUG_SYN)
   printf("ic_microstrip_line_new():  calling ic_microstrip_calc\n");

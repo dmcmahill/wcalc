@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.6 2001/11/03 16:47:25 dan Exp $
+## $Id: Makefile.am,v 1.7 2001/11/11 03:46:54 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -44,6 +44,8 @@ libwcalc_la_SOURCES = \
 	coupled_microstrip.h \
 	ic_microstrip.c \
 	ic_microstrip.h \
+	ic_microstrip_loadsave.c \
+	ic_microstrip_loadsave.h \
 	mathutil.c \
 	mathutil.h \
 	microstrip.c \

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip.h,v 1.1 2001/10/05 00:37:31 dan Exp $ */
+/* $Id: ic_microstrip.h,v 1.2 2001/11/03 02:13:31 dan Exp $ */
 
 /*
  * Copyright (c)  2001 Dan McMahill
@@ -41,12 +41,18 @@ typedef struct IC_MICROSTRIP_SUBS
 {
   /* top metal parameters */
   double tmet,rho,rough;
+  double tmet_sf,rho_sf,rough_sf;
+  char *tmet_units,*rho_units,*rough_units;
 
   /* dielectric (oxide) paramters */
   double eox, tox;
+  double tox_sf;
+  char *tox_units;
 
   /* substrate (silicon typically) parameters */
   double h, es, sigmas;
+  double h_sf,sigmas_sf;
+  char *h_units,*sigmas_units;
 
 } ic_microstrip_subs;
 
@@ -54,8 +60,9 @@ typedef struct IC_MICROSTRIP_LINE
 {
 
   /* length and width */
-  double l;
-  double w;
+  double l,l_sf;
+  double w,w_sf;
+  char *l_units,*w_units;
 
   /* characteristic impedance Ro + j Xo (ohms) */
   double Ro, Xo;
@@ -79,7 +86,8 @@ typedef struct IC_MICROSTRIP_LINE
   ic_microstrip_subs *subs;
 
   /* frequency of operation */
-  double freq;
+  double freq,freq_sf;
+  char *freq_units;
 
 } ic_microstrip_line;
 

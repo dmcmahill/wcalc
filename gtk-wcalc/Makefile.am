@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.9 2001/10/30 23:54:08 dan Exp $
+## $Id: Makefile.am,v 1.10 2001/11/11 03:46:51 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -45,6 +45,8 @@ wcalc_SOURCES = \
 	epscat.h \
 	files.c \
 	files.h \
+	ic_microstrip_gui.c \
+	ic_microstrip_gui.h \
 	menus.c \
 	menus.h \
 	microstrip_gui.c \
