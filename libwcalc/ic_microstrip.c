@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.c,v 1.10 2002/06/12 11:30:26 dan Exp $ */
+/* $Id: ic_microstrip.c,v 1.12 2003/10/02 03:05:29 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -120,8 +120,9 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   double mu0, e0;
 #endif
 
-  double Cox;
+  double Cox, Lox, Z0ox;
   double Csemi, Gsemi, Lsemi, Z0semi;
+  double Rmet;
 
   /* 
    * total incremental shunt admittance and series impedance for the
@@ -176,12 +177,32 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 #endif
 
   /* 
-   * Find the oxide capacitance assuming tox << w
+   * Find the oxide capacitance assuming tox << w.  
+   * XXX this step matches Tuncer and Neikirk however it
+   * ignores fringing.  It could easily be the case that tox
+   * is several microns and is comparable in size to w.
+   * Maybe I should use a microstrip approximation?
    */
   Cox = ((line->subs->eox)*e0/(line->subs->tox))*line->w;
 #ifdef DEBUG_CALC
-  printf("Finding oxide capacitance\n");
+  printf("Finding oxide capacitance using Tuncer and Neikirk\n");
   printf("Cox = %g fF/um\n",Cox*1e9);
+#endif
+
+#ifdef DEBUG_CALC
+  printf("Finding oxide capacitance using Wheeler\n");
+#endif
+  Lox = sqrt(mu0*e0)*Zustrip(line->subs->tox, line->w, line->subs->tmet, 1.0);
+  Z0ox = Zustrip(line->subs->tox, line->w, line->subs->tmet, line->subs->eox);
+#ifdef DEBUG_CALC
+  printf("Calling Z0ox = Zustrip(tox=%g, w=%g, tmet=%g, eox=%g)\n",
+	 line->subs->tox, line->w, line->subs->tmet, line->subs->eox);
+  printf("Z0ox = %g ohms\n", Z0ox);
+#endif
+  Cox = Lox/(Z0ox*Z0ox);
+#ifdef DEBUG_CALC
+  printf("Cox = %g fF/um\n", Cox*1e15*1e-6);
+  printf("Lox = %g pH/um\n", Lox*1e12*1e-6);
 #endif
 
   /*
@@ -193,7 +214,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   Lsemi = sqrt(mu0*e0)*Zustrip(line->subs->h,line->w,line->subs->tmet,1.0);
   Z0semi = Zustrip(line->subs->h,line->w,line->subs->tmet,line->subs->es);
 #ifdef DEBUG_CALC
-  printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",line->subs->h,line->w,line->subs->tmet,line->subs->es);
+  printf("Calling Z0semi = Zustrip(h=%g,w=%g,tmet=%g,es=%g)\n",
+	 line->subs->h,line->w,line->subs->tmet,line->subs->es);
   printf("Z0semi = %g ohms\n",Z0semi);
 #endif
   Csemi = Lsemi/(Z0semi*Z0semi);
@@ -371,12 +393,35 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   Ztot = c_rmul_p(Zi,Ztot,Ztot);
 
 
+  /* whew! */
+
+  /* 
+   * Note that Tuncer and Neikirk ignore resistive losses in the
+   * metal.  In an email communication with, I think it was Neikirk
+   * (its been a while now) he indicated that I could simply use
+   * Wheeler's incremental inductance rule and add in that resistance.
+   * For now, simply use the DC resistance.
+   */
+  
+  /* XXX this is only DC resistnace.  No skin effect! */
+  /* resistance per meter = resistivity/Area */
+  Rmet = line->subs->rho / (line->w*line->subs->tmet);  
+#ifdef DEBUG_CALC
+  printf("Rmet  = %g ohms/um\n", Rmet*1e-6);
+#endif
+
 #ifdef DEBUG_CALC
   printf("Zi    = %g ohms/um\n",Zi*1e-6);
   printf("Zsemi = %g + i%g\n",REAL_P(Zsemi),IMAG_P(Zsemi));
 #endif
 
-  /* whew! */
+  /*
+   * Now add in metal incremental resistance to the incremental series
+   * impedance.
+   */
+  REAL_P(tmpc1) = Rmet;
+  IMAG_P(tmpc1) = 0.0;
+  Ztot = c_add_p(Ztot, tmpc1, Ztot);
 
   /* 
    * now we have the incremental series impedance and shunt admittance
