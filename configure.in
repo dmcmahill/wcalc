@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.25 2001/10/18 12:16:14 dan Exp $
+dnl $Id: configure.in,v 1.26 2001/10/18 12:18:57 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -230,6 +230,92 @@ AC_SUBST(HTMLPATH)
 
 # ------------- done with path tests -------------------
 
+# ------------- matlab mex -------------------
+# mex -h (from matlab 6 release 12.1) says:
+#   sol2, SunOS 5.x - .mexsol
+#	hpux            - .mexhpux
+#	hp700           - .mexhp7
+#	ibm_rs          - .mexrs6
+#	sgi             - .mexsg
+#	alpha           - .mexaxp
+#	glnx86          - .mexglx
+#	Windows         - .dll
+
+AC_PATH_PROG(MEX, mex)
+
+AC_MSG_CHECKING([for matlab mex suffix])
+case $host in
+	rs6000-*-aix* )
+		MEXSFX="mexrs6"
+		;;
+
+	*-*-cygwin* )
+		MEXSFX="dll"
+		;;
+
+	hppa*-*-hpux* )
+		MEXSFX="mexhpux"
+		;;
+
+	*-*-irix* )
+		MEXSFX="mexsg"
+		;;
+
+	i?86-*-linux* )
+		MEXSFX="mexglx"
+		;;
+
+	*-*-mingw* )
+		MEXSFX="dll"
+		;;
+
+	alpha-*-netbsd* )
+		# use the osf/alpha version
+		MEXSFX="mexaxp"
+		;;
+
+	i386-*-netbsd* )
+		# use the linux x86 version
+		MEXSFX="mexglx"
+		;;
+
+	mips*-*-netbsd* )
+		# use the irix/mips version
+		MEXSFX="mexsg"
+		;;
+
+	rs6000-*-netbsd* )
+		# use the aix/rs6000 version
+		MEXSFX="mexrs6"
+		;;
+
+	sparc-*-netbsd* )
+		# use the solaris/sparc version
+		MEXSFX="mexsol"
+		;;
+
+	alpha-*-osf* )
+		MEXSFX="mexaxp"
+		;;
+
+	hppa*-*-osf )
+		MEXSFX="mexhp7"
+		;;
+
+	*-*-solaris* )
+		MEXSFX="mexsol"
+		;;
+
+	* )
+		MEXSFX="unknown"
+		;;
+
+esac
+AC_MSG_RESULT([$MEXSFX])
+AC_SUBST(MEXSFX)
+
+# ------------- end of matlab mex -------------------
+
 AC_CYGWIN
 AC_MINGW32
 AC_EXEEXT
@@ -323,6 +409,8 @@ fi
 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
+
+# print a summary of paths and such since there are a bunch
 
 AC_OUTPUT(
 	Makefile 
