@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.15 2004/07/29 22:08:52 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.16 2004/07/30 04:16:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -804,8 +804,8 @@ double coupled_microstrip_calc(coupled_microstrip_line *line, double f)
   /* electrical length */
   line->len     = len;
 
-  /* skin depth in mils */
-  line->skindepth =  M2MIL(depth);
+  /* skin depth in m */
+  line->skindepth =  depth;
 
   return(line->z0);
 }
