@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.7 2004/07/29 00:02:21 dan Exp $ */
+/* $Id: ic_microstrip_loadsave.c,v 1.8 2004/07/31 03:39:15 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -209,4 +209,21 @@ void ic_microstrip_save(ic_microstrip_line *line, FILE *fp, char *fname)
 
   myspec=get_fspec(SUBSTRATE_SPEC);
   fspec_write_file(myspec,fp,(unsigned long) line->subs);
+}
+
+/* XXX need to handle both line and substrate specs */
+char * ic_microstrip_save_string(ic_microstrip_line *line)
+{
+  fspec *myspec;
+  char *str;
+
+  myspec = get_fspec(LINE_SPEC);
+  str = fspec_write_string(myspec,(unsigned long) line);
+  return str;
+}
+
+/* XXX write me! */
+int ic_microstrip_load_string(ic_microstrip_line *line, char *str)
+{
+  return 0;
 }

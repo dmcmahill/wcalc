@@ -1,4 +1,4 @@
-/* $Id: stripline_loadsave.c,v 1.8 2004/07/28 03:28:43 dan Exp $ */
+/* $Id: stripline_loadsave.c,v 1.9 2004/07/31 03:39:18 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -208,3 +208,19 @@ void stripline_save(stripline_line *line, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) line->subs);
 }
 
+/* XXX need to handle both line and substrate specs */
+char * stripline_save_string(stripline_line *line)
+{
+  fspec *myspec;
+  char *str;
+
+  myspec = get_fspec(LINE_SPEC);
+  str = fspec_write_string(myspec,(unsigned long) line);
+  return str;
+}
+
+/* XXX write me! */
+int stripline_load_string(stripline_line *line, char *str)
+{
+  return 0;
+}

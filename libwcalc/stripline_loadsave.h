@@ -1,7 +1,7 @@
-/* $Id: stripline_loadsave.h,v 1.2 2002/05/10 22:52:57 dan Exp $ */
+/* $Id: stripline_loadsave.h,v 1.3 2002/06/12 11:30:33 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,5 +38,8 @@
 
 void stripline_save(stripline_line *line, FILE *fp, char *fname);
 int stripline_load(stripline_line *line, FILE *fp);
+
+int stripline_load_string(stripline_line *line, char *str);
+char * stripline_save_string(stripline_line *line);
 
 #endif /*__STRIPLINE_LOADSAVE_H__*/
