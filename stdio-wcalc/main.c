@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.6 2004/01/10 13:35:58 dan Exp $ */
+/* $Id: main.c,v 1.7 2004/01/10 14:42:34 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -127,6 +127,7 @@ int main(int argc, char **argv)
       /* exec_ic_microstrip_calc(params); */
 
     lineno++;
+    fflush(stdout);
   }
   
   return 0;
