@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.12 2004/08/04 23:49:45 dan Exp $ */
+/* $Id: main.c,v 1.13 2004/09/02 02:23:22 dan Exp $ */
 
 /*
  * Copyright (c) 2004 Dan McMahill
@@ -99,8 +99,78 @@ static void exec_stripline_syn(double *args);
 */
 
 static void exec_version(double *args);
+static void usage(char *);
+static void version(void);
+static void execute_file(FILE *fp, char *fname); 
+
+static int verbose = 0;
+
+static void usage(char *p)
+{
+
+  printf("Usage:  %s [-v | --verbose] [input_files]\n", p);
+  printf("        %s [-h | --help]\n", p);
+  printf("        %s [-V | --version]\n", p);
+}
+
+static void version(void)
+{
+
+  printf("stdio-wcalc-%s\n", VERSION);
+}
 
 int main(int argc, char **argv)
+{
+  int i;
+  FILE *fp;
+
+  i = 1;
+  while( i < argc ) {
+    if( (strcmp(argv[i], "-h") == 0) ||
+	(strcmp(argv[i], "--help") == 0) ) {
+      usage( argv[0] );
+      exit(0);
+    } else if( (strcmp(argv[i], "-v") == 0) ||
+	       (strcmp(argv[i], "--verbose") == 0) ) {
+      verbose = 1;
+    } else if( (strcmp(argv[i], "-V") == 0) ||
+	       (strcmp(argv[i], "--version") == 0) ) {
+      version();
+      exit(0);
+    } else if( (strcmp(argv[i], "-v") == 0) ||
+	(strcmp(argv[i], "--verbose") == 0) ) {
+      verbose = 1;
+    } else if( argv[i][0] == '-') {
+      printf("option \"%s\" is not understood\n",
+	     argv[i]);
+      usage(argv[0]);
+      exit(1);
+    } else {
+      break;
+    }
+
+    i++;
+  }
+
+  if( i >= argc ) {
+    execute_file( stdin, "stdin" );
+  } else {
+    while( i < argc ) {
+      if( (fp = fopen(argv[i], "r")) == NULL) {
+	fprintf(stderr, "ERROR:  Could not open %s\n", argv[i]);
+	exit(1);
+      }
+      execute_file( fp, argv[i] );
+      fclose( fp );
+      i++;
+    }
+  }
+
+  return 0;
+}
+
+
+static void execute_file(FILE *fp, char *fname) 
 {
   char line[256];
   char *tmps = NULL;
@@ -110,20 +180,8 @@ int main(int argc, char **argv)
   void (*fn) (double *);
   double params[15];
   int lineno = 1;
-  int verbose = 0;
 
-  if( argc > 1) {
-    if( (strcmp(argv[1], "-v") == 0) ||
-	(strcmp(argv[1], "--verbose") == 0) ) {
-      verbose = 1;
-    } else {
-      printf("option \"%s\" is not understood\n",
-	     argv[1]);
-      exit(1);
-    }
-  }
-      
-  while( fgets(line, sizeof(line), stdin) != NULL ) {
+  while( fgets(line, sizeof(line), fp) != NULL ) {
     /* strip off the final newline */
     nl = strpbrk(line, "\n");
     if( nl != NULL ) *nl = '\0';
@@ -175,7 +233,8 @@ int main(int argc, char **argv)
       narg = 9;
       fn = &exec_stripline_calc;
     } else {
-      fprintf(stderr, "stdio-wcalc: unknown command \"%s\"\n", tok);
+      fprintf(stderr, "stdio-wcalc: %s:%d: unknown command \"%s\"\n", 
+	      fname, lineno, tok);
       exit(1);
     }
 
@@ -201,8 +260,9 @@ int main(int argc, char **argv)
       
       /* make sure we got the right number of arguments */
       if( cnt < narg ) {
-	fprintf(stderr, "Not enough arguments.  Needed %d, got %d on line %d\n",
-		narg, cnt, lineno);
+	fprintf(stderr, "Not enough arguments.  Needed %d, "
+		"got %d on line %d of %s\n",
+		narg, cnt, lineno, fname);
       } else {
 	/* and execute the command */
 	fn(params);
@@ -213,7 +273,6 @@ int main(int argc, char **argv)
     fflush(stdout);
   }
   
-  return 0;
 }
 
 /*
