@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.20 2002/12/10 10:42:13 dan Exp $
+## $Id: Makefile.am,v 1.21 2004/08/11 13:04:36 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -69,8 +69,8 @@ stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 INCLUDES =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
 
 LDADD = @WCALC_LDADD@
-#AM_LDFLAGS = -all-static
-AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
+
+AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@ @CGI_STATIC@
 
 HTML_FILES= \
 	air_coil.html \
@@ -89,7 +89,9 @@ BUILT_SOURCES = ${ID_FILES} ${CHTML_FILES}
 
 EXTRA_DIST=	${BUILT_SOURCES} ${HTML_FILES} 
 
-HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut 
+@SOURCEFORGE_YES@HTML2C_SF= sourceforge=1
+
+HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut ${HTML2C_SF}
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
 SUFFIXES = .html 
