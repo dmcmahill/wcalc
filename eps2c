@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 #
-# $Id$
+# $Id: eps2c,v 1.1 2001/09/20 22:25:03 dan Exp $
 #
 # Copyright (c) 2001 Dan McMahill
 # All rights reserved.
@@ -52,7 +52,7 @@
 
 
 BEGIN{
-    printf("/* $Id$ */\n");
+    printf("/* $Id: eps2c,v 1.1 2001/09/20 22:25:03 dan Exp $ */\n");
     printf("\n");
     printf("/* ********* Automatically Generated.  Do not edit! ******** */\n");
     printf("/* *********         Created with eps2c            ******** */\n\n");
@@ -134,7 +134,7 @@ function escape_line(line){
 # escape all percents
   gsub(/%/,"%%",line);
 
-  line = sprintf("fprintf(fp,\"%s\");",line);
+  line = sprintf("fprintf(fp,\"%s\n\");",line);
 
   return(line);
 }
