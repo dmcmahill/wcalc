@@ -1,4 +1,4 @@
-/* $Id: microstrip.h,v 1.4 2002/06/12 11:30:30 dan Exp $ */
+/* $Id: microstrip.h,v 1.5 2002/07/04 02:10:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -63,6 +63,7 @@ typedef struct MICROSTRIP_LINE
   double deltal;
 
   double keff,loss,losslen,skindepth;
+  double alpha_c, alpha_d;
 
   /* incremental circuit model */
   double Ls, Rs, Cs, Gs;

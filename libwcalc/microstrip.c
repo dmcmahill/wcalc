@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.7 2002/08/07 00:44:26 dan Exp $ */
+/* $Id: microstrip.c,v 1.8 2002/08/16 02:19:00 dan Exp $ */
 
 /*
  * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Dan McMahill
@@ -446,7 +446,8 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
-   
+       line->alpha_d = ld;
+
        /* loss in dB */
        ld = ld * l;
    
@@ -542,9 +543,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
  
        /* loss in dB/meter */
        lc = 20.0*log10(exp(1.0)) * lc;
-   
-       /* loss in dB */
-       lc = lc * l;
+
    
        /* factor due to surface roughness
 	* note that the equation in Fooks and Zakarevicius is slightly 
@@ -553,7 +552,11 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	* found in Hammerstad and Bekkadal
 	*/
        lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((roughmil/delta),2.0)));
+       line->alpha_c = lc;
    
+       /* loss in dB */
+       lc = lc * l;
+
        /*
 	* Total Loss
 	*/
