@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.c,v 1.11 2003/01/19 05:07:39 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.12 2004/07/26 11:08:15 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
@@ -1062,11 +1062,7 @@ static double z0_HandJ(double u)
 void coupled_microstrip_line_free(coupled_microstrip_line * line)
 {
   free(line->subs);
-  wc_units_free(line->units_lwht);
-  wc_units_free(line->units_L);
-  wc_units_free(line->units_R);
-  wc_units_free(line->units_C);
-  wc_units_free(line->units_G);
+  wc_units_free(line->units_lwst);
   wc_units_free(line->units_len);
   wc_units_free(line->units_freq);
   wc_units_free(line->units_loss);
