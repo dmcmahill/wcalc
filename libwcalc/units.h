@@ -1,4 +1,4 @@
-/* $Id: units.h,v 1.2 2004/07/19 22:36:13 dan Exp $ */
+/* $Id: units.h,v 1.3 2004/07/20 04:24:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -60,6 +60,12 @@ typedef struct WC_UNITS_DATA
  */
 typedef struct WC_UNITS
 {
+  /* the name of the units, "nH/inch" */
+  char *name;
+
+  /* the scale factor, mks_units/unit, for example meter/inch */
+  double sf;
+
   /*
    * the various units which appear in the numerator and denominator 
    * These are arrays of pointers to structs which actually hold all
