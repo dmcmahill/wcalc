@@ -1,0 +1,141 @@
+#! /usr/bin/awk -f
+#
+# $Id$
+#
+# Copyright (c) 2001 Dan McMahill
+# All rights reserved.
+#
+# This code is derived from software written by Dan McMahill
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#        This product includes software developed by Dan McMahill
+#  4. The name of the author may not be used to endorse or promote products
+#     derived from this software without specific prior written permission.
+# 
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+#  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+#  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+#  SUCH DAMAGE.
+#
+#
+#
+# This script operates on an EPS file to produce a C program which
+# will print the EPS file along with some surrounding stuff to handle
+# the bounding box and properly enclose the EPS file.
+#
+#
+# Typical usage would be:
+#
+#    eps2c fname=print_ps foo.eps > foo.c
+#
+# The generated C code will be a function
+#
+# void print_ps(FILE *);
+#
+#
+
+
+BEGIN{
+    printf("/* $Id$ */\n");
+    printf("\n");
+    printf("/* ********* Automatically Generated.  Do not edit! ******** */\n");
+    printf("/* *********         Created with eps2c            ******** */\n\n");
+    got_bbox=0;
+    out_buf="";
+    
+
+    if ( fname == "" ){
+# provide a default for the function name
+	fname = "eps_print";
+    }
+}
+
+/^%%BoundingBox:/ {
+    if (!got_bbox){
+	bbox_llx = $2;
+	bbox_lly = $3;
+	bbox_urx = $4;
+	bbox_ury = $5;
+	
+	got_bbox=1;
+
+  print "#include <stdio.h>\n\n";
+  print "void "fname"(FILE *fp)\n{";
+  print "fprintf(fp,\"%% We are currently where the top center of the figure should be.\\n\");";
+  print "fprintf(fp,\"%% First figure out where the text will be when we continue\\n\");";
+  print "fprintf(fp,\"%% after the figure\\n\");";
+  print "fprintf(fp,\"%%\\n\");";
+  print "fprintf(fp,\"currentpoint "bbox_ury" "bbox_lly" sub sub\\n\");";
+  print "fprintf(fp,\"gsave\\n\");";
+  print "fprintf(fp,\"currentpoint pop "bbox_llx" "bbox_urx" add 2 div sub\\n\");";
+
+  print "fprintf(fp,\"currentpoint exch pop "bbox_ury" sub \\n\");";
+  print "fprintf(fp,\"translate\\n\");";
+  print "fprintf(fp,\"%%\\n\");";
+  print "fprintf(fp,\"%%include the EPS file\\n\");";
+  print "fprintf(fp,\"%%\\n\");";
+  print "fprintf(fp,\"BEGINEPSFILE\\n\");";
+  print "fprintf(fp,\"\\n\");";
+
+	print out_buf;
+    }
+}
+
+{
+  if(!got_bbox){
+      out_buf = out_buf "\n"  escape_line($0);
+  }
+  else{
+      print escape_line($0);
+  }
+}
+
+END{
+    if (!got_bbox){
+	printf("ERROR:  Failed to extract bounding box\n") > "/dev/stderr";
+	close("/dev/stderr");
+	exit 1;
+    }
+    else{
+
+	print "fprintf(fp,\"\\n\");";
+	print "fprintf(fp,\"ENDEPSFILE\\n\");";
+	print "fprintf(fp,\"grestore\\n\");";
+	print "fprintf(fp,\"moveto\\n\");";
+
+	printf("\n}\n");
+	printf("/* *********        End of Generated Code           ******** */\n\n");
+    }
+}
+
+function escape_line(line){
+# escape all backslashes
+  gsub(/\\/,"\\\\",line);
+
+# escape all double quotes
+  gsub(/\"/,"\\\"",line);
+
+# escape all percents
+  gsub(/%/,"%%",line);
+
+  line = sprintf("fprintf(fp,\"%s\");",line);
+
+  return(line);
+}
+

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001/09/17 15:51:42 dan Exp $
+# $Id: Makefile.in,v 1.2 2001/09/17 19:04:06 dan Exp $
 #
 
 # Copyright (c) 2001 Dan McMahill
@@ -33,6 +33,36 @@
 #  SUCH DAMAGE.
 #
 
+default: all
+
+@SET_MAKE@
+
+
+prefix      = @prefix@
+exec_prefix = @exec_prefix@
+srcdir      = @srcdir@
+VPATH       = @srcdir@
+
+bindir   = $(exec_prefix)/bin
+mandir   = @mandir@
+sharedir = ${prefix}/share
+
+
+INSTALL         = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT  = @INSTALL_SCRIPT@
+INSTALL_DATA    = @INSTALL_DATA@
+
+AWK     = @AWK@
+CC      = @CC@
+CFLAGS  = @CFLAGS@ -I$(srcdir)/..
+LDFLAGS = @LDFLAGS@
+
+LIBS    = @LIBS@ 
+
+
+EPS2C  = ${AWK} -f ../eps2c
+
 TGIF_SRCS=	\
 		air_coil.obj \
 		coupled_microstrip.obj \
@@ -48,16 +78,21 @@ XPMS=	${TGIF_SRCS:.obj=.xpm}
 GIFS=	${TGIF_SRCS:.obj=.gif}
 PNGS=	${TGIF_SRCS:.obj=.png}
 EPSS=	${TGIF_SRCS:.obj=.eps}
+EPSC=	${TGIF_SRCS:.obj=.c}
+OFILES=	${TGIF_SRCS:.obj=.o}
 
-TGIF=		tgif
+TGIF=		@TGIF@
 TGIF_FLAGS=	-print -color
 
-all:	${PNGS} ${XPMS} ${EPSS}
+all:	${PNGS} ${XPMS} ${EPSS} ${EPSC} ${OFILES}
 
 clean:
 	rm -f *.xpm *.xbm *.gif *.png *.eps *~
 
-.SUFFIXES : .obj .xpm .xbm .gif .png .eps
+.SUFFIXES : .obj .xpm .xbm .gif .png .eps .c
+
+.eps.c :
+	$(EPS2C) fname=$*_eps $*.eps > $*.c
 
 .obj.eps :
 	$(TGIF) $(TGIF_FLAGS) -eps $*.obj
