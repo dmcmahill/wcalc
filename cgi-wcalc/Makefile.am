@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2001/10/06 23:51:41 dan Exp $
+## $Id: Makefile.am,v 1.6 2001/10/12 00:17:05 dan Exp $
 
 ##
 ## Copyright (c) 2001 Dan McMahill
@@ -33,7 +33,9 @@
 ##  SUCH DAMAGE.
 ##
 
-libexec_PROGRAMS = \
+cgibinexecdir = $(libexecdir)/cgi-bin
+
+cgibinexec_PROGRAMS = \
 	air_coil.cgi \
 	coupled_microstrip.cgi \
 	ic_microstrip.cgi \
