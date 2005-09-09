@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.29 2005/02/14 23:38:43 dan Exp $ */
+/* $Id: coax.c,v 1.30 2005/02/22 12:48:57 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -47,6 +47,12 @@
  *
  * H. A. Wheeler, "Formulas for the skin effect", Proc. IRE,
  * Vol. 30, No. 9, September 1942, pp. 412-4124
+ *
+ * Ruel V. Churchill and James Ward Brown, "Complex Variables and
+ * Applications, 4th ed", McGraw-Hill, Inc., 1984, New York.  This
+ * book includes an appendix with a catalog of conformal
+ * transformations of regions.  A transform which is most useful for
+ * coax lines with offset center conductor is found here.
  *
  * Dan McMahill, 2001-11-26:
  * -------------------------
@@ -150,6 +156,10 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   int rslt;
 
 #ifdef DEBUG_CALC
+  double x1, x2, Ro;
+#endif
+
+#ifdef DEBUG_CALC
   printf("\n");
   printf("coax_calc_int():  ----------------------\n");
   printf("coax_calc_int():  Input values:\n");
@@ -204,6 +214,21 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   e0 = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
 
   line->z0 = (1/(2*M_PI))*sqrt(mu0/(e0*line->er))*log(x + sqrt(x*x - 1));
+
+#ifdef DEBUG_CALC
+  /* 
+   * This calculation directly implements the conformal mapping of
+   * offset circles found in fig 14, p 328 of Churchill and Brown.
+   * This is a sanity check on the equation from Rosloniec
+   */
+  x1 = (line->a + line->c)/line->b;
+  x2 = (-line->a + line->c)/line->b;
+  Ro = (1 - x1*x2 + sqrt((1 - x1*x1)*(1 - x2*x2)))/(x1-x2);
+
+  /* Print out Z0 based on this mapping */
+  printf("Z0 based on alternate formulation = %g Ohms\n", 
+	 (1/(2*M_PI))*sqrt(mu0/(e0*line->er))*log(Ro));
+#endif
 
 #ifdef DEBUG_CALC
   printf("coax_calc_int():  z0 = %g ohms\n",line->z0);
