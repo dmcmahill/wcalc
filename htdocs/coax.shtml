@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.6 2004/07/28 11:49:05 dan Exp $ -->
+<!-- $Id: coax.shtml,v 1.7 2005/02/22 12:49:06 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -62,9 +62,15 @@ stripline synthesis,
       </LI>
       
       <LI>
-	Robert Colin
+	Robert Colin,
 	<em>Foundations for Microwave Engineering</em>, 
 	McGraw-Hill, Inc. 1966, page 81.
+      </LI>
+      
+      <LI>
+      	Ruel V. Churchill and James Ward Brown,
+	<em>Complex Variables and Applications, 4th ed.</em>, 
+	McGraw-Hill, Inc., 1984, New York
       </LI>
       
     </OL>
