@@ -1,7 +1,7 @@
-/* $Id: start.c,v 1.13 2005/02/12 01:39:01 dan Exp $ */
+/* $Id: start.c,v 1.14 2005/02/12 15:20:40 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -62,7 +62,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004\n" \
+"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005\n" \
 "Dan McMahill."
 
 
