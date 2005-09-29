@@ -1,4 +1,4 @@
-/* $Id: coax.c,v 1.30 2005/02/22 12:48:57 dan Exp $ */
+/* $Id: coax.c,v 1.31 2005/09/09 14:40:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -65,7 +65,7 @@
  */
 
 /* debug the coax_calc() function */
-#define DEBUG_CALC
+/* #define DEBUG_CALC */
 /* debug the coax_syn() function  */
 /* #define DEBUG_SYN */
 
