@@ -1,7 +1,7 @@
-/* $Id: air_coil_gui.c,v 1.14 2004/08/30 22:59:15 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.15 2005/02/12 15:20:39 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -223,10 +223,10 @@ static void values_init(air_coil_gui *gui,
 			GtkWidget *value_parent,
 			GtkWidget *output_parent)
 {
+  GtkWidget *button;
   GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
-  GtkWidget *button;
   GtkWidget *frame;
   wc_units_gui *ug;
   wc_units_gui *f_ug;
@@ -250,15 +250,15 @@ static void values_init(air_coil_gui *gui,
   
 
   /* Analyze button */
-  button = gtk_button_new_with_label (_("Analyze"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gui->button_analyze = gtk_button_new_with_label (_("Analyze"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",
 		      GTK_SIGNAL_FUNC (analyze), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 
+  gtk_table_attach(GTK_TABLE(table), gui->button_analyze, 4, 5, 0, 4, 
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
-  gtk_widget_show (button);
+  gtk_widget_show (gui->button_analyze);
   
   /* 
    * Synthesize buttons 
@@ -266,35 +266,35 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Number of Turns -------------- */
 
-  button = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gui->button_synth_N = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show (button);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_N, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show (gui->button_synth_N);
 
   /* I.D. */
-  button = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gui->button_synth_ID = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_sensitive (button, FALSE);
-  gtk_widget_show (button);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_ID, 3, 4, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_sensitive (gui->button_synth_ID, FALSE);
+  gtk_widget_show (gui->button_synth_ID);
 
   /* Len */
-  button = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gui->button_synth_L = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_show (button);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_L, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_widget_show (gui->button_synth_L);
 
 
 
@@ -833,6 +833,9 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_L, _("Inductance of the coil"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
   
+  gtk_tooltips_set_tip(tips, gui->button_analyze, _("Analyze the electrical characteristics"), NULL);
+  gtk_tooltips_set_tip(tips, gui->button_synth_N, _("Find minimum number of turns and length to meet specified inductance"), NULL);
+  gtk_tooltips_set_tip(tips, gui->button_synth_L, _("Find length to meet specified inductance with the specified number of turns"), NULL);
 }
 
 static void use_len_pressed(GtkWidget *widget, gpointer data )

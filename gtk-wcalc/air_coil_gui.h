@@ -1,7 +1,7 @@
-/* $Id: air_coil_gui.h,v 1.5 2004/07/26 01:07:50 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.6 2004/08/30 22:59:16 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -81,6 +81,11 @@ typedef struct AIR_COIL_GUI
    */
   GtkWidget *picture_vbox;
 
+
+  /*
+   * The buttons
+   */
+  GtkWidget *button_analyze, *button_synth_N, *button_synth_ID, *button_synth_L;
 
 } air_coil_gui;
 
