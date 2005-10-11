@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.15 2005/02/12 15:20:39 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.16 2005/10/11 01:57:55 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -833,8 +833,9 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_L, _("Inductance of the coil"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
   
-  gtk_tooltips_set_tip(tips, gui->button_analyze, _("Analyze the electrical characteristics"), NULL);
-  gtk_tooltips_set_tip(tips, gui->button_synth_N, _("Find minimum number of turns and length to meet specified inductance"), NULL);
+  gtk_tooltips_set_tip(tips, gui->button_analyze, _("Analyze the electrical characteristics from the specified dimensions"), NULL);
+  gtk_tooltips_set_tip(tips, gui->button_synth_ID, _("Find the inside diameter the specified inductance using the specified number of turns and length"), NULL);
+  gtk_tooltips_set_tip(tips, gui->button_synth_N, _("Find minimum number of turns and length to meet the specified inductance"), NULL);
   gtk_tooltips_set_tip(tips, gui->button_synth_L, _("Find length to meet specified inductance with the specified number of turns"), NULL);
 }
 
