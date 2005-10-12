@@ -1,8 +1,8 @@
 #! /usr/bin/awk -f
 #
-# $Id: shtml2html,v 1.6 2002/05/10 22:53:09 dan Exp $
+# $Id: shtml2html,v 1.7 2004/09/02 00:52:04 dan Exp $
 #
-# Copyright (c) 2001, 2002 Dan McMahill
+# Copyright (c) 2001, 2002, 2005 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
@@ -43,7 +43,8 @@
 
 
 BEGIN {
-    start=1;
+    start = 1;
+    sf_eat = 0;
 # make sure this is open for when we close it in END
     printf("") > "/dev/stderr";
 } 
@@ -142,8 +143,12 @@ function sf(line) {
     gsub(/<SOURCEFORGE>/, "", line);
     gsub(/<\/SOURCEFORGE>/, "", line);
   } else {
+    if(line ~ /<SOURCEFORGE>/ ) { sf_eat = 1; }
+    if(line ~ /<\/SOURCEFORGE>/ ) { sf_eat = 2; }
     gsub(/<SOURCEFORGE>/, "<!--", line);
     gsub(/<\/SOURCEFORGE>/, "-->", line);
+    if( sf_eat == 1) { return( "" ); }
+    else if( sf_eat == 2) { sf_eat = 0 ; return( "" ); }
   }
 
   return(line);
