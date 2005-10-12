@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: news.shtml,v 1.1 2004/09/03 03:19:57 dan Exp $ -->
+<!-- Copyright (c) 2005
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@users.sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Technical Notes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Technical Notes
+    </font>
+    <br>
+    <br>
+    </center>
+
+    <HR>
+    <H2><A NAME="Incremental">Incremental Circuit Model</A></H2>
+    <P>
+      The transmission line structures analyzed by Wcalc currently are
+      all either transverse electromagnetic (TEM) or quasi-TEM lines
+      and are modeled by the incremental circuit model shown below.
+      <br>
+    <center>
+      <img src="coax_model.png"
+	   alt="[Incremental Circuit Model]" width="300" height="141" hspace="10" vspace="5">
+    </center>
+    <br>
+      Before applying this model, it is important to understand some
+    of the limitations.  In general, the equations for characteristic
+    impedance and velocity are derived assuming perfect conductors
+    (resistivity of the material is zero).  Then conductor loss is
+    added with the assumption that the fields are not significantly
+    changed by the finite conductance of the metal.  
+    </P>
+    <P>
+      This approach works well for the capacitance per length of line
+      calculation.  This is because when a static potential is applied
+      to the line, there is no current flow in the x or y directions.
+      Here were are assuming that the line is uniform in the
+      z-direction so that the x-y geometry fully specifies the line
+      cross section.  The implication of this is that the microstrip
+      model or coupled microstrip model can accurately predict
+      capacitance of circuit board traces at low frequencies.
+    </P>
+    <P>
+      Inductance calculations, in contrast to capacitance
+      calculations, are a bit more complex.  Consider the case of the
+      coaxial transmission line shown below.
+    <center>
+      <br>
+      <img src="coax.png"
+	   alt="[Coaxial Transmissian Line]" width="327" height="265" hspace="10" vspace="5">
+      <br>
+    </center>
+      The standard analysis found in text books assumes that the
+    current flows in an infinitely thin sheet at the surface of the
+    conductors.  Ampere's law tells us that the magnetic fields are
+    confined to the dielectric layer in between and the calculation of
+    inductance yields the usual inductance per length for coax.  This
+    inductance per length may be calculated directly using the
+    quasi-static fields or by calculating capacitance and finding the
+    inductance from the capacitance and velocity of a TEM line.
+    </P>
+    <P>
+      At low frequencies, the inductance found based on TEM transmission
+      line models becomes incorrect.  This is because at low
+      frequencies, the current is not confined to a thin sheet at the
+      conductor surfaces but rather is distributed across the
+      conductor.  This modifies the magnetic fields and changes the
+      inductance.  Currently Wcalc does not do anything to account for
+      this effect.  If you are designing circuits where you plan on
+      doing things like using a short (compared to 1/4 wavelength)
+      line as an inductor, you must be concerned with this effect.
+      The good news is that the quality factor of the inductance
+      formed by a line at low frequencies is usually low enough to
+      discourage its use anyway.
+    </P>
+
+    <font face="helvetica, arial">
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

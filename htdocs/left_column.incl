@@ -1,5 +1,5 @@
-<!-- $Id: left_column.incl,v 1.14 2004/09/02 00:51:42 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002 Dan McMahill, All rights reserved. -->
+<!-- $Id: left_column.incl,v 1.15 2004/11/24 03:47:48 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2005 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
 
@@ -27,6 +27,7 @@
 	&nbsp;<a href="bugs.html">Reporting bugs</a><br>
 	&nbsp;<a href="projects.html">Current projects</a><br>
 	&nbsp;<a href="obtaining.html">Obtaining Wcalc</a><br>
+	&nbsp;<a href="tech.html">Technical Notes</a><br>
 	&nbsp;<a href="faq.html">Wcalc F.A.Q.</a><br>
 	&nbsp;<a href="index.html">Wcalc Home</a><br>
       </font>

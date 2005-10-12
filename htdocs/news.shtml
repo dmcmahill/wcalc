@@ -2,12 +2,12 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.6 2004/07/28 11:49:08 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.1 2004/09/03 03:19:57 dan Exp $ -->
 <!-- Copyright (c) 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<title>Current Wcalc Projects</title>
+<title>Wcalc News</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
 <meta name="KEYWORDS" content="

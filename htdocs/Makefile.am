@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.25 2004/11/24 03:47:48 dan Exp $
+## $Id: Makefile.am,v 1.26 2004/11/24 03:56:53 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -73,6 +73,7 @@ SHTML_IN=	\
 	sci-wcalc.shtml \
 	stdio-wcalc.shtml \
 	stripline.shtml \
+	tech.shtml \
 	units.shtml
 
 INCL_FILES=\

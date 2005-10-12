@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: permitivity.shtml,v 1.3 2002/05/14 00:44:42 dan Exp $ -->
-<!-- Copyright (c) 2002, 2004
+<!-- $Id: permitivity.shtml,v 1.4 2004/07/28 11:49:07 dan Exp $ -->
+<!-- Copyright (c) 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -33,6 +33,8 @@ relative permitivity,
     <table border=2>
     <!--#include virtual="permitivity.incl"-->
     </table>
+
+    </center>
 
     <!--#include virtual="disclaimer_properties.incl"-->
   </td>

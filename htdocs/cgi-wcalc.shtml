@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml,v 1.9 2002/05/10 22:49:34 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- $Id: cgi-wcalc.shtml,v 1.10 2004/07/28 11:49:04 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
