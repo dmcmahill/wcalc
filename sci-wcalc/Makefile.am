@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.35 2004/11/09 12:55:44 dan Exp $
+## $Id: Makefile.am,v 1.36 2004/11/13 03:30:22 dan Exp $
 
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -70,6 +70,31 @@ SCICATS=	${SCIMANS:.man=.cat}
 SCIHTML=	${SCIMANS:.man=.htm}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
+
+# FIX_ME  This is an ugly hack, but scilab seems to really want the .so
+# extension.  On, for example, Solaris-2.9/sparc libtool skips the .so
+# for a module
+install-data-hook:
+	@${ECHO} "*****************************************************************"
+	@${ECHO} "Checking to see if we need to hack around a missing .so extension"
+	@${ECHO} "*****************************************************************"
+	dlname=`grep dlname ${scilibdir}/libsci_wcalc.la` ; \
+		eval $$dlname ; \
+		if test "X$$dlname" = "Xlibsci_wcalc.so" ; then \
+			${ECHO} "No:  dlname = $$dlname" ; \
+		else \
+			${ECHO} "Yes.  Creating $$dlname -> libsci_wcalc.so link in ${scilibdir}" ; \
+			${ECHO} "cd ${scilibdir} && ${LN_S} $$dlname libsci_wcalc.so" ; \
+		fi
+
+uninstall-hook:
+	@${ECHO} "*****************************************************************"
+	@${ECHO} "Checking to see if we need to hack around a missing .so extension"
+	@${ECHO} "*****************************************************************"
+	if test -f ${scilibdir}/libsci_wcalc.so ; then \
+		${ECHO} "Removing ${scilibdir}/libsci_wcalc.so link" ; \
+		${RM} ${scilibdir}/libsci_wcalc.so ;\
+	fi
 
 MAINTAINERCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm
 CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
