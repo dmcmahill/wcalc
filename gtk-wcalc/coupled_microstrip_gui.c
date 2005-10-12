@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip_gui.c,v 1.9 2005/01/06 22:54:46 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.10 2005/01/18 17:46:48 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -206,6 +206,7 @@ void coupled_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
 static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 {
+  GtkTooltips *tips;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *lwht;
@@ -218,6 +219,8 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   int y=0;
   int x=0;
+
+  tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -233,7 +236,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   
 
   /* Synthesize button */
-  button = gtk_button_new_with_label ("Synthesize");
+  button = gtk_button_new_with_label (_("<-Synthesize"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -241,10 +244,14 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 4, 
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Synthesize width, spacing, and length to obtain the specified "
+			 "impedances and electrical length"),
+		       NULL);
   gtk_widget_show (button);
 
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze");
+  button = gtk_button_new_with_label (_("Analyze->"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -252,6 +259,10 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Calculate electrical characteristics "
+		       "from physical parameters"),
+		       NULL);
   gtk_widget_show (button);
   
 
@@ -1413,14 +1424,17 @@ static void tooltip_init(coupled_microstrip_gui *gui)
 
   tips = gtk_tooltips_new();
 
-  gtk_tooltips_set_tip(tips, gui->text_w, "Width of coupled_microstrip", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l, "Length of coupled_microstrip", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_w, "Width of each trace", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_l, "Length of the traces", NULL);
   gtk_tooltips_set_tip(tips, gui->text_h, "Total substrate thickness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_er, "Substrate relative"
 		       " dielectric constant",NULL);
   gtk_tooltips_set_tip(tips, gui->text_tand, "Substrate loss tangent", NULL);
 
-  gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance of the line", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_k, "Coupling coefficient of the line", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_z0e, "Even mode characteristic impedance of the line", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_z0o, "Odd mode characteristic impedance of the line", NULL);
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length", NULL);
   gtk_tooltips_set_tip(tips, gui->text_tmet, "Line metal thickness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rho, "Metal resistivity", NULL);

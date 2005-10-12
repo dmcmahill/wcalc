@@ -1,7 +1,7 @@
-/* $Id: microstrip_gui.c,v 1.15 2004/08/05 13:20:14 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.16 2004/08/30 22:59:20 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -206,6 +206,7 @@ void microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
 static void values_init(microstrip_gui *gui, GtkWidget *parent)
 {
+  GtkTooltips *tips;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *lwht;
@@ -213,6 +214,7 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *frame;
   wc_units_gui *ug;
 
+  tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -235,6 +237,10 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (analyze), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 0,GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Calculate electrical characteristics "
+		       "from physical parameters"),
+		       NULL);
   gtk_widget_show (button);
   
   /* 
@@ -249,6 +255,10 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Synthesize width and length to obtain the specified "
+			 "characteristic impedance and electrical length"),
+		       NULL);
   gtk_widget_show (button);
 
   /* height */
@@ -259,6 +269,10 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (synthesize_h), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Synthesize substrate thickness and length to obtain the specified "
+			 "characteristic impedance and electrical length"),
+		       NULL);
   gtk_widget_show (button);
 
   /* dielectric constant */
@@ -269,6 +283,10 @@ static void values_init(microstrip_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (synthesize_er), (gpointer)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, 3, 4, 3, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Synthesize substrate dielectric constant and length to obtain the specified "
+			 "characteristic impedance and electrical length"),
+		       NULL);
   gtk_widget_show (button);
 
 
