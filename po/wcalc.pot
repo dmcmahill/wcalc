@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-11-04 22:26+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-10-12 11:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,19 +122,19 @@ msgstr ""
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
 
-#: gtk-wcalc/start.c:243
+#: gtk-wcalc/start.c:250
 msgid "Open..."
 msgstr ""
 
-#: gtk-wcalc/start.c:253
+#: gtk-wcalc/start.c:260
 msgid "New"
 msgstr ""
 
-#: gtk-wcalc/start.c:272
+#: gtk-wcalc/start.c:279
 msgid "Quit"
 msgstr ""
 
-#: gtk-wcalc/start.c:290
+#: gtk-wcalc/start.c:297
 msgid ""
 "**** WARNING ****\n"
 "This is a development snapshot\n"
