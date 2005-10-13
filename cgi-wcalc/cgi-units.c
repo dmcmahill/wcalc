@@ -1,4 +1,4 @@
-/* $Id: cgi-units.c,v 1.12 2004/08/13 04:43:54 dan Exp $ */
+/* $Id: cgi-units.c,v 1.13 2004/08/31 21:53:02 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004 Dan McMahill
@@ -354,7 +354,7 @@ void cgi_units_menu_read(void)
   int i,j;
   /* XXX */
   char tmps[80];
-  int input_err;
+  int input_err = 0;
   
   while( ml != NULL ) {
     units = ml->menu->units;
@@ -370,6 +370,7 @@ void cgi_units_menu_read(void)
 			      wc_units_size(units->num[i]),
 			      &units->numi[i], 0) != cgiFormSuccess){
 	inputErr(&input_err);
+	printFormError("Had problems reading the %s numerator\n", tmps);
       }  
     }
       
@@ -384,6 +385,7 @@ void cgi_units_menu_read(void)
 			      wc_units_size(units->den[i]),
 			      &units->deni[i], 0) != cgiFormSuccess){
 	inputErr(&input_err);
+	printFormError("Had problems reading the %s denominator\n", tmps);
       }  
     }
 
