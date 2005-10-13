@@ -1,6 +1,6 @@
-<!-- $Id: stripline.html,v 1.8 2004/07/28 11:35:29 dan Exp $ -->
+<!-- $Id: stripline.html,v 1.9 2004/08/31 21:53:06 dan Exp $ -->
 <!--
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,7 +38,7 @@
 <HEAD>
 <TITLE>Symmetric Stripline Analysis/Synthesis</TITLE>
 <!-- Created by: Dan McMahill, 2001/09/12 -->
-<LINK REV="made" HREF="mailto:mcmahill@mtl.mit.edu">
+<LINK REV="made" HREF="mailto:nospam_to_mcmahill@alum.mit.make_edu">
 <link rel="shortcut icon" href="<@s@HTMLPATH@>/favicon.ico" type="image/x-icon">
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -149,7 +149,6 @@ stripline
 
 <TR>
 <TD>End correction =</TD>
-<!-- just use the length units here instead of deltal's own units -->
 <TD><@g@line->deltal/line->units_deltal->sf@></TD>
 <TD>
 <!-- DeltaL units menu -->
@@ -199,11 +198,11 @@ stripline
 
 <TR>
 <TD>Trace length (L)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_lwht->sf@>"
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_len->sf@>"
            onChange="valsChanged()"></TD>
 <TD>
 <!-- length units menu -->
-<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
+<@s@cgi_units_menu_display(menu_len)@>
 </TD>
 <TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
 </TR>

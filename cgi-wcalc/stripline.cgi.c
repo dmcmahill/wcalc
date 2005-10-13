@@ -1,7 +1,7 @@
-/* $Id: stripline.cgi.c,v 1.9 2004/08/30 22:21:17 dan Exp $ */
+/* $Id: stripline.cgi.c,v 1.10 2004/08/31 10:05:23 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -151,7 +151,6 @@ int cgiMain(void){
   menu_deltal = cgi_units_menu_new(line->units_deltal);
 
   cgi_units_attach_entry(menu_lwht, "entry_len2");
-  cgi_units_attach_entry(menu_lwht, "entry_l");
   cgi_units_attach_entry(menu_lwht, "entry_t");
   cgi_units_attach_entry(menu_lwht, "entry_h");
 
@@ -240,13 +239,13 @@ int cgiMain(void){
     }
     
     /* trace length */
-    if(cgiFormDouble("l", &l, defL/line->units_lwht->sf) !=
+    if(cgiFormDouble("l", &l, defL/line->units_len->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("Error reading trace length");
     }
     if( l <= 0.0 ) {
-      l = defL/line->units_lwht->sf;
+      l = defL/line->units_len->sf;
       printFormError("Metal length must be %gt 0");
     }
 
@@ -305,7 +304,7 @@ int cgiMain(void){
 
   /* copy data over to the line structure */
   line->w           = w*line->units_lwht->sf;
-  line->l           = l*line->units_lwht->sf;
+  line->l           = l*line->units_len->sf;
   line->subs->h     = h*line->units_lwht->sf;
   line->subs->tmet  = tmet*line->units_lwht->sf;
   line->subs->rough = rough*line->units_rough->sf;
@@ -365,7 +364,7 @@ int cgiMain(void){
     fprintf(cgiOut,"CGI: Metal width                 = %g %s\n",
 	    line->w/line->units_lwht->sf, line->units_lwht->name);
     fprintf(cgiOut,"CGI: Metal length                = %g %s\n",
-	    line->l/line->units_lwht->sf, line->units_lwht->name);
+	    line->l/line->units_len->sf, line->units_len->name);
     fprintf(cgiOut,"CGI: Metal thickness             = %g %s\n",
 	    line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
     fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",
