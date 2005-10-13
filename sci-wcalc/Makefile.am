@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.36 2004/11/13 03:30:22 dan Exp $
+## $Id: Makefile.am,v 1.37 2005/10/12 16:23:04 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -84,7 +84,7 @@ install-data-hook:
 			${ECHO} "No:  dlname = $$dlname" ; \
 		else \
 			${ECHO} "Yes.  Creating $$dlname -> libsci_wcalc.so link in ${scilibdir}" ; \
-			${ECHO} "cd ${scilibdir} && ${LN_S} $$dlname libsci_wcalc.so" ; \
+			cd ${scilibdir} && ${LN_S} $$dlname libsci_wcalc.so ; \
 		fi
 
 uninstall-hook:
