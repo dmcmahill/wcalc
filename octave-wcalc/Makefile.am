@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.7 2004/11/12 02:14:21 dan Exp $
+## $Id: Makefile.am,v 1.8 2004/11/13 03:27:54 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004 Dan McMahill
@@ -47,8 +47,8 @@ MEX=	@OCTMEX@
 # the suffix for the compiled mex file
 MEXSFX=	oct
 
-octfiledir=	@SITEOCT@/${PACKAGE}
-fcnfiledir=	@SITEOCTM@/${PACKAGE}
+octfiledir=	${libexecdir}/@MYSITEOCT@
+fcnfiledir=	${libexecdir}/@MYSITEOCTM@
 octfile_DATA=	${MEX_FILES}
 fcnfile_DATA=	${MEX_MANS}
 

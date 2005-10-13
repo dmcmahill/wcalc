@@ -1,8 +1,8 @@
-dnl $Id: configure.in,v 1.76 2004/11/18 13:47:35 dan Exp $
+dnl $Id: configure.in,v 1.77 2004/11/18 14:12:32 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
-dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
+dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -260,22 +260,22 @@ AC_ARG_WITH([octave],
 if test "X$with_octave" = "Xno" ; then
 	OCT_WCALC=""
 elif test "X$with_octave" = "Xyes" ; then
-	AC_PATH_PROG(OCTAVE, octave, no)
+	AC_PATH_PROG([OCTAVE], [octave], no)
 	if test "X$OCTAVE" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(OCTAVE_CONFIG, octave-config, no)
+	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no)
 	if test "X$OCTAVE_CONFIG" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(MKOCTFILE, mkoctfile, no)
+	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no)
 	if test "X$MKOCTFILE" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(OCTMEX, mex, no)
+	AC_PATH_PROG([OCTMEX], [mex], no)
 	if test "X$OCTMEX" = "Xno" ; then
 		AC_ERROR([No octave mex could be found])
 	fi
@@ -284,22 +284,22 @@ elif test "X$with_octave" = "Xyes" ; then
 	wc_oct_wcalc_yesno=yes
 else
 	OCT=$with_octave
-	AC_PATH_PROG(OCTAVE, octave, no, [$OCT/bin:$PATH])
+	AC_PATH_PROG([OCTAVE], [octave], no, [$OCT/bin:$PATH])
 	if test "X$OCTAVE" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(OCTAVE_CONFIG, octave-, no, [$OCT/bin:$PATH])
+	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no, [$OCT/bin:$PATH])
 	if test "X$OCTAVE_CONFIG" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(MKOCTFILE, mkoctfile, no, [$OCT/bin:$PATH])
+	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no, [$OCT/bin:$PATH])
 	if test "X$MKOCTFILE" = "Xno" ; then
 		AC_ERROR([No octave installation could be found])
 	fi
 
-	AC_PATH_PROG(OCTMEX, mex, no, [$OCT/bin:$PATH])
+	AC_PATH_PROG([OCTMEX], [mex], no, [$OCT/bin:$PATH])
 	if test "X$OCTMEX" = "Xno" ; then
 		AC_ERROR([No octave mex could be found])
 	fi
@@ -383,13 +383,26 @@ void mexFunction(
 fi
 
 if test "X$OCT_WCALC" != "X"; then
-	AC_MSG_CHECKING([for the octave site oct directory])
+	AC_MSG_CHECKING([for the installed octave site oct directory])
 	SITEOCT=`$OCTAVE_CONFIG --print LOCALVEROCTFILEDIR`
+#	SITEOCT=`$OCTAVE_CONFIG --oct-site-dir`
 	AC_MSG_RESULT([$SITEOCT])
 
-	AC_MSG_CHECKING([for the octave site fcn directory])
+	AC_MSG_CHECKING([for the installed octave site fcn directory])
 	SITEOCTM=`$OCTAVE_CONFIG --print LOCALVERFCNFILEDIR`
+#	SITEOCTM=`$OCTAVE_CONFIG --m-site-dir`
 	AC_MSG_RESULT([$SITEOCTM])
+
+	AC_MSG_CHECKING([for the installed octave libexec directory])
+	OCTLIBEXECDIR=`$OCTAVE_CONFIG --print LIBEXECDIR`
+	AC_MSG_RESULT([$OCTLIBEXECDIR])
+
+	MYSITEOCT=`echo ${SITEOCT} | sed "s;^${OCTLIBEXECDIR};;g"`
+	MYSITEOCTM=`echo ${SITEOCTM} | sed "s;^${OCTLIBEXECDIR};;g"`
+	AC_MSG_CHECKING([for where we should install octave .oct files])
+	AC_MSG_RESULT([$MYSITEOCT])
+	AC_MSG_CHECKING([for where we should install octave .m files])
+	AC_MSG_RESULT([$MYSITEOCTM])
 
 	# if we're building out own libwcalc, then 
 	# we don't have an installed place to link to yet
@@ -433,6 +446,8 @@ AC_SUBST(OCTMEX)
 AC_SUBST(OCTMEX_RPATH)
 AC_SUBST(SITEOCT)
 AC_SUBST(SITEOCTM)
+AC_SUBST(MYSITEOCT)
+AC_SUBST(MYSITEOCTM)
 
 # ------------- done with octave tests -------------------
 
