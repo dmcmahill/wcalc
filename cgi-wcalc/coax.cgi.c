@@ -1,7 +1,7 @@
-/* $Id: coax.cgi.c,v 1.16 2004/08/30 22:21:15 dan Exp $ */
+/* $Id: coax.cgi.c,v 1.17 2004/08/31 21:53:03 dan Exp $ */
 
 /*
- * Copyright (c) 2002, 2004 Dan McMahill
+ * Copyright (c) 2002, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -144,6 +144,8 @@ int cgiMain(void){
   menu_delay = cgi_units_menu_new(line->units_delay);
   menu_loss = cgi_units_menu_new(line->units_loss);
   menu_losslen = cgi_units_menu_new(line->units_losslen);
+  cgi_units_attach_entry(menu_losslen, "entry_alphac");
+  cgi_units_attach_entry(menu_losslen, "entry_alphad");
 
   menu_rho = cgi_units_menu_new(line->units_rho);
   cgi_units_attach_entry(menu_rho, "entry_rhob");
