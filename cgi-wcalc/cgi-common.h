@@ -1,7 +1,7 @@
-/* $Id: cgi-common.h,v 1.3 2002/02/25 02:19:16 dan Exp $ */
+/* $Id: cgi-common.h,v 1.4 2002/06/12 11:30:01 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -39,6 +39,7 @@
 void printFormError(const char *fmt,...);
 void inputErr(int *input_err);
 void fixInputMsg(void);
+void bugMsg(void);
 
 /* desired cookie age for all cgi programs here (seconds) */
 #define COOKIE_AGE (60*60*24)

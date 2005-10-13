@@ -1,7 +1,7 @@
-/* $Id: cgi-common.c,v 1.4 2002/05/10 22:52:26 dan Exp $ */
+/* $Id: cgi-common.c,v 1.5 2002/06/12 11:30:01 dan Exp $ */
 
 /*
- * Copyright (c) 2002 Dan McMahill
+ * Copyright (c) 2002, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,6 +51,16 @@
 #include <dmalloc.h>
 #endif
 
+void bugMsg()
+{
+  fprintf(cgiOut,"<BR><EM>If you think this is a bug:</EM>&nbsp&nbsp\n");
+  fprintf(cgiOut,"<BR>Please report it.  See <a href=\"http://wcalc.sf.net/bugs.html\">the\n"
+	  "bug reporting section</a> of the main <a href=\"http://wcalc.sf.net\">\n"
+	  "wcalc home page</a>.\n");
+  fprintf(cgiOut,"<BR>Please include the exact URL, and exact error message.\n");
+  fprintf(cgiOut,"<BR>\n");
+}
+
 void printFormError(const char *fmt,...)
 {
   va_list ap;
@@ -74,6 +84,7 @@ void inputErr(int *input_err)
 	    "<EM>*** WARNING ***</EM></P>"
 	    "<P>There are errors in your form entries.  "
 	    "Please fix them and try again.</P></DIV>\n");
+    bugMsg();
     *input_err=1;
   }
 }
