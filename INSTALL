@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.2 2004/11/23 00:49:41 dan Exp $
+$Id: INSTALL,v 1.3 2004/12/22 15:39:17 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -29,7 +29,9 @@ If you wish to install the Wcalc web pages, add --enable-htdocs
 to the configure arguments.  There are some additional arguments
 which can specify the installation directory and also a URL to
 access the web pages by.  These latter two options are useful if
-you are installing Wcalc on an internal web server.
+you are installing Wcalc on an internal web server.  Installing the
+web pages is recommended because it provides additional documentation.
+
 
 -------- Standard GNU INSTALL Instructions Follow --------------------
 
