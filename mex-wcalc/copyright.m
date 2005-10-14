@@ -1,4 +1,4 @@
-% Copyright (c) 2001 Dan McMahill
+% Copyright (c) 2001, 2002, 2003, 2004, 2005 Dan McMahill
 % All rights reserved.
 %
 % This code is derived from software written by Dan McMahill
