@@ -1,7 +1,7 @@
-/* $Id: main.c,v 1.17 2004/12/03 04:58:09 dan Exp $ */
+/* $Id: main.c,v 1.18 2005/03/08 23:03:29 dan Exp $ */
 
 /*
- * Copyright (c) 2004 Dan McMahill
+ * Copyright (c) 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -96,6 +96,7 @@ static void exec_ic_microstrip_syn(double *args);
 static void exec_microstrip_syn(double *args);
 static void exec_stripline_syn(double *args);
 
+static void exec_help(double *args);
 static void exec_version(double *args);
 static void usage(char *);
 static void version(void);
@@ -206,6 +207,12 @@ static void execute_file(FILE *fp, char *fname)
       narg = -1;
       printf("%s\n", tmps);
       fn = NULL;
+    } else if(strcmp(tok, "?") == 0) {
+      narg = 0;
+      fn = &exec_help;
+    } else if(strcmp(tok, "help") == 0) {
+      narg = 0;
+      fn = &exec_help;
     } else if(strcmp(tok, "version") == 0) {
       narg = 0;
       fn = &exec_version;
@@ -770,6 +777,17 @@ static void exec_stripline_syn(double *args)
   /* clean up */
   stripline_line_free(line);
   
+  return;
+}
+
+/* 
+ * help
+ */
+static void exec_help(double *args)
+{
+  printf("Sorry.  There is no online help.\n"
+	"Try \"man stdio-wcalc\"\n\n");
+
   return;
 }
 
