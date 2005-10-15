@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.23 2004/08/11 13:04:34 dan Exp $
+## $Id: Makefile.am,v 1.24 2004/11/12 02:15:51 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -33,7 +33,7 @@
 ##  SUCH DAMAGE.
 ##
 
-SUBDIRS= m4 include @INTLPO@ @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
+SUBDIRS= m4 include intl po @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
 		@GTK_WCALC@ @CGI_WCALC@ \
 		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils doc
 
