@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id$ -->
+<!-- $Id: air_coil_calc.xml,v 1.1 2005/10/17 02:21:38 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -37,8 +37,7 @@
 
 <NAME>air_coil_calc</NAME>
 
-<SHORTDESCR>
-Single layer air core solenoid inductor analysis
+<SHORTDESCR>Single layer air core solenoid inductor analysis
 </SHORTDESCR>
 
 <SYNOPSIS>
@@ -108,12 +107,17 @@ air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
 </EXAMPLE>
 
 <SEE_ALSO>
-air_coil_syn
+air_coil_syn,
+microstrip_calc,
+microstrip_syn
 </SEE_ALSO>
 
 <AUTHOR>
 Dan McMahill
-&copyright;
 </AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
 
 </MAN>
