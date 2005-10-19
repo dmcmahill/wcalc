@@ -1,8 +1,8 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.4 2003/03/03 03:25:20 dan Exp $
+## $Id: sciman.mk,v 1.5 2004/11/04 03:22:17 dan Exp $
 ##
 
-## Copyright (c) 2001, 2004 Dan McMahill
+## Copyright (c) 2001, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -34,11 +34,13 @@
 ##  SUCH DAMAGE.
 ##
 
-SUFFIXES+= .cat .man .htm
+SUFFIXES+= .cat .man .htm .xml .txt
 
-TBL=	@TBL@
-NEQN=	@NEQN@
-GROFF=	@GROFF@
+GROFF=		@GROFF@
+NEQN=		@NEQN@
+TBL=		@TBL@
+W3M=		@W3M@
+XSLTPROC=	@XSLTPROC@
 
 .man.cat : 
 	@echo "****************************************************"
@@ -54,17 +56,12 @@ GROFF=	@GROFF@
 		     } \
 		     {print;}' > $@
 
-.man.htm : 
-	@echo "****************************************************"
-	@echo "Processing $*.man to produce $*.htm"
-	@echo "****************************************************"
-	cat $< | ${TBL} | ${NEQN} -Thtml -Tps | ${GROFF} -man -Thtml| \
-		${AWK} 'BEGIN{s=0;t=0;} \
-		     /^ *$$/ {s=1;next;} \
-		     s==1 { \
-			s=0; \
-			if(t){printf("\n");} \
-			t=1; \
-		     } \
-		     {print;}' > $@
+.xml.man :
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" $(top_srcdir)/sci-wcalc/manpage.xsl $< > $@
+
+.xml.htm :
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< > $@
+
+.htm.txt :
+	${W3M} -dump $< > $@
 

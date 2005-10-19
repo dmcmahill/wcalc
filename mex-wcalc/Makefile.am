@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.14 2004/11/12 04:42:55 dan Exp $
+## $Id: Makefile.am,v 1.15 2004/11/20 00:23:31 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -35,7 +35,7 @@
 
 # to find the mex source files
 vpath %.c $(top_srcdir)/sci-wcalc
-vpath %.man $(top_srcdir)/sci-wcalc
+vpath %.xml $(top_srcdir)/sci-wcalc
 
 # list of all the mex files
 include $(top_srcdir)/sci-wcalc/mex.mk
@@ -83,28 +83,21 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man
 .c.${MEXSFX} :
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
-.cat.m :
+TARGETPROGRAM=	matlab
+.txt.m :
 	@echo "****************************************************"
 	@echo "Generating Matlab help file: $*.m"
 	@echo "****************************************************"
 	${AWK} 'BEGIN{s=0;} \
-		/^\.SH/ {s=0;t=3;} \
-		s==1{ \
-			if(t==3)printf("%%%-16s ",toupper($$1)); \
-			for(i=t;i<=NF;i++){printf("%s ",$$i);} \
-			t=1; \
+		s==0{ \
+			printf("%%%-16s ",toupper($$1)); \
+			for(i=2;i<=NF;i++){printf("%s ",$$i);} \
+			printf("\n"); \
+			s=1; \
+			next; \
 		} \
-		/^\.SH[ \t]*NAME/ {s=1} \
-		END{printf("\n");}' $(top_srcdir)/sci-wcalc/$*.man > $@
-	echo "%" >> $@
-	cat $< | \
-		col -b -x | \
-		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
-				cnt==0{print "% " $$0} \
-				cnt > 0{cnt--}' |\
-		sed 's;//;%;g' \
-		>> $@
-	echo " " >> $@
+		{print "%  " $$0} \
+		END{printf("\n\n");}' $< > $@
 	cat $(srcdir)/copyright.m >> $@
 
 include $(top_srcdir)/sci-wcalc/sciman.mk

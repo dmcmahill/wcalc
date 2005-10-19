@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.37 2005/10/12 16:23:04 dan Exp $
+## $Id: Makefile.am,v 1.38 2005/10/13 12:18:42 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -256,5 +256,8 @@ whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am
 	@echo "</table></body></html>" >> $@
 
 SUFFIXES=
+
+# used by the XSLT templates
+TARGETPROGRAM=	scilab
 
 include $(srcdir)/sciman.mk
