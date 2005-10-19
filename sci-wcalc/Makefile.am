@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.38 2005/10/13 12:18:42 dan Exp $
+## $Id: Makefile.am,v 1.39 2005/10/19 00:25:56 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -68,6 +68,7 @@ INCLUDES = -I$(top_srcdir)/include @WCALC_CFLAGS@ -I@SCI@/routines -DmexFunction
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}
 SCIHTML=	${SCIMANS:.man=.htm}
+SCIXML=		${SCIMANS:.man=.xml}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
 
@@ -96,15 +97,15 @@ uninstall-hook:
 		${RM} ${scilibdir}/libsci_wcalc.so ;\
 	fi
 
-MAINTAINERCLEANFILES=	${SCICATS} ${SCIHTML} whatis whatis.htm
+MAINTAINERCLEANFILES=	${SCICATS} $SCIMANS} ${SCIHTML} whatis whatis.htm
 CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
-	whatis whatis.htm ${SCICATS} ${SCIHTML} \
+	whatis whatis.htm ${SCICATS} ${SCIHTML} ${SCIXML} \
 	wcalc_test.sci.in
 
-BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCICATS} ${SCIHTML}
+BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCIMANS} ${SCICATS} ${SCIHTML}
 
 RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
