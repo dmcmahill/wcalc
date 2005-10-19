@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd">
+<MAN>
+<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!--
+    Copyright (c) 2001, 2004, 2005 Dan McMahill
+    All rights reserved.
+   
+    This code is derived from software written by Dan McMahill
+   
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and   or other materials provided with the distribution.
+    3. All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+           This product includes software developed by Dan McMahill
+     4. The name of the author may not be used to endorse or promote products
+        derived from this software without specific prior written permission.
+    
+     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+     BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+     AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+-->
+
+<NAME>coupled_microstrip_syn</NAME>
+
+<SHORTDESCR>Coupled microstrip transmission line synthesis
+</SHORTDESCR>
+
+<SYNOPSIS>
+[w_out,s_out,l_out] = 
+    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,0);
+[w_out,s_out,l_out] = 
+    coupled_microstrip_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="z0">desired characteristic impedance (Ohms)</RHS>
+  <RHS name="k">desired coupling coefficient</RHS>
+  <RHS name="z0e">desired even mode characteristic impedance (Ohms)</RHS>
+  <RHS name="z0o">desired odd mode characteristic impedance (Ohms)</RHS>
+  <RHS name="w">width of coupled microstrip line (meters)</RHS>
+  <RHS name="s">spacing between coupled microstrip lines (meters)</RHS>
+  <RHS name="h">substrate thickness (meters)</RHS>
+  <RHS name="l">length of coupled_microstrip line (meters)</RHS>
+  <RHS name="tmet">metal thickness (meters)</RHS>
+  <RHS name="rho">resistivity of wire (relative to copper)</RHS>
+  <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
+  <RHS name="er">substrate relative permitivitty</RHS>
+  <RHS name="tand">substrate loss tangent</RHS>
+  <RHS name="f">synthesis frequency (Hz)</RHS>
+  <RHS name="flag">indicates which parameters should be optimized
+    <ENUM>
+      <ITEM name="flag=0">synthesize based on characteristic impedance and coupling coefficient</ITEM>
+      <ITEM name="flag=1">synthesize based on even and odd mode characteristic impedances</ITEM>
+    </ENUM>
+  </RHS>
+
+  <LHS name="w_out">calculated metal width</LHS>
+  <LHS name="s_out">calculated gap</LHS>
+  <LHS name="l_out">calculated metal length</LHS>
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to synthesize the physical dimenstions of a
+coupled microstrip transmission line to achieve a desired characteristic
+impedance and electrical length.  The desired characteristic
+impedance and some of the physical
+dimensions of the coupled_microstrip line are given as inputs and the
+remaining dimensions are calculated.
+
+The line may be specified either in terms of an even mode and
+odd mode characteristic impedance or a characteristic impedance and 
+coupling coefficient.
+
+The model accounts for dispersion (frequency dependent propagation
+velocity).
+
+              |<--W-->|<-S->|<--W-->|
+               _______       -------
+              | metal |     | metal | <- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\\     (
+    )   er,tand                       H   |       )
+   (                                     \\|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+</DESCRIPTION>
+
+<EXAMPLE>
+
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>z0=75;</SCICMD>        <COMMENT>desired impedance </COMMENT></SCIEX>
+  <SCIEX><SCICMD>k=0.3;</SCICMD>        <COMMENT>desired coupling</COMMENT></SCIEX>
+  <SCIEX><SCICMD>elen=90;</SCICMD>      <COMMENT>desired electrical length (degrees)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=0;</SCICMD>          <COMMENT>width (we'll synthesize this)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>s=0;</SCICMD>          <COMMENT>spacing (we'll synthesize this)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=15*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>  <COMMENT>resitivity of copper</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=0;</SCICMD>       <COMMENT>synthesize from z0 and k (instead</COMMENT></SCIEX>
+  <SCIEX><SCICMD>       </SCICMD>       <COMMENT>of z0e and z0o)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[w_out,s_out,l_out] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);</SCICMD></SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('w=%8.4g mils, s=%8.4g mils, l=%8.4g mils',w_out/sf,s_out/sf,l_out/sf));</SCICMD></SCICMD></SCIEX>
+
+  <STDEX>
+* ze = 55.27, zo = 45.23, ke = 2.261, ko = 2.009
+coupled_microstrip_syn 50.000 0.1000 90 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 0
+coupled_microstrip_syn 55.277 45.227 90 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9 1
+*
+  </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+air_coil_syn,
+microstrip_calc,
+microstrip_syn
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+

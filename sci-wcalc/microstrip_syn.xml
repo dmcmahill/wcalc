@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd">
+<MAN>
+<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!--
+    Copyright (c) 2001, 2004, 2005 Dan McMahill
+    All rights reserved.
+   
+    This code is derived from software written by Dan McMahill
+   
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and   or other materials provided with the distribution.
+    3. All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+           This product includes software developed by Dan McMahill
+     4. The name of the author may not be used to endorse or promote products
+        derived from this software without specific prior written permission.
+    
+     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+     BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+     AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+-->
+
+<NAME>microstrip_syn</NAME>
+
+<SHORTDESCR>Single microstrip transmission line synthesis
+</SHORTDESCR>
+
+<SYNOPSIS>
+[w_out,h_out,l_out,er_out] = 
+    microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="z0">desired characteristic impedance (Ohms)
+  <RHS name="w">width of microstrip line (meters)
+  <RHS name="h">substrate thickness (meters)
+  <RHS name="l">lentgh of microstrip line (meters)
+  <RHS name="tmet">metal thickness (meters)
+  <RHS name="rho">resistivity of the metalization (relative to copper)
+  <RHS name="rough">conductor surface roughness (meters-rms)
+  <RHS name="er">substrate relative permitivitty
+  <RHS name="tand">substrate loss tangent
+  <RHS name="f">synthesis frequency (Hz)
+  <RHS name="flag">indicates which parameters should be optimized
+    <ENUM>
+      <ITEM name="flag=1">synthesize the metal width
+      <ITEM name="flag=1">synthesize the substrate thickness
+      <ITEM name="flag=2">synthesize the substrate dielectric constant
+      <ITEM name="flag=3">synthesize the metal length
+    </ENUM>
+  </RHS>
+
+<DESCRIPTION>
+Function to synthesize the physical dimenstions of a single
+microstrip transmission line to achieve a desired characteristic
+impedance and electrical length.  The desired characteristic
+impedance and some of the physical
+dimensions of the microstrip line are given as inputs and the
+remaining dimensions are calculated.
+
+
+                 |<--W-->|
+                  _______    
+                 | metal | <- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\\     (
+    )   er,tand                       H   |       )
+   (                                     \\|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+</DESCRIPTION>
+
+<EXAMPLE>
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>z0=75;</SCICMD>        <COMMENT>desired impedance</COMMENT></SCIEX>
+  <SCIEX><SCICMD>elen=90;</SCICMD>      <COMMENT>desired electrical length (degrees)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=0;</SCICMD>          <COMMENT>width (we'll synthesize this)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=62*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>  <COMMENT>resitivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=0;</SCICMD>       <COMMENT>synthesize width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[w_out,h_out,l_out,er_out] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>  microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('w=%g mils, l=%g mils',w_out/sf,l_out/sf));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('er=%g',er_out));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0=%g ohms, length=%g degrees',z0,elen));</SCICMD></SCIEX>
+       <STDEX>
+* Z0 = 30 Ohms, er=2.55, f=1 MHz
+microstrip_syn 30.0 90.0 5.678e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6  0
+* Z0 = 30 Ohms, er=2.55, f=10 GHz
+microstrip_syn 30.0 90.0 5.558e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e10 0
+* Z0 = 30 Ohms, er=9.6, f=1 MHz
+microstrip_syn 30.0 90.0 2.395e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e6  0
+* Z0 = 30 Ohms, er=9.6, f=10 GHz
+microstrip_syn 30.0 90.0  2.201e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
+*
+       </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+microstrip_calc
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+

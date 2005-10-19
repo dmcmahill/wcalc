@@ -1,0 +1,98 @@
+
+<NAME>ic_microstrip_calc</NAME>
+
+<SHORTDESCR>Integrated circuit microstrip transmission line analysis
+</SHORTDESCR>
+
+<SYNOPSIS>
+[z0,keff,elen,loss,L,R,C,G] = 
+    ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="w">width of ic_microstrip line (meters)</RHS>
+  <RHS name="l">lentgh of ic_microstrip line (meters)</RHS>
+  <RHS name="tox">oxide thickness (meters)</RHS>
+  <RHS name="h">substrate thickness (meters)</RHS>
+  <RHS name="er">substrate relative permitivity</RHS>
+  <RHS name="sigmas">substrate conductivity (1/ohm-m)</RHS>
+  <RHS name="tmet">metal thickness (meters)</RHS>
+  <RHS name="rho">resistivity of wire (relative to copper)</RHS>
+  <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
+  <RHS name="f">synthesis frequency (Hz)</RHS>
+
+  <LHS name="z0">calculated characteristic impedance (Ohms)</LHS>
+  <LHS name="keff">calculated effective relative permitivitty</LHS>
+  <LHS name="elen">calculated electrical length of the line (degrees)</LHS>
+  <LHS name="loss">calculated loss of the line (dB)</LHS>
+  <LHS name="L">calculated inductance per length (Henries/meter)</LHS>
+  <LHS name="R">calculated resistance per length (Ohms/meter)</LHS>
+  <LHS name="C">calculated capacitance per length (Farads/meter)</LHS>
+  <LHS name="G">calculated conductance per length (Siemens/meter)</LHS>
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to analyze the electrical characteristics of a single 
+integrated circuit microstrip transmission line. The physical
+dimensions of the microstrip line are given as inputs and the
+characteristic impedance, effective dielectric constant, loss and
+open circuit end correction are calculated.
+
+
+                 |<--W-->|
+                  _______    
+                 | metal | <- tmet,rho,rough
+    ----------------------------------------------
+   {**************  Oxide (tox,eox) **************
+    ----------------------------------------------
+   (  substrate                          /|\\     (
+    )   es,sigmas                     H   |       )
+   (                                     \\|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+</DESCRIPTION>
+
+<EXAMPLE>
+
+  <SCIEX><SCICMD>w=150e-6</SCICMD>   <COMMENT>width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=250e-6</SCICMD>   <COMMENT>substrate height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1000e-6</SCICMD>  <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>es=11.8</SCICMD>    <COMMENT>substrate permitivitty</COMMENT></SCIEX>
+  <SCIEX><SCICMD>sigmas=0.5</SCICMD> <COMMENT>substrate conductivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tox=1.5e-6</SCICMD> <COMMENT>oxide thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>eox=4</SCICMD>      <COMMENT>oxide permitivitty</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=0.8e-6</SCICMD><COMMENT>metal thickenss</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=3.0e-8</SCICMD> <COMMENT>metal resitivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.0</SCICMD>  <COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9</SCICMD>    <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[z0,keff,elen,loss,L,R,C,G] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>  ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0 = %8.4g + j %8.4g Ohms', real(z0), imag(z0) ));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('keff = %8.4g ',keff));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('elen = %8.4g degrees',elen));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('loss = %8.4g dB',loss));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('L  = %8.4g nH/mm', L*1e6));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('R  = %8.4g Ohm/mm', R*1e-3));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('C  = %8.4g fF/mm', C*1e12));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('G  = %8.4g uMho/mm', G*1e3));</SCICMD></SCIEX>
+
+  <STDEX>
+  </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+air_coil_syn,
+microstrip_calc,
+microstrip_syn
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
