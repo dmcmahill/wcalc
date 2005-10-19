@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.15 2004/11/20 00:23:31 dan Exp $
+## $Id: Makefile.am,v 1.16 2005/10/19 00:25:55 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -75,10 +75,10 @@ runmatlab:	$(srcdir)/runmatlab.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runmatlab.in copyright.m mexlink
+EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS}
 
 # All the new suffix rules
-SUFFIXES= .c .${MEXSFX} .m .cat .man
+SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 
 .c.${MEXSFX} :
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
@@ -86,7 +86,7 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man
 TARGETPROGRAM=	matlab
 .txt.m :
 	@echo "****************************************************"
-	@echo "Generating Matlab help file: $*.m"
+	@echo "Generating ${TARGETPROGRAM} help file: $*.m"
 	@echo "****************************************************"
 	${AWK} 'BEGIN{s=0;} \
 		s==0{ \
