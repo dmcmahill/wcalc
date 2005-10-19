@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: coax_syn.xml,v 1.1 2005/10/19 02:55:05 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -46,46 +46,30 @@
 </SYNOPSIS>
 
 <PARAMETERS>
-a
-: radius of inner conductor (meters)
-b
-: inner radius of outer conductor (meters)
-c
-: offset of the inner conductor from the center (meters)
-t
-: thickness of shield (meters)
-rho_a
-: resistivity of inner conductor (ohms/meter)
-rho_b
-: resistivity of outer conductor (ohms/meter)
-er
-: relative permitivitty of dielectric
-tand
-: loss tangent of dielectric
-len
-: physical length of line (meters)
-f
-: operating frequency (Hertz)
-flag
-: indicates which parameters should be optimized
-flag=0
-: synthesize a
-flag=1
-: synthesize b
-flag=2
-: synthesize c
-flag=3
-: synthesize er
-a_out
-: synthesized radius of inner conductor (meters)
-b_out
-: synthesized inner radius of outer conductor (meters)
-c_out
-: synthesized offset of the inner conductor from the center (meters)
-er_out
-: synthesized relative permitivitty of dielectric
-len
-: synthesized physical length of line (meters)
+  <RHS name="a">radius of inner conductor (meters)</RHS>
+  <RHS name="b">inner radius of outer conductor (meters)</RHS>
+  <RHS name="c">offset of the inner conductor from the center (meters)</RHS>
+  <RHS name="t">thickness of shield (meters)</RHS>
+  <RHS name="rho_a">resistivity of inner conductor (ohms/meter)</RHS>
+  <RHS name="rho_b">resistivity of outer conductor (ohms/meter)</RHS>
+  <RHS name="er">relative permitivitty of dielectric</RHS>
+  <RHS name="tand">loss tangent of dielectric</RHS>
+  <RHS name="len">physical length of line (meters)</RHS>
+  <RHS name="f">operating frequency (Hertz)</RHS>
+  <RHS name="flag">indicates which parameters should be optimized
+    <ENUM>
+      <ITEM name="flag=0">synthesize a</ITEM>
+      <ITEM name="flag=1">synthesize b</ITEM>
+      <ITEM name="flag=2">synthesize c</ITEM>
+      <ITEM name="flag=3">synthesize er</ITEM>
+    </ENUM>
+  </RHS>
+
+  <LHS name="a_out">synthesized radius of inner conductor (meters)</LHS>
+  <LHS name="b_out">synthesized inner radius of outer conductor (meters)</LHS>
+  <LHS name="c_out">synthesized offset of the inner conductor from the center (meters)</LHS>
+  <LHS name="er_out">synthesized relative permitivitty of dielectric</LHS>
+  <LHS name="len">synthesized physical length of line (meters)</LHS>
 </PARAMETERS>
 
 <DESCRIPTION>

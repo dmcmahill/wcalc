@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: coupled_microstrip_calc.xml,v 1.1 2005/10/19 02:55:06 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -78,9 +78,9 @@ The model accounts for dispersion (frequency dependent propagation
 velocity).
 
 
-              |<--W-->|<-S->|<--W-->|
+              |&lt;--W--&gt;|&lt;-S-&gt;|&lt;--W--&gt;|
                _______       -------
-              | metal |     | metal | <- rho,rough
+              | metal |     | metal | &lt;- rho,rough
     ----------------------------------------------
    (  dielectric                         /|\\     (
     )   er,tand                       H   |       )
@@ -88,7 +88,7 @@ velocity).
     ----------------------------------------------
     XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
 
-<DESCRIPTION>
+</DESCRIPTION>
 
 <EXAMPLE>
 

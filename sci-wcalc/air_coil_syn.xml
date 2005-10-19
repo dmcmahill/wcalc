@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: air_coil_syn.xml,v 1.1 2005/10/19 00:36:26 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -86,10 +86,10 @@ specification.
   <SCIEX><SCICMD>dia=0.25*0.0254;</SCICMD> <COMMENT>0.25 inches inside diameter</COMMENT></SCIEX>
   <SCIEX><SCICMD>f=10e6;</SCICMD>      <COMMENT>10 MHz operation</COMMENT></SCIEX>
   <SCIEX><SCICMD>flag=0;</SCICMD>      <COMMENT>synthesize for minimum number of turns</COMMENT></SCIEX>
-  <SCIEX><SCICMD>[Nout,len_out,fill_out] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);</SCICMD>
-  <SCIEX><SCICMD>disp(sprintf('Number of turns = %g ',Nout));</SCICMD>
-  <SCIEX><SCICMD>disp(sprintf('Length=%g inches',len_out/0.0254));</SCICMD>
-  <SCIEX><SCICMD>disp(sprintf('Fill=%g',fill_out));</SCICMD>
+  <SCIEX><SCICMD>[Nout,len_out,fill_out] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Number of turns = %g ',Nout));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Length=%g inches',len_out/0.0254));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Fill=%g',fill_out));</SCICMD></SCIEX>
        <STDEX>
 *
 * Air coil synthesis, flag == 0 (minimize # of turns)

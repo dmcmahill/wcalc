@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: coax_calc.xml,v 1.1 2005/10/19 02:55:04 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -45,60 +45,25 @@
 </SYNOPSIS>
 
 <PARAMETERS>
-.TP 10
-a
-: radius of inner conductor (meters)
-.TP
-b
-: inner radius of outer conductor (meters)
-.TP
-c
-: offset of the inner conductor from the center (meters)
-.TP
-t
-: thickness of shield (meters)
-.TP
-rho_a
-: resistivity of inner conductor (ohms/meter)
-.TP
-rho_b
-: resistivity of outer conductor (ohms/meter)
-.TP
-er
-: relative permitivitty of dielectric
-.TP
-tand
-: loss tangent of dielectric
-.TP
-len
-: physical length of line (meters)
-.TP
-f
-: analysis frequency (Hertz)
-.TP
-L
-: calculated inductance per length (Henries/meter)
-.TP
-R
-: calculated resistance per length (Ohms/meter)
-.TP
-C
-: calculated capacitance per length (Farads/meter)
-.TP
-G
-: calculated conductance per length (Siemens/meter)
-.TP
-lc
-: conductor loss (dB/meter)
-.TP
-ld
-: dielectric loss (dB/meter)
-.TP
-fc
-: TE10 cutoff frequency (Hz)
-.TP
-em
-: Max Electric Field (Volts/meter)
+  <RHS name="a">radius of inner conductor (meters)</RHS>
+  <RHS name="b">inner radius of outer conductor (meters)</RHS>
+  <RHS name="c">offset of the inner conductor from the center (meters)</RHS>
+  <RHS name="t">thickness of shield (meters)</RHS>
+  <RHS name="rho_a">resistivity of inner conductor (ohms/meter)</RHS>
+  <RHS name="rho_b">resistivity of outer conductor (ohms/meter)</RHS>
+  <RHS name="er">relative permitivitty of dielectric</RHS>
+  <RHS name="tand">loss tangent of dielectric</RHS>
+  <RHS name="len">physical length of line (meters)</RHS>
+  <RHS name="f">analysis frequency (Hertz)</RHS>
+
+  <LHS name="L">calculated inductance per length (Henries/meter)</LHS>
+  <LHS name="R">calculated resistance per length (Ohms/meter)</LHS>
+  <LHS name="C">calculated capacitance per length (Farads/meter)</LHS>
+  <LHS name="G">calculated conductance per length (Siemens/meter)</LHS>
+  <LHS name="lc">conductor loss (dB/meter)</LHS>
+  <LHS name="ld">dielectric loss (dB/meter)</LHS>
+  <LHS name="fc">TE10 cutoff frequency (Hz)</LHS>
+  <LHS name="em">Max Electric Field (Volts/meter)</LHS>
 </PARAMETERS>
 
 <DESCRIPTION>

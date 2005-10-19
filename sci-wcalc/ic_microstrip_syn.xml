@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: ic_microstrip_syn.xml,v 1.1 2005/10/19 02:55:08 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -83,9 +83,9 @@ The model accounts for dispersion (frequency dependent propagation
 velocity).
 
 
-                 |<--W-->|
+                 |&lt;--W--&gt;|
                   _______    
-                 | metal | <- tmet,rho,rough
+                 | metal | &lt;- tmet,rho,rough
     ----------------------------------------------
    {**************  Oxide (tox,eox) **************
     ----------------------------------------------

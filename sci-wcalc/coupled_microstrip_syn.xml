@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: coupled_microstrip_syn.xml,v 1.1 2005/10/19 02:55:06 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -89,9 +89,9 @@ coupling coefficient.
 The model accounts for dispersion (frequency dependent propagation
 velocity).
 
-              |<--W-->|<-S->|<--W-->|
+              |&lt;--W--&gt;|&lt;-S-&gt;|&lt;--W--&gt;|
                _______       -------
-              | metal |     | metal | <- rho,rough
+              | metal |     | metal | &lt;- rho,rough
     ----------------------------------------------
    (  dielectric                         /|\\     (
     )   er,tand                       H   |       )
@@ -120,8 +120,8 @@ velocity).
   <SCIEX><SCICMD>flag=0;</SCICMD>       <COMMENT>synthesize from z0 and k (instead</COMMENT></SCIEX>
   <SCIEX><SCICMD>       </SCICMD>       <COMMENT>of z0e and z0o)</COMMENT></SCIEX>
   <SCIEX><SCICMD>[w_out,s_out,l_out] = ...</SCICMD></SCIEX>
-  <SCIEX><SCICMD>    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);</SCICMD></SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('w=%8.4g mils, s=%8.4g mils, l=%8.4g mils',w_out/sf,s_out/sf,l_out/sf));</SCICMD></SCICMD></SCIEX>
+  <SCIEX><SCICMD>    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('w=%8.4g mils, s=%8.4g mils, l=%8.4g mils',w_out/sf,s_out/sf,l_out/sf));</SCICMD></SCIEX>
 
   <STDEX>
 * ze = 55.27, zo = 45.23, ke = 2.261, ko = 2.009

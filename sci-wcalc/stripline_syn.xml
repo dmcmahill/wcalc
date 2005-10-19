@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: stripline_syn.xml,v 1.1 2005/10/19 02:55:11 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -46,24 +46,25 @@
 </SYNOPSIS>
 
 <PARAMETERS>
-  <RHS name="z0">desired characteristic impedance (Ohms)
-  <RHS name="w">width of stripline line (meters)
-  <RHS name="h">substrate thickness (meters)
-  <RHS name="l">lentgh of stripline line (meters)
-  <RHS name="tmet">metal thickness (meters)
-  <RHS name="rho">resistivity of the metalization (relative to copper)
-  <RHS name="rough">conductor surface roughness (meters-rms)
-  <RHS name="er">substrate relative permitivitty
-  <RHS name="tand">substrate loss tangent
-  <RHS name="f">synthesis frequency (Hz)
+  <RHS name="z0">desired characteristic impedance (Ohms)</RHS>
+  <RHS name="w">width of stripline line (meters)</RHS>
+  <RHS name="h">substrate thickness (meters)</RHS>
+  <RHS name="l">lentgh of stripline line (meters)</RHS>
+  <RHS name="tmet">metal thickness (meters)</RHS>
+  <RHS name="rho">resistivity of the metalization (relative to copper)</RHS>
+  <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
+  <RHS name="er">substrate relative permitivitty</RHS>
+  <RHS name="tand">substrate loss tangent</RHS>
+  <RHS name="f">synthesis frequency (Hz)</RHS>
   <RHS name="flag">indicates which parameters should be optimized
     <ENUM>
-      <ITEM name="flag=1">synthesize the metal width
-      <ITEM name="flag=1">synthesize the substrate thickness
-      <ITEM name="flag=2">synthesize the substrate dielectric constant
-      <ITEM name="flag=3">synthesize the metal length
+      <ITEM name="flag=1">synthesize the metal width</ITEM>
+      <ITEM name="flag=1">synthesize the substrate thickness</ITEM>
+      <ITEM name="flag=2">synthesize the substrate dielectric constant</ITEM>
+      <ITEM name="flag=3">synthesize the metal length</ITEM>
     </ENUM>
   </RHS>
+</PARAMETERS>
 
 <DESCRIPTION>
 Function to synthesize the physical dimenstions of a single
@@ -80,7 +81,7 @@ remaining dimensions are calculated.
     )             -------   --            |       )
    (             | metal | Tmet           | H    (
     )             -------   --            |       )
-   (             <---W--->  /\\           \\|/     (
+   (             &lt;---W---&gt;  /\\           \\|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 

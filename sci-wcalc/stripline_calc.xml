@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: stripline_calc.xml,v 1.1 2005/10/19 02:55:10 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -82,7 +82,7 @@ open circuit end correction are calculated.
     )             -------   --            |       )
    (             | metal | Tmet           | H    (
     )             -------   --            |       )
-   (             <---W--->  /\\           \\|/     (
+   (             &lt;---W---&gt;  /\\           \\|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 
