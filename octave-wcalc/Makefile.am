@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.11 2005/10/19 11:56:41 dan Exp $
+## $Id: Makefile.am,v 1.12 2005/10/20 00:37:09 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -85,7 +85,8 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 
-TARGETPROGRAM=  octave
+TARGETPROGRAM=	octave
+HTMLSUFFIX=		htm
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
 

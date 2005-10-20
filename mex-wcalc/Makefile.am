@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.17 2005/10/19 11:59:37 dan Exp $
+## $Id: Makefile.am,v 1.18 2005/10/20 00:37:08 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -84,6 +84,7 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 TARGETPROGRAM=	matlab
+HTMLSUFFIX=		htm
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
 
