@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.8 2004/09/03 02:52:28 dan Exp $
+## $Id: Makefile.am,v 1.9 2005/10/20 01:10:31 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -45,7 +45,8 @@ bin_PROGRAMS = stdio-wcalc
 
 stdio_wcalc_SOURCES =  alert.c main.c 
 
-man_MANS=	stdio-wcalc.1 ${MEX_MANS:.man=.n}
+MANSEC=		n
+man_MANS=	stdio-wcalc.1 ${MEX_MANS:.man=.${MANSEC}}
 
 MEX_MANS=	${MEX_SRCS:.c=.man}
 
@@ -86,10 +87,10 @@ DISTCLEANFILES= ${DIA_FILES}
 ## Pull in stuff for the man pages
 ##
 
-SUFFIXES=	.n .man
+SUFFIXES=	.${MANSEC} .man
 
-.man.n:
-	cp $< $@
+.man.${MANSEC}:
+	${AWK} '/^\.NF/,/^\.FI/ {gsub(/\\/, "\\\\"); } {print}' $< > $@
 
 TARGETPROGRAM=  stdio
 
