@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.41 2005/10/20 00:46:03 dan Exp $
+## $Id: Makefile.am,v 1.42 2005/10/20 01:00:02 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -227,7 +227,7 @@ whatis: whatis.htm
 	@echo "****************************************************"
 	${W3M} -dump whatis.htm > $@
 
-whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am
+whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am $(srcdir)/whatis.xsl
 	@echo "****************************************************"
 	@echo "Generating the whatis.htm table"
 	@echo "****************************************************"
