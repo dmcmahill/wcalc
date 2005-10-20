@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
-<!-- $Id: manpage.xsl,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: htmlpage.xsl,v 1.1 2005/10/19 00:25:57 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html" indent="yes"  />
 <xsl:strip-space elements="*"/>
 <xsl:param name="program">scilab</xsl:param>
+<xsl:param name="header">yes</xsl:param>
 
 <xsl:template match="MAN">
+<xsl:if test="$header = 'yes'">
 <html>
 <head>
 <!-- Copyright (c) 2001, 2002, 2004, 2005
@@ -20,6 +22,8 @@
 </head>
 
 <body bgcolor="#ffffff" text="#000000" link="#3535c5" vlink="#700080">
+</xsl:if>
+
 <xsl:value-of select="NAME"/> - <xsl:value-of select="SHORTDESCR"/>
 
 <h2>SYNOPSIS</h2>
@@ -120,9 +124,10 @@
 <xsl:value-of select="BUGS"/>
 </p>
 
-
+<xsl:if test="$header = 'yes'">
 </body>
 </html>
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="*"/>
