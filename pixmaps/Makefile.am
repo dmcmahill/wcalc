@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.10 2001/12/13 05:10:54 dan Exp $
+## $Id: Makefile.am,v 1.11 2002/05/10 22:52:58 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -83,30 +83,43 @@ SUFFIXES = .obj .xpm .xbm .gif .png .eps .c
 	$(EPS2C) fname=$*_eps $*.eps > $*.c
 
 .obj.eps :
-	@TGIF_YES@$(TGIF) $(TGIF_FLAGS) -eps $*.obj
-	@TGIF_NO@echo "WARNING:  tgif was not found on your system but"
-	@TGIF_NO@echo "          $*.eps is out of date and needs to be"
-	@TGIF_NO@echo "          rebuilt from $*.obj.  Changes to $*.obj"
-	@TGIF_NO@echo "          will be ignored."
+if MISSING_TGIF
+	@echo "WARNING:  tgif was not found on your system but"
+	@echo "          $*.eps is out of date and needs to be"
+	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
+	@echo "          will be ignored."
+else
+	$(TGIF) $(TGIF_FLAGS) -eps $*.obj
+endif
 
 .obj.gif :
-	@TGIF_YES@$(TGIF) $(TGIF_FLAGS) -gif $*.obj
-	@TGIF_NO@echo "WARNING:  tgif was not found on your system but"
-	@TGIF_NO@echo "          $*.gif is out of date and needs to be"
-	@TGIF_NO@echo "          rebuilt from $*.obj.  Changes to $*.obj"
-	@TGIF_NO@echo "          will be ignored."
+if MISSING_TGIF
+	@echo "WARNING:  tgif was not found on your system but"
+	@echo "          $*.gif is out of date and needs to be"
+	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
+	@echo "          will be ignored."
+else
+	$(TGIF) $(TGIF_FLAGS) -gif $*.obj
+endif
 
 .obj.png :
-	@TGIF_YES@$(TGIF) $(TGIF_FLAGS) -png $*.obj
-	@TGIF_NO@echo "WARNING:  tgif was not found on your system but"
-	@TGIF_NO@echo "          $*.png is out of date and needs to be"
-	@TGIF_NO@echo "          rebuilt from $*.obj.  Changes to $*.obj"
-	@TGIF_NO@echo "          will be ignored."
+if MISSING_TGIF
+	@echo "WARNING:  tgif was not found on your system but"
+	@echo "          $*.png is out of date and needs to be"
+	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
+	@echo "          will be ignored."
+else
+	$(TGIF) $(TGIF_FLAGS) -png $*.obj
+endif
 
 .obj.xpm :
-	@TGIF_YES@$(TGIF) $(TGIF_FLAGS) -xpm $*.obj
-	@TGIF_NO@echo "WARNING:  tgif was not found on your system but"
-	@TGIF_NO@echo "          $*.xpm is out of date and needs to be"
-	@TGIF_NO@echo "          rebuilt from $*.obj.  Changes to $*.obj"
-	@TGIF_NO@echo "          will be ignored."
+if MISSING_TGIF
+	@echo "WARNING:  tgif was not found on your system but"
+	@echo "          $*.xpm is out of date and needs to be"
+	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
+	@echo "          will be ignored."
+else
+	$(TGIF) $(TGIF_FLAGS) -xpm $*.obj
+endif
+
 
