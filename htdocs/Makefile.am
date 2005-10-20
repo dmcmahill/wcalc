@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.29 2005/10/20 03:17:11 dan Exp $
+## $Id: Makefile.am,v 1.30 2005/10/20 11:11:38 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -44,7 +44,7 @@ SUBDIRS=	sci-man  mex-man octave-man stdio-man
 # directory and need to look for images in ~randomuser/images, or perhaps
 # this is installed by the webadmin under /wcalc.
 pkgimgdatadir= @HTMLDIR@
-pkgimgdata_DATA= ${PNGS} ${HTML_OUT}
+pkgimgdata_DATA= ${PNGS} ${HTML_OUT} favicon.ico
 
 # the include= is a ':' seperated search path for SSI directives
 SHTML_INCLUDE_PATH= $(srcdir)
@@ -98,8 +98,17 @@ PNGS=\
 	screen2-thumb.png \
 	screen2.png
 
-favicon.ico: favicon.xpm
-	xpmtoppm favicon.xpm | ppmtowinicon > $@
+favicon.ico: $(srcdir)/favicon.xpm
+if MISSING_XPMTOPPM
+	@echo "****************************************************"
+	@echo "WARNING:  xpmtoppm and/or ppmtowinicon were not found on your"
+	@echo "          system but $@ is out of date and needs"
+	@echo "          to be rebuilt.  Changes to $<"
+	@echo "          will be ignored."
+	@echo "****************************************************"
+else
+	${XPMTOPPM} $(srcdir)/favicon.xpm | ${PPMTOWINICON} > $@
+endif
 
 clean-local:	
 	-rm ${HTML_OUT}
@@ -125,3 +134,5 @@ SUFFIXES=	.asciitab
 	${FORMAT_TAB} $< > $@
 
 include $(srcdir)/shtml.mk
+
+

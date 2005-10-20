@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2005/10/20 02:30:44 dan Exp $
+## $Id: Makefile.am,v 1.3 2005/10/20 03:17:14 dan Exp $
 
 ##
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -33,44 +33,10 @@
 ##  SUCH DAMAGE.
 ##
 
-vpath %.xml $(top_srcdir)/sci-wcalc
-
-include $(top_srcdir)/sci-wcalc/mex.mk
-
-pkgimgdatadir= @HTMLDIR@/stdio-man
-pkgimgdata_DATA= ${SCIMANHTML}
-
-# the include= is a ':' seperated search path for SSI directives
-SHTML_INCLUDE_PATH= $(srcdir):$(top_srcdir)/htdocs
-
-SCIMANSHTML=	${MEX_SRCS:.c=.shtml}
-SCIMANHTML=	${MEX_SRCS:.c=.html}
-SCIMANS=	${MEX_SRCS:.c=.man}
-SCICATS=	${SCIMANS:.man=.cat}
-
-all-local:	whatis.incl
-
-clean-local:	
-	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
-
-
-BUILT_SOURCES= left_column.incl main_footer.incl
-EXTRA_DIST=	man_start.incl man_end.incl
-
-CP_INCL=	sed -e 's;a href=";a href="../;g' \
-		    -e 's;img src=";img src="../;g' 
-
-@SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
-
-left_column.incl: $(srcdir)/../left_column.incl
-	$(CP_INCL) $< > $@
-
-main_footer.incl: $(srcdir)/../main_footer.incl
-	$(CP_INCL) $< > $@
-
-include $(top_srcdir)/htdocs/common-man.mk
 
 TARGETPROGRAM=	stdio
-MPATH=		stdio-man
+MPATH=			stdio-man
+include $(top_srcdir)/htdocs/common-man.mk
 include $(top_srcdir)/sci-wcalc/sciman.mk
 include $(top_srcdir)/htdocs/shtml.mk
+
