@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: man_start.incl,v 1.2 2004/07/28 11:51:14 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+<title>Stdio-Wcalc: @fname@</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Stdio-Wcalc: @fname@
+    </font>
+    <br>
+    <br>
+    </center>
+
+    <font face="courier, helvetica, arial" size="-1">
+    

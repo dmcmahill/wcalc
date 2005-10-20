@@ -1,0 +1,20 @@
+<!-- $Id: man_end.incl,v 1.1 2002/06/18 01:24:49 dan Exp $ -->
+
+    <P>Return to the <a href="../stdio-wcalc.html">Stdio-Wcalc</a> page.</P>
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

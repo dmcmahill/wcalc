@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.26 2004/11/24 03:56:53 dan Exp $
+## $Id: Makefile.am,v 1.27 2005/10/12 18:12:26 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -36,7 +36,7 @@
 # search for the .asciitab files (for the resistivity table, etc)
 vpath %.asciitab ../gtk-wcalc:$(top_srcdir)/gtk-wcalc
 
-SUBDIRS=	sci-man  mex-man octave-man
+SUBDIRS=	sci-man  mex-man octave-man stdio-man
 
 # Note, we let the user pick some arbitrary directory for the PNG files
 # because we simply don't know how the user will organize their web server.

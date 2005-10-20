@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.4 2002/05/10 22:49:39 dan Exp $
+## $Id: Makefile.am,v 1.5 2004/09/02 00:51:43 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -33,10 +33,9 @@
 ##  SUCH DAMAGE.
 ##
 
-vpath %.man $(top_srcdir)/sci-wcalc
+vpath %.xml $(top_srcdir)/sci-wcalc
 
 include $(top_srcdir)/sci-wcalc/mex.mk
-#MEX_SRCS=air_coil_calc.c
 
 pkgimgdatadir= @HTMLDIR@/mex-man
 pkgimgdata_DATA= ${SCIMANHTML}
@@ -69,34 +68,22 @@ left_column.incl: $(srcdir)/../left_column.incl
 main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
-whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk
+whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
 	@echo "****************************************************"
 	@echo "Generating the HTML whatis table"
 	@echo "****************************************************"
-	rm -f $@
-	for man in ${SCIMANS} ; do \
-	${AWK} 'BEGIN{s=0;} \
-		/^\.SH/ {s=0}; \
-		s==1{ \
-			printf("<tr><td><a href=\"mex-man/%s.html\">%s</a></td><td>",$$1,$$1); \
-			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
-			printf("</td></tr>\n"); \
-		} \
-		/^\.SH[ \t]*NAME/ {s=1}' $(top_srcdir)/sci-wcalc/$$man | sort >> $@ ; \
-	done
+	${XSLTPROC} $(top_srcdir)/sci-wcalc/whatis.xsl ${SCIXML} > $@
 
 SUFFIXES=	.shtml .html .cat
 
-.cat.shtml :
+.txt.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	echo "<pre>" >> $@
-	cat $< | col -b | \
-		${AWK} '/(^[ \t]*[0-9]+$)|(^Dan.*[0-9]+$)/ {cnt=3;next;} \
-			cnt==0{print  $$0} \
-			cnt > 0{cnt--}' | \
-		sed 's;//;%;g' >> $@
+	cat $< >> $@
 	echo "</pre>" >> $@
 	cat $(srcdir)/man_end.incl >> $@
 
+TARGETPROGRAM=	matlab
 include $(top_srcdir)/sci-wcalc/sciman.mk
 include $(top_srcdir)/htdocs/shtml.mk
+

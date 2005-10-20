@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.11 2004/09/02 00:51:44 dan Exp $
+## $Id: Makefile.am,v 1.2 2004/09/02 00:51:44 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2005 Dan McMahill
+## Copyright (c) 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -37,7 +37,7 @@ vpath %.xml $(top_srcdir)/sci-wcalc
 
 include $(top_srcdir)/sci-wcalc/mex.mk
 
-pkgimgdatadir= @HTMLDIR@/sci-man
+pkgimgdatadir= @HTMLDIR@/stdio-man
 pkgimgdata_DATA= ${SCIMANHTML}
 
 # the include= is a ':' seperated search path for SSI directives
@@ -57,8 +57,8 @@ clean-local:
 BUILT_SOURCES= left_column.incl main_footer.incl
 EXTRA_DIST=	man_start.incl man_end.incl
 
-CP_INCL=	sed  -e 's;a href=";a href="../;g' \
-		     -e 's;img src=";img src="../;g'
+CP_INCL=	sed -e 's;a href=";a href="../;g' \
+		    -e 's;img src=";img src="../;g' 
 
 @SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
 
@@ -79,10 +79,10 @@ SUFFIXES=	.shtml .html .cat
 .txt.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	echo "<pre>" >> $@
-	cat $< >> $@
+	cat $< >>$@
 	echo "</pre>" >> $@
 	cat $(srcdir)/man_end.incl >> $@
 
-TARGETPROGRAM=	scilab
+TARGETPROGRAM=	stdio
 include $(top_srcdir)/sci-wcalc/sciman.mk
 include $(top_srcdir)/htdocs/shtml.mk
