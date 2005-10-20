@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.40 2005/10/19 01:10:34 dan Exp $
+## $Id: Makefile.am,v 1.41 2005/10/20 00:46:03 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -239,7 +239,7 @@ whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am
 	echo '<body bgcolor="FFFFFF">' >> $@
 	echo '<h1>${PACKAGE} Functions</h1>' >> $@
 	echo "<table>" >> $@
-	${XSLTPROC} ${SCIXML} | sort >> $@
+	${XSLTPROC} $(srcdir)/whatis.xsl ${SCIXML}  >> $@
 	@echo "</table></body></html>" >> $@
 
 SUFFIXES=
