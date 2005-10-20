@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.7 2005/10/20 02:30:42 dan Exp $
+## $Id: Makefile.am,v 1.4 2005/10/20 02:30:43 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2005 Dan McMahill
+## Copyright (c) 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -33,45 +33,24 @@
 ##  SUCH DAMAGE.
 ##
 
-vpath %.xml $(top_srcdir)/sci-wcalc
 
-include $(top_srcdir)/sci-wcalc/mex.mk
+whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
+	@echo "****************************************************"
+	@echo "Generating the HTML whatis table"
+	@echo "****************************************************"
+	rm -f $@
+	for f in ${WC_XML} ; do \
+		${XSLTPROC} --stringparam suffix "html" \
+			--stringparam path "${MPATH}/" \
+			$(top_srcdir)/sci-wcalc/whatis.xsl \
+			$(top_srcdir)/sci-wcalc/$$f >> $@ ; \
+	done
 
-pkgimgdatadir= @HTMLDIR@/mex-man
-pkgimgdata_DATA= ${SCIMANHTML}
+SUFFIXES=	.shtml .html .cat
 
-# the include= is a ':' seperated search path for SSI directives
-SHTML_INCLUDE_PATH= $(srcdir):$(top_srcdir)/htdocs
-
-SCIMANSHTML=	${MEX_SRCS:.c=.shtml}
-SCIMANHTML=	${MEX_SRCS:.c=.html}
-SCIMANS=	${MEX_SRCS:.c=.man}
-SCICATS=	${SCIMANS:.man=.cat}
-
-all-local:	whatis.incl
-
-clean-local:	
-	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
-
-
-BUILT_SOURCES= left_column.incl main_footer.incl
-EXTRA_DIST=	man_start.incl man_end.incl
-
-CP_INCL=	sed -e 's;a href=";a href="../;g' \
-		    -e 's;img src=";img src="../;g' 
-
-@SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
-
-left_column.incl: $(srcdir)/../left_column.incl
-	$(CP_INCL) $< > $@
-
-main_footer.incl: $(srcdir)/../main_footer.incl
-	$(CP_INCL) $< > $@
-
-include $(top_srcdir)/htdocs/common-man.mk
-
-TARGETPROGRAM=	matlab
-MPATH=		mex-man
-include $(top_srcdir)/sci-wcalc/sciman.mk
-include $(top_srcdir)/htdocs/shtml.mk
+.xml.shtml :
+	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
+		--stringparam header "no" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< >> $@
+	cat $(srcdir)/man_end.incl >> $@
 

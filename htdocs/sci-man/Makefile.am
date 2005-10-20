@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.12 2005/10/20 02:02:01 dan Exp $
+## $Id: Makefile.am,v 1.13 2005/10/20 02:30:43 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2005 Dan McMahill
@@ -68,20 +68,9 @@ left_column.incl: $(srcdir)/../left_column.incl
 main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
-whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
-	@echo "****************************************************"
-	@echo "Generating the HTML whatis table"
-	@echo "****************************************************"
-	${XSLTPROC} $(top_srcdir)/sci-wcalc/whatis.xsl ${WC_XML} > $@
-
-SUFFIXES=	.shtml .html .cat
-
-.xml.shtml :
-	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
-	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
-		--stringparam header "no" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< >> $@
-	cat $(srcdir)/man_end.incl >> $@
+include $(top_srcdir)/htdocs/common-man.mk
 
 TARGETPROGRAM=	scilab
+MPATH=		sci-man
 include $(top_srcdir)/sci-wcalc/sciman.mk
 include $(top_srcdir)/htdocs/shtml.mk
