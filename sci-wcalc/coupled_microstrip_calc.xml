@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: coupled_microstrip_calc.xml,v 1.1 2005/10/19 02:55:06 dan Exp $ -->
+<!-- $Id: coupled_microstrip_calc.xml,v 1.2 2005/10/19 03:14:08 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -77,6 +77,7 @@ open circuit end correction are calculated.
 The model accounts for dispersion (frequency dependent propagation
 velocity).
 
+<VERB>
 
               |&lt;--W--&gt;|&lt;-S-&gt;|&lt;--W--&gt;|
                _______       -------
@@ -88,6 +89,7 @@ velocity).
     ----------------------------------------------
     XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
 
+</VERB>
 </DESCRIPTION>
 
 <EXAMPLE>
@@ -122,9 +124,18 @@ coupled_microstrip_calc 1.744e-3 0.988e-5 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9
 </EXAMPLE>
 
 <SEE_ALSO>
-air_coil_syn,
-microstrip_calc,
-microstrip_syn
+   <ALSO>air_coil_calc</ALSO>
+   <ALSO>air_coil_syn</ALSO>
+   <ALSO>coax_calc</ALSO>
+   <ALSO>coax_syn</ALSO>
+   <ALSO>coupled_microstrip_calc</ALSO>
+   <ALSO>coupled_microstrip_syn</ALSO>
+   <ALSO>ic_microstrip_calc</ALSO>
+   <ALSO>ic_microstrip_syn</ALSO>
+   <ALSO>microstrip_calc</ALSO>
+   <ALSO>microstrip_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
 </SEE_ALSO>
 
 <AUTHOR>

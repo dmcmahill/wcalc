@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<!-- $Id: manpage.xsl,v 1.1 2005/10/17 02:21:38 dan Exp $ -->
+<!-- $Id: manpage.xsl,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="yes"  />
 <xsl:strip-space elements="*"/>
 <xsl:param name="program">scilab</xsl:param>
+<xsl:param name="section">n</xsl:param>
 
 <xsl:template match="MAN">
 <xsl:text>
@@ -11,7 +12,7 @@
 .\" Do not edit this directly.  Edit the XML source file instead
 .\"
 </xsl:text>
-.TH <xsl:value-of select="NAME"/> n "" "Wcalc" "Wcalc Commands"
+.TH <xsl:value-of select="NAME"/> "<xsl:value-of select="$section"/>" "" "Wcalc" "Wcalc Commands"
 .B <xsl:value-of select="NAME"/>
 - <xsl:value-of select="SHORTDESCR"/>
 .SH SYNOPSIS
@@ -48,7 +49,9 @@
 : <xsl:value-of select="."/>
 </xsl:for-each>
 .SH DESCRIPTION
-<xsl:value-of select="DESCRIPTION"/>
+<xsl:for-each select="DESCRIPTION">
+<xsl:apply-templates/>
+</xsl:for-each>
 .SH EXAMPLE
 .nf
 <xsl:if test="$program = 'stdio'">
@@ -80,7 +83,9 @@
 </xsl:if>
 .fi
 .SH SEE ALSO
-<xsl:value-of select="SEE_ALSO"/>
+<xsl:for-each select="SEE_ALSO/ALSO">
+<xsl:value-of select="."/>(<xsl:value-of select="$section"/>)<xsl:if test="position() != last()">, </xsl:if>
+</xsl:for-each>
 .SH AUTHOR
 <xsl:value-of select="AUTHOR"/>
 .SH BUGS
@@ -100,6 +105,13 @@
 .RE
 </xsl:template>
 
+<xsl:template match="VERB">
+.NF
+
+<xsl:value-of select="."/>
+
+.FI
+</xsl:template>
 
 </xsl:stylesheet>
 

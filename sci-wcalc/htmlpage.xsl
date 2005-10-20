@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<!-- $Id: htmlpage.xsl,v 1.2 2005/10/20 02:25:13 dan Exp $ -->
+<!-- $Id: htmlpage.xsl,v 1.3 2005/10/20 03:17:14 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html" indent="yes"  />
 <xsl:strip-space elements="*"/>
 <xsl:param name="program">scilab</xsl:param>
 <xsl:param name="header">yes</xsl:param>
+<xsl:param name="path"/>
+<xsl:param name="suffix">htm</xsl:param>
 
 <xsl:template match="MAN">
 <html>
@@ -70,7 +72,9 @@
 
 <h2>DESCRIPTION</h2>
 <p>
-<xsl:value-of select="DESCRIPTION"/>
+<xsl:for-each select="DESCRIPTION">
+<xsl:apply-templates/>
+</xsl:for-each>
 </p>
 
 <h2>EXAMPLE</h2>
@@ -111,7 +115,9 @@
 
 <h2>SEE ALSO</h2>
 <p>
-<xsl:value-of select="SEE_ALSO"/>
+<xsl:for-each select="SEE_ALSO">
+<xsl:apply-templates/>
+</xsl:for-each>
 </p>
 
 <h2>AUTHOR</h2>
@@ -138,6 +144,19 @@
 	</ul>
 </xsl:template>
 
+<xsl:template match="VERB">
+	<tt>
+		<pre>
+<xsl:value-of select="."/>
+		</pre>
+	</tt>
+</xsl:template>
+
+<xsl:template match="ALSO">
+<a href="{$path}{.}.{$suffix}"><xsl:value-of select="."/></a><br></br><xsl:text>
+
+</xsl:text>
+</xsl:template>
 
 </xsl:stylesheet>
 

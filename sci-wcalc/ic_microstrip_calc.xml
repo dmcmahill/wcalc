@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: microstrip_calc.xml,v 1.1 2005/10/19 02:55:08 dan Exp $ -->
+<!-- $Id: ic_microstrip_calc.xml,v 1.2 2005/10/19 03:14:09 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -74,6 +74,7 @@ dimensions of the microstrip line are given as inputs and the
 characteristic impedance, effective dielectric constant, loss and
 open circuit end correction are calculated.
 
+<VERB>
 
                  |&lt;--W--&gt;|
                   _______    
@@ -87,6 +88,7 @@ open circuit end correction are calculated.
     ----------------------------------------------
     XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
 
+</VERB>
 </DESCRIPTION>
 
 <EXAMPLE>
@@ -118,9 +120,18 @@ open circuit end correction are calculated.
 </EXAMPLE>
 
 <SEE_ALSO>
-air_coil_syn,
-microstrip_calc,
-microstrip_syn
+   <ALSO>air_coil_calc</ALSO>
+   <ALSO>air_coil_syn</ALSO>
+   <ALSO>coax_calc</ALSO>
+   <ALSO>coax_syn</ALSO>
+   <ALSO>coupled_microstrip_calc</ALSO>
+   <ALSO>coupled_microstrip_syn</ALSO>
+   <ALSO>ic_microstrip_calc</ALSO>
+   <ALSO>ic_microstrip_syn</ALSO>
+   <ALSO>microstrip_calc</ALSO>
+   <ALSO>microstrip_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
 </SEE_ALSO>
 
 <AUTHOR>

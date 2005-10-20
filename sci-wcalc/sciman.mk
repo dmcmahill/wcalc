@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.7 2005/10/20 00:37:09 dan Exp $
+## $Id: sciman.mk,v 1.8 2005/10/20 02:20:25 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005 Dan McMahill
@@ -34,10 +34,10 @@
 ##  SUCH DAMAGE.
 ##
 
-WC_MANS=        ${MEX_SRCS:.c=.man}
-WC_CATS=        ${MEX_SRCS:.c=.cat}
-WC_HTML=        ${MEX_SRCS:.c=.htm}
-WC_XML=         ${MEX_SRCS:.c=.xml}
+WC_MANS=	${MEX_SRCS:.c=.man}
+WC_CATS=	${MEX_SRCS:.c=.cat}
+WC_HTML=	${MEX_SRCS:.c=.htm}
+WC_XML=	${MEX_SRCS:.c=.xml}
 
 SUFFIXES+= .cat .man .htm .xml .txt .m
 
@@ -79,7 +79,8 @@ if MISSING_XSLT
 	@echo "          will be ignored."
 	@echo "****************************************************"
 else
-	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" $(top_srcdir)/sci-wcalc/manpage.xsl $< > $@
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
+		--stringparam section "${MANSEC}" $(top_srcdir)/sci-wcalc/manpage.xsl $< > $@
 endif
 
 .xml.htm :
@@ -91,7 +92,9 @@ if MISSING_XSLT
 	@echo "          will be ignored."
 	@echo "****************************************************"
 else
-	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< > $@
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
+		--stringparam suffix "${HTMLSUFFIX} \
+		$(top_srcdir)/sci-wcalc/htmlpage.xsl $< > $@
 endif
 
 .htm.txt :

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: stripline_syn.xml,v 1.1 2005/10/19 02:55:11 dan Exp $ -->
+<!-- $Id: stripline_syn.xml,v 1.2 2005/10/19 03:14:10 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -75,6 +75,8 @@ dimensions of the stripline line are given as inputs and the
 remaining dimensions are calculated.
 
 
+<VERB>
+
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
    (  dielectric,er         \\/           /|\\     (
@@ -85,6 +87,7 @@ remaining dimensions are calculated.
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 
+</VERB>
 </DESCRIPTION>
 
 <EXAMPLE>
@@ -124,7 +127,18 @@ stripline_syn 75.0 90.0 0.075e-3 2.0e-3 1.0 3e-5 1.72e-8 0.0 10.20 0.001 1e9 0
 </EXAMPLE>
 
 <SEE_ALSO>
-stripline_calc
+   <ALSO>air_coil_calc</ALSO>
+   <ALSO>air_coil_syn</ALSO>
+   <ALSO>coax_calc</ALSO>
+   <ALSO>coax_syn</ALSO>
+   <ALSO>coupled_microstrip_calc</ALSO>
+   <ALSO>coupled_microstrip_syn</ALSO>
+   <ALSO>ic_microstrip_calc</ALSO>
+   <ALSO>ic_microstrip_syn</ALSO>
+   <ALSO>microstrip_calc</ALSO>
+   <ALSO>microstrip_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
 </SEE_ALSO>
 
 <AUTHOR>

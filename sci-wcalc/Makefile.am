@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.42 2005/10/20 01:00:02 dan Exp $
+## $Id: Makefile.am,v 1.43 2005/10/20 01:05:44 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -85,6 +85,7 @@ install-data-hook:
 			${ECHO} "No:  dlname = $$dlname" ; \
 		else \
 			${ECHO} "Yes.  Creating $$dlname -> libsci_wcalc.so link in ${scilibdir}" ; \
+			${RM} -f ${scilibdir}/libsci_wcalc.so ; \
 			cd ${scilibdir} && ${LN_S} $$dlname libsci_wcalc.so ; \
 		fi
 
@@ -246,5 +247,6 @@ SUFFIXES=
 
 # used by the XSLT templates
 TARGETPROGRAM=	scilab
+HTMLSUFFIX=		htm
 
 include $(srcdir)/sciman.mk
