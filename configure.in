@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.78 2005/10/13 21:32:04 dan Exp $
+dnl $Id: configure.in,v 1.79 2005/10/19 00:25:53 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -68,8 +68,11 @@ AC_SUBST(TGIF_YES)
 AC_PATH_PROG(GROFF, groff, notfound)
 AC_PATH_PROG(NEQN, neqn, notfound)
 AC_PATH_PROG(TBL, tbl, notfound)
+AM_CONDITIONAL(MISSING_NROFF, test x$GROFF = xnotfound -o x$NEQN = xnotfound -o x$TBl = xnotfound)
+
 AC_PATH_PROG(W3M, w3m, notfound)
 AC_PATH_PROG(XSLTPROC, xsltproc, notfound)
+AM_CONDITIONAL(MISSING_XSLT, test x$W3M = xnotfound -o x$XSLTPROC = xnotfound)
 
 AC_LANG_PUSH(C)
 wc_save_LIBS="$LIBS"
