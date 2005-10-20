@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.16 2005/10/19 00:25:55 dan Exp $
+## $Id: Makefile.am,v 1.17 2005/10/19 11:59:37 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -84,21 +84,6 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 TARGETPROGRAM=	matlab
-.txt.m :
-	@echo "****************************************************"
-	@echo "Generating ${TARGETPROGRAM} help file: $*.m"
-	@echo "****************************************************"
-	${AWK} 'BEGIN{s=0;} \
-		s==0{ \
-			printf("%%%-16s ",toupper($$1)); \
-			for(i=2;i<=NF;i++){printf("%s ",$$i);} \
-			printf("\n"); \
-			s=1; \
-			next; \
-		} \
-		{print "%  " $$0} \
-		END{printf("\n\n");}' $< > $@
-	cat $(srcdir)/copyright.m >> $@
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
 

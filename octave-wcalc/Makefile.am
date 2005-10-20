@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.10 2005/10/19 00:25:55 dan Exp $
+## $Id: Makefile.am,v 1.11 2005/10/19 11:56:41 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -86,21 +86,6 @@ SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 
 
 TARGETPROGRAM=  octave
-.txt.m :
-	@echo "****************************************************"
-	@echo "Generating ${TARGETPROGRAM} help file: $*.m" 
-	@echo "****************************************************" 
-	${AWK} 'BEGIN{s=0;} \
-		s==0{ \
-			printf("%%%-16s ",toupper($$1)); \	
-			for(i=2;i<=NF;i++){printf("%s ",$$i);} \
-			printf("\n"); \
-			s=1; \
-			next; \
-		} \
-		{print "%  " $$0} \      
-		END{printf("\n\n");}' $< > $@   
-	cat $(srcdir)/copyright.m >> $@
 
 include $(top_srcdir)/sci-wcalc/sciman.mk
 
