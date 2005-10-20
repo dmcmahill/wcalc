@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.6 2005/10/19 00:25:57 dan Exp $
+## $Id: sciman.mk,v 1.7 2005/10/20 00:37:09 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005 Dan McMahill
@@ -33,6 +33,11 @@
 ##  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ##  SUCH DAMAGE.
 ##
+
+WC_MANS=        ${MEX_SRCS:.c=.man}
+WC_CATS=        ${MEX_SRCS:.c=.cat}
+WC_HTML=        ${MEX_SRCS:.c=.htm}
+WC_XML=         ${MEX_SRCS:.c=.xml}
 
 SUFFIXES+= .cat .man .htm .xml .txt .m
 
