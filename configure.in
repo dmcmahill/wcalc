@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.80 2005/10/20 00:34:58 dan Exp $
+dnl $Id: configure.in,v 1.81 2005/10/20 02:01:58 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -48,19 +48,12 @@ AC_PROG_AWK
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
-dnl used for processing the drawings to give png's
-dnl and xpm's
-AC_PATH_PROG(TGIF, tgif)
-
-if test "X$TGIF" = "Xno" ; then
-	TGIF_NO=""
-	TGIF_YES="@#"
-else
-	TGIF_NO="@#"
-	TGIF_YES=""
-fi
-AC_SUBST(TGIF_NO)
-AC_SUBST(TGIF_YES)
+#
+# used for processing the drawings to give png's
+# and xpm's
+#
+AC_PATH_PROG(TGIF, tgif, notfound)
+AM_CONDITIONAL(MISSING_TGIF, test x$TGIF = xnotfound)
 
 #
 # For building the documentation
@@ -73,6 +66,13 @@ AM_CONDITIONAL(MISSING_NROFF, test x$GROFF = xnotfound -o x$NEQN = xnotfound -o 
 AC_PATH_PROG(W3M, w3m, notfound)
 AC_PATH_PROG(XSLTPROC, xsltproc, notfound)
 AM_CONDITIONAL(MISSING_XSLT, test x$W3M = xnotfound -o x$XSLTPROC = xnotfound)
+
+#
+# Used by the web page
+#
+AC_PATH_PROG(XPMTOPPM, xpmtoppm, notfound)
+AC_PATH_PROG(PPMTOWINICON, ppmtowinicon, notfound)
+AM_CONDITIONAL(MISSING_XPMTOPPM, test x$PPMTOWINICON = xnotfound -o x$XPMTOPPM = xnotfound)
 
 AC_LANG_PUSH(C)
 wc_save_LIBS="$LIBS"
