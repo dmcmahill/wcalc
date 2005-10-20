@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.39 2005/10/19 00:25:56 dan Exp $
+## $Id: Makefile.am,v 1.40 2005/10/19 01:10:34 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -103,7 +103,7 @@ CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
 	whatis whatis.htm ${SCICATS} ${SCIHTML} ${SCIXML} \
-	wcalc_test.sci.in
+	wcalc_test.sci.in manpage.xsl htmlpage.xsl whatis.xsl
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCIMANS} ${SCICATS} ${SCIHTML}
 
@@ -221,39 +221,25 @@ test_wcalc.sce:	load_wcalc.sce.in
 	@echo "****************************************************"
 
 
-whatis: ${SCIMANS}  $(srcdir)/Makefile.am
+whatis: whatis.htm
 	@echo "****************************************************"
 	@echo "Generating the whatis table"
 	@echo "****************************************************"
-	@(for f in ${SCIMANS}; do ${AWK} 'BEGIN{s=0;} \
-		/^\.SH/ {s=0}; \
-		s==1{ \
-			printf("%-26s - ",$$1); \
-			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
-			printf("\n"); \
-		} \
-		/^\.SH[ \t]*NAME/ {s=1}' ${srcdir}/$$f ; done) | sort > whatis
+	${W3M} -dump whatis.htm > $@
 
 whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am
 	@echo "****************************************************"
 	@echo "Generating the whatis.htm table"
 	@echo "****************************************************"
-	@echo "<html>" > $@
-	@echo "<head>" >> $@
-	@echo '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">' >> $@
-	@echo "<title>${PACKAGE}</title>" >> $@
-	@echo "</head>" >> $@
-	@echo '<body bgcolor="FFFFFF">' >> $@
-	@echo "<table>" >> $@
-	@(for f in ${SCIMANS}; do ${AWK} 'BEGIN{s=0;} \
-		/^\.SH/ {s=0}; \
-		s==1{ \
-			printf("<TR><TD><A HREF=\"%s.htm\">%s</A></TD>",$$1,$$1); \
-			printf("<TD>"); \
-			for(i=3;i<=NF;i++){printf("%s ",$$i);} \
-			printf("</TD></TR>\n"); \
-		} \
-		/^\.SH[ \t]*NAME/ {s=1}' ${srcdir}/$$f ; done) | sort >> $@
+	echo "<html>" > $@
+	echo "<head>" >> $@
+	echo '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">' >> $@
+	echo "<title>${PACKAGE}</title>" >> $@
+	echo "</head>" >> $@
+	echo '<body bgcolor="FFFFFF">' >> $@
+	echo '<h1>${PACKAGE} Functions</h1>' >> $@
+	echo "<table>" >> $@
+	${XSLTPROC} ${SCIXML} | sort >> $@
 	@echo "</table></body></html>" >> $@
 
 SUFFIXES=
