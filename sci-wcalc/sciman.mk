@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.8 2005/10/20 02:20:25 dan Exp $
+## $Id: sciman.mk,v 1.9 2005/10/20 22:24:29 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005 Dan McMahill
@@ -93,7 +93,7 @@ if MISSING_XSLT
 	@echo "****************************************************"
 else
 	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
-		--stringparam suffix "${HTMLSUFFIX} \
+		--stringparam suffix "${HTMLSUFFIX}" \
 		$(top_srcdir)/sci-wcalc/htmlpage.xsl $< > $@
 endif
 
