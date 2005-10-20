@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.28 2005/10/20 02:01:59 dan Exp $
+## $Id: Makefile.am,v 1.29 2005/10/20 03:17:11 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -108,7 +108,7 @@ distclean-local:
 	-rm AWG.incl
 
 BUILT_SOURCES=	${BUILT_INCL_FILES} 
-EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} favicon.ico favicon.xpm shtml.mk common_man.mk
+EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} favicon.ico favicon.xpm shtml.mk common-man.mk
 
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}
