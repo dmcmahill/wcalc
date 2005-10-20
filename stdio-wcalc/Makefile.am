@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.7 2004/09/02 21:27:55 dan Exp $
+## $Id: Makefile.am,v 1.8 2004/09/03 02:52:28 dan Exp $
 
 ##
 ## Copyright (c) 2004 Dan McMahill
@@ -34,11 +34,20 @@
 ##  SUCH DAMAGE.
 ##
 
+## to find the .xml docs
+vpath %.xml $(top_srcdir)/sci-wcalc
+
+# list of all the mex files (needed for man pages)
+include $(top_srcdir)/sci-wcalc/mex.mk
+
+
 bin_PROGRAMS = stdio-wcalc
 
 stdio_wcalc_SOURCES =  alert.c main.c 
 
-man_MANS=	stdio-wcalc.1
+man_MANS=	stdio-wcalc.1 ${MEX_MANS:.man=.n}
+
+MEX_MANS=	${MEX_SRCS:.c=.man}
 
 RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
@@ -71,4 +80,18 @@ DIA_FILES=	${TEST_INPUTS:.dat=.dia}
 EXTRA_DIST= ${man_MANS} ${TEST_INPUTS} ${RUN_TESTS} ${REF_FILES} tests.list
 
 DISTCLEANFILES= ${DIA_FILES} 
+
+
+##
+## Pull in stuff for the man pages
+##
+
+SUFFIXES=	.n .man
+
+.man.n:
+	cp $< $@
+
+TARGETPROGRAM=  stdio
+
+include $(top_srcdir)/sci-wcalc/sciman.mk
 
