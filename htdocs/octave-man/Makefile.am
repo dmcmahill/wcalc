@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2004/09/02 00:51:44 dan Exp $
+## $Id: Makefile.am,v 1.3 2005/10/20 02:02:00 dan Exp $
 
 ##
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -72,15 +72,14 @@ whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sc
 	@echo "****************************************************"
 	@echo "Generating the HTML whatis table"
 	@echo "****************************************************"
-	${XSLTPROC} $(top_srcdir)/sci-wcalc/whatis.xsl ${SCIXML} > $@
+	${XSLTPROC} $(top_srcdir)/sci-wcalc/whatis.xsl ${WC_XML} > $@
 
 SUFFIXES=	.shtml .html .cat
 
-.txt.shtml :
+.xml.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
-	echo "<pre>" >> $@
-	cat $< >>$@
-	echo "</pre>" >> $@
+	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
+		--stringparam header "no" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< >> $@
 	cat $(srcdir)/man_end.incl >> $@
 
 TARGETPROGRAM=	octave
