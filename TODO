@@ -1,12 +1,21 @@
-$Id$
+$Id: TODO,v 1.1 2001/09/16 14:28:22 dan Exp $
 
-- Air Coil.  Make complete write up.  Also, does rho come in to play?  It
-  should...  
+- finish spanish translation for gtk-wcalc
+
+- testing!
 
 - Air Coil.  Read RF Design, Jan 1998 and Applied Microwave & Wireless, 
   Nov/Dec 1997 for transmission line based model for helical coils.
   Maybe get a better Q/SRF prediction? 
 
-- everything.  Make all the units for calculation be consistant!
+- Research and add coplanar waveguide
 
+- Research and add spiral inductors with the ability to write out a fasthenry
+  model
+
+- End correction for stripline?
+
+- End correction for coax?
+
+- Maybe start adding filter toolbox stuff here?
 
