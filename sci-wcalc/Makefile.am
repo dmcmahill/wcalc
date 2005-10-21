@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.43 2005/10/20 01:05:44 dan Exp $
+## $Id: Makefile.am,v 1.44 2005/10/20 22:24:23 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -104,7 +104,7 @@ CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
 	whatis whatis.htm ${SCICATS} ${SCIHTML} ${SCIXML} \
-	wcalc_test.sci.in manpage.xsl htmlpage.xsl whatis.xsl
+	wcalc_test.sci.in manpage.xsl htmlpage.xsl whatis.xsl man.dtd
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCIMANS} ${SCICATS} ${SCIHTML}
 
