@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.3 2004/12/22 15:39:17 dan Exp $
+$Id: INSTALL,v 1.4 2005/10/13 22:39:10 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -29,9 +29,85 @@ If you wish to install the Wcalc web pages, add --enable-htdocs
 to the configure arguments.  There are some additional arguments
 which can specify the installation directory and also a URL to
 access the web pages by.  These latter two options are useful if
-you are installing Wcalc on an internal web server.  Installing the
-web pages is recommended because it provides additional documentation.
+you are installing Wcalc on a web server.  Installing the
+web pages is recommended because it provides additional
+documentation.
 
+To build and install everything use:
+
+./configure \
+        --disable-gtk1 \
+        --enable-gtk2 \
+        --enable-htdocs \
+        --enable-stdio \
+        --with-matlab \
+        --with-octave \
+        --with-scilab \
+        --enable-cgi \
+        --enable-cgistatic 
+
+-------------------------------------------------
+To try out the gtk interface before installing:
+
+  cd gtk-wcalc && ./runwcalc
+
+After installation, just run
+
+   wcalc
+
+-------------------------------------------------
+To try out the matlab interface before installing:
+
+  cd mex-wcalc && ./runmatlab
+
+After installing, just add the wcalc directory to your
+path in matlab with addpath.
+-------------------------------------------------
+To try out the octave interface before installing:
+
+  cd octave-wcalc && ./runoctave
+
+-------------------------------------------------
+To try out the scilab interface before installing:
+
+  cd sci-wcalc && scilab
+
+  from within scilab:
+
+    exec test_wcalc.sce;
+
+After installing, you'll want to put
+
+   exec load_wcalc.sce;
+
+   in your scilab startup file (~/.scilab).
+
+-------------------------------------------------
+To configure apache's http server to work with the cgi scripts and web
+pages, I typically add something like this to the httpd.conf file which
+comes with apache:
+
+    Alias /wcalc/ "/usr/local/share/wcalc/"
+    <Directory "/usr/local/share/wcalc/">
+	Options Indexes MultiViews
+	AllowOverride None
+	Order allow,deny
+	Allow from all
+    </Directory>
+
+This will allow http://your.web.server/wcalc/ to access the wcalc web
+pages.
+
+To configure apache to work with the cgi scripts, you'll need somthing
+like this as well:
+
+    ScriptAlias /cgi-bin/ "/usr/local/libexec/cgi-bin/"
+    <Directory "/usr/local/libexec/cgi-bin">
+        AllowOverride None
+        Options None
+        Order allow,deny
+        Allow from all
+    </Directory>
 
 -------- Standard GNU INSTALL Instructions Follow --------------------
 
