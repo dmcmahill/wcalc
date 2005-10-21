@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.19 2005/10/20 22:46:56 dan Exp $
+## $Id: Makefile.am,v 1.20 2005/10/21 03:49:52 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -50,7 +50,7 @@ MEXSFX=	@MEXSFX@
 MATLAB_DIR=	@MATLAB_DIR@
 
 pkglibexecdir=	${libexecdir}/matlab/${PACKAGE}-${VERSION}
-pkglibexec_DATA=	${MEX_FILES} ${MEX_MANS}
+pkglibexec_DATA=	${MEX_MANS}
 
 noinst_SCRIPTS=		runmatlab
 
@@ -66,9 +66,10 @@ MEXLDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I.. -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
-all-local:	${MEX_FILES} runmatlab ${MEX_MANS}
+all-local:	${MEX_LA_FILES} runmatlab ${MEX_MANS}
 
-CLEANFILES=	${MEX_FILES} ${MEX_LA_FILES} ${MEX_MANS} runmatlab
+CLEANFILES=	${MEX_FILES} ${MEX_LA_FILES} runmatlab
+MAINTAINERCLEANFILES=	${MEX_MANS}
 
 runmatlab:	$(srcdir)/runmatlab.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runmatlab.in > $@
@@ -78,9 +79,9 @@ runmatlab:	$(srcdir)/runmatlab.in
 EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS} alert.c
 
 # All the new suffix rules
-SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
+SUFFIXES= .c .${MEXSFX}.la .m .txt
 
-.c.${MEXSFX} :
+.c.${MEXSFX}.la :
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 TARGETPROGRAM=	matlab
