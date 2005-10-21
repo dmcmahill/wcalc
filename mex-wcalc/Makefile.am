@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.18 2005/10/20 00:37:08 dan Exp $
+## $Id: Makefile.am,v 1.19 2005/10/20 22:46:56 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -75,7 +75,7 @@ runmatlab:	$(srcdir)/runmatlab.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS}
+EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS} alert.c
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
