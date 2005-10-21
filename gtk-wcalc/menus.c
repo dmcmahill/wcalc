@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.10 2004/08/05 12:35:31 dan Exp $ */
+/* $Id: menus.c,v 1.11 2005/02/12 15:20:40 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -181,7 +181,8 @@ void get_main_menu( Wcalc *wcalc,
   /* Attach the new accelerator group to the window. */
   /* XXX gtk-2.2 */
 #if GTK_CHECK_VERSION(2,0,0)
-  _gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
+  /* _gtk_accel_group_attach (accel_group, GTK_OBJECT (window)); */
+  gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 #else
   gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
 #endif
