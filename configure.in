@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.81 2005/10/20 02:01:58 dan Exp $
+dnl $Id: configure.in,v 1.82 2005/10/20 22:21:57 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -489,9 +489,9 @@ AC_SUBST(HTDOCS)
 # ------------- enable/disable sourceforge content  ---------
 
 wc_sf_wcalc_yesno=no
-AC_MSG_CHECKING([if the sourceforge specific content should be added])
+AC_MSG_CHECKING([if the sourceforge specific web content should be added])
 AC_ARG_ENABLE([sourceforge],
-[  --enable-sourceforge    Causes the sourceforge specific content to be added [default=no]],
+[  --enable-sourceforge    Causes the sourceforge specific web content to be added [default=no]],
 [
 if test "X$enable_sourceforge" = "Xno" ; then
 	SOURCEFORGE_NO=""
