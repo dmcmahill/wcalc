@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-12 11:48-0400\n"
+"POT-Creation-Date: 2005-10-20 23:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,12 +112,12 @@ msgstr ""
 msgid "/_Help/_Material Properties/_Wire Sizes"
 msgstr ""
 
-#: gtk-wcalc/menus.c:205
+#: gtk-wcalc/menus.c:206
 #, c-format
 msgid "window_close():  Called with input pointer %p\n"
 msgstr ""
 
-#: gtk-wcalc/menus.c:206
+#: gtk-wcalc/menus.c:207
 #, c-format
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
