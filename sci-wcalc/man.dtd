@@ -1,5 +1,6 @@
-<!-- $Id: man.dtd,v 1.1 2005/10/17 02:21:37 dan Exp $ -->
+<!-- $Id: man.dtd,v 1.2 2005/10/20 22:24:28 dan Exp $ -->
 <!-- XML thingy for man pages -->
+<!ELEMENT TOP (MAN)>
 <!ELEMENT MAN (NAME, SHORTDESCR, SYNOPSIS, 
 PARAMETERS, DESCRIPTION, EXAMPLE?, SEE_ALSO?, AUTHOR?, BUGS?)>
 

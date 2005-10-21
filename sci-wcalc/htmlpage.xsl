@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: htmlpage.xsl,v 1.3 2005/10/20 03:17:14 dan Exp $ -->
+<!-- $Id: htmlpage.xsl,v 1.4 2005/10/20 22:24:26 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html" indent="yes"  />
 <xsl:strip-space elements="*"/>
@@ -8,7 +8,9 @@
 <xsl:param name="path"/>
 <xsl:param name="suffix">htm</xsl:param>
 
-<xsl:template match="MAN">
+<xsl:template match="TOP">
+<xsl:choose>
+<xsl:when test="$header = 'yes'">
 <html>
 <xsl:if test="$header = 'yes'">
 <head>
@@ -25,8 +27,19 @@
 
 </xsl:if>
 <body bgcolor="#ffffff" text="#000000" link="#3535c5" vlink="#700080">
+<xsl:apply-templates/>
 
-<xsl:value-of select="NAME"/> - <xsl:value-of select="SHORTDESCR"/>
+</body>
+</html>
+</xsl:when>
+<xsl:otherwise>
+<xsl:apply-templates/>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+<xsl:template match="MAN">
+<h1><xsl:value-of select="NAME"/> - <xsl:value-of select="SHORTDESCR"/></h1>
 
 <h2>SYNOPSIS</h2>
 
@@ -129,10 +142,8 @@
 <p>
 <xsl:value-of select="BUGS"/>
 </p>
-
-</body>
-</html>
 </xsl:template>
+
 
 <xsl:template match="*"/>
 

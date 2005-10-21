@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.1 2005/10/20 03:17:12 dan Exp $
+## $Id: common-man.mk,v 1.2 2005/10/20 22:25:44 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -89,6 +89,7 @@ SUFFIXES=	.shtml .html .cat .xml
 .xml.shtml :
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
+		--stringparam header "no" \
 		--stringparam suffix "${HTMLSUFFIX}" \
 		--stringparam header "no" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< >> $@
 	cat $(srcdir)/man_end.incl >> $@

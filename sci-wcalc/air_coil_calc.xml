@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
+<TOP>
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: air_coil_calc.xml,v 1.3 2005/10/20 22:24:24 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -130,3 +131,5 @@ None known
 </BUGS>
 
 </MAN>
+</TOP>
+
