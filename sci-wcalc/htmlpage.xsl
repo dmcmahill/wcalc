@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: htmlpage.xsl,v 1.4 2005/10/20 22:24:26 dan Exp $ -->
+<!-- $Id: htmlpage.xsl,v 1.5 2005/10/21 02:05:13 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html" indent="yes"  />
 <xsl:strip-space elements="*"/>
@@ -39,7 +39,7 @@
 </xsl:template>
 
 <xsl:template match="MAN">
-<h1><xsl:value-of select="NAME"/> - <xsl:value-of select="SHORTDESCR"/></h1>
+<xsl:value-of select="NAME"/> - <xsl:value-of select="SHORTDESCR"/>
 
 <h2>SYNOPSIS</h2>
 
