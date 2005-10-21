@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.44 2005/10/20 22:24:23 dan Exp $
+## $Id: Makefile.am,v 1.45 2005/10/21 03:09:20 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -56,7 +56,8 @@ libsci_wcalc_la_SOURCES = \
 	${MEX_SRCS}
 
 libsci_wcalc_la_LIBADD = @WCALC_LDADD@
-libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module
+# Scilab seems to really want the .so extension
+libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module -shrext ".so"
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 
@@ -71,32 +72,6 @@ SCIHTML=	${SCIMANS:.man=.htm}
 SCIXML=		${SCIMANS:.man=.xml}
 
 all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
-
-# FIX_ME  This is an ugly hack, but scilab seems to really want the .so
-# extension.  On, for example, Solaris-2.9/sparc libtool skips the .so
-# for a module
-install-data-hook:
-	@${ECHO} "*****************************************************************"
-	@${ECHO} "Checking to see if we need to hack around a missing .so extension"
-	@${ECHO} "*****************************************************************"
-	dlname=`grep dlname ${scilibdir}/libsci_wcalc.la` ; \
-		eval $$dlname ; \
-		if test "X$$dlname" = "Xlibsci_wcalc.so" ; then \
-			${ECHO} "No:  dlname = $$dlname" ; \
-		else \
-			${ECHO} "Yes.  Creating $$dlname -> libsci_wcalc.so link in ${scilibdir}" ; \
-			${RM} -f ${scilibdir}/libsci_wcalc.so ; \
-			cd ${scilibdir} && ${LN_S} $$dlname libsci_wcalc.so ; \
-		fi
-
-uninstall-hook:
-	@${ECHO} "*****************************************************************"
-	@${ECHO} "Checking to see if we need to hack around a missing .so extension"
-	@${ECHO} "*****************************************************************"
-	if test -f ${scilibdir}/libsci_wcalc.so ; then \
-		${ECHO} "Removing ${scilibdir}/libsci_wcalc.so link" ; \
-		${RM} ${scilibdir}/libsci_wcalc.so ;\
-	fi
 
 MAINTAINERCLEANFILES=	${SCICATS} $SCIMANS} ${SCIHTML} whatis whatis.htm
 CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
@@ -235,13 +210,13 @@ whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am $(srcdir)/whatis.xsl
 	echo "<html>" > $@
 	echo "<head>" >> $@
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">' >> $@
-	echo "<title>${PACKAGE}</title>" >> $@
+	echo "<title>${PACKAGE}-${VERSION} Functions</title>" >> $@
 	echo "</head>" >> $@
 	echo '<body bgcolor="FFFFFF">' >> $@
-	echo '<h1>${PACKAGE} Functions</h1>' >> $@
-	echo "<table>" >> $@
+	echo '<h1>${PACKAGE}-${VERSION} Functions</h1>' >> $@
+	echo "<dl>" >> $@
 	${XSLTPROC} $(srcdir)/whatis.xsl ${SCIXML}  >> $@
-	@echo "</table></body></html>" >> $@
+	@echo "</dl></body></html>" >> $@
 
 SUFFIXES=
 
