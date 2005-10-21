@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.2 2005/10/20 22:25:44 dan Exp $
+## $Id: common-man.mk,v 1.3 2005/10/21 02:05:10 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -57,7 +57,7 @@ clean-local:
 
 
 BUILT_SOURCES= left_column.incl main_footer.incl
-EXTRA_DIST= man_start.incl man_end.incl
+EXTRA_DIST= man_start.incl man_end.incl ${SCIMANHTML} ${BUILT_SOURCES}
 
 CP_INCL= sed -e 's;a href=";a href="../;g' \
 	-e 's;img src=";img src="../;g'
