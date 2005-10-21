@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mexlink,v 1.1 2004/11/20 00:23:32 dan Exp $
+# $Id: mexlink,v 1.2 2005/10/21 04:19:57 dan Exp $
 #
 # Copyright (c) 2004 Dan McMahill
 # All rights reserved.
@@ -46,7 +46,7 @@ args=""
 while test $# -ne 0 ; do
 	case $1 in
 	-o )
-		args="$args -o ${2}.la -shref ''"
+		args="$args -o ${2}.la -shrext ''"
 		shift 2
 		;;
 
