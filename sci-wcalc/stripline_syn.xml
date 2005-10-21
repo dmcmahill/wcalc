@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: stripline_syn.xml,v 1.2 2005/10/19 03:14:10 dan Exp $ -->
+<!-- $Id: stripline_syn.xml,v 1.3 2005/10/20 22:24:30 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -79,11 +79,11 @@ remaining dimensions are calculated.
 
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
     ----------------------------------------------
-   (  dielectric,er         \\/           /|\\     (
+   (  dielectric,er         \/           /|\     (
     )             -------   --            |       )
    (             | metal | Tmet           | H    (
     )             -------   --            |       )
-   (             &lt;---W---&gt;  /\\           \\|/     (
+   (             &lt;---W---&gt;  /\           \|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXXX
 

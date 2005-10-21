@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <MAN>
-<!-- $Id: coupled_microstrip_syn.xml,v 1.2 2005/10/19 03:14:08 dan Exp $ -->
+<!-- $Id: coupled_microstrip_syn.xml,v 1.3 2005/10/20 22:24:26 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -95,9 +95,9 @@ velocity).
                _______       -------
               | metal |     | metal | &lt;- rho,rough
     ----------------------------------------------
-   (  dielectric                         /|\\     (
+   (  dielectric                         /|\     (
     )   er,tand                       H   |       )
-   (                                     \\|/     (
+   (                                     \|/     (
     ----------------------------------------------
     XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
 
