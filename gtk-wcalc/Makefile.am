@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.28 2004/07/29 22:38:55 dan Exp $
+## $Id: Makefile.am,v 1.29 2004/08/11 13:04:37 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -70,6 +70,9 @@ wcalc_SOURCES = \
 	${GTKTABS}
 
 man_MANS=	wcalc.1
+
+# always install the man page!
+install-data-local:	install-man
 
 pkgdata_DATA= \
 	air_coil.wc \
