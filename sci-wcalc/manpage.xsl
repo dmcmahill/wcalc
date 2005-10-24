@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
-<!-- $Id: manpage.xsl,v 1.2 2005/10/18 02:18:14 dan Exp $ -->
+<!-- $Id: manpage.xsl,v 1.3 2005/10/20 22:24:28 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="yes"  />
 <xsl:strip-space elements="*"/>
 <xsl:param name="program">scilab</xsl:param>
 <xsl:param name="section">n</xsl:param>
+
+<xsl:template match="TOP">
+<xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template match="MAN">
 <xsl:text>
@@ -83,6 +87,7 @@
 </xsl:if>
 .fi
 .SH SEE ALSO
+stdio-wcalc(1),
 <xsl:for-each select="SEE_ALSO/ALSO">
 <xsl:value-of select="."/>(<xsl:value-of select="$section"/>)<xsl:if test="position() != last()">, </xsl:if>
 </xsl:for-each>
