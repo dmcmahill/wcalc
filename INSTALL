@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.4 2005/10/13 22:39:10 dan Exp $
+$Id: INSTALL,v 1.5 2005/10/21 14:00:38 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -61,11 +61,30 @@ To try out the matlab interface before installing:
   cd mex-wcalc && ./runmatlab
 
 After installing, just add the wcalc directory to your
-path in matlab with addpath.
+path in matlab with addpath.  This is typically 
+done with something like:
+
+  addpath('/usr/local/libexec/matlab/wcalc-0.7')
+
+in your ~/matlab/startup.m file.
+
+After building mex-wcalc, the file mex-wcalc/matlab_startup.m should have
+the correct paths for your system.
+
+
 -------------------------------------------------
 To try out the octave interface before installing:
 
   cd octave-wcalc && ./runoctave
+
+After installing, you may need to add something like the following
+to your ~/.octaverc file:
+
+  LOADPATH = [ '/usr/local/libexec/octave/2.1.64/site/oct/alpha--netbsd/:/usr/local/share/octave/2.1.64/site/m/:', LOADPATH ];
+  EXEC_PATH = [ ''/usr/local/libexec/octave/2.1.64/site/oct/alpha--netbsd/:', EXEC_PATH ];
+
+After building octave-wcalc, the file octave-wcalc/octaverc should have the correct paths for
+your system.
 
 -------------------------------------------------
 To try out the scilab interface before installing:
@@ -80,7 +99,10 @@ After installing, you'll want to put
 
    exec load_wcalc.sce;
 
-   in your scilab startup file (~/.scilab).
+in your scilab startup file (~/.scilab).
+
+After building sci-wcalc, the file sci-wcalc/dot_scilab should have
+the correct paths for your system.
 
 -------------------------------------------------
 To configure apache's http server to work with the cgi scripts and web
