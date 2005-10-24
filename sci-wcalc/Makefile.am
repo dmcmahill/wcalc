@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.45 2005/10/21 03:09:20 dan Exp $
+## $Id: Makefile.am,v 1.46 2005/10/21 12:55:43 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -71,10 +71,11 @@ SCICATS=	${SCIMANS:.man=.cat}
 SCIHTML=	${SCIMANS:.man=.htm}
 SCIXML=		${SCIMANS:.man=.xml}
 
-all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci
+all-local:	${SCIMANS} load_wcalc.sce test_wcalc.sce wcalc_test.sci dot_scilab
 
 MAINTAINERCLEANFILES=	${SCICATS} $SCIMANS} ${SCIHTML} whatis whatis.htm
-CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT}
+CLEANFILES=		load_wcalc.sce test_wcalc.sce load_wcalc.sce.in ${TEST_OUT} \
+			dot_scilab
 
 EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
@@ -217,6 +218,12 @@ whatis.htm: ${SCIMANS}  $(srcdir)/Makefile.am $(srcdir)/whatis.xsl
 	echo "<dl>" >> $@
 	${XSLTPROC} $(srcdir)/whatis.xsl ${SCIXML}  >> $@
 	@echo "</dl></body></html>" >> $@
+
+dot_scilab: $(srcdir)/dot_scilab.in
+	sed \
+		-e 's;@scidir@;${pkglibexecdir};g' \
+		-e 's;@pkgname@;${PACKAGE}-${VERSION};g' \
+		$(srcdir)/dot_scilab.in > dot_scilab
 
 SUFFIXES=
 

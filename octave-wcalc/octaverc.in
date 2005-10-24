@@ -1,0 +1,28 @@
+% $Id$
+%
+
+%
+% If you have installed octave-wcalc outside of your usual octave installation
+% hierarchy, you will need to add the following to your ~/.octaverc file:
+%
+
+LOADPATH = [ '@mysiteoct@/:@mysiteoctm@/:', LOADPATH ];
+EXEC_PATH = [ '@mysiteoct@:', EXEC_PATH ];
+
+%
+% The octave installation paths are:
+%
+%  @siteoct@
+%  @siteoctm@
+%
+% The octave-wcalc installation paths are:
+%
+%  @mysiteoct@
+%  @mysiteoctm@
+%
+%
+% If the octave paths and octave-wcalc paths are the same, then no modification to
+% your ~/.octaverc should be required.
+%
+
+

@@ -1,0 +1,12 @@
+// $Id$
+//
+
+//
+// Place the following in your ~/.scilab file to automatically
+// load sci-wcalc on scilab startup.
+//
+
+
+write(%io(2),'Loading @pkgname@');
+exec('@scidir@/load_wcalc.sce');
+

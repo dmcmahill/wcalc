@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.12 2005/10/20 00:37:09 dan Exp $
+## $Id: Makefile.am,v 1.13 2005/10/20 22:46:57 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -66,10 +66,10 @@ MEXLDFLAGS=	@WCALC_OCTLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
-all-local:	${MEX_FILES} runoctave ${MEX_MANS}
+all-local:	${MEX_FILES} runoctave ${MEX_MANS} octaverc
 
-clean-local:
-	-rm alert.o ${MEX_FILES} runoctave ${MEX_MANS} ${MEX_TMP_CXX_FILES} ${MEX_TMP_OBJ_FILES}
+CLEANFILES=	alert.o ${MEX_FILES} runoctave ${MEX_MANS} ${MEX_TMP_CXX_FILES} \
+		${MEX_TMP_OBJ_FILES} octaverc
 
 runoctave:	$(srcdir)/runoctave.in
 	sed "s;@BUILDDIR@;`pwd`;g" $(srcdir)/runoctave.in > $@
@@ -77,6 +77,14 @@ runoctave:	$(srcdir)/runoctave.in
 
 
 EXTRA_DIST=	runoctave.in copyright.m alert.c ${MEX_MANS}
+
+octaverc: $(srcdir)/octaverc.in
+	sed \
+		-e 's;@mysiteoct@;${octfiledir};g' \
+		-e 's;@mysiteoctm@;${fcnfiledir};g' \
+		-e 's;@siteoct@;${SITEOCT};g' \
+		-e 's;@siteoctm@;${SITEOCTM};g' \
+		$(srcdir)/octaverc.in > octaverc
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
