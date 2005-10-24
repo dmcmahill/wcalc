@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: coax_calc.xml,v 1.3 2005/10/20 22:24:25 dan Exp $ -->
+<!-- $Id: coax_calc.xml,v 1.4 2005/10/21 02:05:11 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -72,37 +72,40 @@ Function to analyze the electrical characteristics of a
 coaxial transmission line.
 The physical
 dimensions of the line are given as inputs and the 
-characteristic impedand and incremental circuit model
+characteristic impedance and incremental circuit model
 elements are calculated.
 </DESCRIPTION>
 
 <EXAMPLE>
 
-sf=25.4e-6;       // mils to meters conversion factor
-a=10.0*sf;        // radius of inner conductor
-b=100.0*sf;       // inner radius of outer conductor
-c=0*sf;           // offset of inner conductor
-t=5.0*sf;         // thickness of outer conductor
-rho_a=3.5e-8;     // resistivity of inner conductor
-rho_b=rho_a;      // resistivity of outer conductor
-er=9.5;           // relative permitivitty of dielectric
-tand=0.01;        // dielectric loss tangent
-len=1.0;          // length of line
-f=100e6;          // 100 MHz operation
-[z0,elen,loss,L,R,C,G,lc,ld,fc,em] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,f);
-disp(sprintf('z0   = %g Ohms',z0));
-disp(sprintf('elen = %g degrees',elen));
-disp(sprintf('loss = %g dB',loss));
-disp(sprintf('L    = %g H/m',L));
-disp(sprintf('R    = %g Ohms/m',R));
-disp(sprintf('C    = %g F/m',C));
-disp(sprintf('G    = %g S/m',G));
-disp(sprintf('Conductor loss  = %g dB/m', lc));
-disp(sprintf('Dielectric loss = %g dB/m', ld));
-disp(sprintf('TE10 cutoff     = %g GHz', fc/1e9));
-disp(sprintf('Max E field     = %g kV/m', em/1e3));
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>  <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>a=10.0*sf;</SCICMD>   <COMMENT>radius of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>b=100.0*sf;</SCICMD>  <COMMENT>inner radius of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>c=0*sf;</SCICMD>      <COMMENT>offset of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>t=5.0*sf;</SCICMD>    <COMMENT>thickness of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho_a=3.5e-8;</SCICMD><COMMENT>resistivity of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho_b=rho_a;</SCICMD> <COMMENT>resistivity of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=9.5;</SCICMD>      <COMMENT>relative permitivitty of dielectric</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>   <COMMENT>dielectric loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>len=1.0;</SCICMD>     <COMMENT>length of line</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=100e6;</SCICMD>     <COMMENT>100 MHz operation</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[z0,elen,loss,L,R,C,G,lc,ld,fc,em] = coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,f);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0   = %g Ohms',z0));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('elen = %g degrees',elen));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('loss = %g dB',loss));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('L    = %g H/m',L));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('R    = %g Ohms/m',R));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('C    = %g F/m',C));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('G    = %g S/m',G));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Conductor loss  = %g dB/m', lc));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Dielectric loss = %g dB/m', ld));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('TE10 cutoff     = %g GHz', fc/1e9));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Max E field     = %g kV/m', em/1e3));</SCICMD></SCIEX>
 
   <STDEX>
+* 50.000 ohms
+coax_calc 1.520e-3 3.5e-3 0.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
+*
   </STDEX>
 </EXAMPLE>
 

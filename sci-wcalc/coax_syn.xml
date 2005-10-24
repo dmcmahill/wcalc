@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: coax_syn.xml,v 1.3 2005/10/20 22:24:25 dan Exp $ -->
+<!-- $Id: coax_syn.xml,v 1.4 2005/10/21 02:05:12 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -81,30 +81,33 @@ electrical characteristics.
 
 <EXAMPLE>
 
-sf=25.4e-6;       // mils to meters conversion factor
-z0=75.0;          // desired characteristic impedance
-elen=90.0;        // desired electrical length (degrees)
-a=10.0*sf;        // radius of inner conductor
-b=100.0*sf;       // inner radius of outer conductor
-c=0*sf;           // offset of inner conductor
-t=5.0*sf;         // thickness of outer conductor
-rho_a=3.5e-8;     // resistivity of inner conductor
-rho_b=rho_a;      // resistivity of outer conductor
-er=9.5;           // relative permitivitty of dielectric
-tand=0.01;        // dielectric loss tangent
-f=100e6;          // 100 MHz operation
-flag=1;           // synthesize b
-[a,b,c,er,len] = ...
-   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);
-disp(sprintf('z0   = %g Ohms',z0));
-disp(sprintf('elen = %g degrees',elen));
-disp(sprintf('a    = %g m',a));
-disp(sprintf('b    = %g m',b));
-disp(sprintf('c    = %g m',c));
-disp(sprintf('er   = %g ',er));
-disp(sprintf('len  = %g m',len));
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>  <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>z0=75.0;</SCICMD>     <COMMENT>desired characteristic impedance</COMMENT></SCIEX>
+  <SCIEX><SCICMD>elen=90.0;</SCICMD>   <COMMENT>desired electrical length (degrees)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>a=10.0*sf;</SCICMD>   <COMMENT>radius of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>b=100.0*sf;</SCICMD>  <COMMENT>inner radius of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>c=0*sf;</SCICMD>      <COMMENT>offset of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>t=5.0*sf;</SCICMD>    <COMMENT>thickness of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho_a=3.5e-8;</SCICMD><COMMENT>resistivity of inner conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho_b=rho_a;</SCICMD> <COMMENT>resistivity of outer conductor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=9.5;</SCICMD>      <COMMENT>relative permitivitty of dielectric</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>   <COMMENT>dielectric loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=100e6;</SCICMD>     <COMMENT>100 MHz operation</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=1;</SCICMD>      <COMMENT>synthesize b</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[a,b,c,er,len] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>   coax_syn(z0,elen,a,b,c,t,rho_a,rho_b,er,tand,f,flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0   = %g Ohms',z0));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('elen = %g degrees',elen));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('a    = %g m',a));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('b    = %g m',b));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('c    = %g m',c));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('er   = %g ',er));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('len  = %g m',len));</SCICMD></SCIEX>
 
   <STDEX>
+*
+coax_syn 75 90 0.25 2 0 1 3.5e-8 3.5e-8 1.0 0.0 1.0e9 0
+*
   </STDEX>
 </EXAMPLE>
 
