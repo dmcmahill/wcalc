@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.11 2005/10/21 02:53:15 dan Exp $
+## $Id: Makefile.am,v 1.12 2005/10/24 21:44:39 dan Exp $
 
 ##
 ## Copyright (c) 2004, 2005 Dan McMahill
@@ -52,7 +52,7 @@ mann_MANS=	${MEX_MANS:.man=.${MANSEC}}
 MEX_MANS=	${MEX_SRCS:.c=.man}
 
 # we always want to install manpages.  man good, info bad!
-install-local: install-man
+install-data-local: install-man
 
 RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
