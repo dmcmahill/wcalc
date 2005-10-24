@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.85 2005/10/21 15:33:24 dan Exp $
+dnl $Id: configure.in,v 1.86 2005/10/24 12:10:42 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -405,8 +405,12 @@ if test "X$OCT_WCALC" != "X"; then
 	OCTLIBEXECDIR=`$OCTAVE_CONFIG --print LIBEXECDIR`
 	AC_MSG_RESULT([$OCTLIBEXECDIR])
 
-	MYSITEOCT=`echo ${SITEOCT} | sed "s;^${OCTLIBEXECDIR};;g"`
-	MYSITEOCTM=`echo ${SITEOCTM} | sed "s;^${OCTLIBEXECDIR};;g"`
+	AC_MSG_CHECKING([for the installed octave share directory])
+	OCTDATADIR=`$OCTAVE_CONFIG --print DATADIR`
+	AC_MSG_RESULT([$OCTDATADIR])
+
+	MYSITEOCT=`echo ${SITEOCT} | sed "s;^${OCTLIBEXECDIR}/;;g"`
+	MYSITEOCTM=`echo ${SITEOCTM} | sed "s;^${OCTDATADIR}/;;g"`
 	AC_MSG_CHECKING([for where we should install octave .oct files])
 	AC_MSG_RESULT([$MYSITEOCT])
 	AC_MSG_CHECKING([for where we should install octave .m files])
