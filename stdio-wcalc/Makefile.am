@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.10 2005/10/20 22:34:19 dan Exp $
+## $Id: Makefile.am,v 1.11 2005/10/21 02:53:15 dan Exp $
 
 ##
 ## Copyright (c) 2004, 2005 Dan McMahill
@@ -45,10 +45,14 @@ bin_PROGRAMS = stdio-wcalc
 
 stdio_wcalc_SOURCES =  alert.c main.c 
 
+man_MANS=	stdio-wcalc.1
 MANSEC=		n
-man_MANS=	stdio-wcalc.1 ${MEX_MANS:.man=.${MANSEC}}
+mann_MANS=	${MEX_MANS:.man=.${MANSEC}}
 
 MEX_MANS=	${MEX_SRCS:.c=.man}
+
+# we always want to install manpages.  man good, info bad!
+install-local: install-man
 
 RUN_TESTS=	run_tests.sh
 check_SCRIPTS=	${RUN_TESTS}
