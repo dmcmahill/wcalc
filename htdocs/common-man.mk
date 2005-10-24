@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.4 2005/10/21 03:01:25 dan Exp $
+## $Id: common-man.mk,v 1.5 2005/10/21 03:48:24 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -35,8 +35,10 @@
 
 HTMLSUFFIX=	html
 
+# path to find the .xml sources for the documentation
 vpath %.xml $(top_srcdir)/sci-wcalc
 
+# gets a list of the functions
 include $(top_srcdir)/sci-wcalc/mex.mk
 
 pkgimgdatadir= @HTMLDIR@/${MPATH}
@@ -52,8 +54,7 @@ SCICATS=			${SCIMANS:.man=.cat}
 
 all-local:  whatis.incl
 
-clean-local:
-	-rm ${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
+MAINTAINERCLEANFILES=	${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
 
 
 BUILT_SOURCES= left_column.incl main_footer.incl
@@ -72,7 +73,7 @@ left_column.incl: $(srcdir)/../left_column.incl
 main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
-whatis.incl: ${SCIMANS} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
+whatis.incl: ${WC_XML} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
 	@echo "****************************************************"
 	@echo "Generating the HTML whatis table"
 	@echo "****************************************************"
