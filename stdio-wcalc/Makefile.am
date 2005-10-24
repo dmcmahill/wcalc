@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.13 2005/10/24 21:52:37 dan Exp $
+## $Id: Makefile.am,v 1.14 2005/10/24 21:54:57 dan Exp $
 
 ##
 ## Copyright (c) 2004, 2005 Dan McMahill
@@ -84,7 +84,7 @@ TEST_INPUTS= \
 REF_FILES=	${TEST_INPUTS:.dat=.ref}
 DIA_FILES=	${TEST_INPUTS:.dat=.dia}
 
-EXTRA_DIST= ${man_MANS} ${TEST_INPUTS} ${RUN_TESTS} ${REF_FILES} tests.list
+EXTRA_DIST= ${man1_MANS} ${FNMAN} ${TEST_INPUTS} ${RUN_TESTS} ${REF_FILES} tests.list
 
 DISTCLEANFILES= ${DIA_FILES} 
 
