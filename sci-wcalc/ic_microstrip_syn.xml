@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: ic_microstrip_syn.xml,v 1.4 2005/10/21 01:51:10 dan Exp $ -->
+<!-- $Id: ic_microstrip_syn.xml,v 1.5 2005/10/21 02:05:14 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -103,29 +103,34 @@ velocity).
 
 <EXAMPLE>
 
-  <SCIEX><SCICMD>z0=75</SCICMD>      <COMMENT>desired impedance</COMMENT></SCIEX>
-  <SCIEX><SCICMD>elen=90</SCICMD>    <COMMENT>desired electrical length (degrees)</COMMENT></SCIEX>
-  <SCIEX><SCICMD>sf=1.0e-6</SCICMD>  <COMMENT>micron to meters conversion factor</COMMENT></SCIEX>
-  <SCIEX><SCICMD>w=160e-6</SCICMD>   <COMMENT>width </COMMENT></SCIEX>
-  <SCIEX><SCICMD>l=1000e-6</SCICMD>  <COMMENT>length</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tox=1.0e-6</SCICMD> <COMMENT>oxide thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>eox=4.0</SCICMD>    <COMMENT>oxide relative dielectric constant</COMMENT></SCIEX>
-  <SCIEX><SCICMD>h=250e-6</SCICMD>   <COMMENT>substrate thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>es=11.8</SCICMD>    <COMMENT>substrate relative dielectric constant</COMMENT></SCIEX>
-  <SCIEX><SCICMD>sigmas=10</SCICMD>  <COMMENT>substrate conductivity (1/(ohm-m))</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tmet=1.6e-6</SCICMD><COMMENT>metal thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rho=3e-8</SCICMD>   <COMMENT>metal resitivity (ohm-m)</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rough=0</SCICMD>    <COMMENT>metal surface roughness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>f=2.4e9</SCICMD>    <COMMENT>frequency</COMMENT></SCIEX>
-  <SCIEX><SCICMD>flag=0</SCICMD>     <COMMENT>synthesize width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>z0=75;</SCICMD>      <COMMENT>desired impedance</COMMENT></SCIEX>
+  <SCIEX><SCICMD>elen=90;</SCICMD>    <COMMENT>desired electrical length (degrees)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>sf=1.0e-6;</SCICMD>  <COMMENT>micron to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=160e-6;</SCICMD>   <COMMENT>width </COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1000e-6;</SCICMD>  <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tox=1.0e-6;</SCICMD> <COMMENT>oxide thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>eox=4.0;</SCICMD>    <COMMENT>oxide relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=250e-6;</SCICMD>   <COMMENT>substrate thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>es=11.8;</SCICMD>    <COMMENT>substrate relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>sigmas=10;</SCICMD>  <COMMENT>substrate conductivity (1/(ohm-m))</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.6e-6;</SCICMD><COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=3e-8;</SCICMD>   <COMMENT>metal resitivity (ohm-m)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0;</SCICMD>    <COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>    <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=0;</SCICMD>     <COMMENT>synthesize width</COMMENT></SCIEX>
   <SCIEX><SCICMD>[w_out,h_out,tox_out,l_out] = ...</SCICMD></SCIEX>
-  <SCIEX><SCICMD>    ic_microstrip_syn(z0,elen,w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f,flag)</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('w   = %8.3g um', w_out*1e6))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('h   = %8.3g um', h_out*1e6))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('tox = %8.3g um', tox_out*1e6))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('l   = %8.3g um', l_out*1e6))</SCICMD></SCIEX>
+  <SCIEX><SCICMD>    ic_microstrip_syn(z0,elen,w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f,flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('w   = %8.3g um', w_out*1e6));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('h   = %8.3g um', h_out*1e6));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('tox = %8.3g um', tox_out*1e6));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('l   = %8.3g um', l_out*1e6));</SCICMD></SCIEX>
 
   <STDEX>
+*
+ic_microstrip_syn 50.00 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 0
+ic_microstrip_syn 50.00 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 1
+ic_microstrip_syn 100.0 90.0 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9 2
+*
   </STDEX>
 </EXAMPLE>
 

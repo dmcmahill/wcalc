@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: ic_microstrip_calc.xml,v 1.4 2005/10/21 01:51:09 dan Exp $ -->
+<!-- $Id: ic_microstrip_calc.xml,v 1.5 2005/10/21 02:05:13 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -94,17 +94,17 @@ open circuit end correction are calculated.
 
 <EXAMPLE>
 
-  <SCIEX><SCICMD>w=150e-6</SCICMD>   <COMMENT>width</COMMENT></SCIEX>
-  <SCIEX><SCICMD>h=250e-6</SCICMD>   <COMMENT>substrate height</COMMENT></SCIEX>
-  <SCIEX><SCICMD>l=1000e-6</SCICMD>  <COMMENT>length</COMMENT></SCIEX>
-  <SCIEX><SCICMD>es=11.8</SCICMD>    <COMMENT>substrate permitivitty</COMMENT></SCIEX>
-  <SCIEX><SCICMD>sigmas=0.5</SCICMD> <COMMENT>substrate conductivity</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tox=1.5e-6</SCICMD> <COMMENT>oxide thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>eox=4</SCICMD>      <COMMENT>oxide permitivitty</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tmet=0.8e-6</SCICMD><COMMENT>metal thickenss</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rho=3.0e-8</SCICMD> <COMMENT>metal resitivity</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rough=0.0</SCICMD>  <COMMENT>metal surface roughness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>f=2.4e9</SCICMD>    <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=150e-6;</SCICMD>   <COMMENT>width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=250e-6;</SCICMD>   <COMMENT>substrate height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1000e-6;</SCICMD>  <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>es=11.8;</SCICMD>    <COMMENT>substrate permitivitty</COMMENT></SCIEX>
+  <SCIEX><SCICMD>sigmas=0.5;</SCICMD> <COMMENT>substrate conductivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tox=1.5e-6;</SCICMD> <COMMENT>oxide thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>eox=4;</SCICMD>      <COMMENT>oxide permitivitty</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=0.8e-6;</SCICMD><COMMENT>metal thickenss</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=3.0e-8;</SCICMD> <COMMENT>metal resitivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.0;</SCICMD>  <COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>    <COMMENT>frequency</COMMENT></SCIEX>
   <SCIEX><SCICMD>[z0,keff,elen,loss,L,R,C,G] = ...</SCICMD></SCIEX>
   <SCIEX><SCICMD>  ic_microstrip_calc(w,l,tox,eox,h,es,sigmas,tmet,rho,rough,f);</SCICMD></SCIEX>
   <SCIEX><SCICMD>disp(sprintf('z0 = %8.4g + j %8.4g Ohms', real(z0), imag(z0) ));</SCICMD></SCIEX>
@@ -117,6 +117,9 @@ open circuit end correction are calculated.
   <SCIEX><SCICMD>disp(sprintf('G  = %8.4g uMho/mm', G*1e3));</SCICMD></SCIEX>
 
   <STDEX>
+* MIS microstrip calculation
+ic_microstrip_calc 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4e9
+*
   </STDEX>
 </EXAMPLE>
 
