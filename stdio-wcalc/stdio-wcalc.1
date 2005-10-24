@@ -1,4 +1,4 @@
-.\"	$Id: stdio-wcalc.1,v 1.4 2004/11/24 02:15:55 dan Exp $
+.\"	$Id: stdio-wcalc.1,v 1.5 2004/11/24 03:39:18 dan Exp $
 .\"
 .\" Copyright (c), 2004 Dan McMahill <mcmahill@alum.mit.edu>
 .\" All rights reserved.
@@ -63,10 +63,12 @@ numerical arguments.
 The analysis and synthesis functions supported by
 .B stdio\-wcalc
 are the same as those in the scilab, octave, and matlab frontends
-to wcalc.  Please refer to the online documentation for one of those
-frontends for details.  The syntax used by
+to wcalc.  Please refer to the man pages listed at the end of this
+man page for details on each of the supported functions.
+The syntax used by
 .B stdio\-wcalc
-is slightly different.  Instead of [a,b,c] = somefn(x,y,z) as you
+is slightly different than scilab/octave/matlab.
+Instead of [a,b,c] = somefn(x,y,z) as you
 would use in scilab, octave, or matlab, you simply enter
 somefn x y z
 as the input line to
@@ -81,15 +83,26 @@ supports the "version" command which returns the current version
 of the program.  
 
 .SH SEE ALSO
-wcalc(1)
+wcalc(1),
+air_coil_calc(n),
+air_coil_syn(n),
+coax_calc(n),
+coax_syn(n),
+coupled_microstrip_calc(n),
+coupled_microstrip_syn(n),
+ic_microstrip_calc(n),
+ic_microstrip_syn(n),
+microstrip_calc(n),
+microstrip_syn(n),
+stripline_calc(n),
+stripline_syn(n)
 
 .SH AUTHORS
 .B Wcalc
 was written by Dan McMahill <mcmahill@alum.mit.edu>
 
 .SH BUGS
-This man page is lacking.  Please report others on the Wcalc Sourceforge
-website at http://wcalc.sf.net
+Please report any on the Wcalc Sourceforge project website at http://wcalc.sf.net
 
 
 
