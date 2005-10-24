@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.12 2005/10/24 21:44:39 dan Exp $
+## $Id: Makefile.am,v 1.13 2005/10/24 21:52:37 dan Exp $
 
 ##
 ## Copyright (c) 2004, 2005 Dan McMahill
@@ -45,9 +45,11 @@ bin_PROGRAMS = stdio-wcalc
 
 stdio_wcalc_SOURCES =  alert.c main.c 
 
-man_MANS=	stdio-wcalc.1
+man1_MANS=	stdio-wcalc.1
+mann_MANS=  ${FNMAN}
+
 MANSEC=		n
-mann_MANS=	${MEX_MANS:.man=.${MANSEC}}
+FNMAN=		${MEX_MANS:.man=.${MANSEC}}
 
 MEX_MANS=	${MEX_SRCS:.c=.man}
 
