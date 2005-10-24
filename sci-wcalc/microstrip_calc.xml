@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: microstrip_calc.xml,v 1.3 2005/10/20 22:24:28 dan Exp $ -->
+<!-- $Id: microstrip_calc.xml,v 1.4 2005/10/21 02:05:14 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -42,7 +42,7 @@
 </SHORTDESCR>
 
 <SYNOPSIS>
-[z0,elen,loss,L,R,C,G,lc,ld,deltal,depth] = microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
+[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
 </SYNOPSIS>
 
 <PARAMETERS>
@@ -57,6 +57,7 @@
   <RHS name="f">analysis frequency (Hz)</RHS>
 
   <LHS name="z0">calculated characteristic impedance (Ohms)</LHS>
+  <LHS name="keff">calculated effective relative permitivity</LHS>
   <LHS name="elen">calculated electrical length of the line (degrees)</LHS>
   <LHS name="loss">calculated loss of the line (dB)</LHS>
   <LHS name="L">calculated inductance per length (Henries/meter)</LHS>
@@ -96,29 +97,30 @@ velocity).
 
 <EXAMPLE>
 
-  <SCIEX><SCICMD>sf=25.4e-6</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
-  <SCIEX><SCICMD>w=20*sf</SCICMD>      <COMMENT>width</COMMENT></SCIEX>
-  <SCIEX><SCICMD>h=15*sf</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
-  <SCIEX><SCICMD>l=1100*sf</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tmet=1.4*sf</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rho=1.72e-8</SCICMD>  <COMMENT>resitivity</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rough=0.05*sf</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>er=4.5</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
-  <SCIEX><SCICMD>tand=0.01</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
-  <SCIEX><SCICMD>f=2.4e9</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
-  <SCIEX><SCICMD>[z0,elen,loss,L,R,C,G,lc,ld,deltal,depth] = ...</SCICMD></SCIEX>
-  <SCIEX><SCICMD>  microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f)</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('z0   = %8.4g Ohms',z0))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('elen = %8.4g degrees',elen))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('loss = %8.4g dB',loss))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('L    = %8.4g H/m',L))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('R    = %8.4g Ohms/m',R))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('C    = %8.4g F/m',C))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('G    = %8.4g S/m',G))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('lc   = %8.4g dB/m',lc))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('ld   = %8.4g dB/m',ld))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('open end correction = %8.4g mil', deltal/sf))</SCICMD></SCIEX>
-  <SCIEX><SCICMD>disp(sprintf('skin depth = %8.4g um', depth*1e6))</SCICMD></SCIEX>
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=20*sf;</SCICMD>      <COMMENT>width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=15*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>  <COMMENT>resitivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>  microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0   = %8.4g Ohms', z0));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('keff = %8.4g ', keff));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('elen = %8.4g degrees', elen));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('loss = %8.4g dB', loss));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('L    = %8.4g H/m', L));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('R    = %8.4g Ohms/m', R));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('C    = %8.4g F/m', C));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('G    = %8.4g S/m', G));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('lc   = %8.4g dB/m', lc));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('ld   = %8.4g dB/m', ld));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('open end correction = %8.4g mil', deltal/sf));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('skin depth = %8.4g um', depth*1e6));</SCICMD></SCIEX>
 
   <STDEX>
 *
