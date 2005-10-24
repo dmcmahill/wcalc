@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.20 2005/10/21 03:49:52 dan Exp $
+## $Id: Makefile.am,v 1.21 2005/10/21 04:43:48 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -35,6 +35,8 @@
 
 # to find the mex source files
 vpath %.c $(top_srcdir)/sci-wcalc
+
+# to find the documentation source files
 vpath %.xml $(top_srcdir)/sci-wcalc
 
 # list of all the mex files
@@ -57,7 +59,7 @@ noinst_SCRIPTS=		runmatlab
 INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
 MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
-MEX_LA_FILES=	${MEX_FILES:.${MEXSFX}=.${MEXSFX}.la}
+MEX_LA_FILES=	${MEX_SRCS:.c=.${MEXSFX}.la}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 
 # various MEX flags
@@ -66,9 +68,9 @@ MEXLDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I.. -I$(top_srcdir)/include @WCALC_CFLAGS@
 
 
-all-local:	${MEX_LA_FILES} runmatlab ${MEX_MANS}
+all-local:	${MEX_LA_FILES} runmatlab ${MEX_MANS} matlab_startup.m
 
-CLEANFILES=	${MEX_FILES} ${MEX_LA_FILES} runmatlab
+CLEANFILES=	${MEX_FILES} ${MEX_LA_FILES} runmatlab matlab_startup.m
 MAINTAINERCLEANFILES=	${MEX_MANS}
 
 runmatlab:	$(srcdir)/runmatlab.in
@@ -77,6 +79,12 @@ runmatlab:	$(srcdir)/runmatlab.in
 
 
 EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS} alert.c
+
+matlab_startup.m: $(srcdir)/matlab_startup.m.in
+	sed \
+		-e 's;@matlabdir@;${pkglibexecdir};g' \
+		-e 's;@pkgname@;${PACKAGE}-${VERSION};g' \
+		$(srcdir)/matlab_startup.m.in > matlab_startup.m
 
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX}.la .m .txt
@@ -87,5 +95,6 @@ SUFFIXES= .c .${MEXSFX}.la .m .txt
 TARGETPROGRAM=	matlab
 HTMLSUFFIX=		htm
 
+# for the online help generation:
 include $(top_srcdir)/sci-wcalc/sciman.mk
 

@@ -1,0 +1,12 @@
+% $Id$
+%
+
+%
+% The following lines should be added to your ~/matlab/startup.m
+% to automatically load mex-wcalc on startup
+%
+
+disp('Adding @pkgname@ to your path');
+addpath('@matlabdir@');
+
+
