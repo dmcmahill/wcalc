@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: stripline_syn.xml,v 1.4 2005/10/21 01:51:10 dan Exp $ -->
+<!-- $Id: stripline_syn.xml,v 1.5 2005/10/21 02:05:15 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005 Dan McMahill
     All rights reserved.
@@ -65,6 +65,12 @@
       <ITEM name="flag=3">synthesize the metal length</ITEM>
     </ENUM>
   </RHS>
+
+  <LHS name="w_out">Calculated width of stripline line (meters)</LHS>
+  <LHS name="h_out">Calculated height of stripline line (meters)</LHS>
+  <LHS name="l_out">Calculated length of stripline line (meters)</LHS>
+  <LHS name="er_out">Calculated substrate relative permitivitty of stripline line</LHS>
+
 </PARAMETERS>
 
 <DESCRIPTION>
