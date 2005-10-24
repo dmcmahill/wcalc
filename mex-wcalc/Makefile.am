@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.21 2005/10/21 04:43:48 dan Exp $
+## $Id: Makefile.am,v 1.22 2005/10/24 16:12:05 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -58,17 +58,27 @@ noinst_SCRIPTS=		runmatlab
 
 INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
-MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
-MEX_LA_FILES=	${MEX_SRCS:.c=.${MEXSFX}.la}
-MEX_MANS=	${MEX_SRCS:.c=.m}
+MEX_FILES=		${MEX_SRCS:.c=.${MEXSFX}}
+MEX_LA_FILES=	${MEX_FILES:=.la}
+MEX_MANS=		${MEX_SRCS:.c=.m}
 
 # various MEX flags
 #MEXLDFLAGS=	@WCALC_MEXLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXLDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I.. -I$(top_srcdir)/include @WCALC_CFLAGS@
 
-
 all-local:	${MEX_LA_FILES} runmatlab ${MEX_MANS} matlab_startup.m
+
+install-data-hook:
+	for f in ${MEX_LA_FILES} ; do \
+		${LIBTOOL} --mode=install ${INSTALL_DATA} $$f ${pkglibexecdir} ; \
+	done
+
+uninstall-hook:
+	for f in ${MEX_LA_FILES} ; do \
+		${LIBTOOL} --mode=uninstall ${RM} ${pkglibexecdir}/$$f ; \
+	done
+
 
 CLEANFILES=	${MEX_FILES} ${MEX_LA_FILES} runmatlab matlab_startup.m
 MAINTAINERCLEANFILES=	${MEX_MANS}
