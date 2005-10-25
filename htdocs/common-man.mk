@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.6 2005/10/24 16:07:47 dan Exp $
+## $Id: common-man.mk,v 1.7 2005/10/25 13:29:08 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -52,10 +52,13 @@ SCIMANHTML=		${MEX_SRCS:.c=.html}
 SCIMANS=			${MEX_SRCS:.c=.man}
 SCICATS=			${SCIMANS:.man=.cat}
 
-all-local:  whatis.incl
+MAINTAINERCLEANFILES=	${SCIMANHTML} ${SCIMANSHTML} ${BUILT_SOURCES}
 
-MAINTAINERCLEANFILES=	${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
-
+# if we don't have xsltproc then we don't want to remove the provided
+# whatis.incl.   If we have xsltproc, then go ahead.
+if MISSING_XSLT
+CLEANFILES=		whatis.incl
+endif
 
 BUILT_SOURCES= left_column.incl main_footer.incl
 EXTRA_DIST= man_start.incl man_end.incl ${SCIMANHTML} ${SCIMANSHTML} ${BUILT_SOURCES} whatis.incl
@@ -73,7 +76,7 @@ left_column.incl: $(srcdir)/../left_column.incl
 main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
-whatis.incl: ${WC_XML} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
+whatis.incl: ${WC_XML} $(srcdir)/Makefile.am $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
 if MISSING_XSLT
 	@echo "****************************************************"
 	@echo "WARNING:  xsltproc and/or w3m were not found on your"
