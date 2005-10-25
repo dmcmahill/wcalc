@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# $Id: format_tab,v 1.2 2002/01/07 10:56:44 dan Exp $
+# $Id: format_tab,v 1.3 2002/01/10 18:12:50 dan Exp $
 #
 # Copyright (c) 2002 Dan McMahill
 # All rights reserved.
@@ -101,9 +101,14 @@ first==1 {
     printf("\n");
     printf("GtkWidget * %s(void)\n",gtk_fname);
     printf("{\n");
-    printf("  GtkWidget *item,*tab;\n");
+    printf("  GtkWidget *item, *tab, *scrolled_window;\n");
     printf("\n");
-    printf("  tab=gtk_table_new(0,0,FALSE);\n");
+    printf("  scrolled_window = gtk_scrolled_window_new (NULL, NULL);\n");
+    printf("  gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), 10);\n");
+    printf("  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),\n");
+    printf("          GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);\n");
+    printf("\n");
+    printf("  tab = gtk_table_new(0,0,FALSE);\n");
     printf("\n");
   }
   else if (type == "html") {
@@ -181,8 +186,11 @@ END {
       printf("    GTK_FILL, GTK_FILL,%d,%d);\n\n",
         gtk_xpad,gtk_ypad);
     }
-    printf("  gtk_widget_show_all(tab);\n\n");
-    printf("  return tab;\n}\n");
+    printf("\n");
+    printf("  gtk_scrolled_window_add_with_viewport(\n");
+    printf("          GTK_SCROLLED_WINDOW (scrolled_window), tab);\n");
+    printf("  gtk_widget_show_all(scrolled_window);\n\n");
+    printf("  return scrolled_window;\n}\n");
   }
   else if (type == "html") {
     if (html_no_table == "") {
