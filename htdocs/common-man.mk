@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.5 2005/10/21 03:48:24 dan Exp $
+## $Id: common-man.mk,v 1.6 2005/10/24 16:07:47 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -58,7 +58,7 @@ MAINTAINERCLEANFILES=	${SCIMANHTML} ${SCIMANSHTML} whatis.incl ${BUILT_SOURCES}
 
 
 BUILT_SOURCES= left_column.incl main_footer.incl
-EXTRA_DIST= man_start.incl man_end.incl ${SCIMANHTML} ${BUILT_SOURCES}
+EXTRA_DIST= man_start.incl man_end.incl ${SCIMANHTML} ${SCIMANSHTML} ${BUILT_SOURCES} whatis.incl
 
 CP_INCL= sed -e 's;a href=";a href="../;g' \
 	-e 's;img src=";img src="../;g'
@@ -74,6 +74,14 @@ main_footer.incl: $(srcdir)/../main_footer.incl
 	$(CP_INCL) $< > $@
 
 whatis.incl: ${WC_XML} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci-wcalc/whatis.xsl
+if MISSING_XSLT
+	@echo "****************************************************"
+	@echo "WARNING:  xsltproc and/or w3m were not found on your"
+	@echo "          system but $@ is out of date and needs"
+	@echo "          to be rebuilt.  Changes to the sources for "
+	@echo "          $@ will be ignored"
+	@echo "****************************************************"
+else
 	@echo "****************************************************"
 	@echo "Generating the HTML whatis table"
 	@echo "****************************************************"
@@ -84,13 +92,23 @@ whatis.incl: ${WC_XML} Makefile $(top_srcdir)/sci-wcalc/mex.mk $(top_srcdir)/sci
 			$(top_srcdir)/sci-wcalc/whatis.xsl \
 			$(top_srcdir)/sci-wcalc/$$f >> $@ ; \
 	done
+endif
 
 SUFFIXES=	.shtml .html .cat .xml
 
 .xml.shtml :
+if MISSING_XSLT
+	@echo "****************************************************"
+	@echo "WARNING:  xsltproc and/or w3m were not found on your"
+	@echo "          system but $@ is out of date and needs"
+	@echo "          to be rebuilt.  Changes to $<"
+	@echo "          will be ignored"
+	@echo "****************************************************"
+else
 	sed 's;@fname@;$*;g' $(srcdir)/man_start.incl > $@
 	${XSLTPROC} --stringparam program "${TARGETPROGRAM}" \
 		--stringparam suffix "${HTMLSUFFIX}" \
 		--stringparam header "no" $(top_srcdir)/sci-wcalc/htmlpage.xsl $< >> $@
 	cat $(srcdir)/man_end.incl >> $@
+endif
 
