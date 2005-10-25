@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.29 2004/08/11 13:04:37 dan Exp $
+## $Id: Makefile.am,v 1.30 2005/10/24 22:45:08 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -121,7 +121,7 @@ distclean-local:
 
 runwcalc:	$(srcdir)/runwcalc.in
 	sed	-e "s;@BUILDDIR@;`pwd`;g" \
-		-e 's;@TOPSRCDIR@;${top_srcdir};g' $< > $@
+		-e 's;@TOPSRCDIR@;${top_srcdir};g' $(srcdir)/runwcalc.in > $@
 	chmod 755 $@
 
 AWG.c: AWG.asciitab
