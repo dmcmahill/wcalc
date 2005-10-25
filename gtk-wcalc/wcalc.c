@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.23 2005/02/12 01:39:01 dan Exp $ */
+/* $Id: wcalc.c,v 1.24 2005/02/12 15:20:41 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -157,6 +157,7 @@ int main( int   argc,
           char *argv[] )
 {
   char *localedir;
+  int i;
 
   setlocale (LC_ALL, "");
   /* This lets you set a directory for the locale stuff for pre-install testing */
@@ -182,11 +183,17 @@ int main( int   argc,
 
   /* handle command line arguments */
 
+  for(i = 1; i < argc; i++) {
+   wcalc_setup(argv[i], -1, NULL);
+  }
   /*
    * the splash screen and also ask for what type of model for a new
-   * calculator or if we should open an existing design 
+   * calculator or if we should open an existing design.  If we already
+   * opened a design from the command line, then skip the splash screen.
    */
-  start_popup();
+  if( wcalc_num_windows() == 0 ) {
+    start_popup();
+  }
 
   gtk_main ();
 
@@ -550,7 +557,7 @@ void wcalc_set_title(Wcalc * wcalc)
   if (wcalc->file_name != NULL) {
     /* extract the basefile name */
     wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
-    while(--wcalc->file_basename > wcalc->file_name){
+    while(--wcalc->file_basename >= wcalc->file_name){
       if(*wcalc->file_basename == G_DIR_SEPARATOR)
 	break;
     }
@@ -567,6 +574,7 @@ void wcalc_set_title(Wcalc * wcalc)
   len += strlen(": ");
   len += strlen(wcalc->file_basename);
   len++;  /* for the '*' when file->save is needed */
+  len++;  /* for the '\0' */
 
   wcalc->window_title=g_malloc(len*sizeof(char));
   sprintf(wcalc->window_title,"Wcalc: %s: %s ",
