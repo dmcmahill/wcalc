@@ -1,8 +1,8 @@
 #! /bin/sh
 #
-# $Id: runwcalc.in,v 1.2 2002/12/18 13:56:43 dan Exp $
+# $Id: runwcalc.in,v 1.3 2004/07/28 03:24:38 dan Exp $
 #
-# Copyright (c) 2001, 2004 Dan McMahill
+# Copyright (c) 2001, 2004, 2005 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
@@ -56,5 +56,20 @@ for f in @TOPSRCDIR@/po/*.gmo ; do
 	d=`basename $f .gmo`
 done
 
-@BUILDDIR@/wcalc $*
+if [ "X$1" = "X-gdb" ]; then
+	shift
+	tmpd=/tmp/wcalctest.gdb.$$
+	tmpf=${tmpd}/gdb_cmds
+	mkdir -m 0700 ${tmpd}
+	if test $? -ne 0 ; then
+		echo "ERROR:  Could not create temp directory ${tmpd}"
+		exit 1
+	fi
+	echo set args "$@"  > $tmpf
+	exec @BUILDDIR@/../libtool --mode=execute gdb -x $tmpf @BUILDDIR@/wcalc 
+	rm -fr $tmpd
+else
+        exec @BUILDDIR@/wcalc $*
+fi
+
 
