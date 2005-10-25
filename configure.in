@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.89 2005/10/25 05:25:09 dan Exp $
+dnl $Id: configure.in,v 1.90 2005/10/25 19:48:16 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -236,8 +236,15 @@ fi
 
 if test "X$SCI_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the scilab version])
-	[SCI_VER=`$AWK  '/^[ \t]*VERSION[ \t]*=/ {print;}' $SCILAB | \
-		sed -e 's;.*VERSION.*=;;g' -e 's;\";;g' -e 's;[Ss]cilab-;;g'`]
+	if test "X$SCI_VER" = "X" ; then
+		if test -f $SCI/Version.incl ; then
+			[SCI_VER=`$AWK  '/^[ \t]*SCIVERSION[ \t]*=/ {print;}' $SCI/Version.incl | \
+				sed -e 's;.*SCIVERSION.*=;;g' -e 's;\";;g' -e 's;[Ss]cilab-;;g'`]
+		else
+			[SCI_VER=`$AWK  '/^[ \t]*VERSION[ \t]*=/ {print;}' $SCILAB | \
+				sed -e 's;.*VERSION.*=;;g' -e 's;\";;g' -e 's;[Ss]cilab-;;g'`]
+		fi
+	fi
 	AC_MSG_RESULT([$SCI_VER])
 	if test "X$SCI_VER" = "X" ; then
 		AC_ERROR([Could not extract the scilab version])
