@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.88 2005/10/24 21:06:20 dan Exp $
+dnl $Id: configure.in,v 1.89 2005/10/25 05:25:09 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -605,6 +605,10 @@ AC_MSG_CHECKING([if gtk-wcalc should be built])
 
 wc_gtk1_wcalc_yesno=no
 
+# keep track of if we're building for gtk1 because that is the program default
+# or because the user explicitly asked for gtk1
+wc_gtk1_askedfor=no
+
 AC_ARG_ENABLE([gtk1],
 [  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1 [default=yes]],
 [
@@ -614,6 +618,7 @@ if test "X$enable_gtk1" = "Xno" ; then
 else
 	GTK1=yes
 	wc_gtk1_wcalc_yesno=yes
+	wc_gtk1_askedfor=yes
 fi
 ],
 [
@@ -639,8 +644,20 @@ GTK2=no
 wc_gtk2_wcalc_yesno=no
 ])
 
+#
+# If the user has asked for gtk2 with --enable-gtk2 and not explicitly asked
+# for gtk1 with --enable-gtk1 (but got gtk1 enabled simply via the defaults)
+# then disable gtk1.  This way you can do --enable-gtk2 without needing 
+# --disable-gtk1
+#
+if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" -a "X$wc_gtk1_askedfor" = "Xno"; then
+	GTK1=no
+	wc_gtk1_wcalc_yesno=no
+fi
+
 if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" ; then
    AC_ERROR([You may not specify gtk1 and gtk2 at the same time])
+
 fi
 if test "X$GTK1" = "Xyes" -o "X$GTK2" = "Xyes" ; then
    GTK_WCALC=gtk-wcalc
