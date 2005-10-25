@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.87 2005/10/24 16:11:37 dan Exp $
+dnl $Id: configure.in,v 1.88 2005/10/24 21:06:20 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -150,8 +150,8 @@ if test "X$WCALC_CONFIG" != "Xnone" ; then
 	AC_MSG_CHECKING([installed libwcalc version])
 	WCALC_VER=`$WCALC_CONFIG --version` 
 	AC_MSG_RESULT([$WCALC_VER])
- 	if test "X$WCALC_VER" != "X0.6" ; then
-		AC_ERROR([This package needs version 0.6 of libwcalc])
+ 	if test "X$WCALC_VER" != "X${VERSION}" ; then
+		AC_ERROR([This package needs version ${VERSION} of libwcalc])
 	fi
 
 	AC_MSG_CHECKING([for libwcalc headers])
