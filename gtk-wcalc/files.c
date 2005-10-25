@@ -1,4 +1,4 @@
-/* $Id: files.c,v 1.9 2004/08/05 13:20:12 dan Exp $ */
+/* $Id: files.c,v 1.10 2005/02/12 15:20:40 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
@@ -49,6 +49,7 @@
 #include <fcntl.h>
 
 #include "files.h"
+#include "start.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -154,6 +155,9 @@ static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
 
   /* blow away the window */
   gtk_widget_destroy(window);
+
+  /* make sure we have the start window if nothing else exists */
+  if( wcalc_num_windows() == 0 ) start_popup();
 }
 
 
@@ -212,7 +216,6 @@ void wcalc_save_as(gpointer data,
 void wcalc_open(void)
 {
   GtkWidget *filew;
-    
      
   /* Create a new file selection widget */
   filew = gtk_file_selection_new ("Open");

@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.24 2005/02/12 15:20:41 dan Exp $ */
+/* $Id: wcalc.c,v 1.25 2005/10/25 20:41:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -191,9 +191,7 @@ int main( int   argc,
    * calculator or if we should open an existing design.  If we already
    * opened a design from the command line, then skip the splash screen.
    */
-  if( wcalc_num_windows() == 0 ) {
-    start_popup();
-  }
+  if( wcalc_num_windows() == 0 ) start_popup();
 
   gtk_main ();
 
@@ -349,11 +347,13 @@ void wcalc_setup (gpointer data,
 	  alert("Could not open the file\n"
 		"\"%s\"\n"
 		"for reading.", fname);
+     if(wcalc_num_windows() == 0) start_popup();
 	  return;
 	}
       } else {
 	alert("wcalc_setup():  fp == NULL and fname == NULL\n"
 	      "Please report this bug\n");
+     if(wcalc_num_windows() == 0) start_popup();
 	return ;
       }
     }
@@ -367,6 +367,7 @@ void wcalc_setup (gpointer data,
       alert("The file \n"
 	    "\"%s\"\n"
 	    "appears to be corrupted\n", fname);
+      if(wcalc_num_windows() == 0) start_popup();
       return ;
     }
 #ifdef DEBUG
@@ -399,10 +400,12 @@ void wcalc_setup (gpointer data,
 
     case -1:
       alert( "Unable to load file \"%s\"\n", fname);
+      if(wcalc_num_windows() == 0) start_popup();
       return;
 
     default:
       alert("Bad model type in \"%s\"", fname);
+      if(wcalc_num_windows() == 0) start_popup();
       return;
     }
 
@@ -426,6 +429,7 @@ void wcalc_setup (gpointer data,
   if(new_cmd == NULL){
     g_print("wcalc.c:wcalc_setup():  Sorry, I don't know how to create \"%s\"\n",
 	    model_name);
+    if(wcalc_num_windows() == 0) start_popup();
     return ;
   }
 

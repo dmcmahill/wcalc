@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.14 2005/02/12 15:20:40 dan Exp $ */
+/* $Id: start.c,v 1.15 2005/09/29 01:11:56 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -154,13 +154,6 @@ static void open_pressed (GtkWidget *w, GtkWidget *window)
 
   wcalc_open();
 
-  /*
-   * if we didn't end up with any open windows then keep the startup
-   * window open 
-   */
-  if (wcalc_num_windows() == 0)
-    return;
-
   /* unmake it modal */
   gtk_grab_remove(window);
 
@@ -196,7 +189,7 @@ void start_popup(void)
   GdkPixmap *pixmap;
   GdkBitmap *mask;
   GtkStyle *style;    
- 
+  
   /* create the initial window */
   /* XXX this was for gtk-1.2 */
   /* window = gtk_window_new(GTK_WINDOW_DIALOG); */
@@ -323,7 +316,10 @@ void start_popup(void)
   gtk_widget_show (label);
 
   /* show it */
-   gtk_widget_show (window);
+  gtk_widget_show (window);
+
+  /* unmake it modal */
+  gtk_grab_remove(window);
 }
 
 

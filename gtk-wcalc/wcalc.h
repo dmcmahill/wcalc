@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.16 2005/01/18 17:46:57 dan Exp $ */
+/*      $Id: wcalc.h,v 1.17 2005/02/12 01:39:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -79,7 +79,6 @@ GList *global_model_defaults;
 /* Global printer page setup */
 print_config *global_print_config;
 
-  
 /* Format string used by many forms and postscript output */
 #define WC_FMT_G "%.4g"
 
