@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.47 2005/10/24 16:13:23 dan Exp $
+## $Id: Makefile.am,v 1.48 2005/10/26 00:02:04 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -41,7 +41,9 @@ sciman_DATA=	${SCIHTML} ${SCIMANS} ${SCICATS} whatis whatis.htm
 demodir=		${datadir}/${PACKAGE}-${VERSION}/demos
 demo_DATA=	${SCIDEMOS}
 
-SCIDEMOS=	wcalc-demo.dem
+SCIDEMOS=	wcalc-demo.dem \
+	air_coil_calc.dem \
+	air_coil_syn.dem
 
 SCI_VER=		@SCI_VER@
 scilibdir=	${libdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}
