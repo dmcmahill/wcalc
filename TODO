@@ -1,8 +1,16 @@
-$Id: TODO,v 1.1 2001/09/16 14:28:22 dan Exp $
+$Id: TODO,v 1.2 2005/10/21 13:42:20 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
 - testing!
+
+- find a good way to add regression tests to the octave/matlab/scilab
+  frontend
+
+- find a good way to add regression tests to the cgi frontend
+
+- come up with an "acceptance" plan for doing quality control on the gtk
+  frontend.
 
 - Air Coil.  Read RF Design, Jan 1998 and Applied Microwave & Wireless, 
   Nov/Dec 1997 for transmission line based model for helical coils.
