@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.14 2005/10/24 16:13:22 dan Exp $
+## $Id: Makefile.am,v 1.15 2005/10/27 12:53:46 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -47,8 +47,8 @@ MEX=	@OCTMEX@
 # the suffix for the compiled mex file
 MEXSFX=	oct
 
-octfiledir=	${libexecdir}/@MYSITEOCT@
-fcnfiledir=	${libexecdir}/@MYSITEOCTM@
+octfiledir=	${libexecdir}/@MYSITEOCT@/${PACKAGE}-${VERSION}
+fcnfiledir=	${libexecdir}/@MYSITEOCTM@/${PACKAGE}-${VERSION}
 octfile_DATA=	${MEX_FILES}
 # octave embedds the help information in the .oct file so the .m
 # files are not needed
