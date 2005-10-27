@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wcalc 0.3\n"
-"POT-Creation-Date: 2005-10-20 23:46-0400\n"
+"POT-Creation-Date: 2005-10-25 18:36-0400\n"
 "PO-Revision-Date: 2003-01-07 20:08-0500\n"
 "Last-Translator: Dan McMahill <dmcmahill@netbsd.org>\n"
 "Language-Team: Dan McMahill <dmcmahill@netbsd.org>\n"
@@ -120,19 +120,19 @@ msgstr ""
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
 
-#: gtk-wcalc/start.c:250
+#: gtk-wcalc/start.c:243
 msgid "Open..."
 msgstr "Abrir..."
 
-#: gtk-wcalc/start.c:260
+#: gtk-wcalc/start.c:253
 msgid "New"
 msgstr "Nuevo"
 
-#: gtk-wcalc/start.c:279
+#: gtk-wcalc/start.c:272
 msgid "Quit"
 msgstr "Salir"
 
-#: gtk-wcalc/start.c:297
+#: gtk-wcalc/start.c:290
 msgid ""
 "**** WARNING ****\n"
 "This is a development snapshot\n"
