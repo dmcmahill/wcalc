@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.13 2005/10/20 22:46:57 dan Exp $
+## $Id: Makefile.am,v 1.14 2005/10/24 16:13:22 dan Exp $
 ##
 
 ## Copyright (c) 2002, 2004, 2005 Dan McMahill
@@ -50,7 +50,9 @@ MEXSFX=	oct
 octfiledir=	${libexecdir}/@MYSITEOCT@
 fcnfiledir=	${libexecdir}/@MYSITEOCTM@
 octfile_DATA=	${MEX_FILES}
-fcnfile_DATA=	${MEX_MANS}
+# octave embedds the help information in the .oct file so the .m
+# files are not needed
+#fcnfile_DATA=	${MEX_MANS}
 
 noinst_SCRIPTS=		runoctave
 
@@ -76,7 +78,7 @@ runoctave:	$(srcdir)/runoctave.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runoctave.in copyright.m alert.c ${MEX_MANS}
+EXTRA_DIST=	runoctave.in copyright.m alert.c ${MEX_MANS} octaverc.in
 
 octaverc: $(srcdir)/octaverc.in
 	sed \
@@ -89,7 +91,7 @@ octaverc: $(srcdir)/octaverc.in
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
 
-.c.${MEXSFX} :
+%.${MEXSFX} : %.c %.m
 	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 
