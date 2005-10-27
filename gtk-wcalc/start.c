@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.15 2005/09/29 01:11:56 dan Exp $ */
+/* $Id: start.c,v 1.16 2005/10/25 21:26:00 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -287,10 +287,12 @@ void start_popup(void)
   /*  my_vbox = gtk_vbox_new (FALSE, 1); */
   /*  gtk_box_pack_start (GTK_BOX (main_vbox), my_vbox, FALSE, TRUE, 0); */
 
+#ifdef DEVEL_VERSION
   label = gtk_label_new (_("**** WARNING ****\nThis is a development snapshot\nand it may crash and/or give totally wrong results.\nUnless you're a developer you should not be using\nthis."));
   gtk_box_pack_start (GTK_BOX (main_vbox),
 		      label, TRUE, TRUE, 0);
   gtk_widget_show (label);
+#endif
 
   /* now for the pixmap from gdk */
 
