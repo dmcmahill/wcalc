@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.22 2005/10/24 16:12:05 dan Exp $
+## $Id: Makefile.am,v 1.23 2005/10/24 20:29:29 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -88,7 +88,7 @@ runmatlab:	$(srcdir)/runmatlab.in
 	chmod 755 $@
 
 
-EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS} alert.c
+EXTRA_DIST=	runmatlab.in copyright.m mexlink ${MEX_MANS} alert.c matlab_startup.m.in
 
 matlab_startup.m: $(srcdir)/matlab_startup.m.in
 	sed \
