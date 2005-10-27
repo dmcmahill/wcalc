@@ -1,4 +1,4 @@
-/* $Id: cgi-common.h,v 1.4 2002/06/12 11:30:01 dan Exp $ */
+/* $Id: cgi-common.h,v 1.5 2005/10/13 22:39:46 dan Exp $ */
 
 /*
  * Copyright (c) 2002, 2005 Dan McMahill
@@ -42,7 +42,7 @@ void fixInputMsg(void);
 void bugMsg(void);
 
 /* desired cookie age for all cgi programs here (seconds) */
-#define COOKIE_AGE (60*60*24)
+#define COOKIE_AGE (60*60*24*180)
 
 /* XXX find a better way... */
 /* max cookie length */
