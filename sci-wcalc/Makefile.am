@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.48 2005/10/26 00:02:04 dan Exp $
+## $Id: Makefile.am,v 1.49 2005/10/26 00:16:28 dan Exp $
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
 ## All rights reserved.
@@ -36,9 +36,9 @@
 # list of all the mex files
 include $(srcdir)/mex.mk
 
-scimandir=	${datadir}/${PACKAGE}-${VERSION}/man
+scimandir=	${datadir}/${PACKAGE}-${VERSION}/sci-man
 sciman_DATA=	${SCIHTML} ${SCIMANS} ${SCICATS} whatis whatis.htm
-demodir=		${datadir}/${PACKAGE}-${VERSION}/demos
+demodir=		${datadir}/${PACKAGE}-${VERSION}/sci-demos
 demo_DATA=	${SCIDEMOS}
 
 SCIDEMOS=	wcalc-demo.dem \
@@ -169,6 +169,9 @@ load_wcalc.sce.in: $(srcdir)/mex.mk  $(srcdir)/Makefile.am
 	@echo "     scilab_functions);" >> $@
 	@echo "" >> $@
 	@echo "%helps=[%helps; \"@manpath@\", \"Wcalc\"];" >> $@
+	@echo "" >> $@
+	@echo "// make_help_index was not present prior to scilab 3.0" >> $@
+	@echo "if( exists('make_help_index') ), make_help_index(); end" >> $@
 	@echo "" >> $@
 	@echo "// demolist isn't defined in versions of scilab before 2.6" >> $@
 	@echo "if (exists('demolist') == 0), demolist=[]; end" >> $@

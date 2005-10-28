@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.11 2002/05/10 22:52:58 dan Exp $
+## $Id: Makefile.am,v 1.12 2005/10/20 22:46:15 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2005 Dan McMahill
@@ -42,8 +42,8 @@
 pkgimgdatadir= @HTMLDIR@
 pkgimgdata_DATA= ${PNGS}
 
+pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgdata_DATA=	${EPSS}
-
 
 EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
 

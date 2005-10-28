@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.30 2005/10/24 22:45:08 dan Exp $
+## $Id: Makefile.am,v 1.31 2005/10/25 12:54:08 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -74,6 +74,7 @@ man_MANS=	wcalc.1
 # always install the man page!
 install-data-local:	install-man
 
+pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgdata_DATA= \
 	air_coil.wc \
 	coax.wc \

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.30 2005/10/20 11:11:38 dan Exp $
+## $Id: Makefile.am,v 1.31 2005/10/20 22:25:44 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -43,6 +43,7 @@ SUBDIRS=	sci-man  mex-man octave-man stdio-man
 # For example, someone might install this in their personal public_html
 # directory and need to look for images in ~randomuser/images, or perhaps
 # this is installed by the webadmin under /wcalc.
+pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgimgdatadir= @HTMLDIR@
 pkgimgdata_DATA= ${PNGS} ${HTML_OUT} favicon.ico
 
