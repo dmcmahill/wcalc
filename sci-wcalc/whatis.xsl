@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
-<!-- $Id: whatis.xsl,v 1.4 2005/10/21 12:55:44 dan Exp $ -->
+<!-- $Id: whatis.xsl,v 1.5 2005/10/24 20:38:09 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html" indent="yes"  />
 <xsl:strip-space elements="*"/>
 <xsl:param name="path"/>
 <xsl:param name="suffix">htm</xsl:param>
 
+<!-- We use upper case on the A HREF bit because the scilab help
+     browser is very fragile in its parsing of whatis.htm to generate
+     a tree list -->
 <xsl:template match="TOP/MAN">
-<dd><a href="{$path}{NAME}.{$suffix}"><xsl:value-of select="NAME"/></a> - <xsl:value-of select="SHORTDESCR"/></dd>
+<dd><A HREF="{$path}{NAME}.{$suffix}"><xsl:value-of select="NAME"/></A> - <xsl:value-of select="SHORTDESCR"/></dd>
 </xsl:template>
 
 </xsl:stylesheet>
