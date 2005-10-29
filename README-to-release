@@ -1,0 +1,77 @@
+#!/bin/sh
+#
+# $Id: README.snapshots,v 1.4 2004/09/24 02:02:41 danmc Exp $
+#
+
+This documents what is done to create a wcalc release.  The releases now
+are done by branching the sources, fixing up the release version number
+in the branch and then tagging the release branch sources.  The motivation
+for a branch rather than a tag is to make it easier to deal with setting
+the snapshot version number in the documentation, distfile, and the
+about dialog box.  
+
+After following the steps below,
+upload the 'wcalc-$VERSION.tar.gz' file to the sourceforge file release system
+
+
+To make a wcalc release do the following:
+
+
+=)	# make sure it makes distfiles ok:
+	gmake distclean ; ./autogen.sh  && ./configure && gmake distcheck
+
+=)	cvs ci
+
+=)	update the ChangeLog with 'cvs2cl.pl'.  Check in changes
+
+=)	update the NEWS file with some sort of release notes
+	summary.  Check in changes
+
+=)	if this is a major release, then tag and branch:
+
+	1. Tag the base of the release branch
+		cvs tag wcalc-0_9-base 
+
+	2. Create the release branch
+		cvs tag -R -b -r wcalc-0_9-base wcalc-0_9
+
+	3. FIX_ME [fix up this step.  what shall we do with the version
+	   on the trunk?]
+	   On the trunk, update configure.in to update the version
+		for example 1.99x after releasing 1.99w
+		cvs update -PdA
+		vi configure.in
+		cvs ci configure.in
+
+	4. On the release branch, update configure.in to update the version
+		for example 0_9_ALPHA.  Now pre-release snapshots can be made.
+		cvs update -PdA -r wcalc-0_9
+
+	5. If desired tag an alpha release:
+		cvs update -PdA -r wcalc-0_9
+		./autogen.sh
+		cvs tag -R -r wcalc-0_9 wcalc-0_9-ALPHA
+		cvs update -PdA -r wcalc-0_9-ALPHA
+		./autogen.sh && ./configure && gmake distcheck
+
+	6. When the release branch is ready to go,  update configure.in to
+	   set the final release version.  Then tag the release.
+		cvs update -PdA -r wcalc-0_9
+		vi configure.in
+		cvs ci configure.in
+		./autogen.sh
+		cvs ci
+		cvs tag -R -r wcalc-0_9 wcalc-0_9-RELEASE
+		cvs update -PdA -r wcalc-0_9-RELEASE
+		./autogen.sh && gmake distcheck
+
+	7. Return to your regularly scheduled trunk development
+		cvs update -PdA
+
+=) 	if this is a patch release, then simply make desired changes to the branch, and
+		./autogen.sh 
+		cvs ci
+		cvs tag -R -r wcalc-0_9 wcalc-0_9-PATCH001
+
+=)	gmake distclean ; ./autogen.sh && gmake distcheck
+
