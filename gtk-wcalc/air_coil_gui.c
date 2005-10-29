@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.16 2005/10/11 01:57:55 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.17 2005/10/11 10:35:34 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -250,7 +250,7 @@ static void values_init(air_coil_gui *gui,
   
 
   /* Analyze button */
-  gui->button_analyze = gtk_button_new_with_label (_("Analyze"));
+  gui->button_analyze = gtk_button_new_with_label (_("Analyze->"));
   gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",

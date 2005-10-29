@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.17 2004/08/30 22:59:21 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.18 2005/10/12 18:12:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -230,7 +230,7 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   
 
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze");
+  button = gtk_button_new_with_label (_("Analyze->"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",

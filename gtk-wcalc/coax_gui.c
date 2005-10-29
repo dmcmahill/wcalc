@@ -1,7 +1,7 @@
-/* $Id: coax_gui.c,v 1.30 2004/08/05 13:20:10 dan Exp $ */
+/* $Id: coax_gui.c,v 1.31 2004/08/30 22:59:16 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill

@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.12 2004/11/14 02:04:50 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.13 2005/10/12 18:12:03 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -228,7 +228,7 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
   
   /* Analyze button */
-  button = gtk_button_new_with_label ("Analyze");
+  button = gtk_button_new_with_label (_("Analyze->"));
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
