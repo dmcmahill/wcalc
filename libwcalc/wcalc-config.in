@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: wcalc-config.in,v 1.4 2004/11/12 02:14:21 dan Exp $
+# $Id: wcalc-config.in,v 1.5 2005/10/29 13:27:28 dan Exp $
 #
 
 # directories from the configure script
@@ -13,7 +13,7 @@ bindir=@bindir@
 pkgincludedir=${includedir}/@PACKAGE@-@VERSION@
 
 # other stuff from the configure script
-cflags="-I${includedir}"
+cflags="-I${pkgincludedir}"
 RPATH_FLAG="@RPATH_FLAG@"
 if test "X$RPATH_FLAG" = "X" ; then
 	libs="-L${libdir} -lwcalc @LIBS@"
