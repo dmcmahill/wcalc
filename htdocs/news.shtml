@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.1 2004/09/03 03:19:57 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.2 2005/10/12 18:12:27 dan Exp $ -->
 <!-- Copyright (c) 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -38,7 +38,7 @@ stripline synthesis,
     <HR>
     <H2><A NAME="wcalc-0.9">wcalc-0.9 released</A></H2>
     <P>
-    After 7 years in development and use among a fairly small group of people,
+    After 8 years in development and use among a fairly small group of people,
     I am pleased to announce that the first public release of wcalc is finally
     available.  While wcalc is believed to be stable at this time, it has not
     received much field testing.  Therefore I decided on calling this version
