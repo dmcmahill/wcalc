@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.31 2005/10/25 12:54:08 dan Exp $
+## $Id: Makefile.am,v 1.32 2005/10/28 21:40:29 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -138,6 +138,6 @@ AWG.asciitab: $(srcdir)/Makefile.am
 
 SUFFIXES= .asciitab
 
-.asciitab.c :
+%.c : %.asciitab $(top_srcdir)/utils/format_tab
 	$(FORMAT_TAB) gtk_fname=`basename $*_table` $< > $@
 
