@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.16 2005/09/29 01:11:55 dan Exp $ */
+/* $Id: about.c,v 1.17 2005/10/25 13:04:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -205,7 +205,7 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
    * what I want is to pick some minimum size so we don't always get
    * a tiny window.
    */
-  /* gtk_widget_set_usize (GTK_WIDGET(window), 600, 525); */
+  /*gtk_widget_set_usize (GTK_WIDGET(window), 300, 200);*/
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
@@ -220,6 +220,9 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
 
   /* add the text to the window */
   tab = table_fn();
+#if GTK_CHECK_VERSION(2,0,0)
+  gtk_widget_set_size_request (GTK_WIDGET(tab), 300, 200);
+#endif
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
 		      tab, TRUE, TRUE, 0);
   gtk_widget_show (tab);
