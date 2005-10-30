@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.25 2005/10/25 20:41:05 dan Exp $ */
+/* $Id: wcalc.c,v 1.26 2005/10/25 21:26:00 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -245,6 +245,14 @@ static void global_model_init()
 					FILE_STRIPLINE);
 }
 
+void wcalc_setup_cb (gpointer data,
+		     guint action,
+		     GtkWidget *widget)
+{
+
+  wcalc_setup(NULL, action, widget);
+}
+
 void wcalc_setup (gpointer data,
 		  guint action,
 		  GtkWidget *widget)
@@ -266,7 +274,7 @@ void wcalc_setup (gpointer data,
   int type;
 
 #ifdef DEBUG
-  g_print("wcalc.c:wcalc_setup(): action = %d\n",action);
+  g_print("wcalc.c:wcalc_setup(): action = %d\n", action);
 #endif
   
   if (action != -1) {
@@ -328,9 +336,20 @@ void wcalc_setup (gpointer data,
     }
 
 
-  }
+  } /* action != -1 */
+
+
+  /* 
+   * in the above code for action != -1, we searched for a file
+   * containing defaults for the model in question.  If we found such
+   * a file, we opened it so fp != NULL
+   */
   if ( (action == -1) || (fp != NULL) ) {
-    /* this is a file->open command */
+    /* 
+     * this is a file->open command or a file->new command
+     * We can tell because for file->open data is the name of the file
+     * for file->open.
+     */
     fname = (char *) data;
 #ifdef DEBUG
     g_print("wcalc_setup():  file open requested (%p)\n", data);
@@ -338,6 +357,10 @@ void wcalc_setup (gpointer data,
       g_print("                file = \"%s\"\n", fname);
 #endif
 
+    /*
+     * we are either reading a default file from fp or trying to load
+     * the file named in fname
+     */
     if ( fp == NULL ) {
       if( fname != NULL ) {
 #ifdef DEBUG
@@ -347,17 +370,18 @@ void wcalc_setup (gpointer data,
 	  alert("Could not open the file\n"
 		"\"%s\"\n"
 		"for reading.", fname);
-     if(wcalc_num_windows() == 0) start_popup();
+	  if(wcalc_num_windows() == 0) start_popup();
 	  return;
 	}
       } else {
 	alert("wcalc_setup():  fp == NULL and fname == NULL\n"
 	      "Please report this bug\n");
-     if(wcalc_num_windows() == 0) start_popup();
+	if(wcalc_num_windows() == 0) start_popup();
 	return ;
       }
     }
-
+    
+    /* Now it is just a normal file open */
     /* extract the _new function for our selected model */
 #ifdef DEBUG
     g_print("wcalc_setup():  extracting model type\n");
@@ -451,6 +475,10 @@ void wcalc_setup (gpointer data,
 #endif
   if ( fname != NULL ) {
     wcalc->file_name = fname;
+#ifdef DEBUG
+    g_print("wcalc_setup():  fname = \"%s\" != NULL so set wcalc->file_name\n",
+	    fname);
+#endif
   }
 
   /* Setup main window properties */
@@ -529,7 +557,8 @@ Wcalc *Wcalc_new(void)
       exit(1);
     }
 
-  new->file_basename="Untitled";
+  new->file_name = NULL;
+  new->file_basename = "Untitled";
 
   new->init_done=0;
 
@@ -557,17 +586,39 @@ void wcalc_set_title(Wcalc * wcalc)
 {
   size_t len;
 
-
+  /*
+   * If we know the file name (i.e. it is not a new window which
+   * should be called Untitled)
+   */
   if (wcalc->file_name != NULL) {
     /* extract the basefile name */
+    /* 
+     * filename = 3, len=4 means [3,4,5,6] has characters and 7 has
+     * the \0 termination.  file_name + strlen() = 7.
+     */
     wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
-    while(--wcalc->file_basename >= wcalc->file_name){
+    while(--wcalc->file_basename >= wcalc->file_name) {
       if(*wcalc->file_basename == G_DIR_SEPARATOR)
 	break;
     }
+    /*
+     * if we ended on a directory separator, then increment 1 to get
+     * the filename string.
+     * otherwise, we ended up 1 before the start of the path and
+     * incrementing by 1 gets us back to the start of the string
+     */
     wcalc->file_basename++;
+#ifdef DEBUG
+    g_print("wcalc.c:wcalc_set_title():  wcalc->file_name = %s\n", wcalc->file_name);
+    g_print("wcalc.c:wcalc_set_title():  wcalc->file_basename = %s\n", wcalc->file_basename);
+#endif
   } else {
+    /* file_name was NULL */
     wcalc->file_basename = "Untitled";
+#ifdef DEBUG
+    g_print("wcalc.c:wcalc_set_title():  wcalc->file_name = NULL\n");
+    g_print("wcalc.c:wcalc_set_title():  wcalc->file_basename = %s\n", wcalc->file_basename);
+#endif
   }
     
   if (wcalc->window_title != NULL)
@@ -584,8 +635,18 @@ void wcalc_set_title(Wcalc * wcalc)
   sprintf(wcalc->window_title,"Wcalc: %s: %s ",
 	  wcalc->model_name,
 	  wcalc->file_basename);
-  wcalc->save_needed = wcalc->window_title + len - 1;
+  /* 
+   * pointer to the last character of the window title which is either
+   * ' ' or '*' if no save is needed or a save is needed.
+   */
+  wcalc->save_needed = wcalc->window_title + strlen(wcalc->window_title) - 1;
   
+#ifdef DEBUG
+    g_print("wcalc.c:wcalc_set_title():  wcalc->window_title = \"%s\" (%p) %d len\n",
+	    wcalc->window_title, wcalc->window_title, strlen(wcalc->window_title);
+    g_print("wcalc.c:wcalc_set_title():  wcalc->file_saveneeded = \"%c\" (%p)\n", 
+	    *(wcalc->save_needed), wcalc->save_needed);
+#endif
   gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
 
 }

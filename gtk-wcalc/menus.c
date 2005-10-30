@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.12 2005/10/21 03:23:28 dan Exp $ */
+/* $Id: menus.c,v 1.13 2005/10/21 03:23:53 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -149,7 +149,7 @@ void get_main_menu( Wcalc *wcalc,
     /* add in the models */
     for (i=0; i<nmodels; i++){
       menu_items[nmenu_items+i] = (GtkItemFactoryEntry)
-      {g_list_nth_data(global_model_menus,i),NULL,wcalc_setup,i,NULL};
+	{g_list_nth_data(global_model_menus,i), NULL, wcalc_setup_cb, i, NULL};
     }
   }
 

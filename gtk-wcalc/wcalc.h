@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.17 2005/02/12 01:39:02 dan Exp $ */
+/*      $Id: wcalc.h,v 1.18 2005/10/25 21:26:01 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
@@ -181,6 +181,10 @@ typedef struct WCALC
 void wcalc_setup(gpointer data,
 		 guint action,
 		 GtkWidget *widget);
+
+void wcalc_setup_cb(gpointer data,
+		    guint action,
+		    GtkWidget *widget);
 
 Wcalc *Wcalc_new(void);
 
