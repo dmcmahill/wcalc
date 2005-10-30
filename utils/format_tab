@@ -1,8 +1,8 @@
 #!/usr/bin/awk -f
 #
-# $Id: format_tab,v 1.3 2002/01/10 18:12:50 dan Exp $
+# $Id: format_tab,v 1.4 2005/10/25 13:05:34 dan Exp $
 #
-# Copyright (c) 2002 Dan McMahill
+# Copyright (c) 2002, 2005 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
