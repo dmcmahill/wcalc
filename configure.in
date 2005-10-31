@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.91 2005/10/25 22:03:44 dan Exp $
+dnl $Id: configure.in,v 1.92 2005/10/27 15:02:19 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -78,6 +78,29 @@ AC_PATH_PROG(XPMTOPPM, xpmtoppm, notfound)
 AC_PATH_PROG(PPMTOWINICON, ppmtowinicon, notfound)
 AM_CONDITIONAL(MISSING_XPMTOPPM, test x$PPMTOWINICON = xnotfound -o x$XPMTOPPM = xnotfound)
 
+#
+# Check for how to set the run time library path.  Allow users to disable
+# since some systems have a no-rpath policy.
+#
+_use_rpath=yes
+AC_MSG_CHECKING([if hardcoding of the runtime library path is desired (rpath)])
+AC_ARG_ENABLE([rpath],
+[  --disable-rpath         Disable hardcoding the runtime library path [default=enabled]],
+[
+if test "X$enable_rpath" = "Xno" ; then
+	AC_MSG_RESULT([no])
+	_use_rpath=no
+else
+	AC_MSG_RESULT([yes])
+	_use_rpath=yes
+fi
+],
+[
+	AC_MSG_RESULT([yes])
+	_use_rpath=yes
+])
+
+if test "X${_use_rpath}" = "Xyes" ; then
 AC_LANG_PUSH(C)
 wc_save_LIBS="$LIBS"
 for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
@@ -104,6 +127,9 @@ RPATH_FLAG="$rpath"
 LIBS="$wc_save_LIBS"
 # restore the language settings
 AC_LANG_POP(C)
+else
+	RPATH_FLAG=""
+fi
 AC_SUBST(RPATH_FLAG)
 
 #
@@ -361,6 +387,7 @@ void mexFunction(
 	AC_ERROR([$OCTMEX is either broken or is not octave mex])
 )
 
+if test "X${_use_rpath}" = "Xyes" ; then
 	wc_save_LIBS="$LIBS"
 	rpath=""
 	for fl in "-R" "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
@@ -394,6 +421,9 @@ void mexFunction(
 	   OCTMEX_RPATH=""
 	fi
 	LIBS="$wc_save_LIBS"
+else
+	OCTMEX_RPATH=""
+fi
 
 	# restore the language settings
 	ac_exeext=$save_ac_exeext
@@ -929,6 +959,7 @@ void mexFunction(
 	AC_ERROR([$MEX is either broken or is not matlab mex])
 )
 
+if test "X${_use_rpath}" = "Xyes" ; then
 	wc_save_LIBS="$LIBS"
 	rpath=""
 	for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
@@ -962,7 +993,9 @@ void mexFunction(
 	   MEX_RPATH=""
 	fi
 	LIBS="$wc_save_LIBS"
-
+else
+	MEX_RPATH=""
+fi
 	# restore the language settings
 	ac_exeext=$save_ac_exeext
 	AC_LANG(C)
