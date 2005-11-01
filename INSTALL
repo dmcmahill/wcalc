@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.5 2005/10/21 14:00:38 dan Exp $
+$Id: INSTALL,v 1.6 2005/10/24 16:15:57 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -16,8 +16,8 @@ Please refer to the output of
 
   ./configure --help
 
-for the details on the options which turn on/off the various
-frontends.
+for the most up to date details on the options which turn on/off
+the various frontends.
 
 In addition to the selection of which frontends should be built,
 the CGI frontend has some configurable paths which you may wish
@@ -36,7 +36,6 @@ documentation.
 To build and install everything use:
 
 ./configure \
-        --disable-gtk1 \
         --enable-gtk2 \
         --enable-htdocs \
         --enable-stdio \
@@ -45,6 +44,13 @@ To build and install everything use:
         --with-scilab \
         --enable-cgi \
         --enable-cgistatic 
+
+to use gtk1 instead of gtk2, use --enable-gtk1 instead of
+--enable-gtk1.
+
+Users such as the debian packaging system who do not wish to
+have the runtime library path added to the binaries may use
+--disable-rpath.
 
 -------------------------------------------------
 To try out the gtk interface before installing:
@@ -97,7 +103,7 @@ To try out the scilab interface before installing:
 
 After installing, you'll want to put
 
-   exec load_wcalc.sce;
+   exec /complete/install/path/to/load_wcalc.sce;
 
 in your scilab startup file (~/.scilab).
 
@@ -105,7 +111,7 @@ After building sci-wcalc, the file sci-wcalc/dot_scilab should have
 the correct paths for your system.
 
 -------------------------------------------------
-To configure apache's http server to work with the cgi scripts and web
+To configure apache's http server to work with the cgi programs and web
 pages, I typically add something like this to the httpd.conf file which
 comes with apache:
 
@@ -130,6 +136,9 @@ like this as well:
         Order allow,deny
         Allow from all
     </Directory>
+
+Please refer to the documentation on your particular web server software
+for complete details on the web server configuration.
 
 -------- Standard GNU INSTALL Instructions Follow --------------------
 
