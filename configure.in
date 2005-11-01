@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.92 2005/10/27 15:02:19 dan Exp $
+dnl $Id: configure.in,v 1.93 2005/10/31 12:01:37 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -173,6 +173,28 @@ wc_libwcalc_yesno=yes
 
 
 if test "X$wc_libwcalc_yesno" = "Xno" ; then
+PKG_CHECK_MODULES(WCALC, wcalc = ${VERSION}, 
+	AC_MSG_CHECKING([for libwcalc headers])
+	WCALC_CFLAGS=`$PKG_CONFIG wcalc --cflags`
+	AC_MSG_RESULT([$WCALC_CFLAGS])
+	
+	AC_MSG_CHECKING([for libwcalc library])
+	WCALC_LIBS=`$PKG_CONFIG wcalc --libs`
+	AC_MSG_RESULT([$WCALC_LIBS])
+
+	PIXMAPS=
+	WCALC_LDADD=
+,
+	AC_ERROR([Unable to locate an installed libwcalc-${VERSION}])
+)
+
+fi
+
+# 
+# pkg-config seems to be the default these days instead of foo-config
+# for every pkg 'foo' so use that.
+#
+if test "X" = "Y" ; then
 AC_PATH_PROG(WCALC_CONFIG, wcalc-config, none)
 if test "X$WCALC_CONFIG" != "Xnone" ; then
 	AC_MSG_CHECKING([installed libwcalc version])
