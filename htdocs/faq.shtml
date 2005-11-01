@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: faq.shtml,v 1.4 2004/07/28 11:49:05 dan Exp $ -->
+<!-- $Id: faq.shtml,v 1.5 2004/09/02 00:51:42 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -41,7 +41,8 @@ stripline synthesis,
     <p>
 	Wcalc is primarily developed under <a href="http://www.netbsd.org">NetBSD</a>,
 	but should be easily compiled on most major unix-like operating systems.  In
-	addition, Wcalc can be compiled as a native windows application.
+	addition, it should be possible to compile Wcalc as a native windows application
+	using <a href="http://www.mingw.org/">MinGW</a>.
     </p>
 
     <H2>I can't get the matlab interface to work on my computer!</H2>
@@ -61,7 +62,7 @@ stripline synthesis,
 
     <H2>Wcalc is awesome.  Why is it free?</H2>
     <p>
-    There is lots of very good free software available.  In particular, the 
+    There is a lot of very good free software available.  In particular, the 
     <a href="http://www.netbsd.org">NetBSD operating system</a> that my computer runs
     is free, the <a href="http://www.gtk.org">GTK+ toolkit</a> used by the graphical
     interface, and <a href="http://www.scilab.org">Scilab</a> and <a href="http://www.octave.org">Octave</a>
