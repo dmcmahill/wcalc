@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.93 2005/10/31 12:01:37 dan Exp $
+dnl $Id: configure.in,v 1.94 2005/11/01 00:09:24 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -35,7 +35,7 @@ dnl SUCH DAMAGE.
 dnl
 
 AC_INIT(gtk-wcalc/wcalc.c)
-AM_INIT_AUTOMAKE(wcalc, 0.7)
+AM_INIT_AUTOMAKE(wcalc, 0.9A)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
