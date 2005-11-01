@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.6 2004/07/28 11:49:08 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- $Id: projects.shtml,v 1.7 2004/09/02 00:51:43 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -51,7 +51,10 @@ stripline synthesis,
     Spanish language translation.  I have not worked on CGI i18n.  In fact
     I'm not sure of the best way to proceed there.</LI>
     <LI>I would like to figure out how to use a field solver to provide accuracy
-    validation.</LI>
+    validation.  I have tried to use <a href="http://mmtl.sourceforge.net/">MMTL</a>
+    for comparison but haven't fully learned to use that tool yet.  Ideally I'd like
+    to have some automated scripts to plot things like impedance and velocity as
+    a function of some input parameter with both wcalc and MMTL to show how they compare.</LI>
     <LI>More models.
         <UL>
 	<LI>co-planar waveguide</LI>
