@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.17 2005/10/25 13:04:50 dan Exp $ */
+/* $Id: about.c,v 1.18 2005/10/30 17:54:37 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -52,6 +52,9 @@
 #ifdef DMALLOC
 #include <dmalloc.h>
 #endif
+
+#define ASCII_POPUP_X 600
+#define ASCII_POPUP_Y 200
 
 #define ABOUT_TEXT \
 "WaveCalc\n" \
@@ -201,11 +204,6 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW (window), title);
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
-  /*
-   * what I want is to pick some minimum size so we don't always get
-   * a tiny window.
-   */
-  /*gtk_widget_set_usize (GTK_WIDGET(window), 300, 200);*/
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
@@ -221,7 +219,9 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
   /* add the text to the window */
   tab = table_fn();
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_widget_set_size_request (GTK_WIDGET(tab), 300, 200);
+  gtk_widget_set_size_request (GTK_WIDGET(tab), ASCII_POPUP_X, ASCII_POPUP_Y);
+#else
+  gtk_widget_set_usize (GTK_WIDGET(window), ASCII_POPUP_X, ASCII_POPUP_Y);
 #endif
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
 		      tab, TRUE, TRUE, 0);
