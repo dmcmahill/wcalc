@@ -1,3 +1,2290 @@
+2005-10-31 21:00  dan
+
+	* htdocs/faq.shtml: clean up some wording
+
+2005-10-31 20:55  dan
+
+	* htdocs/tech.shtml: add notes about approximate models
+
+2005-10-31 20:46  dan
+
+	* htdocs/obtaining.shtml: note stuarts geda cdrom
+
+2005-10-31 20:40  dan
+
+	* htdocs/projects.shtml: mention mmtl as something to compare to
+
+2005-10-31 20:36  dan
+
+	* htdocs/bugs.shtml: add a note about this being a volunteer
+	  project
+
+2005-10-31 20:31  dan
+
+	* htdocs/about.shtml: update scilab homepage
+
+2005-10-31 19:09  dan
+
+	* gtk-wcalc/wcalc.c: remove some SunPRO compiler warnings
+
+2005-10-31 19:09  dan
+
+	* gtk-wcalc/about.c: attempt to make the asciitab popups startup
+	  nicer
+
+2005-10-31 19:09  dan
+
+	* INSTALL: note --disable-rpath, expand on gtk1 vs 2, clarify some
+	  other stuff
+
+2005-10-31 19:09  dan
+
+	* configure.in: use pkg-config instead of wcalc-config for
+	  installed libwcalc
+
+2005-10-31 07:01  dan
+
+	* configure.in: Add a --disable-rpath flag to turn off the use
+	  (unless libtool does some magic of its own) of rpath flags.
+	  Should help debian packagers and others who don't like rpath.
+
+2005-10-30 12:57  dan
+
+	* gtk-wcalc/: menus.c, wcalc.c, wcalc.h: - fix issues with the
+	  wcalc_setup() function.  When used as a callback I can't seem to
+	  figure out what sets the 'data' argument.  Unfortunately since
+	  that is used in some invocations of this function, we can't test
+	  its value reliably like the code assumed we could.  To work
+	  around this, add a small wrapper function, wcalc_setup_cb which
+	  is used by the file->new menu to explicitly set the callback data
+	  argument.
+
+	  This fixes issues noted by Stuart Brorson where sometimes
+	  file->new would give you random garbage instead of "Untitled" for
+	  the filename in the menu title.
+
+2005-10-30 12:54  dan
+
+	* gtk-wcalc/about.c: make the asciitab windows start up with a
+	  certain minimum size
+
+2005-10-30 12:54  dan
+
+	* gtk-wcalc/Makefile.am: make the asciitab generation have a
+	  dependency on the formatter
+
+2005-10-30 07:31  dan
+
+	* gtk-wcalc/permitivity.asciitab: SiO2 er in the correct column
+	  (not the loss tan column) (for real this time)
+
+2005-10-30 07:29  dan
+
+	* utils/format_tab: bump copyright date from last commit
+
+2005-10-30 07:28  dan
+
+	* gtk-wcalc/permitivity.asciitab: put Si and SiO2 er in the correct
+	  column (not the loss tan column)
+
+2005-10-30 01:25  dan
+
+	* gtk-wcalc/permeability.asciitab: change the last column heading
+	  from H/m to relative permeability
+
+2005-10-30 00:48  dan
+
+	* gtk-wcalc/permeability.asciitab: add some ferrite materials and
+	  remove the ??? entry for iron
+
+2005-10-29 15:07  dan
+
+	* gtk-wcalc/: air_coil_gui.c, coax_gui.c, ic_microstrip_gui.c,
+	  microstrip_gui.c, stripline_gui.c: put -> by all the analyze
+	  buttons.  Noted by Stuart Brorson
+
+2005-10-29 09:30  dan
+
+	* libwcalc/wcalc-config.in: fix the --cflags output
+
+2005-10-29 09:27  dan
+
+	* libwcalc/: wcalc.pc.in, wcalc-config.in: correct for versioned
+	  wcalc include dir
+
+2005-10-28 23:52  dan
+
+	* libwcalc/Makefile.am: bump copyright missed in last commit
+
+2005-10-28 23:51  dan
+
+	* htdocs/news.shtml: doh!  it has now been 8 years, not 7 since
+	  wcalc started
+
+2005-10-28 23:48  dan
+
+	* libwcalc/Makefile.am: move the include files to a versioned
+	  subdirectory
+
+2005-10-28 23:45  dan
+
+	* htdocs/obtaining.shtml: fix location for downloads
+
+2005-10-28 23:27  dan
+
+	* README-to-release: add release engineering notes
+
+2005-10-28 17:40  dan
+
+	* gtk-wcalc/Makefile.am, htdocs/Makefile.am, pixmaps/Makefile.am,
+	  sci-wcalc/Makefile.am: version the pkgdatadir to try and minimize
+	  what would conflict in a multiple version install
+
+2005-10-28 17:40  dan
+
+	* config.h.in: regen with DEVEL_VERSION
+
+2005-10-28 17:39  dan
+
+	* po/: es.po, wcalc.pot: defuzz
+
+2005-10-28 17:36  dan
+
+	* sci-wcalc/whatis.xsl: put the A HREF and /A stuff in all caps
+	  because the scilab help browser is somewhat brain dead and can't
+	  deal with lower case.  This gets the tree view in scilab-3.1.1's
+	  help browser to work.
+
+2005-10-27 11:02  dan
+
+	* configure.in, gtk-wcalc/start.c: add a DEVEL_VERSION preprocessor
+	  variable which if set adds the 'warning this is a development
+	  snapshot and should not be used except for testing' warning on
+	  the startup window.
+
+2005-10-27 10:56  dan
+
+	* cgi-wcalc/cgi-common.h: set the cookie age to 180 days
+
+2005-10-27 10:53  dan
+
+	* TODO: +various regression tests
+
+2005-10-27 10:46  dan
+
+	* po/: es.po, wcalc.pot: defuzz
+
+2005-10-27 09:23  dan
+
+	* octave-wcalc/Makefile.am: put the octave files in a versioned
+	  subdirectory
+
+2005-10-27 08:54  dan
+
+	* mex-wcalc/Makefile.am: distribute matlab_startup.m.in
+
+2005-10-27 08:53  dan
+
+	* octave-wcalc/Makefile.am: - do not install the .m files.  They
+	  are only used for building the .oct	files.
+
+	  - include octaverc.in in the distfile
+
+	  - make sure we add a dependency on the .m files to the .oct files
+
+2005-10-25 20:16  dan
+
+	* sci-wcalc/: Makefile.am, air_coil_calc.dem, air_coil_syn.dem,
+	  wcalc-demo.dem: fill in the demos a little bit
+
+2005-10-25 20:09  dan
+
+	* sci-wcalc/htmlpage.xsl: add URL for bug reporting
+
+2005-10-25 20:02  dan
+
+	* sci-wcalc/Makefile.am: do not forget to distribute dot_scilab.in
+
+2005-10-25 18:03  dan
+
+	* configure.in: rework the check for scilab version a bit since the
+	  old one broke with scilab-3.1.1.
+
+2005-10-25 17:26  dan
+
+	* gtk-wcalc/: files.c, start.c, wcalc.c, wcalc.h: - work around
+	  many of the issues involved with the startup window.	In
+	  particular, the startup window will come back if you click open
+	  and then cancel or pick a bad or missing file.  Also if you give
+	  a bad or missing file on the command line.  The remaining issue
+	  seems to be if you run
+
+	    wcalc badfile goodfile
+
+	  you'll end up with the startup window when you didn't really want
+	  it.  The good news is it is no longer modal so its not as much of
+	  a problem.
+
+2005-10-25 16:41  dan
+
+	* gtk-wcalc/wcalc.c: - add support for specifying .wc files on the
+	  command line - fix a buffer overrun bug (n+1 bug)
+
+2005-10-25 16:35  dan
+
+	* gtk-wcalc/runwcalc.in: add gdb support
+
+2005-10-25 15:48  dan
+
+	* configure.in: when --enable-gtk2 is given and no --enable-gtk1 is
+	  given, then override the default which requests gtk1.  Avoids
+	  having to use --enable-gtk2 --disable-gtk1.  Noted by Stuart
+	  Brorson.
+
+2005-10-25 15:23  dan
+
+	* htdocs/common-man.mk: only clean the whatis.incl file if we have
+	  the tools available on this system to rebuild whatis.incl!
+
+2005-10-25 09:29  dan
+
+	* htdocs/common-man.mk: distribute some more generated files to
+	  avoid problems with missing xsltproc
+
+2005-10-25 09:05  dan
+
+	* utils/format_tab: for the gtk version, output code which uses
+	  scrollbars to avoid having a giant window (especially for the
+	  wire size table).
+
+2005-10-25 09:04  dan
+
+	* gtk-wcalc/about.c: add some commented out code which sets the
+	  size for the asciitab generated windows.
+
+2005-10-25 08:54  dan
+
+	* gtk-wcalc/Makefile.am: do not use $< in an explicit rule.  It
+	  doesnt always work!
+
+2005-10-25 01:25  dan
+
+	* configure.in: when searching for a pre-installed libwcalc, make
+	  sure we always look for the correct version.
+
+2005-10-24 18:45  dan
+
+	* gtk-wcalc/Makefile.am: always install the man page
+
+2005-10-24 18:44  dan
+
+	* stdio-wcalc/Makefile.am: do not forget to distribute the man
+	  pages!
+
+2005-10-24 17:54  dan
+
+	* stdio-wcalc/Makefile.am: one more ugly hack to get automake to
+	  install the manpages.  grrr!
+
+2005-10-24 17:52  dan
+
+	* stdio-wcalc/Makefile.am: s/install-local/install-data-local
+
+2005-10-24 17:44  dan
+
+	* stdio-wcalc/Makefile.am: - use mann_MANS for the manpages to
+	  hopefully get automake to install them - add an install-man
+	  dependency to install-local to make sure we always install   man
+	  pages.
+
+2005-10-24 17:12  dan
+
+	* README: quickly answer the question : what is it?
+
+2005-10-24 17:08  dan
+
+	* doc/README.units: remove a bunch of out of date text
+
+2005-10-24 17:06  dan
+
+	* configure.in: look for lynx and links as well as w3m
+
+2005-10-24 17:03  dan
+
+	* stdio-wcalc/stdio-wcalc.1: list the various functions in the
+	  see-also section.
+
+2005-10-24 16:45  dan
+
+	* sci-wcalc/microstrip_calc.xml: - add missing 'keff' from the
+	  output arguments.  - add missing ';' at the ends of the
+	  scilab/octave/matlab examples
+
+2005-10-24 16:43  dan
+
+	* sci-wcalc/: ic_microstrip_calc.xml, ic_microstrip_syn.xml: Add
+	  missing ';' at the end of the scilab/octave/matlab examples.
+	  Also add missing stdio-wcalc example.
+
+2005-10-24 16:41  dan
+
+	* sci-wcalc/: coax_calc.xml, coax_syn.xml: xml-ize the example
+	  section
+
+2005-10-24 16:41  dan
+
+	* sci-wcalc/: microstrip_syn.xml, stripline_syn.xml: add missing
+	  description of output values
+
+2005-10-24 16:40  dan
+
+	* sci-wcalc/manpage.xsl: repair after addition of the TOP tag in
+	  the DTD.  Also add stdio-wcalc(1) to the 'see also' section.
+
+2005-10-24 16:38  dan
+
+	* sci-wcalc/whatis.xsl: repair after addition of the "TOP" wrapper
+	  tag in the DTD
+
+2005-10-24 16:29  dan
+
+	* mex-wcalc/Makefile.am: get install/deinstall working
+
+2005-10-24 12:15  dan
+
+	* INSTALL: add more notes on setup for {mex,octave,sci}-wcalc
+
+2005-10-24 12:13  dan
+
+	* octave-wcalc/Makefile.am, octave-wcalc/octaverc.in,
+	  sci-wcalc/Makefile.am, sci-wcalc/dot_scilab.in: use CLEANFILES
+	  instead of clean-local.  Also add example startup files to show
+	  how to load wcalc on startup.
+
+2005-10-24 12:12  dan
+
+	* mex-wcalc/: Makefile.am, matlab_startup.m.in, mexlink: finally
+	  fix mex-wcalc again.	It is reported that it builds now
+
+2005-10-24 12:11  dan
+
+	* configure.in: fix the MYSITEOCTM calculation
+
+2005-10-24 12:07  dan
+
+	* htdocs/common-man.mk: use MAINTAINERCLEANFILES instead of
+	  clean-local.	We don't want to remove everything on a 'make
+	  clean' because we want to distribute the pre-built html pages.
+
+	  Also add a few comments.
+
+2005-10-24 08:10  dan
+
+	* configure.in, mex-wcalc/mexlink, mex-wcalc/mexlink.in,
+	  mex-wcalc/mexopts.sh.in: try this again....  Creating mexlink
+	  from mexlink.in produced something which is not executible.  So,
+	  move the MEXSFX into mexopts.sh.in and pass it to mexlink.  This
+	  is better anyway because some other configure sort of options are
+	  passed in that way already.
+
+2005-10-21 11:33  dan
+
+	* configure.in, mex-wcalc/mexlink, mex-wcalc/mexlink.in: one more
+	  try at getting the right value in for the -shrext libtool
+	  argument for matlab mex files.
+
+2005-10-21 11:27  dan
+
+	* ltmain.sh: update to libtool 1.5.20
+
+2005-10-21 10:00  dan
+
+	* INSTALL: expand on the install notes quite a bit
+
+2005-10-21 09:42  dan
+
+	* TODO: remove a few done items, add even more new ones
+
+2005-10-21 09:35  dan
+
+	* po/: es.po, wcalc.pot: regen to deal with new line numbers in the
+	  source files
+
+2005-10-21 09:33  dan
+
+	* mex-wcalc/mexlink: fix a typo.  shref -> shrext
+
+2005-10-21 08:55  dan
+
+	* sci-wcalc/: Makefile.am, whatis.xsl: use <dl> instead of a table
+	  in whatis.htm to match more what scilab does
+
+2005-10-21 00:43  dan
+
+	* mex-wcalc/Makefile.am: try to correct a problem where consecutive
+	  makes rebuild things over and over due to the .la files not being
+	  the ones listed in all-local
+
+2005-10-21 00:36  dan
+
+	* mex-wcalc/runmatlab.in: added code to create a startup.m file
+	  which adds the .libs directory to the matlab search path.  This
+	  file seems to be operational again!
+
+2005-10-21 00:19  dan
+
+	* mex-wcalc/mexlink: fix the suffix of the shared module (finally!)
+
+2005-10-20 23:49  dan
+
+	* mex-wcalc/Makefile.am: be sure to distribute alert.c
+
+2005-10-20 23:48  dan
+
+	* htdocs/common-man.mk: remove duplicate --stringparam header flag
+
+2005-10-20 23:26  dan
+
+	* configure.in: bump to 0.7 since so much has happened
+
+2005-10-20 23:23  dan
+
+	* gtk-wcalc/menus.c: bump copyright for last commit
+
+2005-10-20 23:23  dan
+
+	* gtk-wcalc/menus.c: get this going with gtk-2.6 by changing from
+	  _gtk_accel_group_attach to gtk_window_add_accel_group.
+
+2005-10-20 23:09  dan
+
+	* sci-wcalc/Makefile.am: add man.dtd to the distfile
+
+2005-10-20 23:01  dan
+
+	* htdocs/common-man.mk: distribute the pre-built web pages
+
+2005-10-20 22:53  dan
+
+	* stdio-wcalc/Makefile.am: add -I../intl for libintl.h.  Needed on
+	  Darwin-6.8
+
+2005-10-20 22:07  dan
+
+	* sci-wcalc/htmlpage.xsl: remove the <h1> tags for the short
+	  description.	it was too much
+
+2005-10-20 22:05  dan
+
+	* htdocs/common-man.mk, sci-wcalc/air_coil_calc.xml,
+	  sci-wcalc/air_coil_syn.xml, sci-wcalc/coax_calc.xml,
+	  sci-wcalc/coax_syn.xml, sci-wcalc/coupled_microstrip_calc.xml,
+	  sci-wcalc/coupled_microstrip_syn.xml, sci-wcalc/htmlpage.xsl,
+	  sci-wcalc/ic_microstrip_calc.xml,
+	  sci-wcalc/ic_microstrip_syn.xml, sci-wcalc/man.dtd,
+	  sci-wcalc/microstrip_calc.xml, sci-wcalc/microstrip_syn.xml,
+	  sci-wcalc/stripline_calc.xml, sci-wcalc/stripline_syn.xml: Add a
+	  way to only output the body of the html manual pages.  This is
+	  used when generating the web docs.
+
+2005-10-20 21:51  dan
+
+	* sci-wcalc/: coupled_microstrip_calc.xml,
+	  coupled_microstrip_syn.xml, ic_microstrip_calc.xml,
+	  ic_microstrip_syn.xml, stripline_calc.xml, stripline_syn.xml:
+	  clean up the ascii art a bit
+
+2005-10-20 21:48  dan
+
+	* configure.in: clarify the sourceforge flag a bit
+
+2005-10-20 18:55  dan
+
+	* sci-wcalc/sciman.mk: add a missing quote
+
+2005-10-20 18:46  dan
+
+	* mex-wcalc/Makefile.am, octave-wcalc/Makefile.am: add some extra
+	  variables used by the common build system for the documentation.
+
+2005-10-20 18:46  dan
+
+	* pixmaps/Makefile.am: rework the conditionals for if tgif was
+	  found or not to use automake conditionals instead of my own
+	  hacked together ones.
+
+2005-10-20 18:34  dan
+
+	* stdio-wcalc/Makefile.am: install the section n man pages
+
+2005-10-20 18:25  dan
+
+	* htdocs/: Makefile.am, common-man.mk, mex-man/Makefile.am,
+	  octave-man/Makefile.am, sci-man/Makefile.am,
+	  stdio-man/Makefile.am: - move a bunch of stuff from the
+	  individual files into the common online   man page makefile.
+	  Reduces quite a bit of duplication.  - also don't forget to build
+	  favicon.ico
+
+2005-10-20 18:24  dan
+
+	* sci-wcalc/: Makefile.am, air_coil_calc.xml, air_coil_syn.xml,
+	  coax_calc.xml, coax_syn.xml, coupled_microstrip_calc.xml,
+	  coupled_microstrip_syn.xml, htmlpage.xsl, ic_microstrip_calc.xml,
+	  ic_microstrip_syn.xml, man.dtd, manpage.xsl, microstrip_calc.xml,
+	  microstrip_syn.xml, sciman.mk, stripline_calc.xml,
+	  stripline_syn.xml: - surround the ascii art of structures with
+	  <VERB> tags - fill in the 'see also' section - add support for
+	  <VERB> tags and <ALSO> tags (used in the see also   section).  -
+	  let the user specify the path and extension for html files.  Used
+	  in the   web pages.  - other minor cleanup.
+
+2005-10-20 18:21  dan
+
+	* configure.in: - check for the tools used to build favicon.ico (in
+	  htdocs).  - use an am conditional at the output of the check for
+	  tgif instead	 of rolling my own.
+
+2005-10-20 07:11  dan
+
+	* htdocs/Makefile.am: fix name of common-man.mk in EXTRA_DIST
+
+2005-10-19 23:17  dan
+
+	* htdocs/Makefile.am, htdocs/common-man.mk,
+	  htdocs/mex-man/Makefile.am, htdocs/octave-man/Makefile.am,
+	  htdocs/sci-man/Makefile.am, htdocs/stdio-man/Makefile.am,
+	  sci-wcalc/htmlpage.xsl, sci-wcalc/whatis.xsl: apply several more
+	  fixes to get the web man pages working correctly again
+
+2005-10-19 22:30  dan
+
+	* htdocs/: mex-man/Makefile.am, octave-man/Makefile.am,
+	  sci-man/Makefile.am, stdio-man/Makefile.am: instead of using the
+	  text help pages, use html ones and skip the <pre></pre> garbage.
+
+	  Also, use the correct variable for the xml files when building
+	  the whatis.incl files
+
+2005-10-19 22:25  dan
+
+	* sci-wcalc/htmlpage.xsl: add a parameter 'header'.  If set to
+	  something other than 'yes' the html header will be skipped and
+	  only the body content generated.  Useful for the web pages (not
+	  the scilab online man pages)
+
+2005-10-19 22:20  dan
+
+	* sci-wcalc/sciman.mk: add WC_{MANS,CATS,HTML,XML} for use in the
+	  other makefiles.
+
+2005-10-19 22:01  dan
+
+	* configure.in, htdocs/Makefile.am, htdocs/stdio-wcalc.shtml,
+	  htdocs/mex-man/Makefile.am, htdocs/octave-man/Makefile.am,
+	  htdocs/sci-man/Makefile.am, htdocs/stdio-man/Makefile.am,
+	  htdocs/stdio-man/man_end.incl, htdocs/stdio-man/man_start.incl:
+	  take a crack at fixing up the online man pages for the web site
+
+2005-10-19 21:10  dan
+
+	* stdio-wcalc/Makefile.am: take a crack at auto generating function
+	  man pages
+
+2005-10-19 21:05  dan
+
+	* sci-wcalc/Makefile.am: make whatis.htm depend on whatis.xsl
+
+2005-10-19 21:05  dan
+
+	* sci-wcalc/whatis.xsl: fill in the href attribute.  whatis.htm is
+	  fully functional now!
+
+2005-10-19 21:00  dan
+
+	* sci-wcalc/Makefile.am: fix the whatis.htm generation
+
+2005-10-19 20:46  dan
+
+	* sci-wcalc/: Makefile.am, whatis.xsl: rework the whatis and
+	  whatis.htm generation.  Use xsltproc to get the data from the
+	  .xml files and stuff it into whatis.htm.  Generate the text
+	  version from the html version.
+
+2005-10-19 20:37  dan
+
+	* mex-wcalc/Makefile.am, octave-wcalc/Makefile.am,
+	  sci-wcalc/sciman.mk: - move some common code out of the mex and
+	  octave directories into sciman.mk.  - put automake conditional
+	  checks around the rebuilding of the documentation.	Normally,
+	  the preformatted docs will be distributed.
+
+2005-10-19 20:34  dan
+
+	* configure.in: Add automake conditionals after the checks for the
+	  tools used in building the documentation to indicate if the docs
+	  can be rebuilt or not.
+
+2005-10-19 07:59  dan
+
+	* mex-wcalc/Makefile.am: - distribute the generated help files.
+
+	  - clean up the .txt.m: rule.	This should actually be moved to a
+	  common   place since it is now identical to the octave one.
+
+2005-10-19 07:56  dan
+
+	* octave-wcalc/Makefile.am: distribute the built help files
+
+2005-10-18 23:14  dan
+
+	* sci-wcalc/: air_coil_syn.xml, coax_calc.xml, coax_syn.xml,
+	  coupled_microstrip_calc.xml, coupled_microstrip_syn.xml,
+	  ic_microstrip_calc.xml, ic_microstrip_syn.xml,
+	  microstrip_calc.xml, microstrip_syn.xml, stripline_calc.xml,
+	  stripline_syn.xml: fix a handful of xml errors
+
+2005-10-18 22:55  dan
+
+	* sci-wcalc/: coax_calc.man, coax_calc.xml, coax_syn.man,
+	  coax_syn.xml, coupled_microstrip_calc.man,
+	  coupled_microstrip_calc.xml, coupled_microstrip_syn.man,
+	  coupled_microstrip_syn.xml, ic_microstrip_calc.man,
+	  ic_microstrip_calc.xml, ic_microstrip_syn.man,
+	  ic_microstrip_syn.xml, microstrip_calc.man, microstrip_calc.xml,
+	  microstrip_syn.man, microstrip_syn.xml, stripline_calc.man,
+	  stripline_calc.xml, stripline_syn.man, stripline_syn.xml: xml-ize
+
+2005-10-18 21:10  dan
+
+	* sci-wcalc/Makefile.am: change whats distributed and whats cleaned
+	  to reflect that xml is the source and man is generated.
+
+2005-10-18 20:36  dan
+
+	* sci-wcalc/air_coil_syn.xml: xml-ize
+
+2005-10-18 20:26  dan
+
+	* sci-wcalc/: air_coil_calc.man, air_coil_syn.man: these are
+	  generated now from the .xml files
+
+2005-10-18 20:25  dan
+
+	* configure.in, mex-wcalc/Makefile.am, octave-wcalc/Makefile.am,
+	  sci-wcalc/Makefile.am, sci-wcalc/air_coil_calc.man,
+	  sci-wcalc/htmlpage.xsl, sci-wcalc/sciman.mk: move to the new
+	  xml+xslt world order of documentation for the wcalc functions.
+	  Still need to xml-ize the various man pages.
+
+2005-10-17 22:18  dan
+
+	* sci-wcalc/: air_coil_calc.xml, manpage.xsl: hack this into
+	  reasonable working shape.
+
+2005-10-16 22:21  dan
+
+	* sci-wcalc/: man.dtd, air_coil_calc.xml, manpage.xsl: start
+	  hacking on a DTD for man pages.  Also work on a xslt file for
+	  transforming to a man page.  HTML and matlab .m format will
+	  follow once this is hashed out.  Run with:
+
+	   xsltproc --stringparam program "stdio" manpage.xsl
+	  air_coil_calc.xml
+
+	  where you use scilab/matlab/octave/stdio for the program
+	  parameter.
+
+2005-10-14 20:40  dan
+
+	* Makefile.am: always build intl and po to avoid warnings from
+	  automake
+
+2005-10-14 20:40  dan
+
+	* stdio-wcalc/main.c: add a help/? command
+
+2005-10-14 08:33  dan
+
+	* gtk-wcalc/wcalc.1: add a see-also for stdio-wcalc
+
+2005-10-13 20:00  dan
+
+	* octave-wcalc/copyright.m, mex-wcalc/copyright.m: bump copyright
+	  date on the matlab and octave help files
+
+2005-10-13 18:40  dan
+
+	* cgi-wcalc/: air_coil.html, coax.html, copying.html,
+	  coupled_microstrip.html, footer.html, header.html,
+	  ic_microstrip.html, index.html: obscure my email address
+
+2005-10-13 18:40  dan
+
+	* cgi-wcalc/: microstrip.cgi.c, stripline.cgi.c, microstrip.html,
+	  stripline.html: fix errors where length units menu was defined
+	  but not used
+
+2005-10-13 18:39  dan
+
+	* cgi-wcalc/cgi-units.c: be more verbose on errors
+
+2005-10-13 18:39  dan
+
+	* cgi-wcalc/: cgi-common.c, cgi-common.h: add info on reporting
+	  bugs on form input errors
+
+2005-10-13 18:39  dan
+
+	* INSTALL: mention that you should install the webpages for docs
+
+2005-10-13 17:32  dan
+
+	* configure.in, octave-wcalc/Makefile.am: fix the octave
+	  installation directory
+
+2005-10-13 08:18  dan
+
+	* sci-wcalc/Makefile.am: actually create the libsci_wcalc.so link
+	  if needed instead of just claiming to
+
+2005-10-13 07:30  dan
+
+	* cgi-wcalc/: coax.cgi.c, coax.html: add dielectric and conductor
+	  loss
+
+2005-10-12 14:12  dan
+
+	* htdocs/: AWG.shtml, Makefile.am, bugs.shtml, cgi-wcalc.shtml,
+	  left_column.incl, main_footer.incl, news.shtml,
+	  permeability.shtml, permitivity.shtml, resistivity.shtml,
+	  tech.shtml, units.shtml: add a tech notes page and also fix a
+	  handful of weblint complaints
+
+2005-10-12 14:12  dan
+
+	* gtk-wcalc/: coupled_microstrip_gui.c, ic_microstrip_gui.c,
+	  microstrip_gui.c, stripline_gui.c: add tooltips on the
+	  analysis/synthesis buttons
+
+2005-10-12 14:11  dan
+
+	* utils/shtml2html: instead of commenting out <SOURCEFORGE>
+	  </SOURCEFORGE> sections, just remove them.  Quiets weblint which
+	  doesn't like markup contained in commented out html.	The thing
+	  to watch out for is we have to put <SOURCEFORGE> on its own line.
+
+2005-10-12 13:47  dan
+
+	* config.h.in: regen
+
+2005-10-12 13:33  dan
+
+	* config.rpath, mkinstalldirs: update to gettext-0.14.5
+
+2005-10-12 13:05  dan
+
+	* ABOUT-NLS: update to gettext-0.14.5
+
+2005-10-12 12:30  dan
+
+	* intl/ChangeLog, intl/Makefile.in, intl/VERSION,
+	  intl/bindtextdom.c, intl/config.charset, intl/dcgettext.c,
+	  intl/dcigettext.c, intl/dcngettext.c, intl/dgettext.c,
+	  intl/dngettext.c, intl/eval-plural.h, intl/explodename.c,
+	  intl/finddomain.c, intl/gettext.c, intl/gettextP.h, intl/gmo.h,
+	  intl/hash-string.h, intl/intl-compat.c, intl/l10nflist.c,
+	  intl/langprefs.c, intl/libgnuintl.h, intl/libgnuintl.h.in,
+	  intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
+	  intl/localcharset.h, intl/locale.alias, intl/localealias.c,
+	  intl/localename.c, intl/log.c, intl/ngettext.c, intl/os2compat.c,
+	  intl/os2compat.h, intl/osdep.c, intl/plural-exp.c,
+	  intl/plural-exp.h, intl/plural.c, intl/plural.y,
+	  intl/printf-args.c, intl/printf-args.h, intl/printf-parse.c,
+	  intl/printf-parse.h, intl/printf.c, intl/ref-add.sin,
+	  intl/ref-del.sin, intl/relocatable.c, intl/relocatable.h,
+	  intl/textdomain.c, intl/vasnprintf.c, intl/vasnprintf.h,
+	  intl/vasnwprintf.h, intl/wprintf-parse.h, intl/xsize.h,
+	  m4/ChangeLog, m4/codeset.m4, m4/gettext.m4, m4/glibc2.m4,
+	  m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4, m4/intmax.m4,
+	  m4/inttypes-pri.m4, m4/inttypes.m4, m4/inttypes_h.m4,
+	  m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4,
+	  m4/lib-prefix.m4, m4/longdouble.m4, m4/longlong.m4, m4/nls.m4,
+	  m4/po.m4, m4/printf-posix.m4, m4/progtest.m4, m4/signed.m4,
+	  m4/size_max.m4, m4/stdint_h.m4, m4/uintmax_t.m4, m4/ulonglong.m4,
+	  m4/wchar_t.m4, m4/wint_t.m4, m4/xsize.m4, po/ChangeLog,
+	  po/Makefile.in.in, po/Makevars, po/Makevars.template,
+	  po/Rules-quot, po/es.po, po/wcalc.pot: update to gettext-0.14.5
+
+2005-10-12 12:30  dan
+
+	* stdio-wcalc/microstrip.ref: update the reference file because we
+	  now output more parameters
+
+2005-10-12 12:29  dan
+
+	* stdio-wcalc/coax.ref: update the reference files for some minor
+	  changes
+
+2005-10-12 12:29  dan
+
+	* autogen.sh: do not forget -I m4 when running aclocal needed by
+	  gettext
+
+2005-10-12 12:23  dan
+
+	* sci-wcalc/Makefile.am: add some hacks to make sure that
+	  libsci_wcalc.so always exists.  For some reason on
+	  Solaris-2.8/sparc, libtool -module does not use the .so suffix
+	  but scilab seems to really want the extension (at least with
+	  scilab-2.7).
+
+2005-10-11 06:35  dan
+
+	* gtk-wcalc/air_coil_gui.c: improve the tooltips a little
+
+2005-10-10 21:57  dan
+
+	* gtk-wcalc/: air_coil_gui.c, air_coil_gui.h: add tooltips on the
+	  analyze/synthesize buttons
+
+2005-09-28 21:13  dan
+
+	* COPYING: fix up copyright date
+
+2005-09-28 21:11  dan
+
+	* gtk-wcalc/: about.c, alert.c, start.c: bump copyright date in
+	  messages
+
+2005-09-28 21:09  dan
+
+	* libwcalc/coax.c: turn off the debug_calc stuff
+
+2005-09-09 10:54  dan
+
+	* autogen.sh: make this more verbose and abort on errors
+
+2005-09-09 10:40  dan
+
+	* libwcalc/coax.c: add some extra debug code using the conformal
+	  mapping functions from churchill and brown.
+
+2005-09-09 10:36  dan
+
+	* htdocs/coax.shtml: add churchill and brown reference
+
+2005-03-08 18:03  dan
+
+	* stdio-wcalc/main.c: update microstrip_calc outputs
+
+2005-02-22 07:49  dan
+
+	* htdocs/coax.shtml: add a BUGS section
+
+2005-02-22 07:48  dan
+
+	* libwcalc/coax.c: add some input sanity checks
+
+2005-02-14 18:38  dan
+
+	* libwcalc/coax.c: fix several bugs in the use of wheelers
+	  incremental inductance rule
+
+2005-02-12 14:02  dan
+
+	* gtk-wcalc/about.c: update copyright message (2005)
+
+2005-02-12 13:20  dan
+
+	* gtk-wcalc/gtk-units.c: cast a pointer to (void *) for fprintf
+
+2005-02-12 13:14  dan
+
+	* cgi-wcalc/cookie.h: remove extra comma at end of enumerator list
+
+2005-02-12 10:20  dan
+
+	* gtk-wcalc/air_coil_gui.c, gtk-wcalc/files.c, gtk-wcalc/menus.c,
+	  gtk-wcalc/start.c, gtk-wcalc/wcalc.c, libwcalc/coax.c: change
+	  some c++ style comments to c style comments
+
+2005-02-12 10:02  dan
+
+	* libwcalc/wcalc_loadsave.c: avoid some compiler warnings
+
+2005-02-11 20:39  dan
+
+	* gtk-wcalc/: start.c, wcalc.c, wcalc.h: - abort loading of a
+	  corrupted file rather than segfaulting - don't destroy the splash
+	  screen on startup unless we managed	to open at least 1 window.
+
+2005-02-11 17:46  dan
+
+	* libwcalc/wcalc_loadsave.c: make wcalc a bit more robust about
+	  being fed garbage input files.
+
+2005-01-18 12:46  dan
+
+	* gtk-wcalc/wcalc.h: #endif foo -> #endif /* foo */
+
+2005-01-18 12:46  dan
+
+	* gtk-wcalc/coupled_microstrip_gui.c: make sure that the L/R/C/G
+	  output is updated properly
+
+2005-01-06 17:55  dan
+
+	* gtk-wcalc/print.c: decrease top and bottom margins to 0.75 inches
+	  from 1.5 inches
+
+2005-01-06 17:54  dan
+
+	* gtk-wcalc/: coupled_microstrip.wc, coupled_microstrip_gui.c,
+	  coupled_microstrip_gui.h: add incremental ckt model output
+
+2005-01-06 17:53  dan
+
+	* libwcalc/defaults.c: add coupled_microstrip incremental ckt model
+	  units
+
+2005-01-06 17:53  dan
+
+	* libwcalc/: coupled_microstrip_test.c, units.c, wcalc_loadsave.c:
+	  add some debug output
+
+2005-01-06 17:53  dan
+
+	* libwcalc/coupled_microstrip_loadsave.c: add incremental ckt model
+	  units
+
+2005-01-06 17:53  dan
+
+	* libwcalc/coupled_microstrip.h: add incremental ckt model to
+	  coupled_microstrip_line structure
+
+2005-01-06 17:52  dan
+
+	* libwcalc/coupled_microstrip.c: improve warning msgs and also
+	  output an incremental ckt model (L and C only)
+
+2005-01-06 17:52  dan
+
+	* libwcalc/coax_test.c: change default freq for analysis to 2.4 GHz
+
+2004-12-22 10:39  dan
+
+	* INSTALL: fix a typo and add more notes on htdocs
+
+2004-12-09 20:56  dan
+
+	* references/: Garg_and_Bahl_MTT-27.pdf, README, Rao_MTT-22.pdf:
+	  add a few coupled microstrip articles related to loss
+
+2004-12-03 19:27  dan
+
+	* libwcalc/coax.c: add the start of the inclusion of wheelers
+	  incremental inductance rule fo rlos
+
+2004-12-03 19:26  dan
+
+	* libwcalc/stripline.c: fix comment
+
+2004-12-03 00:13  dan
+
+	* cgi-wcalc/: air_coil.html, ic_microstrip.cgi.c: remove obsolete
+	  comment
+
+2004-12-03 00:09  dan
+
+	* sci-wcalc/air_coil_calc.c: remove obsolete comment
+
+2004-12-03 00:05  dan
+
+	* sci-wcalc/: ic_microstrip_calc.c, ic_microstrip_calc.dia.ref,
+	  ic_microstrip_calc.man, ic_microstrip_calc.tst: add keff, elen,
+	  loss to ic_microstrip_calc output
+
+2004-12-02 23:58  dan
+
+	* stdio-wcalc/: ic_microstrip.dat, ic_microstrip.ref, main.c: add
+	  keff, elen, loss to ic_microstrip_calc output
+
+2004-11-24 01:29  dan
+
+	* libwcalc/coax.c: improve a comment
+
+2004-11-24 01:22  dan
+
+	* libwcalc/air_coil.c: remove comment about resistivity not being
+	  used.  It is used
+
+2004-11-24 01:13  dan
+
+	* gtk-wcalc/permitivity.asciitab: add Si, SiO2, GML-1000, and some
+	  Rogers corp permitivity data
+
+2004-11-23 23:16  dan
+
+	* htdocs/permeability.shtml: s/permitivity/permeability
+
+2004-11-23 22:56  dan
+
+	* htdocs/: Makefile.am, gtk-wcalc.shtml, screen1-thumb.png,
+	  screen1.png, screen2-thumb.png, screen2.png: update screenshots
+	  and add thumbnails
+
+2004-11-23 22:47  dan
+
+	* htdocs/: Makefile.am, gtk-wcalc.shtml, left_column.incl,
+	  screenshots.shtml: remove screenshots.shtml and put the contents
+	  into the gtk-wcalc.shtml page
+
+2004-11-23 22:40  dan
+
+	* htdocs/octave-wcalc.shtml: take away note about me not having
+	  octave and mex installed
+
+2004-11-23 22:39  dan
+
+	* stdio-wcalc/stdio-wcalc.1: add more info about using this program
+
+2004-11-23 21:15  dan
+
+	* stdio-wcalc/stdio-wcalc.1: list the command line options
+
+2004-11-23 21:01  dan
+
+	* stdio-wcalc/: ic_microstrip.dat, ic_microstrip.ref,
+	  microstrip.dat, microstrip.ref: testsuite setup for
+	  ic_microstrip_syn and microstrip_syn
+
+2004-11-22 19:49  dan
+
+	* INSTALL: add some notes about wcalc having quite a few configure
+	  args for frontends
+
+2004-11-22 17:36  dan
+
+	* stdio-wcalc/: air_coil.dat, air_coil.ref, coax.dat, coax.ref,
+	  coupled_microstrip.dat, coupled_microstrip.ref,
+	  ic_microstrip.dat, main.c, microstrip.dat, stripline.dat,
+	  stripline.ref: add the rest of the synthesis routines and some
+	  testsuite support
+
+2004-11-22 17:36  dan
+
+	* sci-wcalc/: air_coil_syn.c, air_coil_syn.dia.ref,
+	  air_coil_syn.man, air_coil_syn.tst, coax_syn.c, coax_syn.dia.ref,
+	  coax_syn.man, coax_syn.tst, coupled_microstrip_calc.dia.ref,
+	  ic_microstrip_syn.man, microstrip_syn.c, microstrip_syn.dia.ref,
+	  microstrip_syn.man, microstrip_syn.tst, stripline_syn.c,
+	  stripline_syn.dia.ref, stripline_syn.man, stripline_syn.tst:
+	  remove analysis output from synthesis function outputs.  That
+	  just complicated things
+
+2004-11-22 17:36  dan
+
+	* libwcalc/coupled_microstrip.c: do not warn about metal <
+	  3*skindepth if tmet==0
+
+2004-11-22 17:36  dan
+
+	* libwcalc/stripline.c: fix up the debug code to work with the new
+	  units world order
+
+2004-11-19 19:23  dan
+
+	* mex-wcalc/: Makefile.am, mexlink, mexopts.sh.in: more work on
+	  getting the mex stuff to build nicely
+
+2004-11-18 09:17  dan
+
+	* mex-wcalc/mexopts.sh.in: add rpath flags
+
+2004-11-18 09:12  dan
+
+	* configure.in, mex-wcalc/mexopts.sh.in: add a mexopts.sh.in
+	  template
+
+2004-11-18 08:47  dan
+
+	* configure.in: garbage collect an unused line.  Also check -R
+	  first for octave mex runtime path flag
+
+2004-11-16 07:34  dan
+
+	* stdio-wcalc/coax.dat: add coax_syn
+
+2004-11-15 20:14  dan
+
+	* stdio-wcalc/coax.ref: add coax_syn
+
+2004-11-15 20:14  dan
+
+	* stdio-wcalc/main.c: - add coax_syn support - check for
+	  success/failure of calculations and return an error msg if it
+	  fails
+
+2004-11-13 21:15  dan
+
+	* gtk-wcalc/wcalc.c: turn off some debugging output
+
+2004-11-13 21:04  dan
+
+	* gtk-wcalc/ic_microstrip_gui.c: fix an uninitialized variable bug
+	  which caused random segfaults on ic_microstrip
+
+2004-11-12 22:34  dan
+
+	* configure.in: more rpath configure fixups.  Now try -Wl,-rpath
+	  -Wl, as a flag
+
+2004-11-12 22:33  dan
+
+	* README.newmodel: note that coupled_microstrip_gui.c is the one to
+	  use for an example
+
+2004-11-12 22:30  dan
+
+	* sci-wcalc/Makefile.am: install html man pages, distribute the
+	  test template wcalc_test.sci.in
+
+2004-11-12 22:27  dan
+
+	* octave-wcalc/Makefile.am: add missing alert.c to EXTRA_DIST
+
+2004-11-11 23:42  dan
+
+	* configure.in, mex-wcalc/Makefile.am: fix up the matlab mex stuff
+	  for dealing with installed vs local libwcalc
+
+2004-11-11 21:16  dan
+
+	* libwcalc/Makefile.am: whitespace change
+
+2004-11-11 21:15  dan
+
+	* Makefile.am: do not rebuild intl and po unless we are rebuilding
+	  libwcalc
+
+2004-11-11 21:15  dan
+
+	* po/: es.po, wcalc.pot: re-sync some line numbers
+
+2004-11-11 21:14  dan
+
+	* configure.in, libwcalc/wcalc-config.in, octave-wcalc/Makefile.am:
+	  - improve the runtime library search path flag discovery.  - use
+	  this result in wcalc-config - improve the octave-mex runtime
+	  library search path flag discovery - improve setting the library
+	  flags for using a pre-installed libwcalc   or a local libwcalc
+	  for the octave interface
+
+2004-11-10 20:32  dan
+
+	* configure.in: - add INTLPO and define to be empty if using an
+	  installed libwcalc and "intl po" if building libwcalc.
+
+	  - fix up the matlab mex checks a bit following the octave
+	  example.  Now we do some checks to see that the found mex in
+	  indeed matlab mex and if not error out.  Also, if you specify
+	  --with-matlab and can't find matlab's mex, then error out.
+
+2004-11-10 00:22  dan
+
+	* configure.in: fix a typo
+
+2004-11-09 07:56  dan
+
+	* libwcalc/coupled_microstrip.c: remember to calculate line length
+	  during synthesis
+
+2004-11-09 07:55  dan
+
+	* sci-wcalc/: Makefile.am, coupled_microstrip_calc.c,
+	  coupled_microstrip_calc.man, coupled_microstrip_syn.c,
+	  coupled_microstrip_syn.dia.ref, coupled_microstrip_syn.man,
+	  coupled_microstrip_syn.tst, ic_microstrip_syn.c,
+	  ic_microstrip_syn.man, wcalc_test.sci.in: add
+	  coupled_microstrip_syn testbench and fix up the function a bit
+
+2004-11-08 18:48  dan
+
+	* sci-wcalc/: coupled_microstrip_calc.dia.ref,
+	  ic_microstrip_syn.dia.ref, Makefile.am,
+	  coupled_microstrip_calc.tst, ic_microstrip_syn.tst,
+	  wcalc_test.sci.in: add more tests (ic_microstrip_syn,
+	  coupled_microstrip_calc)
+
+2004-11-06 01:36  dan
+
+	* gtk-wcalc/ic_microstrip_gui.c: add Keff to GUI and postscript
+	  output
+
+2004-11-05 20:54  dan
+
+	* sci-wcalc/: air_coil_calc.dia.ref, coax_calc.dia.ref,
+	  microstrip_calc.dia.ref, stripline_calc.dia.ref: whitespace fixes
+	  in reference files
+
+2004-11-05 20:54  dan
+
+	* sci-wcalc/: air_coil_syn.dia.ref, coax_syn.dia.ref,
+	  microstrip_syn.dia.ref, microstrip_syn.tst, stripline_syn.tst,
+	  stripline_syn.dia.ref: use fixed precision format strings for
+	  better chance of portability
+
+2004-11-05 20:52  dan
+
+	* sci-wcalc/ic_microstrip_calc.man: fix example to reflect true
+	  usage
+
+2004-11-05 20:52  dan
+
+	* sci-wcalc/: Makefile.am, ic_microstrip_calc.dia.ref,
+	  ic_microstrip_calc.tst, wcalc_test.sci.in: add ic_microstrip_calc
+	  test
+
+2004-11-04 17:19  dan
+
+	* sci-wcalc/Makefile.am: Move some of the preformatted man pages to
+	  be maintainer generated files and ship them in the distfile.
+	  This should avoid some issues with some groff versions not
+	  working so well.  Besides, the overhead isn't much and its one
+	  less dependency to get someone going.
+
+2004-11-04 08:09  dan
+
+	* ltmain.sh: update to more recent (1.5.10) libtool
+
+2004-11-03 23:39  dan
+
+	* configure.in: improve behaviour which scilab is not found.
+	  (scilab vs SCILAB bug)
+
+2004-11-03 22:51  dan
+
+	* acinclude.m4: increase quoting level of some macros to make newer
+	  automakes happy
+
+2004-11-03 22:22  dan
+
+	* sci-wcalc/sciman.mk: use autoconf detected tbl, neqn, groff.
+	  Also fix up man page formating a bit
+
+2004-11-03 22:21  dan
+
+	* configure.in: add autoconf check for tbl, neqn, groff
+
+2004-09-20 21:57  dan
+
+	* sci-wcalc/: Makefile.am, microstrip_syn.dia.ref,
+	  microstrip_syn.tst: add microstrip_syn() tests
+
+2004-09-14 00:44  dan
+
+	* libwcalc/NOTES.txt: add coplanar ref
+
+2004-09-13 17:46  dan
+
+	* configure.in: add checks for octave-mex rpath flags
+
+2004-09-09 18:05  dan
+
+	* acinclude.m4: add note saying what came from pkg-config
+
+2004-09-09 18:04  dan
+
+	* configure.in: add checks to see if mex is octave-mex
+
+2004-09-09 08:47  dan
+
+	* octave-wcalc/Makefile.am: clean out a few more files left over
+	  from the build
+
+2004-09-09 08:43  dan
+
+	* sci-wcalc/microstrip_calc.man: add back a missing part of the
+	  example
+
+2004-09-09 08:41  dan
+
+	* octave-wcalc/: Makefile.am, copyright.m, mex, mkoctfile: get the
+	  octave stuff compiling
+
+2004-09-08 18:48  dan
+
+	* configure.in, gtk-wcalc/wcalc.1, octave-wcalc/Makefile.am: make
+	  some improvements to the octave configure and build setup
+
+2004-09-08 18:41  dan
+
+	* libwcalc/coax.c: set E-max to something
+
+2004-09-08 18:40  dan
+
+	* libwcalc/: stripline.c, stripline.h: add conductor and dielectric
+	  loss outputs
+
+2004-09-08 18:39  dan
+
+	* sci-wcalc/: Makefile.am, coax_calc.c, coax_calc.dia.ref,
+	  coax_calc.man, coax_calc.tst, coax_syn.dia.ref, coax_syn.man,
+	  coax_syn.tst, microstrip_calc.c, microstrip_calc.dia.ref,
+	  microstrip_calc.man, microstrip_calc.tst, stripline_calc.c,
+	  stripline_calc.dia.ref, stripline_calc.man, stripline_calc.tst,
+	  stripline_syn.dia.ref, stripline_syn.man, stripline_syn.tst,
+	  wcalc_test.sci.in: add several more tests and expand the analysis
+	  output from several modules
+
+2004-09-02 23:23  dan
+
+	* gtk-wcalc/permitivity.asciitab: Add Silicon Nitride from Sze,
+	  Physics of Semiconductor Devices 2nd ed, p. 852
+
+2004-09-02 23:19  dan
+
+	* htdocs/news.shtml: add news page
+
+2004-09-02 23:18  dan
+
+	* stdio-wcalc/run_tests.sh: add script for running the testsuite
+
+2004-09-02 22:55  dan
+
+	* sci-wcalc/Makefile.am: add some missing test files
+
+2004-09-02 22:52  dan
+
+	* stdio-wcalc/: Makefile.am, tests.list: add missing test list
+
+2004-09-02 22:10  dan
+
+	* sci-wcalc/: air_coil_calc.dia.ref, air_coil_syn.dia.ref: add the
+	  reference files for the testsuite
+
+2004-09-02 22:09  dan
+
+	* sci-wcalc/: Makefile.am, air_coil_calc.tst, air_coil_syn.tst,
+	  run_tests.sh, test.sce, wcalc_test.sce, wcalc_test.sci.in: add
+	  part of a testsuite based on the way the scilab internal
+	  testsuite works.  Still probably need a way to populate
+	  wcalc_test.sci from the makefile so we can share the list of
+	  names with scilab and octave.
+
+2004-09-02 18:28  dan
+
+	* sci-wcalc/test.sce: change %g to %8.4g to improve the chances of
+	  output from one machine exactly matching output from another
+	  machine for regression testing.
+
+2004-09-02 17:27  dan
+
+	* stdio-wcalc/: Makefile.am, air_coil.ref, coax.dat, coax.ref,
+	  coupled_microstrip.ref, ic_microstrip.ref, microstrip.ref,
+	  stripline.ref: add the start of a testsuite
+
+2004-09-02 17:27  dan
+
+	* stdio-wcalc/main.c: add a few flags and the ability to specify a
+	  file on the command line
+
+2004-09-02 17:27  dan
+
+	* libwcalc/ic_microstrip_loadsave.c: do not free an already freed
+	  piece of memory
+
+2004-09-02 17:27  dan
+
+	* libwcalc/coax.c: avoid a floating exception
+
+2004-09-02 02:04  dan
+
+	* sci-wcalc/test.sce: add the start of a regression test script for
+	  sci-wcalc
+
+2004-09-02 01:55  dan
+
+	* sci-wcalc/: air_coil_syn.c, air_coil_syn.man: add Lmax as an
+	  output of air_coil_syn.  While here clean up the docs a bit
+
+2004-09-02 01:23  dan
+
+	* sci-wcalc/Makefile.am: update the comments in the test_wcalc.sce
+	  script
+
+2004-09-02 01:16  dan
+
+	* configure.in: fix a bug so that --with-scilab (and no =$SCI)
+	  works
+
+2004-09-01 22:23  dan
+
+	* stdio-wcalc/air_coil.dat: add air_coil_syn
+
+2004-09-01 22:23  dan
+
+	* stdio-wcalc/main.c: add air_coil_syn and a -v|--verbose flag
+
+2004-09-01 21:59  dan
+
+	* stdio-wcalc/stdio-wcalc.1: minor fixups
+
+2004-09-01 20:52  dan
+
+	* acinclude.m4: add pkg_config autoconf goo
+
+2004-09-01 20:52  dan
+
+	* utils/: html2c, shtml2html: add support for filtering the
+	  <SOURCEFORGE> tag
+
+2004-09-01 20:51  dan
+
+	* htdocs/: Makefile.am, about.shtml, bugs.shtml, faq.shtml,
+	  index.shtml, left_column.incl, main_footer.incl, projects.shtml,
+	  shtml.mk, mex-man/Makefile.am, octave-man/Makefile.am,
+	  sci-man/Makefile.am: - add sourceforge logos if
+	  --enable-sourceforge is used.
+
+	  - add a bugs page telling how to report bugs
+
+	  - add a few FAQ entries
+
+	  - add a news page
+
+	  - update the projects page
+
+2004-09-01 20:50  dan
+
+	* cgi-wcalc/footer.html: add sourceforge logos at bottom of pages
+
+2004-09-01 20:49  dan
+
+	* cgi-wcalc/Makefile.am: add code to support --enable-cgistatic
+
+2004-09-01 20:49  dan
+
+	* configure.in: - add a --enable-sourceforge flag to turn on
+	  sourceforge logos in the cgi-frontend   and web pages
+
+	  - change the --enable-gtk to --enable-gtk1 and --enable-gtk2
+	  which are used to   select which gtk version to search for.
+
+2004-09-01 20:47  dan
+
+	* libwcalc/air_coil.c: fix a bug where the machine precision may
+	  cause a floating point compare to fail
+
+2004-08-31 17:53  dan
+
+	* cgi-wcalc/: air_coil.html, cgi-units.c, coax.cgi.c, coax.html,
+	  coupled_microstrip.cgi.c, coupled_microstrip.html,
+	  ic_microstrip.cgi.c, ic_microstrip.html, microstrip.html,
+	  stripline.html: lots of minor clean up and fixes
+
+	  - add some more comments in the html about the table layouts -
+	  move some of the figures around a little to balance the layout -
+	  fix various bugs with missing units menus and a few missing
+	  entries.
+
+	  The CGI frontend should be in pretty good shape now.
+
+2004-08-31 17:38  dan
+
+	* libwcalc/make_defaults.c: short program to generate the
+	  defaults.c file
+
+2004-08-31 17:38  dan
+
+	* libwcalc/: Makefile.am, air_coil.c, air_coil_loadsave.c,
+	  air_coil_loadsave.h, coax.c, coax_loadsave.c, coax_loadsave.h,
+	  coupled_microstrip.c, coupled_microstrip_loadsave.c,
+	  coupled_microstrip_loadsave.h, defaults.c, defaults.h,
+	  ic_microstrip_loadsave.c, ic_microstrip_loadsave.h, microstrip.c,
+	  microstrip.h, microstrip_loadsave.c, microstrip_loadsave.h,
+	  microstrip_test.c, stripline.c, stripline_loadsave.c,
+	  stripline_loadsave.h, wcalc_loadsave.c, wcalc_loadsave.h: - fix
+	  the savestring/loadstring stuff to deal with multiple sections.
+	   Now cookies can work for microstrip and friends that have
+	  multiple sections in the save files.
+
+	  - Use this new functionality to produce a saved default value
+	  (including   units) for each model from the .wc files in
+	  ../gtk-wcalc.  This lets   the cgi frontend come up with nice
+	  defaults.
+
+	  - const-ify some of the loadsave stuff
+
+2004-08-31 17:29  dan
+
+	* libwcalc/ic_microstrip.c: use new world order for default values.
+	  Also fix a bug in keff calculation and length synthesis
+
+2004-08-31 06:54  dan
+
+	* cgi-wcalc/coupled_microstrip.html: add missing rho units menu
+
+2004-08-31 06:46  dan
+
+	* cgi-wcalc/cookie.c: correct expires date format
+
+2004-08-31 06:25  dan
+
+	* cgi-wcalc/air_coil.cgi.c: some style nits
+
+2004-08-31 06:05  dan
+
+	* cgi-wcalc/: coupled_microstrip.cgi.c, stripline.cgi.c: remove
+	  some extra <pre></pre> tags which came before the Set-Cookie:
+
+2004-08-30 18:59  dan
+
+	* gtk-wcalc/: air_coil_gui.c, air_coil_gui.h, coax_gui.c,
+	  coax_gui.h, coupled_microstrip_gui.c, coupled_microstrip_gui.h,
+	  gtk-units.c, ic_microstrip_gui.c, ic_microstrip_gui.h,
+	  microstrip_gui.c, microstrip_gui.h, stripline_gui.c,
+	  stripline_gui.h, wcalc.c, wcalc.h: move the "vals_changed"
+	  callbacks used to display the "values out of sync" status line
+	  out of the modules and into the common code.
+
+	  Now that this is done, make the units menus trigger that callback
+	  too.
+
+2004-08-30 18:23  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_microstrip.h: fix the
+	  return val of coupled_microstrip_calc to be a success/fail code
+
+2004-08-30 18:21  dan
+
+	* cgi-wcalc/: air_coil.cgi.c, coax.cgi.c, coupled_microstrip.cgi.c,
+	  ic_microstrip.cgi.c, microstrip.cgi.c, stripline.cgi.c: finish
+	  cleanup of form parameter checking
+
+2004-08-28 01:25  dan
+
+	* libwcalc/coax.c: garbage collect some old unused code
+
+2004-08-28 01:24  dan
+
+	* libwcalc/air_coil.c: initialize the units.  need to find a
+	  cleaner way
+
+2004-08-28 01:24  dan
+
+	* cgi-wcalc/air_coil.html: add a link to the AWG table
+
+2004-08-27 18:58  dan
+
+	* cgi-wcalc/air_coil.cgi.c: clean up the defaults and reading of
+	  values from the form
+
+2004-08-13 01:36  dan
+
+	* cgi-wcalc/: coupled_microstrip.cgi.c, ic_microstrip.cgi.c,
+	  microstrip.cgi.c, stripline.cgi.c: avoid putting out the content
+	  type before our cookie
+
+2004-08-13 00:43  dan
+
+	* cgi-wcalc/: air_coil.cgi.c, cgi-units.c, cookie.c,
+	  coupled_microstrip.cgi.c: add missing stdlib for exit()
+
+2004-08-11 22:13  dan
+
+	* configure.in: have the configure output summarize which
+	  components will/will not be built at the end
+
+2004-08-11 09:04  dan
+
+	* Makefile.am, configure.in, cgi-wcalc/Makefile.am,
+	  gtk-wcalc/Makefile.am, libwcalc/Makefile.am,
+	  mex-wcalc/Makefile.am, octave-wcalc/Makefile.am,
+	  sci-wcalc/Makefile.am, stdio-wcalc/Makefile.am: lots of work on
+	  the build system to allow building to an already installed
+	  libwcalc.  This is an important step towards being able to add
+	  frontends to an existing installation.
+
+	  while here do some cleanup to the scilab configure.in goo.  In
+	  particular, only try to build sci-wcalc if requested and error
+	  out if sci-wcalc is requested and scilab can't be configured.
+
+2004-08-09 22:12  dan
+
+	* libwcalc/wcalc-config.in: add --libdir and --includedir options,
+	  sort help output
+
+2004-08-09 21:19  dan
+
+	* stdio-wcalc/: coupled_microstrip.dat, microstrip.dat,
+	  stripline.dat: add lots of check data from Rosloniec
+
+2004-08-09 08:56  dan
+
+	* libwcalc/: Makefile.am, libwcalc.h, wcalc-config.in, wcalc.pc.in:
+	  add a 'wrapper' header which includes all the libwcalc headers.
+	  Point the config files to includedir so that we don't pollute
+	  header file namespace.
+
+2004-08-07 00:01  dan
+
+	* sci-wcalc/air_coil_calc.man: escape some . and fix some comments
+
+2004-08-06 23:27  dan
+
+	* sci-wcalc/air_coil_calc.c: fix # of left hand side args
+
+2004-08-06 08:24  dan
+
+	* configure.in, libwcalc/Makefile.am, libwcalc/wcalc-config.in,
+	  libwcalc/wcalc.pc.in: add wcalc.pc for pkgconfig and wcalc-config
+	  for those who do not like pkgconfig
+
+2004-08-06 07:15  dan
+
+	* libwcalc/stripline.c: fix L,R,C,G, delay, skindepth output
+
+2004-08-05 22:16  dan
+
+	* libwcalc/microstrip.c: fix calculation of G
+
+2004-08-05 21:49  dan
+
+	* libwcalc/physconst.h: use latest speed of light from
+	  http://physics.nist.gov/cgi-bin/cuu/Value?c#mid
+
+2004-08-05 19:46  dan
+
+	* sci-wcalc/air_coil_calc.c: protect the config.h inclusion
+
+2004-08-05 17:42  dan
+
+	* cgi-wcalc/: air_coil.cgi.c, coax.cgi.c, cookie.cgi.c,
+	  coupled_microstrip.cgi.c, ic_microstrip.cgi.c, microstrip.cgi.c,
+	  stripline.cgi.c: add cookie support and kill all compiler
+	  warnings
+
+2004-08-05 17:42  dan
+
+	* libwcalc/: ic_microstrip_loadsave.c, ic_microstrip_loadsave.h,
+	  stripline_loadsave.c, stripline_loadsave.h: add placeholder
+	  load/save string functions for the cgi inteface
+
+2004-08-05 12:16  dan
+
+	* cgi-wcalc/cookie.c: remove some more compiler warnings
+
+2004-08-05 09:20  dan
+
+	* gtk-wcalc/: coax_gui.c, coupled_microstrip_gui.c, files.c,
+	  ic_microstrip_gui.c, microstrip_gui.c, print.c: fix several more
+	  const warnings
+
+2004-08-05 08:39  dan
+
+	* gtk-wcalc/: gtk-units.c, gtk-units.h: fix some "const" warnings
+
+2004-08-05 08:35  dan
+
+	* gtk-wcalc/menus.c: make this work with both gtk1 and gtk2
+
+2004-08-05 08:13  dan
+
+	* config.h.in: regen
+
+2004-08-05 08:12  dan
+
+	* gtk-wcalc/: about.c, about.h, air_coil_gui.c, stripline_gui.c:
+	  fix some "const" warnings
+
+2004-08-05 08:12  dan
+
+	* gtk-wcalc/: start.c, menus.c: make this compile with gtk2
+
+2004-08-05 08:10  dan
+
+	* configure.in: add autoconf support for gtk2.	For now there is no
+	  way to force gtk2 vs gtk1
+
+2004-08-04 19:49  dan
+
+	* sci-wcalc/air_coil_calc.c, sci-wcalc/air_coil_calc.man,
+	  stdio-wcalc/main.c: output closewound inductance (Lmax)
+
+2004-08-04 19:47  dan
+
+	* libwcalc/microstrip.c: fix L,R,C,G, delay, deltal output
+
+2004-08-04 19:47  dan
+
+	* libwcalc/units.c, gtk-wcalc/air_coil.wc, gtk-wcalc/coax.wc,
+	  gtk-wcalc/coupled_microstrip.wc, gtk-wcalc/ic_microstrip.wc,
+	  gtk-wcalc/microstrip.wc, gtk-wcalc/stripline.wc: add uOhms
+
+2004-08-03 17:10  dan
+
+	* stdio-wcalc/: coax.dat, coupled_microstrip.dat, microstrip.dat,
+	  stripline.dat: add some linecalc check data
+
+2004-08-02 22:54  dan
+
+	* libwcalc/coax_test.c: add corrected er output
+
+2004-08-02 22:54  dan
+
+	* stdio-wcalc/coax.dat: add data from table 6.1 of rosloniec
+
+2004-08-02 22:15  dan
+
+	* libwcalc/microstrip.c: more MKS police.
+
+2004-08-02 22:15  dan
+
+	* sci-wcalc/coupled_microstrip_syn.c: fix after the recent changes
+	  to coupled_microstrip_syn()
+
+2004-08-02 22:07  dan
+
+	* stdio-wcalc/main.c: add support for silent and verbose comment
+	  lines
+
+2004-08-02 22:03  dan
+
+	* stdio-wcalc/: Makefile.am, air_coil.dat, coax.dat,
+	  coupled_microstrip.dat, ic_microstrip.dat, microstrip.dat,
+	  stripline.dat: add some input files for testing
+
+2004-08-02 18:11  dan
+
+	* cgi-wcalc/: cgi-units.c, cgi-units.h: garbage collect more unused
+	  code
+
+2004-08-02 17:11  dan
+
+	* stdio-wcalc/Makefile.am: add -*- makefile -*- for emacs
+
+2004-08-02 17:09  dan
+
+	* gtk-wcalc/: gtk-units.c, gtk-units.h, microstrip_gui.c,
+	  stripline_gui.c, wcalc.h: garbage collect some unused code
+
+2004-08-02 17:09  dan
+
+	* gtk-wcalc/: wcalc.c, print.c: use G_DIR_SEPARATOR for the
+	  directory seperator
+
+2004-08-02 17:03  dan
+
+	* libwcalc/: coupled_microstrip_test.c, microstrip_test.c: remove
+	  some unused variables
+
+2004-08-02 17:02  dan
+
+	* libwcalc/air_coil.c: fix Q calculation for non-copper wire
+
+2004-08-02 17:01  dan
+
+	* libwcalc/coupled_microstrip.c: remove some unused variables and
+	  clean up debug code
+
+2004-08-02 17:01  dan
+
+	* libwcalc/coax.c: fix up some comments
+
+2004-08-02 16:58  dan
+
+	* libwcalc/: misc.c, misc.h: convert awg2dia to MKS.  While here,
+	  garbage collect a lot of old code
+
+2004-07-31 02:04  dan
+
+	* libwcalc/: coupled_microstrip.data, coupled_microstrip_test.c:
+	  add synthesis support and do some units fixup
+
+2004-07-31 02:04  dan
+
+	* libwcalc/coupled_microstrip.c: fix a synthesis bug and another
+	  mil vs MKS bug
+
+2004-07-30 23:57  dan
+
+	* libwcalc/microstrip.c: fix another unit which was in mils instead
+	  of meters
+
+2004-07-30 23:57  dan
+
+	* libwcalc/ic_microstrip.c: add skindepth calculation
+
+2004-07-30 23:57  dan
+
+	* gtk-wcalc/ic_microstrip_gui.c: fix typo in tooltips
+
+2004-07-30 23:56  dan
+
+	* gtk-wcalc/coupled_microstrip_gui.c: fix window name (coupled
+	  microstrip not microstrip)
+
+2004-07-30 23:39  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_microstrip_loadsave.c,
+	  ic_microstrip_loadsave.c, ic_microstrip_test.c, microstrip.c,
+	  microstrip_loadsave.c, stripline.c, stripline_loadsave.c: MKS
+	  police.  Resistivity is ohm-meter not relative to copper!!! Noted
+	  by Don Hitko who saw that the skin depth was way out of whack.
+
+2004-07-30 18:35  dan
+
+	* gtk-wcalc/coupled_microstrip_gui.c: hook up the synthesis button.
+	  still needs work though
+
+2004-07-30 18:33  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_microstrip.h,
+	  coupled_microstrip_test.c: some work on the synthesis routine
+	  which evidently was not finished
+
+2004-07-30 18:32  dan
+
+	* libwcalc/units.c: correct conductivity units
+
+2004-07-30 00:37  dan
+
+	* libwcalc/coupled_microstrip.c: MKS police (store skindepth in m
+	  not mil)
+
+2004-07-30 00:37  dan
+
+	* gtk-wcalc/: air_coil_gui.c, microstrip_gui.c, stripline_gui.c:
+	  add missing frequency from postscript output
+
+2004-07-30 00:37  dan
+
+	* gtk-wcalc/coupled_microstrip_gui.c: fix up the postscript output
+
+2004-07-30 00:16  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_microstrip.h: add
+	  use_z0k flag for synthesis.  Also fix deltalo output
+
+2004-07-30 00:15  dan
+
+	* libwcalc/coupled_microstrip_loadsave.c: add missing k, z0e, z0o,
+	  use_z0k from load/save file spec
+
+2004-07-30 00:14  dan
+
+	* gtk-wcalc/: coupled_microstrip_gui.c, coupled_microstrip_gui.h,
+	  coupled_microstrip.wc: add radio buttons for z0/k vs z0e/z0o
+	  selection for synthesis
+
+2004-07-29 18:39  dan
+
+	* gtk-wcalc/: coupled_microstrip_gui.c, coupled_microstrip_gui.h:
+	  fix up the form and the analysis.  synthesis needs work
+
+2004-07-29 18:38  dan
+
+	* gtk-wcalc/: Makefile.am, coupled_microstrip.wc: add
+	  coupled_microstrip.wc
+
+2004-07-29 18:17  dan
+
+	* gtk-wcalc/microstrip.wc: RCS Id police
+
+2004-07-29 18:08  dan
+
+	* libwcalc/: coupled_microstrip.c, microstrip.c: avoid the "metal
+	  less than 3 skindepths" warning with default vals
+
+2004-07-29 08:37  dan
+
+	* gtk-wcalc/coupled_microstrip_gui.h: add some widgets for even/odd
+	  keff/zo and k
+
+2004-07-29 08:36  dan
+
+	* gtk-wcalc/: microstrip_gui.c, microstrip_gui.h: add missing keff
+	  output on the screen and postscript.	add missing deltal to ps
+	  output
+
+2004-07-29 08:33  dan
+
+	* gtk-wcalc/stripline_gui.h: garbage collect some unused elements
+	  in the stripline_gui struct
+
+2004-07-28 22:38  dan
+
+	* gtk-wcalc/: Makefile.am, coupled_microstrip_gui.c,
+	  coupled_microstrip_gui.h, wcalc.c: add the start of a coupled
+	  microstrip gui (yay! the last one before release!)
+
+2004-07-28 22:37  dan
+
+	* gtk-wcalc/: microstrip_gui.c, stripline_gui.c: include delay in
+	  postscript output
+
+2004-07-28 22:14  dan
+
+	* gtk-wcalc/wcalc.c: supply a default for WCALC_RCDIR if not set in
+	  the environment
+
+2004-07-28 22:05  dan
+
+	* gtk-wcalc/Makefile.am: define WCALC_RCDIR for the compiler
+
+2004-07-28 20:02  dan
+
+	* gtk-wcalc/Makefile.am, gtk-wcalc/air_coil_gui.c,
+	  gtk-wcalc/coax_gui.c, gtk-wcalc/ic_microstrip.wc,
+	  gtk-wcalc/ic_microstrip_gui.c, gtk-wcalc/ic_microstrip_gui.h,
+	  gtk-wcalc/microstrip.wc, gtk-wcalc/microstrip_gui.c,
+	  gtk-wcalc/microstrip_gui.h, gtk-wcalc/stripline_gui.c,
+	  gtk-wcalc/wcalc.c, gtk-wcalc/wcalc.h, libwcalc/ic_microstrip.c,
+	  libwcalc/ic_microstrip.h, libwcalc/ic_microstrip_loadsave.c: lots
+	  of code cleanup.  use common macros, make sure units are used
+	  everywhere, etc
+
+2004-07-28 07:53  dan
+
+	* configure.in: bump to 0.6 due to all the units work
+
+2004-07-28 07:49  dan
+
+	* htdocs/: AWG.shtml, about.shtml, air_coil.shtml, cgi-wcalc.shtml,
+	  coax.shtml, coupled_microstrip.shtml, faq.shtml, gtk-wcalc.shtml,
+	  ic_microstrip.shtml, index.shtml, main_footer.incl,
+	  mex-wcalc.shtml, microstrip.shtml, obtaining.shtml,
+	  octave-wcalc.shtml, permeability.shtml, permitivity.shtml,
+	  projects.shtml, resistivity.shtml, sci-wcalc.shtml,
+	  screenshots.shtml, stdio-wcalc.shtml, stripline.shtml,
+	  units.shtml, mex-man/man_start.incl, octave-man/man_start.incl,
+	  sci-man/man_start.incl: add favicon
+
+2004-07-28 07:39  dan
+
+	* htdocs/: Makefile.am, favicon.xpm: add favicon
+
+2004-07-28 07:35  dan
+
+	* cgi-wcalc/: air_coil.html, coax.html, copying.html,
+	  coupled_microstrip.html, ic_microstrip.html, microstrip.html,
+	  stripline.html: add favicon
+
+2004-07-28 00:46  dan
+
+	* cgi-wcalc/air_coil.cgi.c: make sure we always run an analysis to
+	  get all values in sync when loading the form
+
+2004-07-28 00:41  dan
+
+	* cgi-wcalc/cgi-units.c: add some javascript to set cookies.
+	  currently not used
+
+2004-07-28 00:20  dan
+
+	* cgi-wcalc/coax.cgi.c: correct some of the limits checks on the
+	  input forms
+
+2004-07-27 23:49  dan
+
+	* libwcalc/microstrip.c: use MIL2M() for the various default
+	  values.  Also fix an uninitialized variable bug in the
+	  incremental circuit model calculation.
+
+2004-07-27 23:46  dan
+
+	* gtk-wcalc/microstrip_gui.h: bump copyright date
+
+2004-07-27 23:46  dan
+
+	* gtk-wcalc/microstrip_gui.c: add some debug output
+
+2004-07-27 23:29  dan
+
+	* libwcalc/coax.c: add some debug output
+
+2004-07-27 23:29  dan
+
+	* libwcalc/ic_microstrip.c: style nit
+
+2004-07-27 23:28  dan
+
+	* libwcalc/: air_coil_loadsave.c, coax_loadsave.c,
+	  coupled_microstrip_loadsave.c, ic_microstrip_loadsave.c,
+	  microstrip_loadsave.c, stripline_loadsave.c, wcalc_loadsave.c:
+	  check for correct wcalc and model file version
+
+2004-07-27 23:25  dan
+
+	* gtk-wcalc/: air_coil_gui.c, coax_gui.c, ic_microstrip_gui.c,
+	  stripline_gui.c: garbage collect some unused variables and update
+	  some of the initialization code
+
+2004-07-27 23:24  dan
+
+	* gtk-wcalc/: wcalc.c, runwcalc.in, wcalc.h: implement using a
+	  saved defaults file to initialize the gui for each model type.
+	  Search path is .:$HOME/.wcalc:$WCALC_RCDIR and if not set,
+	  $WCALC_RCDIR should (but not yet) default to $prefix/share/wcalc
+
+2004-07-27 22:38  dan
+
+	* gtk-wcalc/stripline.wc: add default setup for stripline
+
+2004-07-27 22:28  dan
+
+	* gtk-wcalc/coax.wc: add defaults for coax gui
+
+2004-07-27 22:04  dan
+
+	* gtk-wcalc/air_coil.wc: add defaults file for air_coil
+
+2004-07-27 22:01  dan
+
+	* gtk-wcalc/start.c: style nits
+
+2004-07-27 17:01  dan
+
+	* cgi-wcalc/: coupled_microstrip.cgi.c, coupled_microstrip.html,
+	  ic_microstrip.cgi.c, ic_microstrip.html, microstrip.cgi.c,
+	  microstrip.html, stripline.cgi.c, stripline.html: unit-ize
+
+2004-07-27 16:58  dan
+
+	* libwcalc/coupled_microstrip.c: after creating a new
+	  coupled_microstrip, run an analysis to sync the values
+
+2004-07-27 16:58  dan
+
+	* libwcalc/microstrip.c: calculate incremental circuit model
+
+2004-07-27 16:55  dan
+
+	* libwcalc/microstrip.h: add delay to microstrip struct
+
+2004-07-27 16:54  dan
+
+	* libwcalc/: stripline.c, stripline.h: fix some comments
+
+2004-07-26 22:10  dan
+
+	* cgi-wcalc/: air_coil.cgi.c, air_coil.html: first pass at adding
+	  units.  minimally tested
+
+2004-07-26 18:22  dan
+
+	* gtk-wcalc/ic_microstrip_gui.c, gtk-wcalc/microstrip_gui.c,
+	  libwcalc/Makefile.am, libwcalc/coupled_microstrip_loadsave.c,
+	  libwcalc/coupled_microstrip_loadsave.h, libwcalc/ic_microstrip.c,
+	  libwcalc/ic_microstrip.h, libwcalc/ic_microstrip_loadsave.c,
+	  libwcalc/microstrip.c, libwcalc/microstrip.h,
+	  libwcalc/microstrip_loadsave.c, libwcalc/units.c,
+	  libwcalc/units.h: much unit-ification
+
+2004-07-26 07:12  dan
+
+	* libwcalc/coupled_microstrip.c: fix pasto
+
+2004-07-26 07:08  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_microstrip.h: coupled
+	  microstrip, meet units
+
+2004-07-26 07:08  dan
+
+	* libwcalc/stripline.c: be sure to free the units
+
+2004-07-25 21:07  dan
+
+	* gtk-wcalc/gtk-units.c: add some extra debug printfs
+
+2004-07-25 21:06  dan
+
+	* gtk-wcalc/air_coil_gui.c, gtk-wcalc/air_coil_gui.h,
+	  libwcalc/air_coil.c, libwcalc/air_coil.h,
+	  libwcalc/air_coil_loadsave.c: air_coil, meet units
+
+2004-07-25 00:15  dan
+
+	* gtk-wcalc/gtk-units.c: turn off debug
+
+2004-07-25 00:14  dan
+
+	* gtk-wcalc/stripline_gui.c: fix up units for postscript output
+
+2004-07-25 00:05  dan
+
+	* libwcalc/: stripline.c, stripline.h, stripline_loadsave.c: finish
+	  unit-izing stripline and fix some style nits
+
+2004-07-25 00:04  dan
+
+	* gtk-wcalc/coax_gui.c: run analysis once after the initialization
+	  of the menus for a final sync of everything
+
+2004-07-25 00:03  dan
+
+	* gtk-wcalc/stripline_gui.c: finish unit-izing stripline
+
+2004-07-25 00:03  dan
+
+	* gtk-wcalc/gtk-units.c: update units stored sf and name elements
+	  when updating a units gui
+
+2004-07-24 13:39  dan
+
+	* gtk-wcalc/: coax_gui.c, stripline_gui.c: more units work.  still
+	  have more to go on stripline
+
+2004-07-24 00:07  dan
+
+	* gtk-wcalc/: stripline_gui.c, stripline_gui.h: start unit-izing
+	  stripline gui
+
+2004-07-23 23:47  dan
+
+	* libwcalc/: stripline.c, stripline.h, stripline_loadsave.c:
+	  unit-ize stripline
+
+2004-07-23 18:11  dan
+
+	* config.h.in, cgi-wcalc/cgi-units.c, cgi-wcalc/coax.cgi.c,
+	  cgi-wcalc/coax.html, cgi-wcalc/cookie.c, cgi-wcalc/cookie.h,
+	  gtk-wcalc/coax_gui.c, gtk-wcalc/coax_gui.h,
+	  gtk-wcalc/gtk-units.h, libwcalc/coax.c, libwcalc/coax.h,
+	  libwcalc/coax_loadsave.c, libwcalc/coax_test.c, libwcalc/units.c,
+	  libwcalc/units.h: much more units cleanup.  garbage collect all
+	  old units from coax
+
+2004-07-23 00:55  dan
+
+	* cgi-wcalc/coax.cgi.c: migrate completely to the new units code
+	  and garbage collect all the old stuff
+
+2004-07-23 00:54  dan
+
+	* cgi-wcalc/cgi-units.c: be sure to initialize the scale factor and
+	  units string after loading the units menus
+
+2004-07-22 17:35  dan
+
+	* cgi-wcalc/: cgi-units.c, cgi-units.h, coax.cgi.c: take a crack at
+	  some code to read in the units menus.  untested so far.
+
+2004-07-22 16:48  dan
+
+	* cgi-wcalc/copying.html: update copyright date
+
+2004-07-22 16:45  dan
+
+	* cgi-wcalc/: cgi-units.c, cgi-units.h, coax.cgi.c, coax.html,
+	  footer.html: many more updates to units code.  We now have code
+	  there to generate units menus and generate javascript code which
+	  lets units menu changes update text which mirrors the units in
+	  various places.
+
+	  whats missing is code to load in the units menus.
+
+2004-07-22 09:06  dan
+
+	* cgi-wcalc/: cgi-units.c, cgi-units.h, coax.html: start working
+	  some on javascript (ugh.. but how else?) assisted units menus
+
+2004-07-21 22:51  dan
+
+	* cgi-wcalc/: cgi-units.c, coax.html: start on adding full units
+	  support to the cgi frontend
+
+2004-07-21 21:37  dan
+
+	* libwcalc/units.c: make wc_savestr_to_units() sync the sf and name
+	  part of the struct.  Helps the cgi frontent
+
+2004-07-21 21:32  dan
+
+	* cgi-wcalc/: coax.cgi.c, coax.html: Start the units cleanup.  Get
+	  this one to at least compile even if its still broken
+
+2004-07-21 21:12  dan
+
+	* libwcalc/wcalc_loadsave.c: turn off debug
+
+2004-07-21 19:49  dan
+
+	* libwcalc/coax.c, libwcalc/coax.h, libwcalc/coax_loadsave.c,
+	  gtk-wcalc/coax_gui.c: lots more cleanup of units code
+
+2004-07-21 19:48  dan
+
+	* gtk-wcalc/gtk-units.c: fix possible NULL pointer de-ref bug
+
+2004-07-21 19:01  dan
+
+	* gtk-wcalc/: coax_gui.c, coax_gui.h: - clean out more old units
+	  code - move the units into the libwcalc/coax model and out of the
+	  gui.	- cleanup the initialization code a bit - garbage collect
+	  some more unused old units code
+
+2004-07-21 18:32  dan
+
+	* gtk-wcalc/gtk-units.c: properly initialize the units menus
+
+2004-07-21 18:20  dan
+
+	* libwcalc/: coax.c, coax.h, coax_loadsave.c: more new world order
+	  of units conversions.  also save/load the new units
+
+2004-07-21 18:18  dan
+
+	* libwcalc/: wcalc_loadsave.c, wcalc_loadsave.h: support load/save
+	  of wc_units and fix a few bugs while here
+
+2004-07-21 18:17  dan
+
+	* libwcalc/units.c: fix a bug in wc_units_to_savestr()
+
+2004-07-21 13:35  dan
+
+	* libwcalc/: coax.c, coax.h, coax_loadsave.c, misc.c, misc.h:
+	  garbage collect all the old units code and convert remaining
+	  usage of old code to the new code
+
+2004-07-21 13:34  dan
+
+	* libwcalc/: units.c, units.h: add name and scale factor to
+	  wc_units struct
+
+2004-07-21 00:32  dan
+
+	* gtk-wcalc/: coax_gui.c, gtk-units.c, gtk-units.h, wcalc.c,
+	  wcalc.h: add code to keep a list of all units menus in the GUI
+	  and then go through and tickle the callbacks for each one after
+	  the rest of the GUI initialization is complete.  This is a big
+	  part of getting the units menus to initialize properly.  Now just
+	  need to implement the load/save part.
+
+2004-07-20 19:05  dan
+
+	* gtk-wcalc/gtk-units.c: add missing local prototype
+
+2004-07-20 19:05  dan
+
+	* gtk-wcalc/gtk-units.h: garbage collect an unused struct
+
+2004-07-20 18:56  dan
+
+	* libwcalc/units.c: fix calculation of scale factor from units
+
+2004-07-20 11:49  dan
+
+	* gtk-wcalc/about.c: update copyright date
+
+2004-07-20 00:41  dan
+
+	* ChangeLog: regen with cvs2cl.pl
+
 2004-07-20 00:24  dan
 
 	* libwcalc/: units.c, units.h: add length units and sort some
