@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.1 2004/09/03 03:19:57 dan Exp $ -->
+<!-- $Id: tech.shtml,v 1.1 2005/10/12 18:12:28 dan Exp $ -->
 <!-- Copyright (c) 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -34,7 +34,35 @@ stripline synthesis,
     <br>
     <br>
     </center>
+    <H2>Contents</H2>
+    <UL>
+    <LI><A HREF="#General">General</A></LI>
+    <LI><A HREF="#Incremental">Incremental Circuit Model</A></LI>
+    </UL>
 
+    <HR>
+    <H2><A NAME="General">General</A></H2>
+    <P>
+	The models used by Wcalc are either closed form or psuedo-closed form
+	models.  In cases where an exact solution of the electromagnetic fields
+	exists, for example in the coaxial transmission line or infinitely thin conductor stripline
+	case both with ideal conductors, then the exact solution is used.  In all
+	other cases, various approximate solutions have been applied.
+    </P>
+    <P>
+	Many of the approximate solutions (found in the literature, not developed by
+	the Wcalc author) have been developed by optimizing an approximating
+	function to match a reference value obtained through exhaustive numerical 
+	solutions to Maxwell's equations.  The approximating functions are typically
+	chosen so they approach known analytic solutions in extreme cases.  These 
+	models are typically much much to complex for manually applying with a hand
+	calculator but are trivially simple for a modern or even not so modern computer
+	to solve.  This makes Wcalc be very fast.  In many cases the error in the
+	approximation is less than the error due to physical tolerances.  However,
+	one should heed any warnings issued to Wcalc when physical dimensions are
+	outside the usual range for accuracy.
+    </P>
+    
     <HR>
     <H2><A NAME="Incremental">Incremental Circuit Model</A></H2>
     <P>
