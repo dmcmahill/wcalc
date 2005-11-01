@@ -8,10 +8,6 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
-/* Define if this is a development snapshot and we want to warn users about
-   that */
-#undef DEVEL_VERSION
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
