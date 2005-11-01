@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: obtaining.shtml,v 1.6 2004/07/28 11:49:07 dan Exp $ -->
+<!-- $Id: obtaining.shtml,v 1.7 2005/10/29 03:45:40 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -31,9 +31,6 @@ stripline synthesis,
     <font face="helvetica, arial" size="+2">
       How to Get Wcalc
     </font>
-    <em>downloads not available yet (soon though)</em>
-    <br>
-    <br>
     </center>
     
     <font face="helvetica, arial">
@@ -67,6 +64,12 @@ stripline synthesis,
     </ul>
     </p>
 
+    <H2>Other</H2>
+    <p>
+    It is anticipated that Wcalc will be included on the <a href="http://www.geda.seul.org/download.html">
+    gEDA Suite CD-ROM</a> begining with the CD-ROM release <em>after</em> gEDA version 20050830.  Please
+    note that the CD-ROM is maintained by someone other than the Wcalc maintainer.
+    </p>
 
     </font>
 
