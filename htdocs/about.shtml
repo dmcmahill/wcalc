@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: about.shtml,v 1.4 2004/07/28 11:49:04 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- $Id: about.shtml,v 1.5 2004/09/02 00:51:41 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -64,7 +64,8 @@ stripline synthesis,
     Some of the lessons learned when writing <a
     href="http://mcalc.sourceforge.net">mcalc</a> are:  I don't like
     programming in JavaScript, sometimes I don't have access to a
-    JavaScript enabled web browser at the computer I'm in front of,
+    JavaScript enabled web browser at the computer I'm in front of (at
+    least I didn't in 1997),
     and sometimes the simple calculator based frontend to the
     numerical routines is simply not enough.  These considerations led
     to the decision to create a tool with the flexibility to support
@@ -80,7 +81,7 @@ stripline synthesis,
     The <a href="http://www.gtk.org">GTK+</a> based graphical user
     interface is the standard standalone version of Wcalc.  Through
     the mex interface, users can use
-    <a href="http://www-rocq.inria.fr/scilab">Scilab</a>, 
+    <a href="http://www.scilab.org/">Scilab</a>, 
     <a href="http://www.octave.org/">Octave</a>, or
     <a href="http://www.mathworks.com/">Matlab</a> for a high
     powered programming interface to Wcalc.  Finally, a minimal
