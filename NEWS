@@ -1,10 +1,13 @@
-$Id: NEWS,v 1.1 2001/02/11 19:26:16 dan Exp $
+$Id: NEWS,v 1.2 2001/02/17 17:10:37 dan Exp $
 
 WaveCalc -- history of user-visible changes.  22 Mar 1999
 
-Copyright, (c), 1999, 2000, 2001  Dan McMahill
+Copyright, (c), 1999, 2000, 2001, 2005  Dan McMahill
 
-Please send WaveCalc bug reports to mcmahill@alum.mit.edu.
+Please report bugs on the sourceforge project page.
+
+Version 0.9
+First public release.
 
 Version 0.1 
 Initial tagged version.  This does good analysis and synthesis
