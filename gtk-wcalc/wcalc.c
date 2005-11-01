@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.26 2005/10/25 21:26:00 dan Exp $ */
+/* $Id: wcalc.c,v 1.27 2005/10/30 17:57:08 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -208,13 +208,13 @@ static void global_model_init()
 
   global_model_names = g_list_append(global_model_names,"Air Core Inductor");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Air Core Inductor");
-  global_model_new = g_list_append(global_model_new,air_coil_gui_new);
+  global_model_new = g_list_append(global_model_new, (gpointer) air_coil_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_AIR_COIL);
 
   global_model_names = g_list_append(global_model_names,
 				     "Coaxial Transmission Line");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coax");
-  global_model_new = g_list_append(global_model_new,coax_gui_new);
+  global_model_new = g_list_append(global_model_new, (gpointer) coax_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_COAX);
 
   global_model_names = g_list_append(global_model_names,
@@ -222,25 +222,25 @@ static void global_model_init()
   global_model_menus = g_list_append(global_model_menus,
 				     "/File/New/_Coupled Microstrip");
   global_model_new = g_list_append(global_model_new,
-				   coupled_microstrip_gui_new);
+				   (gpointer) coupled_microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_COUPLED_MICROSTRIP);
 
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
-  global_model_new = g_list_append(global_model_new,ic_microstrip_gui_new);
+  global_model_new = g_list_append(global_model_new, (gpointer) ic_microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_IC_MICROSTRIP);
 
   global_model_names = g_list_append(global_model_names,"Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
-  global_model_new = g_list_append(global_model_new,microstrip_gui_new);
+  global_model_new = g_list_append(global_model_new, (gpointer) microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_MICROSTRIP);
 
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
-  global_model_new = g_list_append(global_model_new,stripline_gui_new);
+  global_model_new = g_list_append(global_model_new, (gpointer) stripline_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_STRIPLINE);
 }
