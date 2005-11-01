@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: bugs.shtml,v 1.1 2004/09/02 00:51:41 dan Exp $ -->
+<!-- $Id: bugs.shtml,v 1.2 2005/10/12 18:12:26 dan Exp $ -->
 <!-- Copyright (c) 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -57,13 +57,19 @@ stripline synthesis,
     causes them to go into a bug database ensuring that they don't get lost in all the spam which
     fills my inbox.
     </P>
+    <P>
+    Please remember that this is a hobby project which I support in my limited free time.  I may 
+    fix a bug right away, but sometimes other responsibilities take priority.  I will eventually
+    get to them though.
+    </P>
 
     <H2>Mailing Lists and Other Support</H2>
     <P>The <A HREF="http://www.geda.seul.org">gEDA</A> project
       maintains several 
       <A
 	 HREF="http://www.geda.seul.org/mailinglist/index.html">mailing lists</A>
-      which are a good place to ask questions about Wcalc.
+      which are a good place to ask questions about Wcalc.  Please put bug reports in the
+      official database though or they are likely to get lost.
     </P>
 
     <H2>New Models</H2>
