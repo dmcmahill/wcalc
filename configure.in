@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.94 2005/11/01 00:09:24 dan Exp $
+dnl $Id: configure.in,v 1.95 2005/11/01 02:10:52 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -42,7 +42,27 @@ AM_MAINTAINER_MODE
 AC_DEFINE(DEVEL_VERSION, 1, [Define if this is a development snapshot and we want to warn users about that])
 
 dnl determine host type
-dnl AC_CANONICAL_HOST
+AC_CANONICAL_HOST
+AC_MSG_CHECKING(for windows)
+case $host in
+	*-*-cygwin* )
+		WIN32=yes
+		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS:--mms-bitfields -mno-cygwin}"
+		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS:--mms-bitfields -mno-cygwin}"
+		;;
+
+	*-*-mingw* )
+		WIN32=yes
+		CFLAGS="$CFLAGS ${MINGW_CFLAGS:--mms-bitfields}"
+		CPPFLAGS="$CPPFLAGS ${MINGW_CPPFLAGS:--mms-bitfields}"
+		;;
+
+	* )
+		WIN32=no
+esac
+AC_MSG_RESULT($WIN32)
+AC_SUBST(WIN32)
+AM_CONDITIONAL(WIN32, test x$WIN32 = xyes)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -72,11 +92,15 @@ AC_PATH_PROG(XSLTPROC, xsltproc, notfound)
 AM_CONDITIONAL(MISSING_XSLT, test x$W3M = xnotfound -o x$XSLTPROC = xnotfound)
 
 #
-# Used by the web page
+# Used by the web page and building the windows icons
 #
 AC_PATH_PROG(XPMTOPPM, xpmtoppm, notfound)
 AC_PATH_PROG(PPMTOWINICON, ppmtowinicon, notfound)
 AM_CONDITIONAL(MISSING_XPMTOPPM, test x$PPMTOWINICON = xnotfound -o x$XPMTOPPM = xnotfound)
+
+# Used to build the windows icons
+AC_PATH_PROG(CONVERT, convert, notfound)
+AM_CONDITIONAL(MISSING_CONVERT, test x$CONVERT = xnotfound)
 
 #
 # Check for how to set the run time library path.  Allow users to disable
@@ -1059,24 +1083,6 @@ AC_SUBST(WCALC_MEXLIBS)
 AC_EXEEXT
 AC_SUBST(EXEEXT)
 
-AC_MSG_CHECKING(for windows)
-case $host in
-	*-*-cygwin* )
-		WIN32=yes
-		CFLAGS="$CFLAGS -fnative-struct -mno-cygwin"
-		;;
-
-	*-*-mingw* )
-		WIN32=yes
-		CFLAGS="$CFLAGS -fnative-struct"
-		;;
-
-	* )
-		WIN32=no
-esac
-AC_MSG_RESULT($WIN32)
-AC_SUBST(WIN32)
-
 dnl see if make sets MAKE
 AC_PROG_MAKE_SET
 
@@ -1127,10 +1133,28 @@ if test "X$GTK1" = "Xyes" ; then
 	AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
 	if test "$WIN32" = "yes"; then
 		dnl XXX this is a hack.  It needs to be detected...
-		GTK_VER=1.3
-		GLIB_VER=1.3
-		GTK=c:/cygwin/usr/local/src/gtk+
-		GLIB=c:/cygwin/usr/local/src/glib
+		GTK_VER=${GTK_VER:-1.3}
+		GLIB_VER=${GLIB_VER:-1.3}
+		GTK=${GTK:-c:/cygwin/usr/local/src/gtk+}
+		GLIB=${GLIB:-c:/cygwin/usr/local/src/glib}
+		AC_MSG_NOTICE([
+
+-------------------------------------------------------------
+It sems that you have requested gtk1 but you are on
+a windows (cygwin/mingw) system.  You should really
+consider using gtk2 instead.  If, however, you insist
+on gtk1, you should probably set the following variables:
+
+GTK_VER   currently ${GTK_VER}
+GLIB_VER  currently ${GLIB_VER}
+GTK       currently ${GTK}
+GLIB      currently ${GLIB}
+
+Since these 4 settings are not checked with configure, 
+you will have to make sure they are correct for your system.
+-------------------------------------------------------------
+
+])
 		GLIB_CFLAGS="-I${GLIB} -I${GLIB}/gmodule"
 		GTK_CFLAGS="$GLIB_CFLAGS -I${GTK}/gdk -I${GTK}"
 		GLIB_LIBS="-L${GLIB} -lglib-${GLIB_VER} \
@@ -1302,5 +1326,6 @@ AC_OUTPUT(
 	stdio-wcalc/Makefile
 	pixmaps/Makefile
 	utils/Makefile
+	win32/Makefile
 )
 

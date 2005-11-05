@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: faq.shtml,v 1.5 2004/09/02 00:51:42 dan Exp $ -->
+<!-- $Id: faq.shtml,v 1.6 2005/11/01 02:00:08 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -41,7 +41,7 @@ stripline synthesis,
     <p>
 	Wcalc is primarily developed under <a href="http://www.netbsd.org">NetBSD</a>,
 	but should be easily compiled on most major unix-like operating systems.  In
-	addition, it should be possible to compile Wcalc as a native windows application
+	addition, it is possible to compile Wcalc as a native windows application
 	using <a href="http://www.mingw.org/">MinGW</a>.
     </p>
 

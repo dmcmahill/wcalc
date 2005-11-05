@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.32 2005/10/28 21:40:29 dan Exp $
+## $Id: Makefile.am,v 1.33 2005/10/30 17:54:00 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -96,7 +96,7 @@ BUILT_SOURCES=	${GTKTABS} AWG.asciitab
 
 FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=gtk
 
-EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS} ${pkgdata_DATA}
+EXTRA_DIST=	icon_bitmap runwcalc.in ${man_MANS} ${ASCIITABS} ${pkgdata_DATA} wcalc.rc
 
 DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" -DWCALC_RCDIR="\"$(pkgdatadir)\"" @DEFS@
 
@@ -119,6 +119,17 @@ clean-local:
 
 distclean-local:
 	-rm AWG.asciitab AWG.c
+
+if WIN32
+wcalc_icon.o : wcalc_icon.ico $(srcdir)/wcalc.rc
+	windres $(srcdir)/wcalc.rc $@
+
+wcalc_icon.ico: $(top_srcdir)/win32/wcalc_icon.ico
+	cp $(top_srcdir)/win32/wcalc_icon.ico $@
+
+wcalc_LDADD+=	wcalc_icon.o
+
+endif
 
 runwcalc:	$(srcdir)/runwcalc.in
 	sed	-e "s;@BUILDDIR@;`pwd`;g" \
