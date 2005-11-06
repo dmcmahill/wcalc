@@ -1,4 +1,4 @@
-;; $Id$
+;; $Id: wcalc.nsi.in,v 1.1 2005/11/05 01:53:58 dan Exp $
 ;;
 ;; Installer script file for wcalc for windows.  See http://nsis.sourceforge.net
 ;; for details on NSIS.
@@ -28,7 +28,7 @@
   InstallDir "$PROGRAMFILES\Wcalc-@wcalc_version@"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\Wcalc-@wcalc_version@" ""
+  InstallDirRegKey HKCU "Software\wcalc-@wcalc_version@" ""
 
 ;--------------------------------
 ;Variables
@@ -78,7 +78,7 @@ Section "Dummy Section" SecDummy
   File /a /r "@wcalc_prefix@\*.*"
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\Wcalc" "" $INSTDIR
+  WriteRegStr HKCU "Software\wcalc-@wcalc_version@" "" $INSTDIR
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -140,6 +140,6 @@ Section "Uninstall"
     StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
   startMenuDeleteLoopDone:
 
-  DeleteRegKey /ifempty HKCU "Software\Wcalc"
+  DeleteRegKey /ifempty HKCU "Software\wcalc-@wcalc_version@"
 
 SectionEnd
