@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.27 2005/10/30 17:57:08 dan Exp $ */
+/* $Id: wcalc.c,v 1.28 2005/11/01 00:09:50 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -44,6 +44,11 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+
+#ifdef WIN32
+#include <windows.h>
+#include <winreg.h>
 #endif
 
 #include "icon_bitmap"
@@ -159,6 +164,65 @@ int main( int   argc,
   char *localedir;
   int i;
 
+  /* on windows we use a registry entry to find WCALC_RCDIR */
+#ifdef WIN32
+  
+  /* 
+   * code for reading from the windows registry was suggested by
+   * Goran Rakic on the gtk-app-devel-list mailing list.  Many
+   * thanks for the help!  Note, I haven't quite gotten this going.
+   * Maybe I don't have the registry written out correctly?
+   */
+
+#ifdef notdef
+  /*  Fallback value: data in working dir */
+  char dbpath[MAX_PATH]="data";
+
+  HKEY hkResult;
+  DWORD DataType;
+  DWORD DataCount = MAX_PATH;
+  
+  g_print("g_win32_get_package_installation_directory gave \"%s\"\n", rcdir);
+  
+  /* Open registry key */
+  if (RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                    "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\wcalc.exe",
+                    0 ,
+                    KEY_QUERY_VALUE,
+                    &hkResult ) == ERROR_SUCCESS )
+    {
+      g_print("Opened windows registry key\n");
+      /* Write registry key value to dbpath */
+      RegQueryValueEx(hkResult, "dbpath", NULL, NULL, (unsigned  char*) dbpath, &DataCount );
+      g_print("Wrote windows registry key value\n");
+      g_print("Read dbpath=\"%s\" from the windows registry!\n", dbpath);
+    } else {
+      g_print("Failed to open windows registry key\n");
+    }
+  RegCloseKey(hkResult);
+
+#else /* !notdef */
+
+  char * tmps;
+
+  tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
+#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE "-" VERSION
+  rcdir = (char *) malloc(strlen(tmps) + 
+			  strlen(REST_OF_PATH) +
+			  1);
+  sprintf(rcdir, "%s%s", tmps, REST_OF_PATH);
+  free(tmps);
+#undef REST_OF_PATH
+
+#endif  
+
+#else /* !WIN32 */
+  rcdir = getenv("WCALC_RCDIR");
+  if ( rcdir == NULL )
+    rcdir = WCALC_RCDIR;
+  
+#endif
+  
   setlocale (LC_ALL, "");
   /* This lets you set a directory for the locale stuff for pre-install testing */
   if( (localedir=getenv("WCALC_LOCALEDIR")) == NULL ) {
@@ -168,10 +232,6 @@ int main( int   argc,
     bindtextdomain (PACKAGE, localedir);
   }
   textdomain (PACKAGE);
-
-  rcdir = getenv("WCALC_RCDIR");
-  if ( rcdir == NULL )
-    rcdir = WCALC_RCDIR;
 
   homedir = getenv("HOME");
 
