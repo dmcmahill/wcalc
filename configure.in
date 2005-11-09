@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.94.2.1 2005/11/01 02:14:13 dan Exp $
+dnl $Id: configure.in,v 1.94.2.2 2005/11/09 05:23:02 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -35,6 +35,7 @@ dnl SUCH DAMAGE.
 dnl
 
 AC_INIT(gtk-wcalc/wcalc.c)
+# don't forget to update the version in win32/build_wcalc too
 AM_INIT_AUTOMAKE(wcalc, 0.9_STABLE)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
