@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.95 2005/11/01 02:10:52 dan Exp $
+dnl $Id: configure.in,v 1.96 2005/11/05 01:53:54 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -47,14 +47,14 @@ AC_MSG_CHECKING(for windows)
 case $host in
 	*-*-cygwin* )
 		WIN32=yes
-		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS:--mms-bitfields -mno-cygwin}"
-		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS:--mms-bitfields -mno-cygwin}"
+		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS:--mms-bitfields -mno-cygwin -mwindows}"
+		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS:--mms-bitfields -mno-cygwin -mwindows}"
 		;;
 
 	*-*-mingw* )
 		WIN32=yes
-		CFLAGS="$CFLAGS ${MINGW_CFLAGS:--mms-bitfields}"
-		CPPFLAGS="$CPPFLAGS ${MINGW_CPPFLAGS:--mms-bitfields}"
+		CFLAGS="$CFLAGS ${MINGW_CFLAGS:--mms-bitfields -mwindows}"
+		CPPFLAGS="$CPPFLAGS ${MINGW_CPPFLAGS:--mms-bitfields -mwindows}"
 		;;
 
 	* )
