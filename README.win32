@@ -1,27 +1,58 @@
-$Id: README.win32,v 1.1 2001/09/18 19:22:43 dan Exp $
+$Id: README.win32,v 1.3 2005/11/05 01:53:54 dan Exp $
 
 Yes, Wcalc runs on windows too!  To build from source, you need cygwin
 and also the mingw compilers.  It builds as a native WIN32 application.
-You _must_ use the mingw compiler (as opposed to the cygwin compiler
-with the -mno-cygwin flag).  I'm not sure why -mno-cygwin doesn't work.
+The configure script is set up to assume that you are using the native
+win32 gtk libraries as opposed to the cygwin ones.  One method which
+seems to work for building from source is:
+
+- Go to http://www.gtk.org and follow links to gtk for win32.
+
+- Download the runtime and developer .zip files for glib, atk, pango,
+  gtk+, gettext, libiconv, and pkg-config.
+
+- In cygwin, 
+
+  mkdir ~/gtk_win32
+
+  and extract the zip files into that directory.
+
+- Make sure the dll's have the correct permissions
+
+  find ~/gtk_win32 -name \*.dll -exec chmod a+x {} \;
+
+- In cygwin,
+
+PKG_CONFIG_PATH='C:\cygwin\home\<user>\gtk_win32\lib\pkgconfig'
+export PKG_CONFIG_PATH
+PATH=${HOME}/gtk_win32/bin:${PATH}
+export PATH
+./configure --disable -nls
+make
+make install
+
+
+The file win32/build_wcalc in the wcalc distribution shows how
+I managed to build the win32 version and the windows installer.
+
+If you have the normal cygwin and cygwin for X gtk libraries installed
+you will have problems.  It is related to libtool changing things like
+-L/path/to/nativewin32gtk -lgtk to /usr/lib/libgtk-2.0.a.  Watch when
+wcalc.exe in gtk-wcalc/ is actually linked and you'll see it happen.
+An ugly work around is to just modify the Makefile to not use libtool
+for linking or to run the link command by hand.  But that is ugly.
+Anyone with a real fix?
 
 Binary Version:
 ---------------
-The installer was created using Installer VISE.  MindVision
-Software generously makes this available for free for free/shareware
-software.  Per their agreement, please read the following notice:
+The installer was created using NSIS (http://nsis.sourceforge.net).
+Many thanks to Bob Paddock for pointing me towards NSIS and answering
+some naive questions about windows.
 
+The wcalc.nsi file in the win32 directory was used to build the
+installer.  Note, wcalc.nsi is actually created from wcalc.nsi.in
+by build_wcalc in the win32 directory.  There are still a few
+things which aren't automatically done since some paths on your
+system need to go into build_wcalc.  Once you edit the top part
+of build_wcalc, it should complete everything else.
 
-********************************************************************
-The installer for this product was created using Installer VISE from
-MindVision Software. For more information on Installer VISE, contact:
-
-MindVision Software
-5901 North 58th Street
-Lincoln, NE 68507
-
-Voice: (402) 323-6600
-Fax: (402) 323-6611
-E-mail: mindvision@mindvision.com
-http://www.mindvision.com
-********************************************************************

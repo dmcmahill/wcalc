@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.8 2004/08/05 13:20:14 dan Exp $ */
+/* $Id: print.c,v 1.10 2005/11/06 02:24:11 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002 Dan McMahill
@@ -136,10 +136,28 @@ void global_printer_init()
   global_print_config->tab4 += global_print_config->tab3;
 
 
+#ifdef WIN32
+
+ {
+   char * tmps;
+   
+   tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
+#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE "-" VERSION
+   global_print_config->eps_dir = (char *) malloc(strlen(tmps) + 
+						  strlen(REST_OF_PATH) +
+						  1);
+   sprintf(global_print_config->eps_dir, "%s%s", tmps, REST_OF_PATH);
+   free(tmps);
+#undef REST_OF_PATH
+ }
+
+#else /* !WIN32 */
   /* find the directory with the eps files for the various models.  */
   if ( (global_print_config->eps_dir=getenv("WCALC_DATADIR")) == NULL) {
     global_print_config->eps_dir=WCALC_DATADIR;
   }
+
+#endif
 
   global_print_config->dir_sep=G_DIR_SEPARATOR;
 

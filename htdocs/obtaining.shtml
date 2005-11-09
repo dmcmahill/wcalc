@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: obtaining.shtml,v 1.7 2005/10/29 03:45:40 dan Exp $ -->
+<!-- $Id: obtaining.shtml,v 1.9 2005/11/05 01:53:57 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -38,7 +38,7 @@ stripline synthesis,
     <p>
     Wcalc comes with complete source code which can easily be compiled
     on most Unix-like operating systems with no modifications.  In
-    addition, it should be possible to compile wcalc under WIN32 using the <a
+    addition, it is possible to compile wcalc under WIN32 using the <a
     href="http://www.mingw.org">MinGW</a> toolchain with the <a
     href="http://sources.redhat.com/cygwin">cygwin</a> environment.
     </p>
@@ -49,8 +49,15 @@ stripline synthesis,
 
     <H2>Binaries</H2>
     <p>
-    Currently Wcalc is not distributed in binary format although it is
-    possible that a WIN32 binary will be made available in the future.
+    See the Files section on the <A HREF="http://www.sourceforge.net/projects/wcalc">Wcalc
+	    Sourceforge Project Page</A> for the available downloads.  Currently the only
+	    binary package is a Windows installer.  The windows version currently only
+	    includes the gtk frontend.  If you want the others you will have to build from
+	    source.  Since the windows installer contains binaries of GTK+ as well as some
+	    other LGPL and GPL code, I am required to make those sources available too.
+	    Those sources along with the binaries downloaded from <a href="http://www.gtk.org">
+	    The GTK+ Homepage</a> may be found in the
+	    <a href="http://wcalc.sf.net/gnu-dist/">Wcalc GNU dist directory</a>.
     </p>
 
     <H2>Native Packages</H2>
