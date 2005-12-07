@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.11 2004/08/31 10:05:22 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.12 2004/08/31 21:53:04 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -140,7 +140,7 @@ int cgiMain(void){
   cgiCookieType *cookie;
 
   cgi_units_menu *menu_lwst;
-  cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
+  cgi_units_menu *menu_freq, *menu_loss, *menu_losslen;
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
 
@@ -148,7 +148,6 @@ int cgiMain(void){
   line = coupled_microstrip_line_new();
 
   menu_lwst = cgi_units_menu_new(line->units_lwst);
-  menu_len = cgi_units_menu_new(line->units_len);
   menu_freq = cgi_units_menu_new(line->units_freq);
   menu_loss = cgi_units_menu_new(line->units_loss);
   menu_losslen = cgi_units_menu_new(line->units_losslen);
