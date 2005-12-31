@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README.snapshots,v 1.4 2004/09/24 02:02:41 danmc Exp $
+# $Id: README-to-release,v 1.1 2005/10/29 03:27:31 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -37,13 +37,14 @@ To make a wcalc release do the following:
 
 	3. FIX_ME [fix up this step.  what shall we do with the version
 	   on the trunk?]
-	   On the trunk, update configure.in to update the version
+	   On the trunk, update configure.in and win32/build_wcalc to update the version
 		for example 1.99x after releasing 1.99w
 		cvs update -PdA
-		vi configure.in
-		cvs ci configure.in
+		vi configure.in win32/build_wcalc
+		cvs ci configure.in win32/build_wcalc
 
-	4. On the release branch, update configure.in to update the version
+	4. On the release branch, update configure.in and win32/build_wcalc to 
+		update the version
 		for example 0_9_ALPHA.  Now pre-release snapshots can be made.
 		cvs update -PdA -r wcalc-0_9
 
@@ -54,11 +55,12 @@ To make a wcalc release do the following:
 		cvs update -PdA -r wcalc-0_9-ALPHA
 		./autogen.sh && ./configure && gmake distcheck
 
-	6. When the release branch is ready to go,  update configure.in to
+	6. When the release branch is ready to go,  update configure.in and
+	   win32/build_wcalc to
 	   set the final release version.  Then tag the release.
 		cvs update -PdA -r wcalc-0_9
-		vi configure.in
-		cvs ci configure.in
+		vi configure.in win32/build_wcalc
+		cvs ci configure.in win32/build_wcalc
 		./autogen.sh
 		cvs ci
 		cvs tag -R -r wcalc-0_9 wcalc-0_9-RELEASE
