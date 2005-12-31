@@ -1,4 +1,4 @@
-/* $Id: alert.c,v 1.6 2005/09/29 01:11:56 dan Exp $ */
+/* $Id: alert.c,v 1.7 2005/12/31 18:05:48 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2005 Dan McMahill
@@ -96,14 +96,6 @@ static GtkWidget *alert_scroll;
  * Prototypes
  * *********************************************************
  */
-
-static gint wcalc_delete_event( GtkWidget *widget,
-				GdkEvent *event,
-				gpointer data );
-
-static gint wcalc_destroy_event (GtkWidget *widget, 
-				 GdkEvent *event,
-				 gpointer data);
 
 
 /*
@@ -283,7 +275,6 @@ void alert(const char *fmt,...)
 #if GTK_CHECK_VERSION(2,0,0)
   GtkTextIter iter, iter2;
   GtkTextBuffer *buffer;
-  GtkAdjustment *adj;
   gint lines;
   static GtkTextMark *mark = NULL;
 #endif
