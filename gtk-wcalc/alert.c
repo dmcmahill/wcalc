@@ -1,4 +1,4 @@
-/* $Id: alert.c,v 1.7 2005/12/31 18:05:48 dan Exp $ */
+/* $Id: alert.c,v 1.8 2005/12/31 19:19:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2005 Dan McMahill
@@ -345,6 +345,9 @@ void alert(const char *fmt,...)
   
   
   gtk_widget_show_all (alert_window);
+
+  /* bring the window to the top  --  these messages are important */
+  gtk_window_present( alert_window );
 
   /* and BEEEP */
   gdk_beep();
