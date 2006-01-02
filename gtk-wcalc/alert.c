@@ -1,4 +1,4 @@
-/* $Id: alert.c,v 1.10 2006/01/02 18:55:01 dan Exp $ */
+/* $Id: alert.c,v 1.11 2006/01/02 23:17:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2005, 2006 Dan McMahill
@@ -74,7 +74,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005\n" \
+"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006\n" \
 "Dan McMahill."
 
 
@@ -370,7 +370,9 @@ void alert(const char *fmt,...)
 
   /* bring the window to the top  --  these messages are important */
 #if GTK_CHECK_VERSION(2,0,0)
-  gtk_window_present( alert_window );
+  gtk_window_present( GTK_WINDOW(alert_window) );
+#else
+  gdk_window_raise(alert_window->window);
 #endif
 
   /* and BEEEP */
