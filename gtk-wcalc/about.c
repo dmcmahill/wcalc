@@ -1,7 +1,8 @@
-/* $Id: about.c,v 1.18 2005/10/30 17:54:37 dan Exp $ */
+/* $Id: about.c,v 1.19 2005/11/01 00:09:41 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+ * 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -57,7 +58,7 @@
 #define ASCII_POPUP_Y 200
 
 #define ABOUT_TEXT \
-"WaveCalc\n" \
+"Wcalc\n" \
 "\n" \
 "Version " \
 VER \
@@ -67,7 +68,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005\n" \
+"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006\n" \
 "Dan McMahill."
 
 
@@ -121,7 +122,7 @@ void about_popup(void)
 #define COPYRIGHT_TEXT \
 "WaveCalc\n" \
 "\n" \
-"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill\n" \
+"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill\n" \
 "All rights reserved.\n" \
 "\n" \
 "This code is derived from software written by Dan McMahill\n" \
