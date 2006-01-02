@@ -1,4 +1,4 @@
-/* $Id: alert.c,v 1.9 2006/01/02 17:04:51 dan Exp $ */
+/* $Id: alert.c,v 1.10 2006/01/02 18:55:01 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2005, 2006 Dan McMahill
@@ -106,10 +106,7 @@ static gint alert_delete_event( GtkWidget *widget,
 				gpointer data )
 {
 
-  g_print("alert_delete_event():  widget = %p\n", widget);
-  g_print("                       event  = %p\n", event);
-  g_print("                       data   = %p\n", (void *) data);
-
+  gtk_widget_hide_all(alert_window);
   return TRUE;
 }
 
@@ -118,19 +115,14 @@ static gint alert_destroy_event (GtkWidget *widget,
 				 gpointer data)
 {
 
-  g_print("alert_destroy_event():  widget = %p\n", widget);
-  g_print("                        event  = %p\n", event);
-  g_print("                        data   = %p\n", (void *) data);
-  
+  gtk_widget_hide_all(alert_window);
   return TRUE;
 }
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
-  /* unmake it modal */
-  /* gtk_grab_remove(window); */
 
-  /* blow away the window */
+  /* hide the window */
   gtk_widget_hide_all(window);
 }
 
@@ -154,9 +146,6 @@ static gint alert_window_create()
   
   /* create the dialog box */
   alert_window = gtk_dialog_new();
-  
-  /* made it modal */
-  /* gtk_grab_add(alert_window); */
   
   /* Window Manager "delete" */
   gtk_signal_connect (GTK_OBJECT (alert_window), "delete_event",
@@ -212,8 +201,6 @@ static gint alert_window_create()
   buffer = gtk_text_buffer_new(NULL);
   gtk_text_view_set_buffer(GTK_TEXT_VIEW(alert_view), buffer);
   
-  //  gtk_scrolled_window_add_with_viewport(
-  //													 GTK_SCROLLED_WINDOW (alert_scroll), alert_view);
   gtk_container_add(GTK_CONTAINER(alert_scroll), alert_view);
 
   gtk_widget_show_all(alert_scroll);
@@ -315,7 +302,6 @@ void alert(const char *fmt,...)
 	 gtk_text_buffer_get_end_iter(buffer, &iter);
 	 mark = gtk_text_buffer_create_mark(buffer, NULL, &iter, FALSE);
   }
-  //  gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(alert_view), &iter, 0.05, TRUE, 0.0, 1.0);
   gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(alert_view), mark, 0.05, TRUE, 0.0, 1.0);
 
 #else /* GTK-1.2 */
