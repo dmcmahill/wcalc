@@ -1,4 +1,4 @@
-/* $Id: about.c,v 1.19 2005/11/01 00:09:41 dan Exp $ */
+/* $Id: about.c,v 1.20 2006/01/02 23:57:06 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005,
@@ -95,7 +95,7 @@ void about_popup(void)
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), _("About WaveCalc"));
+  gtk_window_set_title (GTK_WINDOW (window), _("About Wcalc"));
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */
@@ -120,7 +120,7 @@ void about_popup(void)
 }
 
 #define COPYRIGHT_TEXT \
-"WaveCalc\n" \
+"Wcalc\n" \
 "\n" \
 "Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill\n" \
 "All rights reserved.\n" \
@@ -167,7 +167,7 @@ void copyright_popup(void)
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), _("WaveCalc Copyright"));
+  gtk_window_set_title (GTK_WINDOW (window), _("Wcalc Copyright"));
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Add the "OK" button and set its action */

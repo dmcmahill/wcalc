@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.16 2005/10/25 21:26:00 dan Exp $ */
+/* $Id: start.c,v 1.17 2005/10/27 15:02:20 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
@@ -52,7 +52,7 @@
 #endif
 
 #define ABOUT_TEXT \
-"WaveCalc\n" \
+"Wcalc\n" \
 "\n" \
 "Version " \
 VER \
@@ -62,8 +62,8 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005\n" \
-"Dan McMahill."
+"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005,\n" \
+"2006 Dan McMahill."
 
 
 /*
@@ -204,7 +204,7 @@ void start_popup(void)
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW(window), "WaveCalc");
+  gtk_window_set_title (GTK_WINDOW(window), "Wcalc");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Window Manager "delete" */
