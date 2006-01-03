@@ -1,3 +1,159 @@
+2006-01-02 23:08  dan
+
+	* po/es.po: fix a minor typo
+
+2006-01-02 23:07  dan
+
+	* TODO: add an input bounds checking item
+
+2006-01-02 19:10  dan
+
+	* htdocs/main_footer.incl: bump copyright date
+
+2006-01-02 19:04  dan
+
+	* htdocs/index.shtml: note 1.0 release
+
+2006-01-02 19:03  dan
+
+	* NEWS, htdocs/news.shtml: add some news for 1.0
+
+2006-01-02 18:57  dan
+
+	* COPYING, cgi-wcalc/copying.html, gtk-wcalc/about.c: bump
+	  copyright date
+
+2006-01-02 18:54  dan
+
+	* gtk-wcalc/alert.c: - with gtk1, add the code to raise the alert()
+	  window when alert() is called.  - with gtk2, remove a compiler
+	  warning.
+
+2006-01-02 18:17  dan
+
+	* gtk-wcalc/alert.c: - clean up some commented out code - remove
+	  some old debug code - fix the window manager delete/destroy
+	  callbacks to hide the window instead	 of just printing to
+	  stdout.
+
+2006-01-02 13:55  dan
+
+	* gtk-wcalc/alert.c: repair gtk-1.2 operation with the new log
+	  window
+
+2006-01-02 12:04  dan
+
+	* gtk-wcalc/alert.c: Bring the log window to the top when alert()
+	  is called.
+
+2005-12-31 14:52  dan
+
+	* README-to-release: remind myself to update the win32 build script
+
+2005-12-31 14:19  dan
+
+	* gtk-wcalc/alert.c: remove some unused variables and prototypes
+
+2005-12-31 13:05  dan
+
+	* gtk-wcalc/alert.c: Fix up the log window with some help from
+	  Jeff.  Seems to actually work correctly with gtk2.  Still need to
+	  repair gtk1.
+
+2005-12-07 17:54  dan
+
+	* cgi-wcalc/coupled_microstrip.cgi.c: remove unused units menu.  It
+	  causes problems when it is not set in the URL
+
+2005-12-07 17:54  dan
+
+	* cgi-wcalc/coupled_microstrip.html: coupling coeffcient is
+	  unit-less
+
+2005-11-09 10:19  dan
+
+	* configure.in: leave a comment to remember to bump the win32
+	  version
+
+2005-11-09 10:18  dan
+
+	* configure.in: bump version in win32 build script.  Leave a
+	  comment in configure.in to not forget this
+
+2005-11-09 09:16  dan
+
+	* ltcf-c.sh: add mising libtool file (pullup from the head)
+
+2005-11-09 09:05  dan
+
+	* ltcf-c.sh: add mising libtool file
+
+2005-11-09 00:23  dan
+
+	* COPYING.win32, Makefile.am, README.win32, configure.in,
+	  gtk-wcalc/Makefile.am, gtk-wcalc/print.c, gtk-wcalc/wcalc.c,
+	  gtk-wcalc/wcalc.rc, htdocs/faq.shtml, htdocs/obtaining.shtml,
+	  win32/Makefile.am, win32/Readme.txt, win32/build_wcalc,
+	  win32/wcalc.nsi.in, win32/wcalc_icon_big.obj,
+	  win32/wcalc_icon_med.obj, win32/wcalc_icon_sml.obj: merge with
+	  head.  The changes all are for win32 build fixes and providing a
+	  build script and installer build script for win32.  Bump version
+	  to 0.9_STABLE.
+
+2005-11-09 00:10  dan
+
+	* configure.in: add -mwindows for win32 to avoid the DOS window
+
+2005-11-09 00:09  dan
+
+	* COPYING.win32: gtk is covered by the LGPL not the GPL
+
+2005-11-05 21:24  dan
+
+	* gtk-wcalc/: print.c, wcalc.c: on win32 only, use the location of
+	  the binary instead of the WCALC_RCDIR and WCALC_DATADIR
+	  environment variables.  This lets the installed windows version
+	  find the calculator default files.
+
+2005-11-05 21:22  dan
+
+	* win32/wcalc.nsi.in: version the registry key entry to allow
+	  multiple versions to be installed
+
+2005-11-04 20:53  dan
+
+	* COPYING.win32, Makefile.am, README.win32, configure.in,
+	  gtk-wcalc/Makefile.am, gtk-wcalc/wcalc.rc, htdocs/faq.shtml,
+	  htdocs/obtaining.shtml, win32/Makefile.am, win32/Readme.txt,
+	  win32/build_wcalc, win32/wcalc.nsi.in, win32/wcalc_icon_big.obj,
+	  win32/wcalc_icon_med.obj, win32/wcalc_icon_sml.obj: - fix up the
+	  build for win32 using cygwin/mingw (with -mno-cygwin).  - add
+	  script for building a windows installer - document win32 a bit -
+	  add copyright notice to be used by the win32 installer - add
+	  windows icons
+
+2005-10-31 21:24  dan
+
+	* config.h.in: regen for the 0.9 release
+
+2005-10-31 21:14  dan
+
+	* configure.in: set release version to 0.9 and turn off the
+	  DEVEL_VERSION flag
+
+2005-10-31 21:10  dan
+
+	* configure.in: bump to 0.9A now that the 0.9 release branch is
+	  created
+
+2005-10-31 21:06  dan
+
+	* NEWS: note public release 0.9
+
+2005-10-31 21:04  dan
+
+	* ChangeLog: update for the 0.9 release!
+
 2005-10-31 21:00  dan
 
 	* htdocs/faq.shtml: clean up some wording
