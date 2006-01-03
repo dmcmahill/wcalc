@@ -1,4 +1,4 @@
-$Id: TODO,v 1.2 2005/10/21 13:42:20 dan Exp $
+$Id: TODO,v 1.3 2005/10/27 14:53:29 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
@@ -27,3 +27,5 @@ $Id: TODO,v 1.2 2005/10/21 13:42:20 dan Exp $
 
 - Maybe start adding filter toolbox stuff here?
 
+- Better checking of inputs to avoid problems when someone asks for
+  900 GHz calculations or other sillyness.
