@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.3 2006/01/03 13:14:05 dan Exp $
+# $Id: README-to-release,v 1.4 2006/01/03 13:17:57 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -97,4 +97,17 @@ To make a wcalc release do the following:
 
 		digest sha1 wcalc-1.0.tar.gz wcinst-1.0.* > wcalc-1.0.SHA1
 		digest md5 wcalc-1.0.tar.gz wcinst-1.0.* > wcalc-1.0.MD5
+
+=)	Upload the .tar.gz, .MD5, .SHA1, and win32/wcinst-*.{exe,zip} files
+	to ftp://upload.sourceforge.net/incoming/
+
+=)	Create a new file release for wcalc with a release name of
+	"wcalc-1.0" (for wcalc-1.0).
+
+=)	For file types:
+
+	.tar.gz      -  any / source .gz
+	.{SHA1,MD5}  -  Platform Independent / Other Source File
+	.exe         -  i386 / .exe (32-bit Windows)
+	.zip         -  i386 / .zip
 
