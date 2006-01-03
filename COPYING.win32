@@ -1,9 +1,9 @@
-# $Id: COPYING.win32,v 1.1 2005/11/05 01:53:52 dan Exp $
+# $Id: COPYING.win32,v 1.2 2005/11/09 05:09:24 dan Exp $
 #
 
 The windows installer contains binaries for GTK+ and a handful
 of other libraries covered by the GNU Library General Public License
-(LGPL).  As part of tha license, anyone distributing binaries
+(LGPL).  As part of that license, anyone distributing binaries
 must also make sources available.  This means if you want to
 resdistribute this installer, you must make the sources to
 the libraries which are covered by the LGPL available too.  To
