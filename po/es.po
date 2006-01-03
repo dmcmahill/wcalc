@@ -96,7 +96,7 @@ msgstr "/_Ayuda/_Cualidades de Materiales/_Permeabilities"
 
 #: gtk-wcalc/menus.c:110
 msgid "/_Help/_Material Properties/_Permitivities"
-msgstr "/_Ayuda/_Cualidades de Materiales/P_ermitivities"
+msgstr "/_Ayuda/_Cualidades de Materiales/_Permitivities"
 
 #: gtk-wcalc/menus.c:112
 msgid "/_Help/_Material Properties/_Resistivities"
