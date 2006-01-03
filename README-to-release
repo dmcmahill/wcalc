@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.1 2005/10/29 03:27:31 dan Exp $
+# $Id: README-to-release,v 1.2 2005/12/31 19:52:50 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -13,7 +13,16 @@ about dialog box.
 After following the steps below,
 upload the 'wcalc-$VERSION.tar.gz' file to the sourceforge file release system
 
+============================================================================
 
+If this is a new year, update the copyright dates in:
+
+COPYING
+cgi-wcalc/footer.html
+gtk-wcalc/about.c
+gtk-wcalc/start.c
+
+============================================================================
 To make a wcalc release do the following:
 
 
@@ -76,4 +85,5 @@ To make a wcalc release do the following:
 		cvs tag -R -r wcalc-0_9 wcalc-0_9-PATCH001
 
 =)	gmake distclean ; ./autogen.sh && gmake distcheck
+
 
