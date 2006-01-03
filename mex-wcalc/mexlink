@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mexlink,v 1.5 2005/10/24 12:10:44 dan Exp $
+# $Id: mexlink,v 1.6 2005/10/24 16:12:06 dan Exp $
 #
 # Copyright (c) 2004, 2005 Dan McMahill
 # All rights reserved.
@@ -64,5 +64,5 @@ while test $# -ne 0 ; do
 done
 
 set -x
-$LIBTOOL --mode=link $CC -avoid-version -export-dynamic -module -shrext "" -rpath $pkglibexecdir $args
+$LIBTOOL --mode=link $CC -avoid-version -export-dynamic -module -shrext '""' -rpath $pkglibexecdir $args
 
