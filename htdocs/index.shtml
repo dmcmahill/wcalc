@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: index.shtml,v 1.5 2004/07/28 11:49:06 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- $Id: index.shtml,v 1.6 2004/09/02 00:51:42 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -60,6 +60,11 @@ stripline synthesis,
     <ul>
 
 <!-- Recent news  -->
+
+<li><font face="helvetica, arial" size="-1">
+  <a href="news.html#wcalc-1.0">wcalc-1.0 Released</a>
+</font></li>
+
 
 <li><font face="helvetica, arial" size="-1">
   <a href="news.html#wcalc-0.9">wcalc-0.9 Released</a>
