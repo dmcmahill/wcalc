@@ -1,8 +1,9 @@
-dnl $Id: configure.in,v 1.97 2005/11/09 05:10:09 dan Exp $
+dnl $Id: configure.in,v 1.98 2005/11/09 15:19:18 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
-dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
+dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+dnl Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -36,7 +37,7 @@ dnl
 
 AC_INIT(gtk-wcalc/wcalc.c)
 # don't forget to update the version in win32/build_wcalc too
-AM_INIT_AUTOMAKE(wcalc, 0.9A)
+AM_INIT_AUTOMAKE(wcalc, 1.0A)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 

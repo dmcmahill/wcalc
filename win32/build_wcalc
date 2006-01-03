@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id$
+# $Id: build_wcalc,v 1.1 2005/11/05 01:53:58 dan Exp $
 #
 
 # Run this under cygwin to build wcalc and create a windows installer for
@@ -14,7 +14,7 @@ gtk_win32=c:\\cygwin\\home\\${USER}\\gtk_win32
 gtk_win32_runtime=c:\\\\cygwin\\\\home\\\\${USER}\\\\gtk_win32_runtime
 
 # wcalc version
-wcalc_version=0.9A
+wcalc_version=1.0A
 
 # location of the NSIS makensis executible (see http://nsis.sourceforge.net)
 makensis="/cygdrive/c/Program Files/NSIS/makensis.exe"
