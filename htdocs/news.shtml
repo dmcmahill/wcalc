@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.2 2005/10/12 18:12:27 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.3 2005/10/29 03:51:47 dan Exp $ -->
 <!-- Copyright (c) 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -35,6 +35,17 @@ stripline synthesis,
     <br>
     </center>
 
+    <HR>
+    <H2><A NAME="wcalc-1.0">wcalc-1.0 released</A></H2>
+    <P>
+    This release contains a few minor bug fixes and improvements over
+    version 0.9.  In particular, the GTK frontend now uses a log window
+    for warnings instead of a single dialog box per warning.  The CGI
+    frontend for coupled microstrip now does not generated lots of warning
+    messages.  Finally, win32 support is added and a build script is added
+    to allow native windows installers to be generated.
+    </P>
+	
     <HR>
     <H2><A NAME="wcalc-0.9">wcalc-0.9 released</A></H2>
     <P>
