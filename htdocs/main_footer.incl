@@ -1,5 +1,5 @@
-<!-- $Id: main_footer.incl,v 1.5 2004/09/02 00:51:43 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill, All rights reserved. -->
+<!-- $Id: main_footer.incl,v 1.6 2005/10/12 18:12:27 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill, All rights reserved. -->
 
 <center>
 <table border=0 cellpadding=0 cellspacing=0><tr>
@@ -18,7 +18,7 @@
   <td valign="center" align="center">
   <address>
     <font color="#000000" size="-1">
-      Copyright &copy; 2001, 2002, 2004, 2005
+      Copyright &copy; 2001, 2002, 2004, 2005, 2006
       Dan McMahill  ALL RIGHTS RESERVED.
     </font>
   </address>
