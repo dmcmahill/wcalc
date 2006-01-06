@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.25 2005/10/29 03:48:59 dan Exp $
+## $Id: Makefile.am,v 1.26 2005/10/29 03:52:20 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004, 2004, 2005 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -43,6 +43,8 @@ pkginclude_DATA =  \
 	air_coil_loadsave.h \
 	coax.h \
 	coax_loadsave.h \
+	coplanar.h \
+	coplanar_loadsave.h \
 	coupled_microstrip.h \
 	coupled_microstrip_loadsave.h \
 	ic_microstrip.h \
@@ -61,11 +63,12 @@ pkginclude_DATA =  \
 pkgconfigdir            = $(libdir)/pkgconfig
 pkgconfig_DATA          = wcalc.pc
 
-noinst_PROGRAMS = coax_test coupled_microstrip_test \
+noinst_PROGRAMS = coax_test coplanar_test coupled_microstrip_test \
 	ic_microstrip_test mathutil_test \
 	make_defaults microstrip_test units_test
 
 coax_test_SOURCES = alert.c coax_test.c
+coplanar_test_SOURCES = alert.c coplanar_test.c
 coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c 
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
 mathutil_test_SOURCES = alert.c mathutil_test.c 
@@ -93,6 +96,10 @@ libwcalc_la_SOURCES = \
 	coax.h \
 	coax_loadsave.c \
 	coax_loadsave.h \
+	coplanar.c \
+	coplanar.h \
+	coplanar_loadsave.c \
+	coplanar_loadsave.h \
 	coupled_microstrip.c \
 	coupled_microstrip.h \
 	coupled_microstrip_loadsave.c \

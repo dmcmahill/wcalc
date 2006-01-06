@@ -1,7 +1,7 @@
-/* $Id: libwcalc.h,v 1.1 2004/08/09 12:56:22 dan Exp $ */
+/* $Id: stripline_loadsave.h,v 1.5 2004/08/31 21:38:25 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2006 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,30 +33,13 @@
  * SUCH DAMAGE.
  */
 
+#ifndef __STRIPLINE_LOADSAVE_H__
+#define __STRIPLINE_LOADSAVE_H__
 
-#ifndef __LIBWCALC_H__
-#define __LIBWCALC_H__
+void stripline_save(stripline_line *line, FILE *fp, char *fname);
+int stripline_load(stripline_line *line, FILE *fp);
 
-#include <wcalc/air_coil.h>
-#include <wcalc/air_coil_loadsave.h>
-#include <wcalc/coax.h>
-#include <wcalc/coax_loadsave.h>
-#include <wcalc/coplanar.h>
-#include <wcalc/coplanar_loadsave.h>
-#include <wcalc/coupled_microstrip.h>
-#include <wcalc/coupled_microstrip_loadsave.h>
-#include <wcalc/ic_microstrip.h>
-#include <wcalc/ic_microstrip_loadsave.h>
-#include <wcalc/mathutil.h>
-#include <wcalc/microstrip.h>
-#include <wcalc/microstrip_loadsave.h>
-#include <wcalc/misc.h>
-#include <wcalc/physconst.h>
-#include <wcalc/stripline.h>
-#include <wcalc/stripline_loadsave.h>
-#include <wcalc/units.h>
-#include <wcalc/wcalc_loadsave.h>
+int stripline_load_string(stripline_line *line, const char *str);
+char * stripline_save_string(stripline_line *line);
 
-#endif /*  __LIBWCALC_H__  */
-
-
+#endif /*__STRIPLINE_LOADSAVE_H__*/
