@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.6 2002/05/10 22:52:23 dan Exp $
+$Id: README.newmodel,v 1.7 2004/11/13 03:33:38 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -8,11 +8,28 @@ have a cleaner way to add new models.
 This file tries to document the procedure for adding a new model
 to the program.
 
-Each structure should have three files.  We will use microstrip as
-the example.
+---------------------
+libwcalc
+---------------------
 
-microstrip.c	 =  GUI independent file which contains all of the
+For microstrip, add:
+
+microstrip.{c,h}    GUI independent file which contains all of the
 		    model information and equations.
+
+microstrip_loadsave.{c,h} =  file which contains the function to load/save
+			     microstrip data from/to files.
+
+add a placeholder entry in defaults.c and defaults.h.  Add code to
+make_defaults.c for generating the defaults setting.
+
+Add the new .c and .h files to Makefile.am
+
+---------------------
+gtk-wcalc
+---------------------
+
+Create microstrip.wc which is the defaults file for this model
 
 microstrip_gui.c =  file which contains the methods to interface the
 		    main program to the microstrip calculations.
@@ -23,10 +40,6 @@ microstrip_gui.c =  file which contains the methods to interface the
                     track of row/column in the table instead of hard
                     coding them.  It makes it _much_ easier to rearrange
                     the forms.
-
-microstrip_loadsave.c =  file which contains the function to load/save
-			 microstrip data from/to files.
-
 
 The microstrip_gui.{c,h} should define an object of type
 'microstrip_gui' that provides the following methods:
