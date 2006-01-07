@@ -1,7 +1,7 @@
-/* $Id: mathutil.c,v 1.9 2002/05/10 22:52:53 dan Exp $ */
+/* $Id: mathutil.c,v 1.10 2002/06/12 11:30:28 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -1692,5 +1692,36 @@ complex * c_hankel1_2_p(complex *x, complex *H)
 }
 
 
+ /*
+  *  compute K(k)/K'(k) where
+  * K is the complete elliptic integral of the first kind,
+  * K' is the complementary complete elliptic integral of the first kind
+  */
+
+double k_over_kp(double k)
+{
+  double kp, r, kf;
+  int i = 0;
+
+  kp = sqrt(1.0-pow(k,2.0));
+  r = 1.0;
+  do {
+    kf = (1.0 + k) / (1.0 + kp);
+    r = r*kf;
+    k = 2.0*sqrt(k) / (1.0 + k);
+    kp = 2.0*sqrt(kp) / (1.0 + kp);
+    i++;
+  } while( (fabs(kf - 1.0) > 1e-15) && ( i < 20) );
+
+/* alternate approach
+  if( k < sqrt(0.5) ) {
+    kp = sqrt(1.0 - k*k);
+    r = M_PI / log(2.0 * (1.0 + sqrt(kp)) / (1.0 - sqrt(kp)) );
+  } else {
+    r = log(2.0 * (1.0 + sqrt(k)) / (1.0 - sqrt(k)) ) / M_PI;
+  }
+*/
+  return r;
+}
 
 

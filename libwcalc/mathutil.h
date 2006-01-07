@@ -1,7 +1,7 @@
-/*      $Id: mathutil.h,v 1.7 2002/05/10 22:52:55 dan Exp $ */
+/*      $Id: mathutil.h,v 1.8 2002/06/12 11:30:29 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -167,5 +167,11 @@ complex * c_hankel1_1_p(complex *x, complex *H);
 complex c_hankel1_2(complex x);
 complex * c_hankel1_2_p(complex *x, complex *H);
 
+ /*
+  *  compute K(k)/K'(k) where
+  * K is the complete elliptic integral of the first kind,
+  * K' is the complementary complete elliptic integral of the first kind
+  */
+double k_over_kp(double k);
 
 #endif /*__MATHUTIL_H__*/
