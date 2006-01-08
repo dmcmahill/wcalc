@@ -1,7 +1,7 @@
-/*      $Id: stripline.h,v 1.9 2004/09/08 22:40:23 dan Exp $ */
+/*      $Id: coplanar.h,v 1.1 2006/01/06 15:08:51 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,27 +33,33 @@
  * SUCH DAMAGE.
  */
  
-#ifndef __STRIPLINE_H_
-#define __STRIPLINE_H_
+#ifndef __COPLANAR_H_
+#define __COPLANAR_H_
 
 
 #include "units.h"
 
-typedef struct STRIPLINE_SUBS
+typedef struct COPLANAR_SUBS
 {
   double h, er, tmet, rho, rough, tand;
 
-} stripline_subs;
+} coplanar_subs;
 
-typedef struct STRIPLINE_LINE
+typedef struct COPLANAR_LINE
 {
 
   /* length and width */
   double l;
   double w;
 
+  /* spacing */
+  double s;
+
   /* characteristic impedance (ohms) */
   double z0;
+
+  /* effective relative dielectric constant */
+  double keff;
 
   /* electrical length (degrees) */
   double len;
@@ -88,27 +94,28 @@ typedef struct STRIPLINE_LINE
   wc_units *units_depth;
   wc_units *units_deltal;
 
-  stripline_subs *subs;
+  coplanar_subs *subs;
 
-} stripline_line;
+} coplanar_line;
 
 
-int stripline_calc(stripline_line *line, double f);
-int stripline_syn(stripline_line *line, double f, int flag);
+int coplanar_calc(coplanar_line *line, double f);
+int coplanar_syn(coplanar_line *line, double f, int flag);
 
-void stripline_line_free(stripline_line * line);
-stripline_line *stripline_line_new(void);
-stripline_subs *stripline_subs_new(void);
+void coplanar_line_free(coplanar_line * line);
+coplanar_line *coplanar_line_new(void);
+coplanar_subs *coplanar_subs_new(void);
 
 /*
  * Flags for synthesis
  */
 
-#define SLISYN_W    0    /* Synthesize the metal width         */
-#define SLISYN_H    1    /* Synthesize the substrate thickness */
-#define SLISYN_ER   2    /* Synthesize the dielectric constant */
-#define SLISYN_L    3    /* Synthesize the length */
+#define CPWSYN_W    0    /* Synthesize the metal width         */
+#define CPWSYN_H    1    /* Synthesize the substrate thickness */
+#define CPWSYN_ER   2    /* Synthesize the dielectric constant */
+#define CPWSYN_S    3    /* Synthesize the spacing */
+#define CPWSYN_L    4    /* Synthesize the length */
 
 
 
-#endif /*__STRIPLINE_H_*/
+#endif /*__COPLANAR_H_*/

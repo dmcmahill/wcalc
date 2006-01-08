@@ -1,7 +1,7 @@
-/* $Id: stripline_loadsave.c,v 1.11 2004/08/31 21:38:24 dan Exp $ */
+/* $Id: coplanar_loadsave.c,v 1.1 2006/01/06 15:08:52 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -48,8 +48,8 @@
 #include <time.h>
 
 #include "alert.h"
-#include "stripline.h"
-#include "stripline_loadsave.h"
+#include "coplanar.h"
+#include "coplanar_loadsave.h"
 #include "units.h"
 #include "wcalc_loadsave.h"
 
@@ -67,18 +67,19 @@ static fspec * get_fspec(int which_one)
 {
   static fspec *linespec=NULL;
   static fspec *subspec=NULL;
-  stripline_line *line=0;
-  stripline_subs *subs=0;
+  coplanar_line *line=0;
+  coplanar_subs *subs=0;
 
   if (linespec == NULL) {
     /* Build up the list which describes the file format */
 
-    linespec=fspec_add_sect(NULL,"stripline");
-    fspec_add_key(linespec,"file_version","Stripline file version",'f',
+    linespec = fspec_add_sect(NULL,"coplanar");
+    fspec_add_key(linespec,"file_version","Coplanar waveguide file version",'f',
 		  FILE_VERSION);
 
     fspec_add_key(linespec, "L", "Length (meters)", 'd', &line->l);
     fspec_add_key(linespec, "W", "Width (meters)", 'd', &line->w);
+    fspec_add_key(linespec, "S", "Spacing (meters)", 'd', &line->s);
     fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 
 		  'd', &line->z0);
     fspec_add_key(linespec,"Elen","Electrical Length (degrees)", 
@@ -150,7 +151,7 @@ static fspec * get_fspec(int which_one)
     return subspec;
 }
 
-int stripline_load(stripline_line *line, FILE *fp)
+int coplanar_load(coplanar_line *line, FILE *fp)
 {
   fspec *myspec;
   char *val;
@@ -159,18 +160,18 @@ int stripline_load(stripline_line *line, FILE *fp)
   assert(fp!=NULL);
 
   /* read the model version  */
-  if ( (val=file_read_val(fp,"[stripline]","file_version")) == NULL ){
-    alert("Could not determine the stripline file_version\n");
+  if ( (val=file_read_val(fp,"[coplanar]","file_version")) == NULL ){
+    alert("Could not determine the coplanar file_version\n");
     return -1;
   }
 
 #ifdef DEBUG
-  printf("stripline_loadsave.c:stripline_load():  Got file_version=\"%s\"\n",
+  printf("coplanar_loadsave.c:coplanar_load():  Got file_version=\"%s\"\n",
 	 val);
 #endif
 
   if (strcmp(val, FILE_VERSION) != 0) {
-    alert("Unable to load a wcalc stripline file with stripline file version\n"
+    alert("Unable to load a wcalc coplanar file with coplanar file version\n"
 	  "\"%s\".  I only understand version \"%s\"\n", 
 	  val, FILE_VERSION);
     return -1;
@@ -195,7 +196,7 @@ int stripline_load(stripline_line *line, FILE *fp)
 }
 
 
-void stripline_save(stripline_line *line, FILE *fp, char *fname)
+void coplanar_save(coplanar_line *line, FILE *fp, char *fname)
 {
   fspec *myspec;
 
@@ -208,7 +209,7 @@ void stripline_save(stripline_line *line, FILE *fp, char *fname)
   fspec_write_file(myspec,fp,(unsigned long) line->subs);
 }
 
-char * stripline_save_string(stripline_line *line)
+char * coplanar_save_string(coplanar_line *line)
 {
   fspec *myspec;
   char *str1;
@@ -223,7 +224,7 @@ char * stripline_save_string(stripline_line *line)
 
   str3 = (char *) malloc( (strlen(str1) + strlen(str2) + 2) * sizeof(char));
   if( str3 == NULL) {
-    fprintf(stderr, "malloc failed in stripline_save_string()\n");
+    fprintf(stderr, "malloc failed in coplanar_save_string()\n");
     exit(1);
   }
 
@@ -232,7 +233,7 @@ char * stripline_save_string(stripline_line *line)
   return str3;
 }
 
-int stripline_load_string(stripline_line *line, const char *str)
+int coplanar_load_string(coplanar_line *line, const char *str)
 {
   fspec *myspec;
   char *val;
@@ -242,7 +243,7 @@ int stripline_load_string(stripline_line *line, const char *str)
   assert(str!=NULL);
 
 #ifdef DEBUG
-  printf("stripline_loadsave.c:stripline_load_string():  "
+  printf("coplanar_loadsave.c:coplanar_load_string():  "
 	 "loading \"%s\"\n",str);
 #endif
 
@@ -253,12 +254,12 @@ int stripline_load_string(stripline_line *line, const char *str)
 
   /* read the model version  */
   if ( val == NULL ){
-    alert("Could not determine the stripline file_version\n");
+    alert("Could not determine the coplanar file_version\n");
     return -1;
   }
 
 #ifdef DEBUG
-  printf("stripline_loadsave.c:stripline_load_string():  "
+  printf("coplanar_loadsave.c:coplanar_load_string():  "
 	 "Got file_version=\"%s\"\n",
 	 val);
 #endif
@@ -270,7 +271,7 @@ int stripline_load_string(stripline_line *line, const char *str)
   mystr = strdup(str);
   myspec = get_fspec(LINE_SPEC);
 #ifdef DEBUG
-  printf("stripline_loadsave.c:stripline_load_string():  "
+  printf("coplanar_loadsave.c:coplanar_load_string():  "
 	 "loading \"%s\"\n",str);
 #endif
   rslt = fspec_read_string(myspec, mystr, (unsigned long) line);
@@ -282,7 +283,7 @@ int stripline_load_string(stripline_line *line, const char *str)
   mystr = strdup(str);
   myspec = get_fspec(SUBSTRATE_SPEC);
 #ifdef DEBUG
-  printf("stripline_loadsave.c:stripline_load_string():  "
+  printf("coplanar_loadsave.c:coplanar_load_string():  "
 	 "loading \"%s\"\n",str);
 #endif
   rslt = fspec_read_string(myspec, mystr, (unsigned long) line->subs);
@@ -294,3 +295,4 @@ int stripline_load_string(stripline_line *line, const char *str)
 
   return rslt;
 }
+

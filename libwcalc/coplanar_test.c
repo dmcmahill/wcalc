@@ -1,4 +1,4 @@
-/* $Id: coplanar_loadsave.h,v 1.1 2006/01/06 15:08:52 dan Exp $ */
+/* $Id: coplanar_test.c,v 1.3 2004/08/31 21:38:23 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -33,13 +33,78 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __COPLANAR_LOADSAVE_H__
-#define __COPLANAR_LOADSAVE_H__
+#include "config.h"
 
-void coplanar_save(coplanar_line *line, FILE *fp, char *fname);
-int coplanar_load(coplanar_line *line, FILE *fp);
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int coplanar_load_string(coplanar_line *line, const char *str);
-char * coplanar_save_string(coplanar_line *line);
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
 
-#endif /*__COPLANAR_LOADSAVE_H__*/
+#include "coplanar.h"
+#include "coplanar_loadsave.h"
+
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
+
+#define FIELDSEP " \t"
+#define MAXLINELEN 256
+
+int main(int argc, char **argv)
+{
+  /* inches to meters */
+  double sf=0.0254;
+#ifdef notdef
+  double a=7;
+  double b[]={3.040,3.038,3.026,3.040,3.040,3.040};
+  double c[]={0,1,2,1,2,3};
+  int i;
+  int npts = sizeof(b)/sizeof(double);
+#endif
+  double freq;
+  char *str, *str2;
+  char rline[MAXLINELEN];
+  char *tok;
+  FILE *fp;
+
+  coplanar_line *line, *line2;
+
+  line = coplanar_line_new();
+  line2 = coplanar_line_new();
+  line2->w=500;
+  line2->subs->er=9.3;
+
+  str = coplanar_save_string(line);
+  printf("Example of coplanar_save_string() output:\n\"%s\"\n\n",str);
+
+  str2 = coplanar_save_string(line2);
+  printf("Example of coplanar_save_string() output:\n\"%s\"\n\n",str2);
+
+  coplanar_load_string(line2, str);
+  str2 = coplanar_save_string(line2);
+  printf("Example of coplanar_save_string() output:\n\"%s\"\n\n",str2);
+
+  if(strcmp(str, str2) != 0) {
+    printf("ERROR:  str != str2\n");
+    printf("%s\n%s\n", str, str2);
+  }
+
+	printf("W= %8.4f, S= %8.4f, H= %8.4f, Tmet= %8.4f, Er= %8.4f, Freq= %8.4f\n",
+	       line->w, 
+	       line->s, 
+	       line->subs->h,
+	       line->subs->tmet,
+	       line->subs->er,
+	       line->freq);
+	
+	printf("Z0= %8.4f Ohms, Keff= %8.5f, Loss= %8.5f dB, DeltaL= %8.5f\n",
+	       line->z0,
+	       line->keff,
+	       line->loss,
+	       line->deltal);
+  
+  return 0;
+}

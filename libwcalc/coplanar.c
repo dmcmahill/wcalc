@@ -1,7 +1,7 @@
-/*      $Id: stripline.c,v 1.18 2004/12/04 00:26:50 dan Exp $ */
+/*      $Id: coplanar.c,v 1.1 2006/01/06 15:08:51 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -46,11 +46,11 @@
  *
  */
 
-/* debug stripline_syn()  */
-/* #define DEBUG_SYN */
+/* debug coplanar_syn()  */
+#define DEBUG_SYN
 
-/* debug stripline_calc() */
-/* #define DEBUG_CALC */
+/* debug coplanar_calc() */
+#define DEBUG_CALC 
 
 #include "config.h"
 
@@ -63,159 +63,125 @@
 #include "mathutil.h"
 #include "misc.h"
 #include "physconst.h"
-#include "stripline.h"
-#include "stripline_loadsave.h"
+#include "coplanar.h"
+#include "coplanar_loadsave.h"
 #include "units.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
 #endif
 
-/* flags for stripline_calc_int() */
+/* flags for coplanar_calc_int() */
 #define NOLOSS   0
 #define WITHLOSS 1
 
-static int stripline_calc_int(stripline_line *line, double f, int flag);
+static int coplanar_calc_int(coplanar_line *line, double f, int flag);
 
 
 /*
  *
- *  The dielectric thickness above the stripline is assumed
- *  to be the same as below the stripline
  *
- *   /////////////////ground///////////////////////
- *   ----------------------------------------------
- *  (  dielectric,er         \/           /|\     (
- *   )             -------   --            |       )
- *  (             | metal | Tmet           | H    (
- *   )             -------   --            |       )
- *  (             <---W--->  /\           \|/     (
- *   ----------------------------------------------
- *   /////////////////ground///////////////////////
- *
+ *                          |<--S--|<--W-->|<---S--->|
+ *   _______________________        _______           _______________________
+ *   //// ground metal //// |      | metal |         | //// ground metal ////
+ *   -----------------------------------------------------------------------
+ *  (  dielectric,er                      /|\                              (
+ *   )                                 H   |                                )
+ *  (                                     \|/                              (
+ *   -----------------------------------------------------------------------
+ *   ////////////////////////////// ground /////////////////////////////////
  * 
- *  In the case where Tmet~0 (or at least Tmet << H), an exact
- *  solution has been derived by Cohn for the characteristic
- *  impedance.  Wheeler has given a correction for Tmet.
  *
  */
 
-int stripline_calc(stripline_line *line, double f)
+int coplanar_calc(coplanar_line *line, double f)
 {
   int rslt;
   
 #ifdef DEBUG_CALC
-  printf("stripline_calc(): --------------- Stripline Analysis ------------\n");
-  printf("stripline_calc(): Metal width                 = %g m\n",line->w);
-  printf("stripline_calc():                             = %g %s\n",
+  printf("coplanar_calc(): --------------- Coplanar Analysis ------------\n");
+  printf("coplanar_calc(): Metal width                 = %g m\n",line->w);
+  printf("coplanar_calc():                             = %g %s\n",
 	 line->w/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_calc(): Metal thickness             = %g m\n",
+  printf("coplanar_calc(): Metal spacing               = %g m\n",line->s);
+  printf("coplanar_calc():                             = %g %s\n",
+	 line->s/line->units_lwht->sf, line->units_lwht->name);
+  printf("coplanar_calc(): Metal thickness             = %g m\n",
 	 line->subs->tmet);
-  printf("stripline_calc():                             = %g %s\n",
+  printf("coplanar_calc():                             = %g %s\n",
 	 line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_calc(): Metal relative resistivity  = %g \n",
+  printf("coplanar_calc(): Metal relative resistivity  = %g \n",
 	 line->subs->rho);
-  printf("stripline_calc(): Metal surface roughness     = %g m-rms\n",
+  printf("coplanar_calc(): Metal surface roughness     = %g m-rms\n",
 	 line->subs->rough);
-  printf("stripline_calc():                             = %g %s\n",
+  printf("coplanar_calc():                             = %g %s\n",
 	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
-  printf("stripline_calc(): Substrate thickness         = %g m\n",
+  printf("coplanar_calc(): Substrate thickness         = %g m\n",
 	 line->subs->h);
-  printf("stripline_calc():                             = %g %s\n",
+  printf("coplanar_calc():                             = %g %s\n",
 	 line->subs->h/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_calc(): Substrate dielectric const. = %g \n",
+  printf("coplanar_calc(): Substrate dielectric const. = %g \n",
 	 line->subs->er);
-  printf("stripline_calc(): Substrate loss tangent      = %g \n",
+  printf("coplanar_calc(): Substrate loss tangent      = %g \n",
 	 line->subs->tand);
-  printf("stripline_calc(): Frequency                   = %g MHz\n",
+  printf("coplanar_calc(): Frequency                   = %g MHz\n",
 	 f/1e6); 
-  printf("stripline_calc():                             = %g %s\n",
+  printf("coplanar_calc():                             = %g %s\n",
 	 f/line->units_freq->sf, line->units_freq->name);
-  printf("stripline_calc(): -------------- ---------------------- ----------\n");
+  printf("coplanar_calc(): -------------- --------------------- ----------\n");
 #endif
-  rslt=stripline_calc_int(line, f, WITHLOSS);
+  rslt = coplanar_calc_int(line, f, WITHLOSS);
   return(rslt);
 }
 
-static int stripline_calc_int(stripline_line *line, double f, int flag)
+static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 {
 
   /* calculation variables */
-  double k,kp,r,kf,z0,m,deltaW,A,v,loss;
+  double k, k1, kp, r, kf, z0, m, deltaW, A, v, loss;
+  double k_kp, k_kp1;
 
   /* loss variables*/
   double z1,z2,lc,ld,delta;
   double mu,sigma;
 
   int rslt;
-  stripline_line tmp_line;
+  coplanar_line tmp_line;
 
   double L, R, C, G, delay, depth, deltal;
 
 #ifdef DEBUG_CALC
-  printf("stripline_calc_int(): --------------- Stripline Analysis ------------\n");
-  printf("stripline_calc_int(): flag                        = %d\n",flag);
-  printf("stripline_calc_int():       WITHLOSS              = %d\n",WITHLOSS);
-  printf("stripline_calc_int():       NOLOSS                = %d\n",NOLOSS);
-  printf("stripline_calc_int(): -------------- ---------------------- ----------\n");
+  printf("coplanar_calc_int(): --------------- Coplanar Analysis ------------\n");
+  printf("coplanar_calc_int(): flag                        = %d\n",flag);
+  printf("coplanar_calc_int():       WITHLOSS              = %d\n",WITHLOSS);
+  printf("coplanar_calc_int():       NOLOSS                = %d\n",NOLOSS);
+  printf("coplanar_calc_int(): -------------- --------------------- ----------\n");
 #endif
 
   /*
    * Characteristic Impedance
    */
 
-  if(line->subs->tmet < line->subs->h/1000)
-    {
-      /*
-       * Thin strip case:
-       */
 #ifdef DEBUG_CALC
-       printf("stripline_calc_int(): Thin stripline analysis\n");
+       printf("coplanar_calc_int(): Thin coplanar analysis\n");
 #endif
-       k = 1/cosh(M_PI*line->w/(2*line->subs->h));
-   
-      /*
-       *  compute K(k)/K'(k) where
-       * K is the complete elliptic integral of the first kind,
-       * K' is the complementary complete elliptic integral of the first kind
-       */
+       k  = 0.5*line->s / (0.5 * line->s + line->w);
+       k1 = sinh(M_PI*line->s/(4.0*line->subs->h)) / sinh(M_PI*(0.5*line->s + line->w)/(2.0*line->subs->h));
+  
+    k_kp  = k_over_kp( k );
+    k_kp1 = k_over_kp( k1 );
 
-      kp = sqrt(1.0-pow(k,2.0));
-      r = 1.0;
-      kf=(1.0+k)/(1.0+kp);
-      while(kf != 1.0)
-	{
-	  r = r*kf;
-	  k = 2.0*sqrt(k)/(1.0+k);
-	  kp = 2.0*sqrt(kp)/(1.0+kp);
-	  kf=(1.0+k)/(1.0+kp);
-	}
-   
-   
-      z0 = 29.976*M_PI*r/sqrt(line->subs->er);
-    }
-  else
-    {
+      line->keff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
 
-      /*
-       * Finite strip case: 
-       */
+      /* for coplanar waveguide (ground signal ground) */
+      z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kp);
+
+      /* for coplanar strip (ground signal) */
+      /* z0 = FREESPACEZ0 * k_over_kp / sqrt(line->keff); */
+
 #ifdef DEBUG_CALC
-       printf("stripline_calc_int(): Finite stripline analysis\n");
+	printf("z0 = %g ohms\n", z0);
 #endif
-
-      m = 6.0*(line->subs->h-line->subs->tmet)/(3.0*line->subs->h-line->subs->tmet);
-      deltaW = (line->subs->tmet/M_PI)*
-	(1.0 - 0.5*log(
-		       pow((line->subs->tmet/(2*line->subs->h-line->subs->tmet)),2.0) + 
-		       pow((0.0796*line->subs->tmet/(line->w + 1.1*line->subs->tmet)),m) ));
-      A = 4.0*(line->subs->h-line->subs->tmet)/(M_PI*(line->w + deltaW));
-      z0 = (30/sqrt(line->subs->er))*log(1.0 + A*(2.0*A + sqrt(4.0*A*A + 6.27)));
-    }
-
-  /* done with Z0 calculation */
-
-
 
   /*
    * Electrical Length
@@ -231,7 +197,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   delay = line->l / v;
   
 
-   /* XXX - need open circuit end correction for stripline */
+   /* XXX - need open circuit end correction for coplanar */
    deltal = 0;
 
    /* find the incremental circuit model */
@@ -259,7 +225,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   /* Loss */
    if(flag == WITHLOSS) {
 #ifdef DEBUG_CALC
-       printf("stripline_calc_int():  starting loss calculations\n");
+       printf("coplanar_calc_int():  starting loss calculations\n");
 #endif
        /*
 	* Dielectric Losses
@@ -318,24 +284,24 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 
 	   /* clone the line */
 	   tmp_line = *line;
-	   tmp_line.subs = stripline_subs_new();
+	   tmp_line.subs = coplanar_subs_new();
 	   *(tmp_line.subs) = *(line->subs);
 	   
 	   tmp_line.subs->er = 1.0;
-	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+	   rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
 	   z1=tmp_line.z0;
 
 	   tmp_line.w = line->w - line->skindepth;
 	   tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
 	   tmp_line.subs->h = line->subs->h + line->skindepth;
-	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+	   rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
 	   z2 = tmp_line.z0;
 	   free(tmp_line.subs);
 
 	   /* conduction losses, nepers per meter */
 	   lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
 #ifdef DEBUG_CALC
-	   printf("stripline_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
+	   printf("coplanar_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
 		  z1,z2,z0,lc);
 #endif
 	   R = lc*2*line->z0;
@@ -357,7 +323,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	    */
 	   delta = line->subs->tmet;
 #ifdef DEBUG_CALC
-	   printf("stripline_calc_int(): LF conduction loss, R=%g, lc=%g\n",
+	   printf("coplanar_calc_int(): LF conduction loss, R=%g, lc=%g\n",
 		  R,lc);
 #endif
 	   /* no conduction loss case */
@@ -366,7 +332,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	 {
 	   lc=0.0;
 #ifdef DEBUG_CALC
-	   printf("stripline_calc_int(): 0 thickness strip.  setting"
+	   printf("coplanar_calc_int(): 0 thickness strip.  setting"
 		  "conduction loss=0\n");
 #endif
 	 }
@@ -428,23 +394,11 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 
 
 /*
- *  The dielectric thickness above the stripline is assumed
- *  to be the same as below the stripline
- *
- *   /////////////////ground///////////////////////
- *   ----------------------------------------------
- *  (  dielectric,er         \/           /|\     (
- *   )             -------   --            |       )
- *  (             | metal | Tmet           | H    (
- *   )             -------   --            |       )
- *  (             <---W--->  /\           \|/     (
- *   ----------------------------------------------
- *   /////////////////ground///////////////////////
  *
  */
 
 
-int stripline_syn(stripline_line *line, double f, int flag)
+int coplanar_syn(coplanar_line *line, double f, int flag)
 {
   int rslt;
 
@@ -504,28 +458,28 @@ int stripline_syn(stripline_line *line, double f, int flag)
    */
 
   switch(flag){
-  case SLISYN_W:
+  case CPWSYN_W:
     optpar = &(line->w);
     varmax = 100.0*line->subs->h;
     varmin = 0.01*line->subs->h;
     var    = line->subs->h;
     break;
 
-  case SLISYN_H:
+  case CPWSYN_H:
     optpar = &(line->subs->h);
     varmax = 100.0*line->w;
     varmin = 0.01*line->w;
     var    = line->w;
     break;
 
-  case SLISYN_ER:
+  case CPWSYN_ER:
     optpar = &(line->subs->er);
     varmax = 100.0;
     varmin = 1.0;
     var    = 5.0;
     break;
 
-  case SLISYN_L:
+  case CPWSYN_L:
     optpar = &(line->l);
     varmax = 100.0;
     varmin = 1.0;
@@ -534,7 +488,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
     break;
 
   default:
-    fprintf(stderr,"stripline_synth():  illegal flag=%d\n",flag);
+    fprintf(stderr,"coplanar_synth():  illegal flag=%d\n",flag);
     exit(1);
     break;
   }
@@ -567,57 +521,60 @@ int stripline_syn(stripline_line *line, double f, int flag)
   line->l=l;
 
 #ifdef DEBUG_SYN
-  printf("stripline_syn(): --------------- Stripline Synthesis -----------\n");
-  printf("stripline_syn(): Metal width                 = %g m\n",line->w);
-  printf("stripline_syn():                             = %g %s\n",
+  printf("coplanar_syn(): --------------- Coplanar Synthesis -----------\n");
+  printf("coplanar_syn(): Metal width                 = %g m\n",line->w);
+  printf("coplanar_syn():                             = %g %s\n",
 	 line->w/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_syn(): Metal thickness             = %g m\n",line->subs->tmet);
-  printf("stripline_syn():                             = %g %s\n",
+  printf("coplanar_calc(): Metal spacing               = %g m\n",line->s);
+  printf("coplanar_calc():                             = %g %s\n",
+	 line->s/line->units_lwht->sf, line->units_lwht->name);
+  printf("coplanar_syn(): Metal thickness             = %g m\n",line->subs->tmet);
+  printf("coplanar_syn():                             = %g %s\n",
 	 line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
-  printf("stripline_syn(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
-  printf("stripline_syn():                             = %g %s\n",
+  printf("coplanar_syn(): Metal relative resistivity  = %g \n",line->subs->rho);
+  printf("coplanar_syn(): Metal surface roughness     = %g m-rms\n",line->subs->rough);
+  printf("coplanar_syn():                             = %g %s\n",
 	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
-  printf("stripline_syn(): Substrate thickness         = %g m\n",line->subs->h);
-  printf("stripline_syn():                             = %g %s\n",
+  printf("coplanar_syn(): Substrate thickness         = %g m\n",line->subs->h);
+  printf("coplanar_syn():                             = %g %s\n",
 	 line->subs->h/line->units_lwht->sf, line->units_lwht->name);
-  printf("stripline_syn(): Substrate dielectric const. = %g \n",line->subs->er);
-  printf("stripline_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
-  printf("stripline_syn(): Frequency                   = %g MHz\n",f/1e6); 
-  printf("stripline_syn():                             = %g %s\n",
+  printf("coplanar_syn(): Substrate dielectric const. = %g \n",line->subs->er);
+  printf("coplanar_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
+  printf("coplanar_syn(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("coplanar_syn():                             = %g %s\n",
 	 line->freq/line->units_freq->sf, line->units_freq->name);
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
-  printf("stripline_syn(): Desired Zo                  = %g ohm\n",Ro);
-  printf("stripline_syn(): Desired electrical length   = %g degrees\n",len);
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
-  printf("stripline_syn(): Starting optimization value = %g\n",var);
-  printf("stripline_syn(): Optimization flag           = %d\n",flag);
-  printf("stripline_syn(): -------------- ---------------------- ----------\n");
+  printf("coplanar_syn(): -------------- --------------------- ----------\n");
+  printf("coplanar_syn(): Desired Zo                  = %g ohm\n",Ro);
+  printf("coplanar_syn(): Desired electrical length   = %g degrees\n",len);
+  printf("coplanar_syn(): -------------- --------------------- ----------\n");
+  printf("coplanar_syn(): Starting optimization value = %g\n",var);
+  printf("coplanar_syn(): Optimization flag           = %d\n",flag);
+  printf("coplanar_syn(): -------------- --------------------- ----------\n");
 #endif
 
   if (!done){
     /* Initialize the various error values */
     *optpar = varmin;
-    rslt = stripline_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line,f,NOLOSS);
     if (rslt)
       return rslt;
     errmin = line->z0 - Ro;
 
     *optpar = varmax;
-    rslt = stripline_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line,f,NOLOSS);
     if (rslt)
       return rslt;
     errmax = line->z0 - Ro;
 
     *optpar = var;
-    rslt = stripline_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line,f,NOLOSS);
     if (rslt)
       return rslt;
     err = line->z0 - Ro;
 
     varold = 0.99*var;
     *optpar = varold;
-    rslt = stripline_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line,f,NOLOSS);
     if (rslt)
       return rslt;
     errold = line->z0 - Ro;
@@ -663,14 +620,14 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
     if ( (var>varmax) || (var<varmin) ){
 #ifdef DEBUG_SYN
-      printf("stripline_syn():  Taking a bisection step\n");
+      printf("coplanar_syn():  Taking a bisection step\n");
 #endif
       var = (varmin + varmax)/2.0;
     }
 
     /* update the error value */
     *optpar = var;
-    rslt = stripline_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line,f,NOLOSS);
     err = line->z0 - Ro;
     if (rslt)
       return rslt;
@@ -687,14 +644,14 @@ int stripline_syn(stripline_line *line, double f, int flag)
     if (fabs(err) < abstol){
       done = 1;
 #ifdef DEBUG_SYN
-      printf("stripline_syn():  abstol converged after iteration #%d\n",
+      printf("coplanar_syn():  abstol converged after iteration #%d\n",
 	     iters);
 #endif
     }
     else if ( fabs((var-varold)/var) < reltol){
       done = 1;
 #ifdef DEBUG_SYN
-      printf("stripline_syn():  reltol converged after iteration #%d\n",
+      printf("coplanar_syn():  reltol converged after iteration #%d\n",
 	     iters);
 #endif
     }
@@ -706,13 +663,13 @@ int stripline_syn(stripline_line *line, double f, int flag)
     
 
 #ifdef DEBUG_SYN
-      printf("stripline_syn(): iteration #%d:  var = %g\terr = %g\n",iters,var,err);
+      printf("coplanar_syn(): iteration #%d:  var = %g\terr = %g\n",iters,var,err);
 #endif
       /* done with iteration */
   }
 
   /* velocity on line */
-  stripline_calc(line,f);
+  coplanar_calc(line,f);
 
   v = LIGHTSPEED / sqrt(line->subs->er);
 
@@ -720,7 +677,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
 
   /* recalculate using real length to find loss  */
-  stripline_calc(line,f);
+  coplanar_calc(line,f);
   
 #ifdef DEBUG_SYN
   printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
@@ -736,7 +693,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
 
 
-void stripline_line_free(stripline_line * line)
+void coplanar_line_free(coplanar_line * line)
 {
   free(line->subs);
   wc_units_free(line->units_lwht);
@@ -757,18 +714,18 @@ void stripline_line_free(stripline_line * line)
 }
 
 
-stripline_line *stripline_line_new()
+coplanar_line *coplanar_line_new()
 {
-  stripline_line *newline;
+  coplanar_line *newline;
 
-  newline = (stripline_line *) malloc(sizeof(stripline_line));
+  newline = (coplanar_line *) malloc(sizeof(coplanar_line));
   if(newline == NULL)
     {
-      fprintf(stderr,"stripline_line_new: malloc() failed\n");
+      fprintf(stderr,"coplanar_line_new: malloc() failed\n");
       exit(1);
     }
 
-  newline->subs = stripline_subs_new();
+  newline->subs = coplanar_subs_new();
 
   /* create the units */
   newline->units_lwht    = wc_units_new(WC_UNITS_LENGTH);
@@ -787,23 +744,23 @@ stripline_line *stripline_line_new()
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   /* load in the defaults */
-  stripline_load_string(newline, default_stripline);
+  coplanar_load_string(newline, default_coplanar);
 
   /* and do a calculation to finish the initialization */
-  stripline_calc(newline, newline->freq);
+  coplanar_calc(newline, newline->freq);
 
   return(newline);
 }
 
 
-stripline_subs *stripline_subs_new(void)
+coplanar_subs *coplanar_subs_new(void)
 {
-  stripline_subs *newsubs;
+  coplanar_subs *newsubs;
 
-  newsubs = (stripline_subs *) malloc(sizeof(stripline_subs));
+  newsubs = (coplanar_subs *) malloc(sizeof(coplanar_subs));
   if(newsubs == NULL)
     {
-      fprintf(stderr,"stripline_subs_new: malloc() failed\n");
+      fprintf(stderr,"coplanar_subs_new: malloc() failed\n");
       exit(1);
     }
 
