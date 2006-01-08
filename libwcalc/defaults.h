@@ -1,7 +1,7 @@
-/* $Id$ */
+/* $Id: defaults.h,v 1.1 2004/08/31 21:38:20 dan Exp $ */
 
 /*
- * Copyright (c) 2004 Dan McMahill
+ * Copyright (c) 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,6 +38,7 @@
 
 extern const char *default_air_coil;
 extern const char *default_coax;
+extern const char *default_coplanar;
 extern const char *default_coupled_microstrip;
 extern const char *default_ic_microstrip;
 extern const char *default_microstrip;

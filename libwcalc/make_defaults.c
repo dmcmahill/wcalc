@@ -1,7 +1,7 @@
-/* $Id: microstrip_test.c,v 1.2 2004/08/02 21:03:01 dan Exp $ */
+/* $Id: make_defaults.c,v 1.1 2004/08/31 21:38:59 dan Exp $ */
 
 /*
- * Copyright (c) 2004 Dan McMahill
+ * Copyright (c) 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -55,6 +55,8 @@
 #include "air_coil_loadsave.h"
 #include "coax.h"
 #include "coax_loadsave.h"
+#include "coplanar.h"
+#include "coplanar_loadsave.h"
 #include "coupled_microstrip.h"
 #include "coupled_microstrip_loadsave.h"
 #include "ic_microstrip.h"
@@ -80,12 +82,13 @@ int main(int argc, char **argv)
 
   air_coil_coil *coil;
   coax_line *coax;
+  coplanar_line *cpw_line;
   coupled_microstrip_line *cms_line;
   ic_microstrip_line *ic_ms_line;
   microstrip_line *ms_line;
   stripline_line *st_line;
 
-  printf("/* $Id$ */\n\n");
+  printf("/* $Id: make_defaults.c,v 1.1 2004/08/31 21:38:59 dan Exp $ */\n\n");
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
   printf("/* use \"make_defaults\" to generate */\n\n");
 
@@ -109,6 +112,17 @@ int main(int argc, char **argv)
     printf("const char *default_coax=\"%s\";\n", str);
     free(str);
     coax_free(coax);
+    fclose(fp);
+  }
+
+  sprintf(fname, "%s/%s", dir, "coplanar.wc");
+  if( (fp = fopen(fname, "r")) != NULL ) {
+    cpw_line = coplanar_line_new();
+    coplanar_load(cpw_line, fp);
+    str = coplanar_save_string(cpw_line);
+    printf("const char *default_coplanar=\"%s\";\n", str);
+    free(str);
+    coplanar_line_free(cpw_line);
     fclose(fp);
   }
 
