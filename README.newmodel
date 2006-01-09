@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.7 2004/11/13 03:33:38 dan Exp $
+$Id: README.newmodel,v 1.8 2006/01/07 01:59:42 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -25,9 +25,28 @@ make_defaults.c for generating the defaults setting.
 
 Add the new .c and .h files to Makefile.am
 
+Add microstrip to wcalc_load() in wcalc_loadsave.c
+
+Add microstrip in wcalc_loadsave.h
+
+---------------------
+pixmaps
+---------------------
+
+Create microstrip.obj and add it to Makefile.am
+Create microstrip_model.obj and add it to Makefile.am
+
 ---------------------
 gtk-wcalc
 ---------------------
+
+add microstrip_gui.{c,h} to Makefile.am
+
+edit wcalc.c
+  - add microstrip_gui.h
+  - add microstrip to global_model_init()
+  - add microstrip to wcalc_setup()
+
 
 Create microstrip.wc which is the defaults file for this model
 
@@ -70,17 +89,3 @@ removed from the global list of currently open windows:
   window_list = g_slist_remove(window_list,window);
 
 
-Integration into the program
-----------------------------
-wcalc_loadsave.c	Add a new entry in wcalc_load()
-
-menus.c			Add a new entry under the file->new menu defined in
-			static GtkItemFactoryEntry menu_items[];
-
-start.c			Add a new entry to the combo_model widget.  This consists
-			of adding a line to start_popup() like:
-	
-				glist = g_list_append(glist,"Microstrip");
-
-			and editing the callback for the combo_model to call the
-			appropriate model_gui
