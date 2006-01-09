@@ -1,4 +1,4 @@
-/* $Id: coplanar_loadsave.c,v 1.1 2006/01/06 15:08:52 dan Exp $ */
+/* $Id: coplanar_loadsave.c,v 1.2 2006/01/08 06:35:29 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -200,7 +200,7 @@ void coplanar_save(coplanar_line *line, FILE *fp, char *fname)
 {
   fspec *myspec;
 
-  wcalc_save_header(fp, fname, FILE_STRIPLINE);
+  wcalc_save_header(fp, fname, FILE_COPLANAR);
 
   myspec=get_fspec(LINE_SPEC);
   fspec_write_file(myspec,fp,(unsigned long) line);
