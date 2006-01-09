@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.h,v 1.9 2004/07/21 22:18:06 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.10 2004/08/31 21:38:26 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -118,6 +118,7 @@ int fspec_read_string(fspec *list, const char *str,unsigned long base);
 /* Model types.  Used to identify models in the file */
 #define FILE_AIR_COIL            "air_coil"
 #define FILE_COAX                "coax"
+#define FILE_COPLANAR            "coplanar"
 #define FILE_COUPLED_MICROSTRIP  "coupled_microstrip"
 #define FILE_IC_MICROSTRIP       "ic_microstrip"
 #define FILE_MICROSTRIP          "microstrip"
@@ -127,6 +128,7 @@ int fspec_read_string(fspec *list, const char *str,unsigned long base);
 enum {
   MODEL_AIR_COIL,
   MODEL_COAX,
+  MODEL_COPLANAR,
   MODEL_COUPLED_MICROSTRIP,
   MODEL_IC_MICROSTRIP,
   MODEL_MICROSTRIP,

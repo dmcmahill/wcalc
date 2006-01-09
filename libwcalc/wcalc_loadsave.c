@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.c,v 1.23 2005/02/11 22:46:35 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.24 2005/02/12 15:02:22 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -132,6 +132,9 @@ int wcalc_load(FILE *fp)
   }
   else if (strcmp(val, FILE_COAX) == 0) {
     return MODEL_COAX;
+  }
+  else if (strcmp(val, FILE_COPLANAR) == 0) {
+    return MODEL_COPLANAR;
   }
   else if (strcmp(val, FILE_COUPLED_MICROSTRIP) == 0) {
     return MODEL_COUPLED_MICROSTRIP;
