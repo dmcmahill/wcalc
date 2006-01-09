@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.33 2005/10/30 17:54:00 dan Exp $
+## $Id: Makefile.am,v 1.34 2005/11/05 01:53:56 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -44,6 +44,8 @@ wcalc_SOURCES = \
 	air_coil_gui.h \
 	coax_gui.c \
 	coax_gui.h \
+	coplanar_gui.c \
+	coplanar_gui.h \
 	coupled_microstrip_gui.c \
 	coupled_microstrip_gui.h \
 	epscat.c \

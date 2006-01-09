@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.28 2005/11/01 00:09:50 dan Exp $ */
+/* $Id: wcalc.c,v 1.29 2005/11/06 02:24:12 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -58,6 +58,7 @@
 /* the individual models */
 #include "air_coil_gui.h"
 #include "coax_gui.h"
+#include "coplanar_gui.h"
 #include "coupled_microstrip_gui.h"
 #include "ic_microstrip_gui.h"
 #include "microstrip_gui.h"
@@ -266,38 +267,51 @@ static void global_model_init()
   global_model_new = NULL;
   global_model_defaults = NULL;
 
+  /* ************************ Air Coil ******************** */
   global_model_names = g_list_append(global_model_names,"Air Core Inductor");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Air Core Inductor");
   global_model_new = g_list_append(global_model_new, (gpointer) air_coil_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_AIR_COIL);
 
+  /* ************************  Coax ******************** */
   global_model_names = g_list_append(global_model_names,
 				     "Coaxial Transmission Line");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Coax");
   global_model_new = g_list_append(global_model_new, (gpointer) coax_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_COAX);
 
+  /* ************************  Coplanar ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Coplanar Waveguide");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/C_oplanar Waveguide");
+  global_model_new = g_list_append(global_model_new, (gpointer) coplanar_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_COPLANAR);
+
+  /* ************************ Coupled Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,
 				     "Coupled Microstrip");
   global_model_menus = g_list_append(global_model_menus,
-				     "/File/New/_Coupled Microstrip");
+				     "/File/New/Co_upled Microstrip");
   global_model_new = g_list_append(global_model_new,
 				   (gpointer) coupled_microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_COUPLED_MICROSTRIP);
 
+  /* ************************ IC Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
   global_model_new = g_list_append(global_model_new, (gpointer) ic_microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_IC_MICROSTRIP);
 
+  /* ************************ Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,"Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
   global_model_new = g_list_append(global_model_new, (gpointer) microstrip_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_MICROSTRIP);
 
+  /* ************************ Stripline ******************** */
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
   global_model_new = g_list_append(global_model_new, (gpointer) stripline_gui_new);
@@ -464,6 +478,10 @@ void wcalc_setup (gpointer data,
 
     case MODEL_COAX:
       new_cmd = (void *) coax_gui_new;
+      break;
+      
+    case MODEL_COPLANAR:
+      new_cmd = (void *) coplanar_gui_new;
       break;
       
     case MODEL_COUPLED_MICROSTRIP:
