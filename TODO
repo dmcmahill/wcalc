@@ -1,4 +1,4 @@
-$Id: TODO,v 1.3 2005/10/27 14:53:29 dan Exp $
+$Id: TODO,v 1.4 2006/01/03 04:07:29 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
@@ -29,3 +29,8 @@ $Id: TODO,v 1.3 2005/10/27 14:53:29 dan Exp $
 
 - Better checking of inputs to avoid problems when someone asks for
   900 GHz calculations or other sillyness.
+
+- rework the air_coil, coax, and ic_microstrip gtk frontends to use
+  x,y variables to keep track of the position of widgets in the table.
+  This will make form modifications much easier.  The other gtk frontends
+  are ok already.
