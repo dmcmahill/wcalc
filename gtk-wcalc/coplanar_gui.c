@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.18 2005/10/29 19:07:32 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.1 2006/01/09 20:30:44 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -569,12 +569,12 @@ static void outputs_init(coplanar_gui *gui, GtkWidget *parent)
 
   gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
-		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_delay);
 
   text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
 			NULL, NULL, WC_FMT_G, 1);
@@ -583,147 +583,164 @@ static void outputs_init(coplanar_gui *gui, GtkWidget *parent)
 
   /* ---------------- Loss -------------- */
   text = gtk_label_new( "Loss" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_loss = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_loss, 
-		    1,2,1,2, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_loss);
 
   text = wc_units_menu_new(gui->line->units_loss, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 1, 2, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_loss, &(gui->line->loss), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ----------------  Loss/Length -------------- */
   text = gtk_label_new( "Loss/Length" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_losslen = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_losslen, 
-		    1,2,2,3, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_losslen);
 
   text = wc_units_menu_new(gui->line->units_losslen, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 2, 3, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_losslen, &(gui->line->losslen), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ----------------  Skin Depth -------------- */
   text = gtk_label_new( "Skin Depth" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_depth = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_depth, 
-		    1,2,3,4, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_depth);
 
   text = wc_units_menu_new(gui->line->units_depth, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
 
   /* ----------------  End correction -------------- */
   text = gtk_label_new( "Delta L" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_deltal = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_deltal, 
-		    1,2,4,5, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_deltal);
 
   text = wc_units_menu_new(gui->line->units_deltal, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_deltal, &(gui->line->deltal), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ----------------  Effective dielectric constant -------------- */
   text = gtk_label_new( "Keff" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_keff = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_keff, 
-		    1, 2, 5, 6, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_keff);
 
+
   /* ---------------- L -------------- */
+  x = 4;
+  y = 0;
+
   text = gtk_label_new( "L" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Ls = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
-		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Ls);
 
   text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Ls, &(gui->line->Ls), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- R -------------- */
   text = gtk_label_new( "R" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Rs = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
-		    5, 6, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Rs);
 
   text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- C -------------- */
   text = gtk_label_new( "C" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Cp = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
-		    5, 6, 2, 3, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Cp);
 
   text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- G -------------- */
   text = gtk_label_new( "G" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Gp = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
-		    5, 6, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Gp);
 
   text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
