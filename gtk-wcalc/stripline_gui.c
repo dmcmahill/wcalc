@@ -1,7 +1,7 @@
-/* $Id: stripline_gui.c,v 1.18 2005/10/12 18:12:05 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.20 2006/01/10 15:17:05 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -214,6 +214,10 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   GtkWidget *frame;
   wc_units_gui *ug;
 
+  /* position in the table */
+  int y=0;
+  int x=0;
+
   tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
@@ -243,37 +247,127 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		       NULL);
   gtk_widget_show (button);
   
-  /* 
-   * Synthesize buttons 
-   */
 
-  /* width */
+  /* ---------------- Width  -------------- */
+
+  text = gtk_label_new( "Width (W)" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_w = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_entry_set_text(GTK_ENTRY(gui->text_w),"      ");
+  gtk_table_attach (GTK_TABLE(table), gui->text_w, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_w),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_w);
+
+  text = wc_units_menu_new(gui->line->units_lwht, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+
+  /* synthesize width */
   button = gtk_button_new_with_label ("<-Synthesize");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button,
+		   x+3, x+4, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_tooltips_set_tip(tips, button, 
 		       _("Synthesize width and length to obtain the specified "
 			 "characteristic impedance and electrical length"),
 		       NULL);
   gtk_widget_show (button);
 
-  /* height */
+  y++;
+
+  /* ---------------- Length  -------------- */
+  text = gtk_label_new( "Length (L)" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_l = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_l, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_l),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_l);
+
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  y++;
+
+  /* ---------------- Height  -------------- */
+
+  text = gtk_label_new( "Height (H)" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_h = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_h, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_h),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_h);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  /* synthesize height */
   button = gtk_button_new_with_label ("<-Synthesize");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_h), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button,
+		   x+3, x+4, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       _("Synthesize substrate thickness and length to obtain the specified "
+		       _("Synthesize substrate thickness and length to"
+			 " obtain the specified "
 			 "characteristic impedance and electrical length"),
 		       NULL);
   gtk_widget_show (button);
+
+  y++;
+
+  /* ---------------- Dielectric Constant -------------- */
+
+  text = gtk_label_new( "Er" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_er = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_er, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_er),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_er);
 
   /* dielectric constant */
   button = gtk_button_new_with_label ("<-Synthesize");
@@ -282,170 +376,26 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize_er), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 3, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button,
+		   x+3, x+4, y, y+1, 0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
   gtk_tooltips_set_tip(tips, button, 
-		       _("Synthesize substrate dielectric constant and length to obtain the specified "
+		       _("Synthesize substrate dielectric constant"
+			 " and length to obtain the specified "
 			 "characteristic impedance and electrical length"),
 		       NULL);
   gtk_widget_show (button);
 
-
-
-
-  /* ---------------- Width  -------------- */
-
-  text = gtk_label_new( "Width (W)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  text = wc_units_menu_new(gui->line->units_lwht, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
-		   2, 3, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-  /* ---------------- Length  -------------- */
-  text = gtk_label_new( "Length (L)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
-  gtk_widget_show(lwht);
-  wc_units_attach_units_label(ug, lwht);
-
-
-  /* ---------------- Height  -------------- */
-
-  text = gtk_label_new( "Height (H)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, 2, 3, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
-  gtk_widget_show(lwht);
-  wc_units_attach_units_label(ug, lwht);
-
-  /* ---------------- Dielectric Constant -------------- */
-
-  text = gtk_label_new( "Er" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
+  y++;
 
   /* ---------------- Loss Tangent -------------- */
 
   text = gtk_label_new( "Tand" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-
-  /* ----------------  Impedance -------------- */
-
-  text = gtk_label_new( "Z0" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  /* ----------------  Electrical length -------------- */
-
-  text = gtk_label_new( "Elec. Len." );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  /* ---------------- Metal thickness -------------- */
-
-  text = gtk_label_new( "Tmet" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, 8, 9, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
-  gtk_widget_show(lwht);
-  wc_units_attach_units_label(ug, lwht);
-
-  /* ---------------- Resistivity -------------- */
-
-  text = gtk_label_new( "Rho" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  text = wc_units_menu_new(gui->line->units_rho, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
-		   8, 9, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-  /* ---------------- Surface roughness -------------- */
-
-  text = gtk_label_new( "Rough" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 4, 5, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  text = wc_units_menu_new(gui->line->units_rough, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
-		   8, 9, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ---------------- Frequency -------------- */
-
-  text = gtk_label_new( "Frequency" );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 5, 6, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-
-  text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
-		   8, 9, 5, 6, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-
-  text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
-		   GTK_EXPAND|GTK_FILL, 0,
-		   WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  
-  gui->text_w = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_entry_set_text(GTK_ENTRY(gui->text_w),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_w, 1, 2, 0, 1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_w),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_w);
-
-  gui->text_l = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_l, 1, 2, 1, 2,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_l),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_l);
-
-  gui->text_h = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_h, 1, 2, 2, 3,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_h),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_h);
-
-  gui->text_er = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_er, 1, 2, 3, 4,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_er),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_er), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_er);
 
   gui->text_tand = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_tand, 1, 2, 4, 5,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_tand, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_tand),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -453,8 +403,19 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_tand);
 
+  y++;
+
+  /* ----------------  Impedance -------------- */
+  x = 5;
+  y = 0;
+
+  text = gtk_label_new( "Z0" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
   gui->text_z0 = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_z0, 7, 8, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_z0, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_z0),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_z0), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -462,8 +423,17 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_z0);
 
+  y++;
+
+  /* ----------------  Electrical length -------------- */
+
+  text = gtk_label_new( "Elec. Len." );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
   gui->text_elen = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_elen, 7, 8, 1, 2,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_elen, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_elen),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_elen), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -471,8 +441,18 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_elen);
 
+  y++;
+
+  /* ---------------- Metal thickness -------------- */
+
+  text = gtk_label_new( "Tmet" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+
   gui->text_tmet = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_tmet, 7, 8, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_tmet,
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_tmet),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -480,9 +460,24 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_tmet);
 
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  y++;
+
+  /* ---------------- Resistivity -------------- */
+
+  text = gtk_label_new( "Rho" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
 
   gui->text_rho  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rho, 7, 8, 3, 4,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_rho,
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -490,8 +485,21 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_rho);
 
+  text = wc_units_menu_new(gui->line->units_rho, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  y++;
+
+  /* ---------------- Surface roughness -------------- */
+
+  text = gtk_label_new( "Rough" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
   gui->text_rough  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rough, 7, 8, 4, 5,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_rough,
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_rough),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -499,14 +507,37 @@ static void values_init(stripline_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_rough);
 
+  text = wc_units_menu_new(gui->line->units_rough, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  y++;
+
+  /* ---------------- Frequency -------------- */
+
+  text = gtk_label_new( "Frequency" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
   gui->text_freq  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_freq, 7, 8, 5, 6,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_freq,
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
   gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_freq);
+
+  text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, 
+		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  text = gtk_label_new( " " );
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0,
+		   WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
 
   gtk_widget_show (table);
 }
@@ -517,6 +548,9 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
   GtkWidget *text;
   GtkWidget *frame;
   wc_units_gui *ug;
+
+  int x = 0;
+  int y = 0;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -530,153 +564,171 @@ static void outputs_init(stripline_gui *gui, GtkWidget *parent)
 
   /* ---------------- Delay -------------- */
   text = gtk_label_new( "Delay" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
-		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_delay);
 
   text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- Loss -------------- */
   text = gtk_label_new( "Loss" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_loss = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_loss, 
-		    1,2,1,2, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_loss);
 
   text = wc_units_menu_new(gui->line->units_loss, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 1, 2, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_loss, &(gui->line->loss), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ----------------  Loss/Length -------------- */
   text = gtk_label_new( "Loss/Length" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_losslen = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_losslen, 
-		    1,2,2,3, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_losslen);
 
   text = wc_units_menu_new(gui->line->units_losslen, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 2, 3, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_losslen, &(gui->line->losslen), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ----------------  Skin Depth -------------- */
   text = gtk_label_new( "Skin Depth" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_depth = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_depth, 
-		    1,2,3,4, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_depth);
 
   text = wc_units_menu_new(gui->line->units_depth, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
 
   /* ----------------  End correction -------------- */
   text = gtk_label_new( "Delta L" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_deltal = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_deltal, 
-		    1,2,4,5, 0,0,WC_XPAD,WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_deltal);
 
   text = wc_units_menu_new(gui->line->units_deltal, WC_WCALC(gui), &ug);
   gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+		   x+3, x+4, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_deltal, &(gui->line->deltal), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- L -------------- */
+  x = 4;
+  y = 0;
+
   text = gtk_label_new( "L" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Ls = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Ls, 
-		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Ls);
 
   text = wc_units_menu_new(gui->line->units_L, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Ls, &(gui->line->Ls), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- R -------------- */
   text = gtk_label_new( "R" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Rs = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
-		    5, 6, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Rs);
 
   text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- C -------------- */
   text = gtk_label_new( "C" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Cp = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
-		    5, 6, 2, 3, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Cp);
 
   text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
 			NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- G -------------- */
   text = gtk_label_new( "G" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Gp = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
-		    5, 6, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Gp);
 
   text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
@@ -952,7 +1004,7 @@ static void update_display(stripline_gui *gui)
   /* ---------------- deltal -------------- */
   sprintf(str,WC_FMT_G, gui->line->deltal/gui->line->units_deltal->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_deltal), str );
-    
+
   /* ---------------- L -------------- */
   sprintf(str,WC_FMT_G, gui->line->Ls/gui->line->units_L->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Ls), str );
@@ -1073,9 +1125,14 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->losslen/gui->line->units_losslen->sf,
 	  gui->line->units_losslen->name);
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+  fprintf(fp,"(skin depth) show tab1 (=) show tab2 (" WC_FMT_G 
+	  " %s) show newline\n",
 	  gui->line->skindepth/gui->line->units_depth->sf,
 	  gui->line->units_depth->name);
+  fprintf(fp,"(D) symbolshow (l) show tab1 (=) show tab2 (" WC_FMT_G 
+	  " %s) show newline\n",
+	  gui->line->deltal/gui->line->units_deltal->sf,
+	  gui->line->units_deltal->name);
 
   fprintf(fp,"(freq) show tab1 (=) show tab2 (" 
 	  WC_FMT_G " %s) show newline\n",
