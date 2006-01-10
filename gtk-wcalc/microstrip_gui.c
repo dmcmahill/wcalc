@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.1 2006/01/09 20:30:44 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.19 2006/01/10 15:15:57 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -81,7 +81,7 @@ static void picture_init(microstrip_gui *gui,
 			 GtkWidget *parent);
 static void tooltip_init(microstrip_gui *gui);
 
-static char *name="Coplanar Analysis/Synthesis";
+static char *name="Microstrip Analysis/Synthesis";
 static char *version="v0.1";
 /*
  * Public Functions
