@@ -1,7 +1,7 @@
-/* $Id: air_coil.c,v 1.11 2004/09/02 00:47:48 dan Exp $ */
+/* $Id: air_coil.c,v 1.12 2004/11/24 06:22:45 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -137,6 +137,8 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   /* variables for loss */
   double A, Q0, w, Qsf;
+
+  double wirelen, Rdc, Qdc;
 
   /* regular and minimum possible length */
   double len, lmin;
@@ -276,7 +278,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 #endif
 
   /*
-   * find Q 
+   * find Q in skin effect limited region
    */
 
   if ( (0.1 <= x) && (x < 1.0) ){
@@ -298,20 +300,70 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   /*
    * The Geffe article assumes copper.  For a simple series R-L
    * circuit, Q = 2*pi*freq*L/R.  So, we should be able to apply a
-   * correction factor to get
+   * correction factor to get the correct Q.  In the skin effect
+   * region, we have
+   *  skin depth = sqrt(2 / (2*pi*f*permeability*conductivity))
+   * or
+   *  skin depth ~ sqrt(resistivity).
    *
-   * Q = Qcopper * copper_resistivity / metal_resistivity
+   * (~ is proportional to)
+   *
+   * resistance ~ resistivity / skin depth
+   *
+   * resistance ~ sqrt(resistivity)
+   *
+   * Q ~ 1/resistance ~ 1/sqrt(resistivity)
+   *
+   * Q = Qcopper * sqrt(copper_resistivity / metal_resistivity)
    *
    */
   
-  Qsf = 1.72e-8 / coil->rho;
+  Qsf = sqrt(1.72e-8 / coil->rho);
 #ifdef DEBUG_CALC
   printf("air_coil_calc():  Q scale factor to account for resistivity = %g\n", Qsf);
 #endif
+  printf("air_coil_calc():  Q scale factor to account for resistivity = %g\n", Qsf);
 
   w = (freq*1e-6) / SRF;
 
   coil->Q     = Qsf * Q0 * (1 - (w*w));
+
+  /*
+   * Low frequency Q
+   *
+   * The Geffe article assumes skin effect limited Q.  This assumption
+   * breaks down for lower frequencies.  So calculate a low frequency
+   * Q and interpolate between Qlf and Qhf (low freq. and high
+   * freq. Q)
+   *
+   * Start by finding the length of the wire.
+   * 
+   * The coil is the helix defined by:
+   *
+   * r   = inner radius of coil + wire radius
+   * phi = 0 to turns*2*pi
+   * z   = phi *(coil length)/(turns * 2 * pi)
+   *
+   * The line integral gives a wire length of
+   *
+   * turns * 2 * pi * sqrt( (coil radius + wire radius)^2 +
+   *    ( coil_length/(2*pi*turns))^2)
+   *
+   */
+
+  /* Figure out the length of the wire. */
+  wirelen = coil->Nf * 2.0 * M_PI * sqrt( 0.25*pow(coil->dia + awg2dia(coil->AWGf), 2.0) +
+					  pow(coil->len / (2.0 * M_PI * coil->Nf), 2.0) );
+
+  /* DC resistance */
+  Rdc = coil->rho * wirelen / (M_PI*pow(0.5*awg2dia(coil->AWGf), 2.0));
+  printf("air_coil_calc():  wirelen = %g meters, Rdc = %g Ohms\n", wirelen, Rdc);
+
+  /* Q found from low frequency resistance */
+  Qdc = 2.0 * M_PI * freq * coil->L / Rdc;
+  printf("air_coil_calc():  Q using Rdc = %g.  Q using skin effect = %g\n", Qdc, coil->Q);
+
+
   coil->freq = freq;
 
 #ifdef DEBUG_CALC
