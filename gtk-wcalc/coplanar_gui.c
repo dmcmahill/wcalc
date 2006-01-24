@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.c,v 1.1 2006/01/09 20:30:44 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.2 2006/01/10 15:15:36 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -67,6 +67,7 @@ static void print_ps(Wcalc *wcalc,FILE *fp);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
+static void synthesize_s( GtkWidget *w, gpointer data );
 static void synthesize_h( GtkWidget *w, gpointer data );
 static void synthesize_er( GtkWidget *w, gpointer data );
 static void calculate( coplanar_gui *gui, GtkWidget *w, gpointer data );
@@ -281,6 +282,47 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
 		   x+3, x+4, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_tooltips_set_tip(tips, button, 
 		       _("Synthesize width and length to obtain the specified "
+			 "characteristic impedance and electrical length"),
+		       NULL);
+  gtk_widget_show (button);
+
+  y++;
+
+  /* ---------------- Spacing (gap)  -------------- */
+
+  text = gtk_label_new( "Spacing (S)" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_s = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_entry_set_text(GTK_ENTRY(gui->text_s),"      ");
+  gtk_table_attach (GTK_TABLE(table), gui->text_s, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_s),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_s), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_s), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_s);
+
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+
+  /* synthesize spacing */
+  button = gtk_button_new_with_label ("<-Synthesize");
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_s), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button,
+		   x+3, x+4, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Synthesize spacing and length to obtain the specified "
 			 "characteristic impedance and electrical length"),
 		       NULL);
   gtk_widget_show (button);
@@ -816,6 +858,11 @@ static void synthesize_w( GtkWidget *w, gpointer data )
   calculate(WC_COPLANAR_GUI(data), w, "synthesize_w");
 }
 
+static void synthesize_s( GtkWidget *w, gpointer data )
+{
+  calculate(WC_COPLANAR_GUI(data), w, "synthesize_s");
+}
+
 static void synthesize_h( GtkWidget *w, gpointer data )
 {
   calculate(WC_COPLANAR_GUI(data), w, "synthesize_h");
@@ -836,6 +883,12 @@ static void calculate( coplanar_gui *gui, GtkWidget *w, gpointer data )
   gui->line->w=atof(vstr)*gui->line->units_lwht->sf;
 #ifdef DEBUG
   g_print("coplanar_gui.c:calculate():  w = %g\n", gui->line->w);
+#endif
+
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_s) ); 
+  gui->line->s=atof(vstr)*gui->line->units_lwht->sf;
+#ifdef DEBUG
+  g_print("coplanar_gui.c:calculate():  s = %g\n", gui->line->s);
 #endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
@@ -915,6 +968,9 @@ static void calculate( coplanar_gui *gui, GtkWidget *w, gpointer data )
   else if( strcmp(data,"synthesize_w")==0) {
     rslt=coplanar_syn(gui->line, gui->line->freq, CPWSYN_W);
   }
+  else if( strcmp(data,"synthesize_s")==0) {
+    rslt=coplanar_syn(gui->line, gui->line->freq, CPWSYN_S);
+  }
   else if( strcmp(data,"synthesize_h")==0) {
     rslt=coplanar_syn(gui->line, gui->line->freq, CPWSYN_H);
   }
@@ -953,6 +1009,10 @@ static void update_display(coplanar_gui *gui)
   /* ---------------- w -------------- */
   sprintf(str,WC_FMT_G,gui->line->w/gui->line->units_lwht->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_w), str );
+
+  /* ---------------- s -------------- */
+  sprintf(str,WC_FMT_G,gui->line->s/gui->line->units_lwht->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_s), str );
 
   /* ---------------- l -------------- */
   sprintf(str,WC_FMT_G,gui->line->l/gui->line->units_lwht->sf);
@@ -1048,6 +1108,7 @@ static void tooltip_init(coplanar_gui *gui)
   tips = gtk_tooltips_new();
 
   gtk_tooltips_set_tip(tips, gui->text_w, "Width of coplanar", NULL);
+  gtk_tooltips_set_tip(tips, gui->text_s, "Spacing to ground plane", NULL);
   gtk_tooltips_set_tip(tips, gui->text_l, "Length of coplanar", NULL);
   gtk_tooltips_set_tip(tips, gui->text_h, "Total substrate thickness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_er, "Substrate relative"
@@ -1104,6 +1165,9 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 
   fprintf(fp,"(W) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->w/gui->line->units_lwht->sf,
+	  gui->line->units_lwht->name);
+  fprintf(fp,"(S) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->line->s/gui->line->units_lwht->sf,
 	  gui->line->units_lwht->name);
   fprintf(fp,"(H) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->subs->h/gui->line->units_lwht->sf,

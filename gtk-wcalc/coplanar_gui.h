@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.h,v 1.8 2004/08/30 22:59:21 dan Exp $ */
+/* $Id: coplanar_gui.h,v 1.1 2006/01/09 20:30:45 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -55,8 +55,8 @@ typedef struct COPLANAR_GUI
    * Values vbox and its contents
    */
   GtkWidget *values_vbox;
-  GtkWidget *text_w,*text_l,*text_h,*text_er,*text_tand;
-  GtkWidget *text_z0,*text_elen,*text_tmet,*text_rho,*text_rough;
+  GtkWidget *text_w, *text_s, *text_l, *text_h, *text_er, *text_tand;
+  GtkWidget *text_z0, *text_elen, *text_tmet, *text_rho, *text_rough;
   GtkWidget *text_freq;
 
   /*
