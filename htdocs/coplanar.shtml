@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: coplanar waveguide.shtml,v 1.7 2004/07/28 11:49:06 dan Exp $ -->
+<!-- Copyright (c) 2006
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Microstrip Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coplanar waveguide,
+coplanar waveguide analysis,
+coplanar waveguide synthesis,
+coplanar waveguide,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Coplanar Waveguide Model
+    </font>
+    <br>
+    <br>
+    <img src="coplanar.png"
+    alt="Coplanar Waveguide Image" width="368" height="194" hspace="10" vspace="5">
+    </center>
+    
+    <font face="helvetica, arial">
+    <HR>
+    <H2><A NAME="References">Selected References</A></H2>
+    <P>
+    <OL>
+      <LI>
+	B. Wadell, "Transmission Line Design Handbook", Artech House, 1991.
+      </LI>
+
+    </OL>
+  </P>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

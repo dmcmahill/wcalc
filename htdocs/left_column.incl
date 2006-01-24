@@ -1,5 +1,5 @@
-<!-- $Id: left_column.incl,v 1.15 2004/11/24 03:47:48 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2005 Dan McMahill, All rights reserved. -->
+<!-- $Id: left_column.incl,v 1.16 2005/10/12 18:12:27 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
 
@@ -50,6 +50,7 @@
       <font face="helvetica, arial" size="-1">
 	&nbsp;<a href="air_coil.html">Air Core Solenoid Inductor</a><br>
 	&nbsp;<a href="coax.html">Coaxial Transmission Line</a><br>
+	&nbsp;<a href="coplanar.html">Coplanar Waveguide</a><br>
 	&nbsp;<a href="coupled_microstrip.html">Coupled Microstrip</a><br>
 	&nbsp;<a href="ic_microstrip.html">Integrated Circuit Microstrip</a><br>
 	&nbsp;<a href="microstrip.html">Microstrip</a><br>

@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.31 2005/10/20 22:25:44 dan Exp $
+## $Id: Makefile.am,v 1.32 2005/10/28 21:40:30 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -57,6 +57,7 @@ SHTML_IN=	\
 	bugs.shtml \
 	cgi-wcalc.shtml \
 	coax.shtml \
+	coplanar.shtml \
 	coupled_microstrip.shtml \
 	faq.shtml \
 	gtk-wcalc.shtml \
