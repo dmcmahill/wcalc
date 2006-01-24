@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.1 2006/01/06 15:08:51 dan Exp $ */
+/*      $Id: coplanar.c,v 1.2 2006/01/08 06:35:27 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -35,22 +35,20 @@
 
 /*
  *  References:
- *    Stanislaw Rosloniec
- *    "Algorithms For Computer-Aided Design of Linear Microwave Circuits"
- *    Archtech House, 1990
- *    ISBN 0-89006-354-0
- *    TK7876.R67 1990
+ *    Brian C. Wadell
+ *    "Transmission Line Design Handbook"
+ *    Archtech House, 1991
+ *    ISBN 0-89006-436-9
+ *    TK7876.W29 1991
  *
- *    H. A. Wheeler, "Formulas for the skin effect", Proc. IRE,
- *    Vol. 30, No. 9, September 1942, pp. 412-4124
  *
  */
 
 /* debug coplanar_syn()  */
-#define DEBUG_SYN
+/* #define DEBUG_SYN */
 
 /* debug coplanar_calc() */
-#define DEBUG_CALC 
+/* #define DEBUG_CALC */
 
 #include "config.h"
 
@@ -163,26 +161,45 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
    */
 
 #ifdef DEBUG_CALC
-       printf("coplanar_calc_int(): Thin coplanar analysis\n");
+  printf("coplanar_calc_int(): Thin coplanar analysis\n");
 #endif
-       k  = 0.5*line->s / (0.5 * line->s + line->w);
-       k1 = sinh(M_PI*line->s/(4.0*line->subs->h)) / sinh(M_PI*(0.5*line->s + line->w)/(2.0*line->subs->h));
+
+  /*
+   * These equations are _without_ the bottom side ground plane.
+   */
+  k  = 0.5*line->w / (0.5 * line->w + line->s);
+  k1 = sinh(M_PI*line->w/(4.0*line->subs->h)) / sinh(M_PI*(0.5*line->w + line->w)/(2.0*line->subs->h));
   
-    k_kp  = k_over_kp( k );
-    k_kp1 = k_over_kp( k1 );
+  k_kp  = k_over_kp( k );
+  k_kp1 = k_over_kp( k1 );
 
-      line->keff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
+  line->keff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
 
-      /* for coplanar waveguide (ground signal ground) */
-      z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kp);
+  /* for coplanar waveguide (ground signal ground) */
+  z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kp);
+  /* for coplanar strip (ground signal) */
+  /* z0 = FREESPACEZ0 * k_over_kp / sqrt(line->keff); */
+  
+  /*
+   * These equations are _with_ the bottom side ground plane.
+   *
+   * See Wadell, eq 3.4.3.1 through 3.4.3.6 on p. 79
+   */
+  k = line->w / (line->w + 2.0*line->s);
+  k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
+    tanh(M_PI*(line->w + 2.0*line->s) / (4.0 * line->subs->h));
+  k_kp = k_over_kp( k );
+  k_kp1 = k_over_kp( k1 );
 
-      /* for coplanar strip (ground signal) */
-      /* z0 = FREESPACEZ0 * k_over_kp / sqrt(line->keff); */
+  line->keff = (1.0 + line->subs->er*k_kp1/k_kp) /
+    (1.0 + k_kp1/k_kp);
 
+  z0 = (FREESPACEZ0 / (2.0 * sqrt(line->keff))) / (k_kp + k_kp1);
+  
 #ifdef DEBUG_CALC
-	printf("z0 = %g ohms\n", z0);
+  printf("z0 = %g ohms\n", z0);
 #endif
-
+	
   /*
    * Electrical Length
    */
@@ -190,205 +207,205 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /* propagation velocity (meters/sec) */
   v = LIGHTSPEED / sqrt(line->subs->er);
   line->len = 360*line->l*f/v;
-
+  
   /*
    * delay on line 
    */
   delay = line->l / v;
   
 
-   /* XXX - need open circuit end correction for coplanar */
-   deltal = 0;
+  /* XXX - need open circuit end correction for coplanar */
+  deltal = 0;
 
-   /* find the incremental circuit model */
+  /* find the incremental circuit model */
   
-   /*
-    * find L and C from the impedance and velocity
-    * 
-    * z0 = sqrt(L/C), v = 1/sqrt(LC)
-    * 
-    * this gives the result below
-    */
+  /*
+   * find L and C from the impedance and velocity
+   * 
+   * z0 = sqrt(L/C), v = 1/sqrt(LC)
+   * 
+   * this gives the result below
+   */
    
-   L = z0/v;
-   C = 1.0/(z0*v);
+  L = z0/v;
+  C = 1.0/(z0*v);
   
-   /* resistance will be updated below */
-   R = 0.0;
-   G = 2*M_PI*f*C*line->subs->tand;
+  /* resistance will be updated below */
+  R = 0.0;
+  G = 2*M_PI*f*C*line->subs->tand;
 
-   delay = line->l / v;
+  delay = line->l / v;
 
-   /* we'll update this if its a top level calculation */
-   depth = 0;
+  /* we'll update this if its a top level calculation */
+  depth = 0;
 
   /* Loss */
-   if(flag == WITHLOSS) {
+  if(flag == WITHLOSS) {
 #ifdef DEBUG_CALC
-       printf("coplanar_calc_int():  starting loss calculations\n");
+    printf("coplanar_calc_int():  starting loss calculations\n");
 #endif
-       /*
-	* Dielectric Losses
-	*/
+    /*
+     * Dielectric Losses
+     */
    
-       /* loss in nepers/meter */
-       ld=line->Gs*line->z0/2;
+    /* loss in nepers/meter */
+    ld=line->Gs*line->z0/2;
 
-       /* loss in dB/meter */
-       ld = 20.0*log10(exp(1.0)) * ld;
+    /* loss in dB/meter */
+    ld = 20.0*log10(exp(1.0)) * ld;
    
-       /* loss in dB */
-       ld = ld * line->l;
+    /* loss in dB */
+    ld = ld * line->l;
    
-       /*
-	* Conduction Losses
-	*/
+    /*
+     * Conduction Losses
+     */
        
-       /* calculate skin depth */
+    /* calculate skin depth */
    
-       /* conductivity  */
-       sigma = 1.0 / line->subs->rho;
+    /* conductivity  */
+    sigma = 1.0 / line->subs->rho;
    
-       /* permeability of free space */
-       mu = 4.0*M_PI*1e-7;
+    /* permeability of free space */
+    mu = 4.0*M_PI*1e-7;
    
-       /* skin depth in meters */
-       line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
-       delta = line->skindepth;
+    /* skin depth in meters */
+    line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
+    delta = line->skindepth;
        
-       /* make a copy, we'll want it  later */
-       depth = delta;
+    /* make a copy, we'll want it  later */
+    depth = delta;
 
 #ifdef notdef
-       /* warn the user if the loss calc is suspect. */
-       if(line->subs->tmet < 3.0*line->skindepth)
-	 {
-	   printf("Warning:  The metal thickness is less than\n");
-	   printf("three skin depths.  Use the loss results with\n");
-	   printf("caution.\n");
-	 }
+    /* warn the user if the loss calc is suspect. */
+    if(line->subs->tmet < 3.0*line->skindepth)
+      {
+	printf("Warning:  The metal thickness is less than\n");
+	printf("three skin depths.  Use the loss results with\n");
+	printf("caution.\n");
+      }
 #endif
 
-       /*
-	* if the skinDepth is greater than Tmet, assume current
-	* flows uniformly through  the conductor.  Then loss
-	* is just calculated from the dc resistance of the
-	* trace.  This is somewhat incorrect
-	* but I dont have time right now to come up
-	* with a better result.
-	*/
-       if(line->skindepth <= line->subs->tmet)
-	 {
+    /*
+     * if the skinDepth is greater than Tmet, assume current
+     * flows uniformly through  the conductor.  Then loss
+     * is just calculated from the dc resistance of the
+     * trace.  This is somewhat incorrect
+     * but I dont have time right now to come up
+     * with a better result.
+     */
+    if(line->skindepth <= line->subs->tmet)
+      {
    
-	   /* Use Wheelers "incremental inductance" approach */
+	/* Use Wheelers "incremental inductance" approach */
 
-	   /* clone the line */
-	   tmp_line = *line;
-	   tmp_line.subs = coplanar_subs_new();
-	   *(tmp_line.subs) = *(line->subs);
+	/* clone the line */
+	tmp_line = *line;
+	tmp_line.subs = coplanar_subs_new();
+	*(tmp_line.subs) = *(line->subs);
 	   
-	   tmp_line.subs->er = 1.0;
-	   rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
-	   z1=tmp_line.z0;
+	tmp_line.subs->er = 1.0;
+	rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
+	z1=tmp_line.z0;
 
-	   tmp_line.w = line->w - line->skindepth;
-	   tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
-	   tmp_line.subs->h = line->subs->h + line->skindepth;
-	   rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
-	   z2 = tmp_line.z0;
-	   free(tmp_line.subs);
+	tmp_line.w = line->w - line->skindepth;
+	tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
+	tmp_line.subs->h = line->subs->h + line->skindepth;
+	rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
+	z2 = tmp_line.z0;
+	free(tmp_line.subs);
 
-	   /* conduction losses, nepers per meter */
-	   lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
+	/* conduction losses, nepers per meter */
+	lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
 #ifdef DEBUG_CALC
-	   printf("coplanar_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
-		  z1,z2,z0,lc);
+	printf("coplanar_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
+	       z1,z2,z0,lc);
 #endif
-	   R = lc*2*line->z0;
+	R = lc*2*line->z0;
 
-	 }
+      }
 
-       /* "dc" case  */
-       else if(line->subs->tmet > 0.0)
-	 {
-	   /* resistance per meter = 1/(Area*conductivity) */
-	   R = 1/(line->w*line->subs->tmet*sigma);  
+    /* "dc" case  */
+    else if(line->subs->tmet > 0.0)
+      {
+	/* resistance per meter = 1/(Area*conductivity) */
+	R = 1/(line->w*line->subs->tmet*sigma);  
   
-	   /* conduction losses, nepers per meter */
-	   lc = R/(2.0*z0);
+	/* conduction losses, nepers per meter */
+	lc = R/(2.0*z0);
 
-	   /*
-	    * change delta to be equal to the metal thickness for
-	    * use in surface roughness correction
-	    */
-	   delta = line->subs->tmet;
+	/*
+	 * change delta to be equal to the metal thickness for
+	 * use in surface roughness correction
+	 */
+	delta = line->subs->tmet;
 #ifdef DEBUG_CALC
-	   printf("coplanar_calc_int(): LF conduction loss, R=%g, lc=%g\n",
-		  R,lc);
+	printf("coplanar_calc_int(): LF conduction loss, R=%g, lc=%g\n",
+	       R,lc);
 #endif
-	   /* no conduction loss case */
-	 }
-       else
-	 {
-	   lc=0.0;
+	/* no conduction loss case */
+      }
+    else
+      {
+	lc=0.0;
 #ifdef DEBUG_CALC
-	   printf("coplanar_calc_int(): 0 thickness strip.  setting"
-		  "conduction loss=0\n");
+	printf("coplanar_calc_int(): 0 thickness strip.  setting"
+	       "conduction loss=0\n");
 #endif
-	 }
+      }
 
  
-       /* loss in dB/meter */
-       lc = 20.0*log10(exp(1.0)) * lc;
+    /* loss in dB/meter */
+    lc = 20.0*log10(exp(1.0)) * lc;
    
-       /* loss in dB */
-       lc = lc * line->l;
+    /* loss in dB */
+    lc = lc * line->l;
    
-       /* factor due to surface roughness
-	* note that the equation in Fooks and Zakarevicius is slightly 
-	* errored.   
-	* the correct equation is penciled in my copy and was 
-	* found in Hammerstad and Bekkadal
-	*/
-       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
+    /* factor due to surface roughness
+     * note that the equation in Fooks and Zakarevicius is slightly 
+     * errored.   
+     * the correct equation is penciled in my copy and was 
+     * found in Hammerstad and Bekkadal
+     */
+    lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
    
-       /*
-	* Total Loss
-	*/
+    /*
+     * Total Loss
+     */
    
-       loss = ld + lc;
+    loss = ld + lc;
    
-     } /* if (flag == WITHLOSS ) */
-   else {
-     lc = 0.0;
-     ld = 0.0;
-     loss = 0.0;
-   }
+  } /* if (flag == WITHLOSS ) */
+  else {
+    lc = 0.0;
+    ld = 0.0;
+    loss = 0.0;
+  }
 
    
-   /*  store results */
-   line->z0 = z0;
+  /*  store results */
+  line->z0 = z0;
 
-   /* XXX fixme .  Ro + j Xo = sqrt((jwL + R) / (jwC + G))*/
-   line->Ro = z0;
-   line->Xo = 0.0;
+  /* XXX fixme .  Ro + j Xo = sqrt((jwL + R) / (jwC + G))*/
+  line->Ro = z0;
+  line->Xo = 0.0;
 
-   line->lc = lc;
-   line->ld = ld;
+  line->lc = lc;
+  line->ld = ld;
 
-   line->loss = loss;
-   line->losslen = loss/line->l;
-   line->skindepth = depth;
+  line->loss = loss;
+  line->losslen = loss/line->l;
+  line->skindepth = depth;
 
-   line->deltal = deltal;
-   line->delay = delay;
+  line->deltal = deltal;
+  line->delay = delay;
 
-   line->Ls = L;
-   line->Rs = R; 
-   line->Cs = C;
-   line->Gs = G;
+  line->Ls = L;
+  line->Rs = R; 
+  line->Cs = C;
+  line->Gs = G;
    
-   return 0;
+  return 0;
 }
 
 
@@ -416,36 +433,36 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
 
   /* the optimization variables, current, min/max, and previous values */
-  double var=0, varmax=0, varmin=0, varold=0;
+  double var = 0, varmax = 0, varmin = 0, varold = 0;
   
   /* errors due to the above values for the optimization variable */
-  double err=0, errmax=0, errmin=0, errold=0;
+  double err = 0, errmax = 0, errmin = 0, errold = 0;
 
   /* derivative */
   double deriv;
 
   /* the sign of the slope of the function being optimized */
-  double sign=0;
+  double sign = 0;
 
   /* pointer to which parameter of the line is being optimized */
   double *optpar;
 
   /* number of iterations so far, and max number allowed */
-  int iters=0;
-  int maxiters=100;
+  int iters = 0;
+  int maxiters = 100;
   
   /* convergence parameters */
-  double abstol=0.1e-6;
-  double reltol=0.01e-6;
-
+  double abstol = 0.1e-6;
+  double reltol = 0.01e-6;
+  
   /* flag to end optimization */
-  int done=0;
-
-
+  int done = 0;
+  
+  
   /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4*M_PI*1.0e-7;
-  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
-
+  mu0 = 4.0 * M_PI * 1.0e-7;
+  e0  = 1.0 / (mu0 * LIGHTSPEED * LIGHTSPEED);
+  
 
   /*
    * figure out what parameter we're synthesizing and set up the
@@ -457,9 +474,16 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
    *    3)  an initial guess for the parameter
    */
 
-  switch(flag){
+  switch(flag) {
   case CPWSYN_W:
     optpar = &(line->w);
+    varmax = 100.0*line->subs->h;
+    varmin = 0.01*line->subs->h;
+    var    = line->subs->h;
+    break;
+
+  case CPWSYN_S:
+    optpar = &(line->s);
     varmax = 100.0*line->subs->h;
     varmin = 0.01*line->subs->h;
     var    = line->subs->h;
@@ -522,7 +546,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
 #ifdef DEBUG_SYN
   printf("coplanar_syn(): --------------- Coplanar Synthesis -----------\n");
-  printf("coplanar_syn(): Metal width                 = %g m\n",line->w);
+  printf("coplanar_syn(): Metal width                 = %g m\n", line->w);
   printf("coplanar_syn():                             = %g %s\n",
 	 line->w/line->units_lwht->sf, line->units_lwht->name);
   printf("coplanar_calc(): Metal spacing               = %g m\n",line->s);
@@ -682,9 +706,11 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 #ifdef DEBUG_SYN
   printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
   printf("produced:\n");
-  printf("\twidth = %g [m] \n\tlength = %g [m]\n",line->w,line->l);
-  printf("\twidth = %g [%s] \n\tlength = %g [%s]\n",
+  printf("\twidth = %g [m] \n\tspacing = %g [m]\n\tlength = %g [m]\n",
+	 line->w, line->s, line->l);
+  printf("\twidth = %g [%s] \n\tspacing = %g [%s]\n\tlength = %g [%s]\n",
 	 line->w/line->units_lwht->sf, line->units_lwht->name,
+	 line->s/line->units_lwht->sf, line->units_lwht->name,
 	 line->l/line->units_lwht->sf, line->units_lwht->name);
 #endif
 

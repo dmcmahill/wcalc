@@ -1,4 +1,4 @@
-/*      $Id: coplanar.h,v 1.1 2006/01/06 15:08:51 dan Exp $ */
+/*      $Id: coplanar.h,v 1.2 2006/01/08 06:35:28 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -111,10 +111,11 @@ coplanar_subs *coplanar_subs_new(void);
  */
 
 #define CPWSYN_W    0    /* Synthesize the metal width         */
-#define CPWSYN_H    1    /* Synthesize the substrate thickness */
-#define CPWSYN_ER   2    /* Synthesize the dielectric constant */
-#define CPWSYN_S    3    /* Synthesize the spacing */
-#define CPWSYN_L    4    /* Synthesize the length */
+#define CPWSYN_S    1    /* Synthesize the spacing to the top side ground */
+#define CPWSYN_H    2    /* Synthesize the substrate thickness */
+#define CPWSYN_ER   3    /* Synthesize the dielectric constant */
+#define CPWSYN_S    4    /* Synthesize the spacing */
+#define CPWSYN_L    5    /* Synthesize the length */
 
 
 
