@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.21 2004/08/11 13:04:36 dan Exp $
+## $Id: Makefile.am,v 1.22 2004/09/02 00:49:46 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -38,6 +38,7 @@ cgibinexecdir = @CGIBINDIR@
 cgibinexec_PROGRAMS = \
 	air_coil.cgi \
 	coax.cgi \
+	coplanar.cgi \
 	coupled_microstrip.cgi \
 	ic_microstrip.cgi \
 	microstrip.cgi \
@@ -58,6 +59,8 @@ coax_cgi_SOURCES = coax.cgi.c ${COMMON}
 
 cookie_cgi_SOURCES = cookie.cgi.c ${COMMON}
 
+coplanar_cgi_SOURCES = coplanar.cgi.c ${COMMON}
+
 coupled_microstrip_cgi_SOURCES = coupled_microstrip.cgi.c ${COMMON}
 
 ic_microstrip_cgi_SOURCES = ic_microstrip.cgi.c ${COMMON}
@@ -75,6 +78,7 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@ @CGI_STATIC@
 HTML_FILES= \
 	air_coil.html \
 	coax.html \
+	coplanar.html \
 	coupled_microstrip.html \
 	footer.html \
 	header.html \

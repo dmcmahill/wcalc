@@ -1,0 +1,319 @@
+<!-- $Id: coplanar.html,v 1.11 2005/10/13 22:40:11 dan Exp $ -->
+<!--
+ * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * All rights reserved.
+ *
+ * This code is derived from software written by Dan McMahill
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *        This product includes software developed by Dan McMahill
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ -->
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Coplanar Waveguide Analysis/Synthesis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
+<LINK REV="made" HREF="mailto:nospam_to_mcmahill@alum.mit.make_edu">
+<link rel="shortcut icon" href="<@s@HTMLPATH@>/favicon.ico" type="image/x-icon">    
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="description" content="Coplanar Waveguide Analysis/Synthesis">
+<meta name="keywords" content="
+coplanar
+coplanar waveguide
+">
+<@s@cgi_units_menu_init()@>
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
+
+<H1 ALIGN="CENTER">Coplanar Waveguide Analysis/Synthesis Calculator</H1>
+
+<P>
+
+
+<FORM NAME="wcalc" METHOD=GET ACTION="coplanar.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="<@s@HTMLPATH@>coplanar_model.png" WIDTH=300 HEIGHT=141
+     ALT="[Coplanar Waveguide Circuit Model]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+<TR>
+<TD>Ls =</TD>
+<TD><@g@line->Ls/line->units_L->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_L)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Rs =</TD>
+<TD><@g@line->Rs/line->units_R->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_R)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Cs =</TD>
+<TD><@g@line->Cs/line->units_C->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_C)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Gs =</TD>
+<TD><@g@line->Gs/line->units_G->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_G)@>
+</TD>
+</TR>
+
+
+<TR>
+<TD>Z0 =</TD>
+<TD><@g@line->Ro@> + j <@g@line->Xo@></TD>
+<TD>[ohm]</TD>
+</TR>
+
+<TR>
+<TD>Loss =</TD>
+<TD><@g@line->loss/line->units_loss->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_loss)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Loss/len =</TD>
+<TD><@g@line->losslen/line->units_losslen->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_losslen)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Skin depth =</TD>
+<TD><@g@line->skindepth/line->units_depth->sf@></TD>
+<TD>
+<!-- skin depth units menu -->
+<@s@cgi_units_menu_display(menu_depth)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Delay =</TD>
+<TD><@g@line->delay/line->units_delay->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_delay)@>
+</TD>
+</TR>
+
+<TR>
+<TD>End correction =</TD>
+<TD><@g@line->deltal/line->units_deltal->sf@></TD>
+<TD>
+<!-- DeltaL units menu -->
+<@s@cgi_units_menu_display(menu_deltal)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Corrected length =</TD>
+<TD><@g@(line->l-line->deltal)/line->units_lwht->sf@></TD>
+<TD>
+<!-- DeltaL units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_len2">
+</TD>
+</TR>
+
+</TABLE>  <!-- end of model parameter table -->
+</TD>     <!-- end of cell with left hand entry table -->
+</TR>     <!-- end of row with left hand entry table -->
+
+</TABLE>  <!-- end left hand table -->
+</TD>     <!-- end cell in main table holding left hand side -->
+
+<TD>      <!-- right hand cell -->
+<TABLE>   <!-- right hand table -->
+
+<TR ALIGN="CENTER">
+<TD><IMG SRC="<@s@HTMLPATH@>coplanar.png" WIDTH=368 HEIGHT=194 
+     ALT="[Coplanar Waveguide Cross-section]"></TD>
+</TR>
+
+<TR>
+<TD>
+
+<TABLE>  <!-- right hand entry table -->
+
+<TR>
+<TD>Metal width (W)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@line->w/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- width units menu -->
+<@s@cgi_units_menu_display(menu_lwht)@>
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal spacing (S)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="s" VALUE="<@g@line->s/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_s">
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_s" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Trace length (L)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_len->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- length units menu -->
+<@s@cgi_units_menu_display(menu_len)@>
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_l" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Metal thickness (Tmet)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- tmet units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_t">
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (RHO)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@line->subs->rho/line->units_rho->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- RHO units menu -->
+<@s@cgi_units_menu_display(menu_rho)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Metal surface roughness (RGH)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@line->subs->rough/line->units_rough->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- roughness units menu -->
+<@s@cgi_units_menu_display(menu_rough)@>
+-rms</TD>
+</TR>
+
+<TR>
+<TD>Substrate thickness (H)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@line->subs->h/line->units_lwht->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_h">
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_h" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate relative dielectric constant (Er)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->er@>"
+           onChange="valsChanged()"></TD>
+<TD></TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_es" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate loss tangent (tand)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->subs->tand@>"
+           onChange="valsChanged()"></TD>
+<TD></TD>
+</TR>
+
+
+<TR>
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- freq units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+</TR>
+
+<TR>
+<TD>Characteristic Impedance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->Ro@>"
+           onChange="valsChanged()"></TD>
+<TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Electrical Length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->len@>"
+           onChange="valsChanged()"></TD>
+<TD>[degrees]</TD>
+</TR>
+
+</TABLE>  <!-- The values table in the right side -->
+
+</TD>     <!-- The cell in the right hand table with the values table -->
+</TR>     <!-- The row in the right hand table with the values table -->
+</TABLE>  <!-- The right hand table -->
+
+</TD>     <!-- The cell with the right hand table -->
+</TR>     <!-- The row in the main table -->
+</TABLE>  <!-- The main table -->
+
+</FORM>
+
+

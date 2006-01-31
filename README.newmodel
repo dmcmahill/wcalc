@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.9 2006/01/09 21:09:39 dan Exp $
+$Id: README.newmodel,v 1.10 2006/01/24 16:12:17 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -88,6 +88,13 @@ removed from the global list of currently open windows:
 	
   window_list = g_slist_remove(window_list,window);
 
+
+---------------------
+cgi-wcalc
+---------------------
+add microstrip.cgi.c
+add microstrip.html
+add both to Makefile.am
 
 ---------------------
 htdocs
