@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.2 2006/01/08 06:35:27 dan Exp $ */
+/*      $Id: coplanar.c,v 1.3 2006/01/24 19:49:11 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -136,8 +136,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 {
 
   /* calculation variables */
-  double k, k1, kp, r, kf, z0, m, deltaW, A, v, loss;
-  double k_kp, k_kp1;
+  double k, k1, kp, kt, r, kf, z0, m, deltaW, A, v, loss;
+  double k_kp, k_kp1, k_kpt;
+  double a, at, b, bt, eeff;
 
   /* loss variables*/
   double z1,z2,lc,ld,delta;
@@ -164,38 +165,56 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   printf("coplanar_calc_int(): Thin coplanar analysis\n");
 #endif
 
-  /*
-   * These equations are _without_ the bottom side ground plane.
-   */
-  k  = 0.5*line->w / (0.5 * line->w + line->s);
-  k1 = sinh(M_PI*line->w/(4.0*line->subs->h)) / sinh(M_PI*(0.5*line->w + line->w)/(2.0*line->subs->h));
-  
-  k_kp  = k_over_kp( k );
-  k_kp1 = k_over_kp( k1 );
+  if( line->with_ground == 0) {
+    /*
+     * These equations are _without_ the bottom side ground plane.
+     */
 
-  line->keff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
+    /* match the notation in Wadell */
+    a = line->w;
+    b = line->w + 2.0 * line->s;
 
-  /* for coplanar waveguide (ground signal ground) */
-  z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kp);
-  /* for coplanar strip (ground signal) */
-  /* z0 = FREESPACEZ0 * k_over_kp / sqrt(line->keff); */
-  
-  /*
-   * These equations are _with_ the bottom side ground plane.
-   *
-   * See Wadell, eq 3.4.3.1 through 3.4.3.6 on p. 79
-   */
-  k = line->w / (line->w + 2.0*line->s);
-  k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
-    tanh(M_PI*(line->w + 2.0*line->s) / (4.0 * line->subs->h));
-  k_kp = k_over_kp( k );
-  k_kp1 = k_over_kp( k1 );
+    /* Wadell (3.4.1.8), (3.4.1.9) */
+    at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
 
-  line->keff = (1.0 + line->subs->er*k_kp1/k_kp) /
-    (1.0 + k_kp1/k_kp);
+    /* Wadell (3.4.1.6) */
+    k1 = sinh(M_PI * at / (4.0 * line->subs->h)) / sinh(M_PI * bt / (4.0 * line->subs->h));
 
-  z0 = (FREESPACEZ0 / (2.0 * sqrt(line->keff))) / (k_kp + k_kp1);
-  
+    /* Wadell (3.4.1.4), (3.4.1.5) */
+    k = a / b;
+    kt = at / bt;
+
+    k_kp  = k_over_kp( k );
+    k_kp1 = k_over_kp( k1 );
+    k_kpt = k_over_kp( kt );
+
+    /* Wadell (3.4.1.3) */
+    eeff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
+
+    /* Wadell (3.4.1.2) */
+    line->keff = eeff - (eeff - 1.0) / ( (0.5*(b - a)/(0.7 * line->subs->tmet))*k_kp + 1.0);
+
+    /* for coplanar waveguide (ground signal ground) */
+    z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kpt);
+  } else {  
+    /*
+     * These equations are _with_ the bottom side ground plane.
+     *
+     * See Wadell, eq 3.4.3.1 through 3.4.3.6 on p. 79
+     */
+    k = line->w / (line->w + 2.0*line->s);
+    k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
+      tanh(M_PI*(line->w + 2.0*line->s) / (4.0 * line->subs->h));
+    k_kp = k_over_kp( k );
+    k_kp1 = k_over_kp( k1 );
+
+    line->keff = (1.0 + line->subs->er*k_kp1/k_kp) /
+      (1.0 + k_kp1/k_kp);
+
+    z0 = (FREESPACEZ0 / (2.0 * sqrt(line->keff))) / (k_kp + k_kp1);
+  }
+
 #ifdef DEBUG_CALC
   printf("z0 = %g ohms\n", z0);
 #endif
@@ -771,6 +790,9 @@ coplanar_line *coplanar_line_new()
 
   /* load in the defaults */
   coplanar_load_string(newline, default_coplanar);
+
+  /* FIXME */
+  newline->with_ground = 0;
 
   /* and do a calculation to finish the initialization */
   coplanar_calc(newline, newline->freq);

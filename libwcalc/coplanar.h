@@ -1,4 +1,4 @@
-/*      $Id: coplanar.h,v 1.3 2006/01/24 19:49:12 dan Exp $ */
+/*      $Id: coplanar.h,v 1.4 2006/01/31 13:52:55 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -81,6 +81,9 @@ typedef struct COPLANAR_LINE
 
   /* frequency of analysis (Hertz) */
   double freq;
+
+  /* with or without the bottom side ground plane */
+  int with_ground;
 
   wc_units *units_lwht;
   wc_units *units_L, *units_R, *units_C, *units_G;
