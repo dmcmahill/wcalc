@@ -1,7 +1,7 @@
-/* $Id: microstrip.c,v 1.18 2004/08/06 02:16:58 dan Exp $ */
+/* $Id: microstrip.c,v 1.19 2004/08/31 21:38:21 dan Exp $ */
 
 /*
- * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -508,7 +508,10 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   if (rslt)
 	     return rslt;
 	   z2=line->z0;
-
+#ifdef DEBUG_CALC
+	   printf("%s(): z2 = %g Ohms (er = 1.0, nom dimensions)\n",
+		  __FUNCTION__, z2);
+#endif
 
 	   line->subs->h = h + delta;
 	   line->subs->tmet = t - delta;
@@ -517,6 +520,18 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   if (rslt)
 	     return rslt;
 	   z1=line->z0;
+#ifdef DEBUG_CALC
+	   printf("%s(): z1 = %g Ohms (er = 1.0, w=%g %s, h=%g %s, t=%g %s)\n",
+		  __FUNCTION__, z1, 
+		  line->w/line->units_lwht->sf, line->units_lwht->name,
+		  line->subs->h/line->units_lwht->sf, line->units_lwht->name,
+		  line->subs->tmet/line->units_lwht->sf, line->units_lwht->name);
+	   printf("%s(): delta = %g m (%g %s)\n", __FUNCTION__,
+		  delta, delta/line->units_lwht->sf, line->units_lwht->name);
+
+	   printf("%s(): z1 - z2 = %g Ohms\n", __FUNCTION__, z1 - z2);
+#endif
+
 	   line->subs->er = er;
 	   line->subs->h = h;
 	   line->subs->tmet = t;
