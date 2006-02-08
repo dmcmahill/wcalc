@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.c,v 1.3 2006/01/24 18:00:39 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.4 2006/02/08 14:58:42 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -1201,6 +1201,9 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->l/gui->line->units_lwht->sf,
 	  gui->line->units_lwht->name);
+  fprintf(fp,"newline\n");
+  fprintf(fp,"(%s bottom side ground plane) show newline\n",
+	  gui->line->with_ground == 1 ? "With" : "Without");
   fprintf(fp,"newline\n");
   fprintf(fp,"(Tmet) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->subs->tmet/gui->line->units_lwht->sf,
