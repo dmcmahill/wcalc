@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.h,v 1.1 2006/01/09 20:30:45 dan Exp $ */
+/* $Id: coplanar_gui.h,v 1.2 2006/01/24 18:00:40 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -57,7 +57,7 @@ typedef struct COPLANAR_GUI
   GtkWidget *values_vbox;
   GtkWidget *text_w, *text_s, *text_l, *text_h, *text_er, *text_tand;
   GtkWidget *text_z0, *text_elen, *text_tmet, *text_rho, *text_rough;
-  GtkWidget *text_freq;
+  GtkWidget *text_freq, *button_gnd;
 
   /*
    * Outputs vbox and its contents

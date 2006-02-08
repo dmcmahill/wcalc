@@ -1,4 +1,4 @@
-/* $Id: coplanar_loadsave.c,v 1.2 2006/01/08 06:35:29 dan Exp $ */
+/* $Id: coplanar_loadsave.c,v 1.3 2006/01/09 20:29:01 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -80,6 +80,7 @@ static fspec * get_fspec(int which_one)
     fspec_add_key(linespec, "L", "Length (meters)", 'd', &line->l);
     fspec_add_key(linespec, "W", "Width (meters)", 'd', &line->w);
     fspec_add_key(linespec, "S", "Spacing (meters)", 'd', &line->s);
+    fspec_add_key(linespec, "WithGround", "Include the bottom side ground?", 'i', &line->with_ground);
     fspec_add_key(linespec, "Z0", "Characteristic Impedance (ohms)", 
 		  'd', &line->z0);
     fspec_add_key(linespec,"Elen","Electrical Length (degrees)", 

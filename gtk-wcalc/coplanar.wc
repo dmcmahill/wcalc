@@ -1,4 +1,4 @@
-# $Id: stripline.wc,v 1.2 2004/08/04 23:47:32 dan Exp $
+# $Id: coplanar.wc,v 1.1 2006/01/07 00:59:01 dan Exp $
 #
 
 [wcalc]
@@ -19,6 +19,8 @@ W = 0.00127
 
 # Spacing (meters)
 S = 0.00127
+
+WithGround = 1
 
 # Characteristic Impedance (ohms)
 Z0 = 32.85768569839

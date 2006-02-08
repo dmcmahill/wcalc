@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.c,v 1.2 2006/01/10 15:15:36 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.3 2006/01/24 18:00:39 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -444,6 +444,20 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (gui->text_tand), "changed",
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_tand);
+
+  y++;
+
+  /* ---------------- Use bottom side ground -------------- */
+  gui->button_gnd = 
+    gtk_check_button_new_with_label(_("With bottom side ground"));
+  gtk_table_attach(GTK_TABLE(table), gui->button_gnd,
+		   x+1, x+3, y, y+1, 0,0,WC_XPAD,WC_YPAD);  
+  gtk_widget_show(gui->button_gnd);
+
+  gtk_signal_connect (GTK_OBJECT (gui->button_gnd), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->button_gnd), "clicked",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
 
   y++;
 
@@ -915,6 +929,12 @@ static void calculate( coplanar_gui *gui, GtkWidget *w, gpointer data )
   g_print("coplanar_gui.c:calculate():  tand = %g\n", gui->line->subs->tand);
 #endif
 
+  gui->line->with_ground = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gui->button_gnd));
+#ifdef DEBUG
+  g_print("coplanar_gui.c:calculate():  with_gnd = %d\n", 
+	  gui->line->with_ground);
+#endif
+
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
   gui->line->Ro=atof(vstr);
 #ifdef DEBUG
@@ -1030,6 +1050,9 @@ static void update_display(coplanar_gui *gui)
   sprintf(str,WC_FMT_G,gui->line->subs->tand);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tand), str );
 
+  /* ---------------- with ground -------------- */
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->button_gnd),
+			       gui->line->with_ground);
   /* ---------------- z0 -------------- */
   sprintf(str,WC_FMT_G,gui->line->z0);
   gtk_entry_set_text( GTK_ENTRY(gui->text_z0), str );
@@ -1114,6 +1137,9 @@ static void tooltip_init(coplanar_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_er, "Substrate relative"
 		       " dielectric constant",NULL);
   gtk_tooltips_set_tip(tips, gui->text_tand, "Substrate loss tangent", NULL);
+  gtk_tooltips_set_tip(tips, gui->button_gnd, 
+		       "Check to include the effects of a bottom side "
+		       "ground plane", NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_z0, "Characteristic impedance", NULL);
   gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length", NULL);

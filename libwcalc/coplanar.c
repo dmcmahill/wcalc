@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.3 2006/01/24 19:49:11 dan Exp $ */
+/*      $Id: coplanar.c,v 1.4 2006/02/01 00:23:26 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -790,9 +790,6 @@ coplanar_line *coplanar_line_new()
 
   /* load in the defaults */
   coplanar_load_string(newline, default_coplanar);
-
-  /* FIXME */
-  newline->with_ground = 0;
 
   /* and do a calculation to finish the initialization */
   coplanar_calc(newline, newline->freq);
