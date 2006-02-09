@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.4 2006/01/03 13:17:57 dan Exp $
+# $Id: README-to-release,v 1.5 2006/01/03 16:37:30 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -47,6 +47,7 @@ To make a wcalc release do the following:
 	3. FIX_ME [fix up this step.  what shall we do with the version
 	   on the trunk?]
 	   On the trunk, update configure.in and win32/build_wcalc to update the version
+		and to enable the DEVEL_VERSION define.
 		for example 1.99x after releasing 1.99w
 		cvs update -PdA
 		vi configure.in win32/build_wcalc
@@ -66,7 +67,9 @@ To make a wcalc release do the following:
 
 	6. When the release branch is ready to go,  update configure.in and
 	   win32/build_wcalc to
-	   set the final release version.  Then tag the release.
+	   set the final release version
+		and to disable the DEVEL_VERSION define.
+		Then tag the release.
 		cvs update -PdA -r wcalc-0_9
 		vi configure.in win32/build_wcalc
 		cvs ci configure.in win32/build_wcalc
