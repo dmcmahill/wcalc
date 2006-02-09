@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.4 2006/02/01 00:23:26 dan Exp $ */
+/*      $Id: coplanar.c,v 1.5 2006/02/08 14:58:40 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -136,7 +136,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 {
 
   /* calculation variables */
-  double k, k1, kp, kt, r, kf, z0, m, deltaW, A, v, loss;
+  double k, k1, kt, z0, v, loss;
   double k_kp, k_kp1, k_kpt;
   double a, at, b, bt, eeff;
 
@@ -216,7 +216,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   }
 
 #ifdef DEBUG_CALC
-  printf("z0 = %g ohms\n", z0);
+  printf("%s():  z0 = %g ohms\n", __FUNCTION__, z0);
 #endif
 	
   /*
@@ -233,7 +233,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   delay = line->l / v;
   
 
-  /* XXX - need open circuit end correction for coplanar */
+  /* FIXME - need open circuit end correction for coplanar */
   deltal = 0;
 
   /* find the incremental circuit model */
@@ -249,9 +249,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   L = z0/v;
   C = 1.0/(z0*v);
   
-  /* resistance will be updated below */
+  /* resistance and conductance will be updated below */
   R = 0.0;
-  G = 2*M_PI*f*C*line->subs->tand;
+  G = 1.0;
 
   delay = line->l / v;
 
@@ -295,15 +295,13 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     /* make a copy, we'll want it  later */
     depth = delta;
 
-#ifdef notdef
     /* warn the user if the loss calc is suspect. */
     if(line->subs->tmet < 3.0*line->skindepth)
       {
-	printf("Warning:  The metal thickness is less than\n");
-	printf("three skin depths.  Use the loss results with\n");
-	printf("caution.\n");
+	alert("Warning:  The metal thickness is less than\n"
+	      "three skin depths.  Use the loss results with\n"
+	      "caution.\n");
       }
-#endif
 
     /*
      * if the skinDepth is greater than Tmet, assume current
@@ -313,7 +311,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      * but I dont have time right now to come up
      * with a better result.
      */
-    if(line->skindepth <= line->subs->tmet)
+    if(line->skindepth <= line->subs->tmet/3.0)
       {
    
 	/* Use Wheelers "incremental inductance" approach */
@@ -322,11 +320,20 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	tmp_line = *line;
 	tmp_line.subs = coplanar_subs_new();
 	*(tmp_line.subs) = *(line->subs);
-	   
-	tmp_line.subs->er = 1.0;
-	rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
-	z1=tmp_line.z0;
 
+	/* set relative permeability to 1.0 for this */
+	tmp_line.subs->er = 1.0;
+
+	/* er = 1.0 impedance with nominal dimensions */
+	rslt = coplanar_calc_int(&tmp_line, f, NOLOSS);
+	z1 = tmp_line.z0;
+
+	/* 
+	 * er = 1.0 impedance with dimensions modified by
+	 * 1/2 the skin depth on all conductors.  Note that
+	 * this means reduce width by 1/2 the skin depth on both sides
+	 * for a total reduction equal to the skin depth.
+	 */
 	tmp_line.w = line->w - line->skindepth;
 	tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
 	tmp_line.subs->h = line->subs->h + line->skindepth;
@@ -337,8 +344,8 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	/* conduction losses, nepers per meter */
 	lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
 #ifdef DEBUG_CALC
-	printf("coplanar_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
-	       z1,z2,z0,lc);
+	printf("%s(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
+	       __FUNCTION__, z1, z2, z0, lc);
 #endif
 	R = lc*2*line->z0;
 
