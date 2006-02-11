@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.5 2006/02/08 14:58:40 dan Exp $ */
+/*      $Id: coplanar.c,v 1.6 2006/02/09 17:03:43 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -141,6 +141,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   double a, at, b, bt, eeff;
 
   /* loss variables*/
+  double lambdag, q;
   double z1,z2,lc,ld,delta;
   double mu,sigma;
 
@@ -266,16 +267,27 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     /*
      * Dielectric Losses
      */
-   
-    /* loss in nepers/meter */
-    ld=line->Gs*line->z0/2;
+    if( line->with_ground == 0) {
 
-    /* loss in dB/meter */
-    ld = 20.0*log10(exp(1.0)) * ld;
-   
-    /* loss in dB */
-    ld = ld * line->l;
-   
+      /* freq * wavelength = velocity */
+      lambdag = (LIGHTSPEED/sqrt(line->keff)) / line->freq;
+
+      /* q from Wadell (2.7.2.1) */
+      q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
+
+      /* loss from Wadell (3.4.1.10) */
+      ld = q * line->subs->er * line->subs->tand / (line->keff * lambdag);
+    } else {
+      /* loss in nepers/meter */
+      ld = line->Gs*line->z0/2;
+      
+      /* loss in dB/meter */
+      ld = 20.0*log10(exp(1.0)) * ld;
+      
+      /* loss in dB */
+      ld = ld * line->l;
+    }
+
     /*
      * Conduction Losses
      */
