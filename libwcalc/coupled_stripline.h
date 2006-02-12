@@ -1,7 +1,7 @@
-/* $Id: defaults.h,v 1.2 2006/01/08 06:34:44 dan Exp $ */
+/* $Id: coupled_stripline.h,v 1.10 2005/01/06 22:53:09 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2006 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,16 +33,75 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __DEFAULTS_H__
-#define __DEFAULTS_H__
+#ifndef __COUPLED_STRIPLINE_H_
+#define __COUPLED_STRIPLINE_H_
 
-extern const char *default_air_coil;
-extern const char *default_coax;
-extern const char *default_coplanar;
-extern const char *default_coupled_microstrip;
-extern const char *default_coupled_stripline;
-extern const char *default_ic_microstrip;
-extern const char *default_microstrip;
-extern const char *default_stripline;
+#include "stripline.h"
+#include "units.h"
 
-#endif /* __DEFAULTS_H__ */
+
+typedef struct COUPLED_STRIPLINE_LINE
+{
+
+  /* length, width, and spacing */
+  double l;
+  double w;
+  double s;
+
+  /* characteristic impedance (ohms) and coupling factor */
+  double z0, k;
+
+  /* even and odd mode impedance */
+  double z0e;
+  double z0o;
+
+  /* flag which says to use z0/k instead of z0e/z0o for synthesis */
+  int use_z0k;
+
+  /* electrical length (degrees) */
+  double len;
+
+
+  /* open circuit end line correction */
+  double deltale, deltalo;
+
+  /* even and odd mode effective relative permitivitty */
+  double kev, kodd;
+
+  double loss_ev, loss_odd, losslen_ev, losslen_odd, skindepth;
+
+  /* incremental circuit model */
+  double Lev, Rev, Cev, Gev;
+  double Lodd, Rodd, Codd, Godd;
+
+  /* analysis frequency */
+  double freq;
+
+  stripline_subs *subs;
+
+  /* user units */
+  wc_units *units_lwst;
+  wc_units *units_len;
+
+  wc_units *units_freq;
+  wc_units *units_loss;
+  wc_units *units_losslen;
+  wc_units *units_rho;
+  wc_units *units_rough;
+  wc_units *units_delay;
+  wc_units *units_depth;
+  wc_units *units_deltal;
+
+  wc_units *units_L, *units_R, *units_C, *units_G;
+
+} coupled_stripline_line;
+
+
+int coupled_stripline_calc(coupled_stripline_line *line, double f);
+int coupled_stripline_syn(coupled_stripline_line *line, double f);
+
+void coupled_stripline_line_free(coupled_stripline_line * line);
+coupled_stripline_line *coupled_stripline_line_new(void);
+
+
+#endif /*__COUPLED_STRIPLINE_H_*/

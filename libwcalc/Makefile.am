@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.26 2005/10/29 03:52:20 dan Exp $
+## $Id: Makefile.am,v 1.27 2006/01/06 15:08:50 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -47,6 +47,8 @@ pkginclude_DATA =  \
 	coplanar_loadsave.h \
 	coupled_microstrip.h \
 	coupled_microstrip_loadsave.h \
+	coupled_stripline.h \
+	coupled_stripline_loadsave.h \
 	ic_microstrip.h \
 	ic_microstrip_loadsave.h \
 	libwcalc.h \
@@ -104,6 +106,10 @@ libwcalc_la_SOURCES = \
 	coupled_microstrip.h \
 	coupled_microstrip_loadsave.c \
 	coupled_microstrip_loadsave.h \
+	coupled_stripline.c \
+	coupled_stripline.h \
+	coupled_stripline_loadsave.c \
+	coupled_stripline_loadsave.h \
 	defaults.c \
 	defaults.h \
 	ic_microstrip.c \

@@ -1,7 +1,7 @@
-/* $Id: defaults.h,v 1.2 2006/01/08 06:34:44 dan Exp $ */
+/* $Id: coupled_stripline_loadsave.h,v 1.2 2004/08/31 21:38:20 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2006 Dan McMahill
+ * Copyright (c) 2001, 2002, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -33,16 +33,15 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __DEFAULTS_H__
-#define __DEFAULTS_H__
+#ifndef __COUPLED_STRIPLINE_LOADSAVE_H__
+#define __COUPLED_STRIPLINE_LOADSAVE_H__
 
-extern const char *default_air_coil;
-extern const char *default_coax;
-extern const char *default_coplanar;
-extern const char *default_coupled_microstrip;
-extern const char *default_coupled_stripline;
-extern const char *default_ic_microstrip;
-extern const char *default_microstrip;
-extern const char *default_stripline;
+void coupled_stripline_save(coupled_stripline_line *line, FILE *fp, 
+			     char *fname);
+int coupled_stripline_load(coupled_stripline_line *line, FILE *fp);
 
-#endif /* __DEFAULTS_H__ */
+int coupled_stripline_load_string(coupled_stripline_line *line,
+				   const char *str);
+char * coupled_stripline_save_string(coupled_stripline_line *line);
+
+#endif /*__COUPLED_STRIPLINE_LOADSAVE_H__*/

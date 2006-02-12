@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.24 2005/02/12 15:02:22 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.25 2006/01/09 21:09:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -138,6 +138,9 @@ int wcalc_load(FILE *fp)
   }
   else if (strcmp(val, FILE_COUPLED_MICROSTRIP) == 0) {
     return MODEL_COUPLED_MICROSTRIP;
+  }
+  else if (strcmp(val, FILE_COUPLED_STRIPLINE) == 0) {
+    return MODEL_COUPLED_STRIPLINE;
   }
   else if (strcmp(val, FILE_IC_MICROSTRIP) == 0) {
     return MODEL_IC_MICROSTRIP;

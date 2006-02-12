@@ -1,4 +1,4 @@
-/* $Id: make_defaults.c,v 1.1 2004/08/31 21:38:59 dan Exp $ */
+/* $Id: make_defaults.c,v 1.2 2006/01/08 06:34:31 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2006 Dan McMahill
@@ -59,6 +59,8 @@
 #include "coplanar_loadsave.h"
 #include "coupled_microstrip.h"
 #include "coupled_microstrip_loadsave.h"
+#include "coupled_stripline.h"
+#include "coupled_stripline_loadsave.h"
 #include "ic_microstrip.h"
 #include "ic_microstrip_loadsave.h"
 #include "microstrip.h"
@@ -84,11 +86,12 @@ int main(int argc, char **argv)
   coax_line *coax;
   coplanar_line *cpw_line;
   coupled_microstrip_line *cms_line;
+  coupled_stripline_line *cst_line;
   ic_microstrip_line *ic_ms_line;
   microstrip_line *ms_line;
   stripline_line *st_line;
 
-  printf("/* $Id: make_defaults.c,v 1.1 2004/08/31 21:38:59 dan Exp $ */\n\n");
+  printf("/* $Id: make_defaults.c,v 1.2 2006/01/08 06:34:31 dan Exp $ */\n\n");
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
   printf("/* use \"make_defaults\" to generate */\n\n");
 
@@ -134,6 +137,17 @@ int main(int argc, char **argv)
     printf("const char *default_coupled_microstrip=\"%s\";\n", str);
     free(str);
     coupled_microstrip_line_free(cms_line);
+    fclose(fp);
+  }
+
+  sprintf(fname, "%s/%s", dir, "coupled_stripline.wc");
+  if( (fp = fopen(fname, "r")) != NULL ) {
+    cst_line = coupled_stripline_line_new();
+    coupled_stripline_load(cst_line, fp);
+    str = coupled_stripline_save_string(cst_line);
+    printf("const char *default_coupled_stripline=\"%s\";\n", str);
+    free(str);
+    coupled_stripline_line_free(cst_line);
     fclose(fp);
   }
 

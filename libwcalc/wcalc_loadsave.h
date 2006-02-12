@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.10 2004/08/31 21:38:26 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.11 2006/01/09 21:09:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
@@ -120,6 +120,7 @@ int fspec_read_string(fspec *list, const char *str,unsigned long base);
 #define FILE_COAX                "coax"
 #define FILE_COPLANAR            "coplanar"
 #define FILE_COUPLED_MICROSTRIP  "coupled_microstrip"
+#define FILE_COUPLED_STRIPLINE   "coupled_stripline"
 #define FILE_IC_MICROSTRIP       "ic_microstrip"
 #define FILE_MICROSTRIP          "microstrip"
 #define FILE_STRIPLINE           "stripline"
@@ -130,6 +131,7 @@ enum {
   MODEL_COAX,
   MODEL_COPLANAR,
   MODEL_COUPLED_MICROSTRIP,
+  MODEL_COUPLED_STRIPLINE,
   MODEL_IC_MICROSTRIP,
   MODEL_MICROSTRIP,
   MODEL_STRIPLINE
