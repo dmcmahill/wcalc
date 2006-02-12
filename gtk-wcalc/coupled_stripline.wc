@@ -1,0 +1,124 @@
+#
+# File:      /sim/mcmahill/tmp/localsrc/cad/wcalc/gtk-wcalc/coupled_stripline.wc
+# Modified:  Thu Jan  6 13:40:04 2005
+# Wcalc Version 0.6
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = coupled_stripline
+
+
+[coupled_stripline]
+
+# Coupled stripline file version
+file_version = 0.1
+
+# Length (meters)
+L = 0.0254
+
+# Width (meters)
+W = 0.00127
+
+# Spacing (meters)
+S = 0.000381
+
+# Characteristic Impedance (ohms)
+Z0 = 68.243013133795
+
+# Coupling coefficient
+k = 0.352278480901007
+
+# Even Mode Characteristic Impedance (ohms)
+Z0e = 98.6045827380111
+
+# Odd Mode Characteristic Impedance (ohms)
+Z0o = 47.2301460263068
+
+# Flag to use z0/k vs z0e/z0o for synthesis
+use_z0k = 1
+
+# Electrical Length (degrees)
+Elen = 99.5878214675151
+
+# Frequency of operation
+freq = 1800000000
+
+# User units
+
+# Length, width, substrate and metal thickness units
+units_lwht = 5
+# [mil]
+
+# Incremental inductance units
+units_L = 1-6
+# [nH/inch]
+
+# Incremental resistance units
+units_R = 1-6
+# [mOhm/inch]
+
+# Incremental capacitance units
+units_C = 1-6
+# [pF/inch]
+
+# Incremental conductance units
+units_G = 0-6
+# [uMho/inch]
+
+# Line physical length units
+units_len = 0
+# [nm]
+
+# Frequency units
+units_freq = 4
+# [GHz]
+
+# Loss units
+units_loss = 0
+# [dB]
+
+# Loss/length units
+units_losslen = 0-6
+# [dB/inch]
+
+# Resistivity units
+units_rho = 2-4
+# [Ohm-m]
+
+# Surface roughness units (RMS)
+units_rough = 5
+# [mil]
+
+# Delay units
+units_delay = 0
+# [as]
+
+# Skin depth units
+units_depth = 5
+# [mil]
+
+# End correction units
+units_deltal = 5
+# [mil]
+
+
+[substrate]
+
+# Height (meters)
+H = 0.0015748
+
+# Relative dielectric constant
+ER = 4.8
+
+# Metalization thickness (meters)
+TMET = 7.112e-05
+
+# Metalization resistivity (ohm-meters)
+RHO = 3e-08
+
+# Metalization surface roughness (meters-RMS)
+ROUGH = 2.54e-08
+
+# Dielectric loss tangent
+TAND = 0.01
+

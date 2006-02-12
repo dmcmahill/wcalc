@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.34 2005/11/05 01:53:56 dan Exp $
+## $Id: Makefile.am,v 1.35 2006/01/09 20:30:44 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -48,6 +48,8 @@ wcalc_SOURCES = \
 	coplanar_gui.h \
 	coupled_microstrip_gui.c \
 	coupled_microstrip_gui.h \
+	coupled_stripline_gui.c \
+	coupled_stripline_gui.h \
 	epscat.c \
 	epscat.h \
 	files.c \
@@ -81,6 +83,7 @@ pkgdata_DATA= \
 	air_coil.wc \
 	coax.wc \
 	coupled_microstrip.wc \
+	coupled_stripline.wc \
 	ic_microstrip.wc \
 	microstrip.wc \
 	stripline.wc

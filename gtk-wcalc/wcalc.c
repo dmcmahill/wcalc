@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.29 2005/11/06 02:24:12 dan Exp $ */
+/* $Id: wcalc.c,v 1.30 2006/01/09 20:30:45 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -60,6 +60,7 @@
 #include "coax_gui.h"
 #include "coplanar_gui.h"
 #include "coupled_microstrip_gui.h"
+#include "coupled_stripline_gui.h"
 #include "ic_microstrip_gui.h"
 #include "microstrip_gui.h"
 #include "stripline_gui.h"
@@ -297,6 +298,16 @@ static void global_model_init()
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_COUPLED_MICROSTRIP);
 
+  /* ************************ Coupled Stripline ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Coupled Stripline");
+  global_model_menus = g_list_append(global_model_menus,
+				     "/File/New/Coupled S_tripline");
+  global_model_new = g_list_append(global_model_new,
+				   (gpointer) coupled_stripline_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, 
+					FILE_COUPLED_STRIPLINE);
+
   /* ************************ IC Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
@@ -486,6 +497,10 @@ void wcalc_setup (gpointer data,
       
     case MODEL_COUPLED_MICROSTRIP:
       new_cmd = (void *) coupled_microstrip_gui_new;
+      break;
+
+    case MODEL_COUPLED_STRIPLINE:
+      new_cmd = (void *) coupled_stripline_gui_new;
       break;
 
     case MODEL_IC_MICROSTRIP:
