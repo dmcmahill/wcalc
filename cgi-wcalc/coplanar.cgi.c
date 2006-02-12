@@ -1,4 +1,4 @@
-/* $Id: coplanar.cgi.c,v 1.10 2005/10/13 22:40:09 dan Exp $ */
+/* $Id: coplanar.cgi.c,v 1.1 2006/01/31 13:37:25 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -76,6 +76,7 @@
 #define SYNTH_W   4
 #define SYNTH_ES  5
 #define SYNTH_L   6
+#define SYNTH_S   7 
 
 
 
@@ -236,7 +237,7 @@ int cgiMain(void){
     }
     
     /* trace spacing */
-    if(cgiFormDouble("s", &w, defS/line->units_lwht->sf) !=
+    if(cgiFormDouble("s", &s, defS/line->units_lwht->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("Error reading metal spacing");
@@ -426,7 +427,7 @@ int cgiMain(void){
 
   case SYNTH_ES:
     fprintf(cgiOut,"<pre>");
-    coplanar_syn(line, line->freq, CPWSYN_E$);
+    coplanar_syn(line, line->freq, CPWSYN_ER);
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
     break;
