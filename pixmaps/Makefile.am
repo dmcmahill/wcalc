@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.13 2005/10/28 21:40:30 dan Exp $
+## $Id: Makefile.am,v 1.14 2006/01/09 20:31:06 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill
@@ -55,6 +55,7 @@ TGIF_SRCS=	\
 		coplanar.obj \
 		coplanar_model.obj \
 		coupled_microstrip.obj \
+		coupled_stripline.obj \
 		ic_microstrip.obj \
 		ic_microstrip_model.obj \
 		logo.obj \
