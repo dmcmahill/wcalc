@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.1 2006/02/12 06:16:25 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.2 2006/02/12 13:57:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -91,6 +91,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   /* for skindepth calculation  */
   double mu, sigma;
 
+ line->freq = f;
 
 #ifdef DEBUG_CALC
   printf("coupled_stripline_calc(): --------- Coupled_Stripline Analysis ----------\n");
@@ -160,6 +161,10 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   line->Codd = sqrt(line->kodd) / (line->z0o * LIGHTSPEED);
 
   /* XXX fix the loss */
+  line->loss_ev = 0.0;
+  line->loss_odd = 0.0;
+  line->losslen_ev = 0.0;
+  line->losslen_odd = 0.0;
 
   line->Rev = 0.0;
   line->Gev = 0.0;
