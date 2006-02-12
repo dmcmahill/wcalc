@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: coupled_stripline.shtml,v 1.6 2004/07/28 11:49:05 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2006
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Coupled Stripline Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Coupled Stripline Model
+    </font>
+    <br>
+    <br>
+    <img src="coupled_stripline.png"
+    alt="Coupled Stripline Image" width="437" height="178" hspace="10" vspace="5">
+    </center>
+    
+    <font face="helvetica, arial">
+    <HR>
+    <H2><A NAME="References">Selected References</A></H2>
+    <OL>
+      <LI>
+	Manfred Kirschning and Rolf Jansen, "Accurate Wide-Range
+	Design Equations for the Frequency-Dependent Characteristic of
+	Parallel Coupled Stripline Lines",
+	<em>IEEE Transactions on Microwave Theory and Techniques</em>,
+	Vol MTT-32, No 1, January 1984, p83-90.  Corrections in
+	MTT-33, No 3, March 1985, p. 288 
+      </LI>
+            
+    </OL>
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

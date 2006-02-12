@@ -1,4 +1,4 @@
-<!-- $Id: left_column.incl,v 1.16 2005/10/12 18:12:27 dan Exp $ -->
+<!-- $Id: left_column.incl,v 1.17 2006/01/24 16:12:19 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
@@ -52,6 +52,7 @@
 	&nbsp;<a href="coax.html">Coaxial Transmission Line</a><br>
 	&nbsp;<a href="coplanar.html">Coplanar Waveguide</a><br>
 	&nbsp;<a href="coupled_microstrip.html">Coupled Microstrip</a><br>
+	&nbsp;<a href="coupled_stripline.html">Coupled Stripline</a><br>
 	&nbsp;<a href="ic_microstrip.html">Integrated Circuit Microstrip</a><br>
 	&nbsp;<a href="microstrip.html">Microstrip</a><br>
 	&nbsp;<a href="stripline.html">Stripline</a><br>

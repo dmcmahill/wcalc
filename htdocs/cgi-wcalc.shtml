@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml,v 1.11 2005/10/12 18:12:27 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml,v 1.12 2006/01/24 16:12:18 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -14,6 +14,9 @@
 coupled microstrip,
 coupled microstrip analysis,
 coupled microstrip synthesis,
+coupled stripline,
+coupled stripline analysis,
+coupled stripline synthesis,
 microstrip,
 microstrip analysis,
 microstrip synthesis,
@@ -57,6 +60,7 @@ stripline synthesis,
     <LI><A HREF="/cgi-bin/coplanar.cgi">Coplanar Waveguide</A></LI>
     <LI><A HREF="/cgi-bin/ic_microstrip.cgi">Integrated Circuit Microstrip (MIS)</A></LI>
     <LI><A HREF="/cgi-bin/coupled_microstrip.cgi">Printed Circuit Coupled Microstrip</A></LI>
+    <LI><A HREF="/cgi-bin/coupled_stripline.cgi">Coupled Stripline</A></LI>
     <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
     <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
     </ul>

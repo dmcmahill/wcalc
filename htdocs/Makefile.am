@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.32 2005/10/28 21:40:30 dan Exp $
+## $Id: Makefile.am,v 1.33 2006/01/24 16:12:18 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -59,6 +59,7 @@ SHTML_IN=	\
 	coax.shtml \
 	coplanar.shtml \
 	coupled_microstrip.shtml \
+	coupled_stripline.shtml \
 	faq.shtml \
 	gtk-wcalc.shtml \
 	ic_microstrip.shtml \

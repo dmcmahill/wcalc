@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.22 2004/09/02 00:49:46 dan Exp $
+## $Id: Makefile.am,v 1.23 2006/01/31 13:37:25 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
@@ -40,6 +40,7 @@ cgibinexec_PROGRAMS = \
 	coax.cgi \
 	coplanar.cgi \
 	coupled_microstrip.cgi \
+	coupled_stripline.cgi \
 	ic_microstrip.cgi \
 	microstrip.cgi \
 	stripline.cgi
@@ -63,6 +64,8 @@ coplanar_cgi_SOURCES = coplanar.cgi.c ${COMMON}
 
 coupled_microstrip_cgi_SOURCES = coupled_microstrip.cgi.c ${COMMON}
 
+coupled_stripline_cgi_SOURCES = coupled_stripline.cgi.c ${COMMON}
+
 ic_microstrip_cgi_SOURCES = ic_microstrip.cgi.c ${COMMON}
 
 microstrip_cgi_SOURCES = microstrip.cgi.c ${COMMON}
@@ -80,6 +83,7 @@ HTML_FILES= \
 	coax.html \
 	coplanar.html \
 	coupled_microstrip.html \
+	coupled_stripline.html \
 	footer.html \
 	header.html \
 	ic_microstrip.html \

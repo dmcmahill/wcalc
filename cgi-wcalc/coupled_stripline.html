@@ -1,0 +1,351 @@
+<!-- $Id: coupled_stripline.html,v 1.14 2005/12/07 22:54:40 dan Exp $ -->
+<!--
+ * Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill
+ * All rights reserved.
+ *
+ * This code is derived from software written by Dan McMahill
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *        This product includes software developed by Dan McMahill
+ * 4. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ -->
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Coupled Stripline Analysis/Synthesis</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
+<LINK REV="made" HREF="mailto:nospam_to_mcmahill@alum.mit.make_edu">
+<link rel="shortcut icon" href="<@s@HTMLPATH@>/favicon.ico" type="image/x-icon">    
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="description" content="Coupled Stripline Analysis/Synthesis">
+<meta name="keywords" content="
+coupled microstrip
+">
+<@s@cgi_units_menu_init()@>
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
+
+<H1 ALIGN="CENTER">Coupled Stripline Analysis/Synthesis Calculator</H1>
+
+<P>
+
+
+<FORM NAME="wcalc" METHOD=GET ACTION="coupled_stripline.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="<@s@HTMLPATH@>coupled_stripline.png" WIDTH=437 HEIGHT=178
+     ALT="[Coupled Stripline Cross-section]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+
+<TR>
+<TD>Zeven =</TD>
+<TD><@g@line->z0e@></TD>
+<TD>[ohm]</TD>
+</TR>
+
+<TR>
+<TD>Zodd =</TD>
+<TD><@g@line->z0o@></TD>
+<TD>[ohm]</TD>
+</TR>
+
+<TR>
+<TD>Z0 =</TD>
+<TD><@g@line->z0@></TD>
+<TD>[ohm]</TD>
+</TR>
+
+
+<TR>
+<TD>coupling =</TD>
+<TD><@g@line->k@></TD>
+<TD>[-]</TD>
+</TR>
+
+<TR>
+<TD>coupling =</TD>
+<TD><@g@20.0*log10(line->k)@></TD>
+<TD>[dB]</TD>
+</TR>
+
+<TR>
+<TD>keven =</TD>
+<TD><@g@line->kev@></TD>
+<TD>[-]</TD>
+</TR>
+
+<TR>
+<TD>kodd =</TD>
+<TD><@g@line->kodd@></TD>
+<TD>[-]</TD>
+</TR>
+
+<TR>
+<TD>Even mode Loss =</TD>
+<TD><@g@line->loss_ev/line->units_loss->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_loss)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Odd mode Loss =</TD>
+<TD><@g@line->loss_odd/line->units_loss->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE="dB" NAME="entry_loss_odd">
+</TD>
+</TR>
+
+<TR>
+<TD>Even mode Loss/len =</TD>
+<TD><@g@line->losslen_ev/line->units_losslen->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_losslen)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Odd mode Loss/len =</TD>
+<TD><@g@line->losslen_odd/line->units_losslen->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_losslen_odd">
+</TD>
+</TR>
+
+<TR>
+<TD>Skin depth =</TD>
+<TD><@g@line->skindepth/line->units_depth->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_depth)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Delay =</TD>
+<TD><@g@delay/line->units_delay->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_delay)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Even mode delta L =</TD>
+<TD><@g@line->deltale/line->units_deltal->sf@></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_deltal)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Odd mode delta L =</TD>
+<TD><@g@line->deltalo/line->units_deltal->sf@></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_deltal">
+</TD>
+</TR>
+
+
+</TABLE>  <!-- end of model parameter table -->
+</TD>
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+
+<TR>
+<TD>Metal width (W)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="w" VALUE="<@g@line->w/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_lwst)@>
+</TD>
+<TD><INPUT TYPE="SUBMIT" NAME="synth_w" VALUE="calc"></TD>
+</TR>
+
+<TR>
+<TD>Trace spacing (S)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="s" VALUE="<@g@line->s/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- spacing units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_s">
+</TD>
+<TD>
+</TD>
+</TR>
+
+<TR>
+<TD>Trace length (L)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l" VALUE="<@g@line->l/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- length units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l">
+</TD>
+<TD>
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="/cad/mcalc/tmetinfo.html">Metal thickness (Tmet)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tmet" VALUE="<@g@line->subs->tmet/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- Tmet units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_tmet">
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity (Rho)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rho" VALUE="<@g@line->subs->rho/line->units_rho->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- Rho units menu -->
+<@s@cgi_units_menu_display(menu_rho)@>
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="/cad/mcalc/rghinfo.html">Metal surface roughness (Rgh)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="rough" VALUE="<@g@line->subs->rough/line->units_rough->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- surface roughness units menu -->
+<@s@cgi_units_menu_display(menu_rough)@>
+-RMS
+</TD>
+</TR>
+
+<TR>
+<TD>Substrate thickness (H)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="h" VALUE="<@g@line->subs->h/line->units_lwst->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- substrate thickness units menu -->
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_h">
+</TD>
+<TD>
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate relative dielectric constant (er)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="es" VALUE="<@g@line->subs->er@>"
+           onChange="valsChanged()"></TD>
+<TD></TD>
+<TD>
+</TD>
+</TR>
+
+<TR>
+<TD><A HREF="<@s@HTMLPATH@>permitivity.html">Substrate loss tangent (tand)</A></TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="tand" VALUE="<@g@line->subs->tand@>"
+           onChange="valsChanged()"></TD>
+<TD></TD>
+</TR>
+
+
+<TR>
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- frequency units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+<TD>Z0/k<INPUT TYPE="RADIO" NAME="stype" VALUE="zk" <@s@zkchecked@>
+           onChange="valsChanged()"></TD>
+<TD>even/odd<INPUT TYPE="RADIO" NAME="stype" VALUE="evod" <@s@evodchecked@>
+           onChange="valsChanged()"></TD>
+</TR>
+
+<TR>
+<TD>Characteristic Impedance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ro" VALUE="<@g@line->z0@>"
+           onChange="valsChanged()"></TD>
+<TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Coupling Coefficient</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="k" VALUE="<@g@line->k@>"
+           onChange="valsChanged()"></TD>
+<TD>[-]</TD>
+</TR>
+
+<TR>
+<TD>Even Mode Impedance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zeven" VALUE="<@g@line->z0e@>"
+           onChange="valsChanged()"></TD>
+<TD>[ohms]</TD>
+</TR>
+
+<TR>
+<TD>Odd Mode Impedance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="zodd" VALUE="<@g@line->z0o@>"
+           onChange="valsChanged()"></TD>
+<TD>[ohms]</TD>
+</TR>
+
+<!-- XXX -->
+<TR>
+<TD>Electrical Length</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"
+           onChange="valsChanged()"></TD>
+<TD>[degrees]</TD>
+</TR>
+
+</TABLE>
+
+</TR>
+</TABLE>
+
+</FORM>
+
