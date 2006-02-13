@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.10 2006/01/24 16:12:17 dan Exp $
+$Id: README.newmodel,v 1.11 2006/01/31 13:37:24 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -107,4 +107,26 @@ add microstrip.shtml to left_column.incl
 add microstrip.shtml to SHTML_IN in Makefile.am
 
 add microstrip to cgi-wcalc.shtml
+
+---------------------
+sci-wcalc
+---------------------
+
+add microstrip_{calc,syn}.{c,xml,tst}
+
+add to mex.mk
+
+add to Makefile.am
+
+add to wcalc_test.sci.in
+
+---------------------
+sci-wcalc
+---------------------
+
+add microstrip.{dat,ref}
+
+add to Makefile.am and tests.list
+
+edit main.c to hook up the functions
 
