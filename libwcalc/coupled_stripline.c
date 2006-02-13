@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.2 2006/02/12 13:57:10 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.3 2006/02/12 23:03:25 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -60,6 +60,12 @@ static int z0_zerot(double w, double s, double b, double er,
 
 
 /*
+ * Impedance only calculation (used for incremental inductance loss
+ * calculations) 
+ */
+static int find_z0(coupled_stripline_line *line);
+
+/*
  * Analyze coupled stripline transmission line from physical parameters
  *
  *
@@ -87,6 +93,8 @@ static int z0_zerot(double w, double s, double b, double er,
 
 int coupled_stripline_calc(coupled_stripline_line *line, double f)
 {
+  couple_stripline tmp_line;
+  double z1e, z1o, z2e, z2o;
 
   /* for skindepth calculation  */
   double mu, sigma;
@@ -116,37 +124,11 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   printf("coupled_stripline_calc(): -------------- ---------------------- ----------\n");
 #endif
 
+  /* find impedances */
+  find_z0( line );
 
   /* Metal conductivity */
   sigma = 1.0 / line->subs->rho;
-
-  /*
-   * Start of coupled stripline calculations
-   */
-
-  /* zero thickness line */
-  z0_zerot( line->w, line->s, line->subs->h,
-	    line->subs->er, &(line->z0e), &(line->z0o));
-
-  line->z0  = sqrt(line->z0e * line->z0o);
-
-  line->kev  = line->subs->er;
-  line->kodd = line->subs->er;
-
-  /* coupling coefficient */
-  line->k = (line->z0e - line->z0o)/(line->z0e + line->z0o);
-
-  line->deltale = 0.0;
-  line->deltalo = 0.0;
-  
-  /* 
-   * electrical length = 360 degrees * physical length / wavelength 
-   * 
-   * freq * wavelength = velocity => 1/wavelength = freq / velocity
-   *
-   * 1/wavelength = freq * LIGHTSPEED/sqrt(keff)
-   */
-  line->len = 360.0 * line->l * line->freq * LIGHTSPEED / sqrt(line->subs->er);
 
   /* permeability of free space */
   mu = 4.0*M_PI*1e-7;
@@ -154,6 +136,40 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   /* skin depth in meters */
   line->skindepth = sqrt(1.0 / (M_PI * line->freq * mu * sigma));
 
+
+  if( line->subs->tmet > 3.0*line->skindepth ) {
+    /* Wheeler's incremental inductance */
+    
+    /* clone the line */
+    tmp_line = *line;
+    tmp_line.subs = stripline_subs_new();
+    *(tmp_line.subs) = *(line->subs);
+    
+    tmp_line.subs->er = 1.0;
+    rslt = find_z0(&tmp_line);
+    z1e = tmp_line.z0e;
+    z1o = tmp_line.z0o;
+    
+    tmp_line.w = line->w - line->skindepth;
+    tmp_line.s = line->s - line->skindepth;
+    tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
+    tmp_line.subs->h = line->subs->h + line->skindepth;
+    rslt = find_z0(&tmp_line);
+    z2e = tmp_line.z0e;
+    z2o = tmp_line.z0o;
+    free(tmp_line.subs);
+  
+    /* conduction losses, nepers per meter */
+    lc = (M_PI*f/LIGHTSPEED)*(z2e - z1e)/z0e;
+    lc = (M_PI*f/LIGHTSPEED)*(z2o - z1o)/z0o;
+    R = lc*2*line->z0;
+  } else {
+    /* resistance per meter = 1/(Area*conductivity) */
+    R = 1/(line->w*line->subs->tmet*sigma);
+  
+  }
+
+  
   /* incremental circuit model */
   line->Lev = line->z0e * sqrt(line->kev) / LIGHTSPEED;
   line->Cev = sqrt(line->kev) / (line->z0e * LIGHTSPEED);
@@ -433,6 +449,7 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   return(0);
 }
 
+
 /* Zero thickness characteristic impedance */
 static int z0_zerot(double w, double s, double b, double er,
 		    double *z0e, double *z0o)
@@ -452,6 +469,44 @@ static int z0_zerot(double w, double s, double b, double er,
   /* (5) from Cohn */
   *z0o = (FREESPACEZ0 / 4.0) * sqrt(1.0/er) / k_over_kp( ko );
     
+  return 0;
+}
+
+/*
+ * Impedance only calculation (used for incremental inductance loss
+ * calculations) 
+ */
+static int find_z0(coupled_stripline_line *line)
+{
+
+  /*
+   * Start of coupled stripline calculations
+   */
+
+  /* zero thickness line */
+  z0_zerot( line->w, line->s, line->subs->h,
+	    line->subs->er, &(line->z0e), &(line->z0o));
+
+  line->z0  = sqrt(line->z0e * line->z0o);
+
+  line->kev  = line->subs->er;
+  line->kodd = line->subs->er;
+
+  /* coupling coefficient */
+  line->k = (line->z0e - line->z0o)/(line->z0e + line->z0o);
+
+  line->deltale = 0.0;
+  line->deltalo = 0.0;
+  
+  /* 
+   * electrical length = 360 degrees * physical length / wavelength 
+   * 
+   * freq * wavelength = velocity => 1/wavelength = freq / velocity
+   *
+   * 1/wavelength = freq * LIGHTSPEED/sqrt(keff)
+   */
+  line->len = 360.0 * line->l * line->freq * LIGHTSPEED / sqrt(line->subs->er);
+  
   return 0;
 }
 
