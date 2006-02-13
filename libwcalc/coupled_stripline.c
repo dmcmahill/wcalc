@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.3 2006/02/12 23:03:25 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.4 2006/02/13 01:10:43 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -68,23 +68,20 @@ static int find_z0(coupled_stripline_line *line);
 /*
  * Analyze coupled stripline transmission line from physical parameters
  *
- *
- *          |<--W-->|<---S--->|<--W-->|
- *           _______           _______   
- *          | metal |         | metal |  
+ *   /////////////////ground///////////////////////
  *   ----------------------------------------------
- *  (  dielectric,er                      /|\     (
- *   )                                 H   |       )
+ *  (                                     /|\     (
+ *   )      |<--W-->|<---S--->|<--W-->|    |       )
+ *  (        _______           _______     |      (
+ *   )      | metal |         | metal |    |       )
+ *  (        -------           -------     |      (
+ *   ) dielectric, er                  H   |       )
  *  (                                     \|/     (
  *   ----------------------------------------------
  *   /////////////////ground///////////////////////
  *
  *  Reference:
  *
- *  The equations for effective permittivity and characteristic
- *  impedance for the coupled lines are from:
- *
- *    Kirschning and Jansen (MTT):
  *    S. B. Cohn, "Shielded Coupled-Strip Transmission Line",
  *      Lines", IRE Transactions on Microwave Theory and Techniques, Vol MTT-3,
  *      No 10, October 1955, pp. 29-38.
@@ -93,11 +90,17 @@ static int find_z0(coupled_stripline_line *line);
 
 int coupled_stripline_calc(coupled_stripline_line *line, double f)
 {
-  couple_stripline tmp_line;
+  coupled_stripline_line tmp_line;
   double z1e, z1o, z2e, z2o;
+  double lce, lco, lde, ldo;
+  double lce_hf, lco_hf;
+
+  double Re_hf, Ro_hf, Re_dc, Ro_dc, freq_hf;
 
   /* for skindepth calculation  */
   double mu, sigma;
+
+  int rslt;
 
  line->freq = f;
 
@@ -151,7 +154,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
     z1o = tmp_line.z0o;
     
     tmp_line.w = line->w - line->skindepth;
-    tmp_line.s = line->s - line->skindepth;
+    tmp_line.s = line->s + line->skindepth;
     tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
     tmp_line.subs->h = line->subs->h + line->skindepth;
     rslt = find_z0(&tmp_line);
@@ -160,16 +163,79 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
     free(tmp_line.subs);
   
     /* conduction losses, nepers per meter */
-    lc = (M_PI*f/LIGHTSPEED)*(z2e - z1e)/z0e;
-    lc = (M_PI*f/LIGHTSPEED)*(z2o - z1o)/z0o;
-    R = lc*2*line->z0;
+    lce = (M_PI*f/LIGHTSPEED)*(z2e - z1e)/line->z0e;
+    lco = (M_PI*f/LIGHTSPEED)*(z2o - z1o)/line->z0o;
+    line->Rev  = lce * 2.0 * line->z0e;
+    line->Rodd = lco * 2.0 * line->z0o;
+
+
   } else {
     /* resistance per meter = 1/(Area*conductivity) */
-    R = 1/(line->w*line->subs->tmet*sigma);
-  
+    line->Rev  = 1.0 / (line->w * line->subs->tmet * sigma);
+    line->Rodd = 1.0 / (line->w * line->subs->tmet * sigma);  
   }
 
+
+  tmp_line = *line;
+  tmp_line.subs = stripline_subs_new();
+  *(tmp_line.subs) = *(line->subs);
+  tmp_line.subs->er = 1.0;
   
+  
+  /*
+   * pick a new analysis frequency that gives a skin depth which is
+   * 1/10 the metal thickness
+   *
+   * skindepth = sqrt(1.0 / (M_PI * freq * mu * sigma))
+   * skindepth^2 * PI * freq * mu * sigma = 1.0
+   * freq = 1.0 / (skindepth^2 * PI * mu * sigma)
+   */
+  tmp_line.freq = 
+      1.0 / ( pow(0.1 * line->subs->tmet, 2.0) * M_PI * mu * sigma);
+  
+  rslt = find_z0(&tmp_line);
+  z1e = tmp_line.z0e;
+  z1o = tmp_line.z0o;
+  
+  tmp_line.w = line->w - 0.1*line->subs->tmet;
+  tmp_line.s = line->s + 0.1*line->subs->tmet;
+  tmp_line.subs->tmet = line->subs->tmet - 0.1*line->subs->tmet;
+  tmp_line.subs->h = line->subs->h + 0.1*line->subs->tmet;
+  rslt = find_z0(&tmp_line);
+  z2e = tmp_line.z0e;
+  z2o = tmp_line.z0o;
+  free(tmp_line.subs);
+  
+  freq_hf = tmp_line.freq;
+  lce_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2e - z1e)/line->z0e;
+  lco_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2o - z1o)/line->z0o;
+  Re_hf   = lce_hf * 2.0 * line->z0e;
+  Ro_hf   = lco_hf * 2.0 * line->z0o;
+  printf("freq_hf = %g GHz\n", freq_hf/1e9);
+  printf("Re_hf = %g Ohms\n", Re_hf);
+  printf("Ro_hf = %g Ohms\n", Ro_hf);
+
+  Re_dc = 1.0 / (line->w * line->subs->tmet * sigma);
+  Ro_dc = 1.0 / (line->w * line->subs->tmet * sigma);
+
+  /*
+   * Now we have to figure out how to interpolate between our two
+   * data points.
+   *
+   * To this end, we assume the resistance has the form:
+   *
+   * The high frequency resistance should vary as 1/skindepth so
+   * if you know Rhf at skindepth = d1 you should be able to find it
+   * at skindepth = d2 by multiplying by d1/d2
+   *
+   * Since skindepth is proportional to 1/sqrt(freq), our true high
+   * frequency resistance is R_hf * sqrt(freq / freq_hf)
+   */
+  printf("Rev1 = %g Ohms/meter\n", line->Rev);
+  printf("Rev2 = %g Ohms/meter\n", Re_hf * sqrt(line->freq / freq_hf) );
+  printf("Rod1 = %g Ohms/meter\n", line->Rodd);
+  printf("Rod2 = %g Ohms/meter\n", Ro_hf * sqrt(line->freq / freq_hf) );
+
   /* incremental circuit model */
   line->Lev = line->z0e * sqrt(line->kev) / LIGHTSPEED;
   line->Cev = sqrt(line->kev) / (line->z0e * LIGHTSPEED);
@@ -190,20 +256,6 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   return 0;
 }
 
-/*
- *
- *          |<--W-->|<---S--->|<--W-->|
- *           _______           _______   
- *          | metal |         | metal |  
- *   ----------------------------------------------
- *  (  dielectric,er                      /|\     (
- *   )                                 H   |       )
- *  (                                     \|/     (
- *   ----------------------------------------------
- *   /////////////////ground///////////////////////
- *
- *
- */
 
 int coupled_stripline_syn(coupled_stripline_line *line, double f)
 {
