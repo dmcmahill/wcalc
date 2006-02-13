@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.3 2005/10/29 03:51:47 dan Exp $ -->
-<!-- Copyright (c) 2004
+<!-- $Id: news.shtml,v 1.4 2006/01/03 00:03:15 dan Exp $ -->
+<!-- Copyright (c) 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -14,6 +14,9 @@
 coupled microstrip,
 coupled microstrip analysis,
 coupled microstrip synthesis,
+coupled stripline,
+coupled stripline analysis,
+coupled stripline synthesis,
 microstrip,
 microstrip analysis,
 microstrip synthesis,
@@ -34,6 +37,18 @@ stripline synthesis,
     <br>
     <br>
     </center>
+
+    <HR>
+    <H2><A NAME="wcalc-1.0">wcalc-1.1 released</A></H2>
+    <P>
+    This release contains the following improvements:
+    <UL>
+    <LI>Added coplanar waveguide models.</LI>
+    <LI>Added coupled stripline model.</LI>
+    <LI>Corrected some bugs in the Q calculation for air core inductors.</LI>
+    </UL>
+    </P>
+	
 
     <HR>
     <H2><A NAME="wcalc-1.0">wcalc-1.0 released</A></H2>
