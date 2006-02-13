@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline_gui.c,v 1.11 2005/10/12 18:12:02 dan Exp $ */
+/* $Id: coupled_stripline_gui.c,v 1.1 2006/02/12 06:27:58 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -1347,14 +1347,6 @@ static void update_display(coupled_stripline_gui *gui)
   
 
   /* the labels */
-  /* ---------------- Keff-e  -------------- */
-  sprintf(str, WC_FMT_G, gui->line->kev);
-  gtk_label_set_text( GTK_LABEL(gui->label_keffe), str );
-
-  /* ---------------- Keff-o  -------------- */
-  sprintf(str, WC_FMT_G, gui->line->kodd);
-  gtk_label_set_text( GTK_LABEL(gui->label_keffo), str );
-
   /* ---------------- Even Mode Loss -------------- */
   sprintf(str, WC_FMT_G,gui->line->loss_ev/gui->line->units_loss->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_loss_ev), str );
@@ -1535,14 +1527,6 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->subs->tand);
   fprintf(fp,"newline\n");
 
-  fprintf(fp,"(Keff-e) show tab1 (=) show tab2 ("
-	  WC_FMT_G ") show newline\n",
-	  gui->line->kev);
-  fprintf(fp,"(Keff-o) show tab1 (=) show tab2 ("
-	  WC_FMT_G ") show newline\n",
-	  gui->line->kodd);
-
-  fprintf(fp,"newline\n");
   fprintf(fp,"(freq) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->freq/gui->line->units_freq->sf,

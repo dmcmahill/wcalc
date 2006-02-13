@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline_gui.h,v 1.6 2005/01/06 22:55:09 dan Exp $ */
+/* $Id: coupled_stripline_gui.h,v 1.1 2006/02/12 06:27:59 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -77,7 +77,6 @@ typedef struct COUPLED_STRIPLINE_GUI
   GtkWidget *label_deltal_ev, *label_deltal_od;
   GtkWidget *label_Lev, *label_Rev, *label_Cev, *label_Gev;
   GtkWidget *label_Lodd, *label_Rodd, *label_Codd, *label_Godd;
-  GtkWidget *label_keffe, *label_keffo;
 
   /*
    * Picture vbox and its contents

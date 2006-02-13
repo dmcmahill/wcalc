@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.19 2005/10/15 00:40:02 dan Exp $ */
+/* $Id: main.c,v 1.20 2006/02/13 16:56:03 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2005, 2006 Dan McMahill
@@ -577,7 +577,7 @@ static void exec_coupled_stripline_calc(double *args)
     printf("%g %g %g %g %g %g %g %g %g %g\n", 
 	   line->z0, line->k,
 	   line->z0e, line->z0o, 
-	   line->kev, line->kodd,
+	   line->subs->er, line->subs->er,
 	   line->loss_ev, line->loss_odd, 
 	   line->deltale, line->deltalo);
   }

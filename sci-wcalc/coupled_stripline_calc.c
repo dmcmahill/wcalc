@@ -1,6 +1,6 @@
-/* $Id: coupled_stripline_calc.c,v 1.5 2004/11/09 12:55:44 dan Exp $ */
+/* $Id: coupled_stripline_calc.c,v 1.1 2006/02/13 16:55:59 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_stripline_calc.c,v 1.5 2004/11/09 12:55:44 dan Exp $";
+static char vcid[] = "$Id: coupled_stripline_calc.c,v 1.1 2006/02/13 16:55:59 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
@@ -242,8 +242,8 @@ void mexFunction(
     k[ind]      = line->k;
     z0e[ind]    = line->z0e;
     z0o[ind]    = line->z0o;
-    kev[ind]    = line->kev;
-    kodd[ind]   = line->kodd;
+    kev[ind]    = line->subs->er;
+    kodd[ind]   = line->subs->er;
     losse[ind]  = line->loss_ev;
     losso[ind]  = line->loss_odd;
     deltale[ind]= line->deltale;
