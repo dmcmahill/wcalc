@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.5 2006/02/13 04:01:10 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.6 2006/02/13 12:11:30 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -92,13 +92,15 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 {
   coupled_stripline_line tmp_line;
   double z1e, z1o, z2e, z2o;
-  double lce, lco, lde, ldo;
+  double lce, lco, ld;
   double lce_hf, lco_hf;
 
   double Re_hf, Ro_hf, Re_dc, Ro_dc, freq_hf;
 
   /* for skindepth calculation  */
   double mu, sigma;
+
+  double db_per_np;
 
   int rslt;
 
@@ -255,16 +257,24 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   line->Lodd = line->z0o * sqrt(line->kodd) / LIGHTSPEED;
   line->Codd = sqrt(line->kodd) / (line->z0o * LIGHTSPEED);
 
-  /* XXX fix the loss */
-  line->loss_ev = 0.0;
-  line->loss_odd = 0.0;
-  line->losslen_ev = 0.0;
-  line->losslen_odd = 0.0;
+  /* incremental conductance */
+  line->Gev  = 2.0 * M_PI * line->freq * line->Cev  * line->subs->tand;
+  line->Godd = 2.0 * M_PI * line->freq * line->Codd * line->subs->tand;
 
-  line->Rev = 0.0;
-  line->Gev = 0.0;
-  line->Rodd = 0.0;
-  line->Godd = 0.0;
+  /* dielectric loss in nepers/meter  --  same for both even and odd modes */
+  ld = M_PI * line->freq * line->subs->tand * sqrt(line->subs->er) / LIGHTSPEED;
+
+  /* copper loss in nepers/meter */
+  lce = line->Rev  / (2.0 * line->z0e);
+  lco = line->Rodd / (2.0 * line->z0e);
+
+  /* total losses in dB/meter */
+  db_per_np = 20.0*log10(exp(1.0));
+  line->losslen_ev  = (ld + lce) * db_per_np;
+  line->losslen_odd = (ld + lco) * db_per_np;
+
+  line->loss_ev  = line->losslen_ev  * line->len;
+  line->loss_odd = line->losslen_odd * line->len;
 
   return 0;
 }
