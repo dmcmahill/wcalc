@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.h,v 1.10 2005/01/06 22:53:09 dan Exp $ */
+/* $Id: coupled_stripline.h,v 1.1 2006/02/12 06:16:26 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -64,9 +64,6 @@ typedef struct COUPLED_STRIPLINE_LINE
 
   /* open circuit end line correction */
   double deltale, deltalo;
-
-  /* even and odd mode effective relative permitivitty */
-  double kev, kodd;
 
   double loss_ev, loss_odd, losslen_ev, losslen_odd, skindepth;
 

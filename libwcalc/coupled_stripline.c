@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.6 2006/02/13 12:11:30 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.7 2006/02/13 16:33:12 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -252,10 +252,10 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   printf("Rod2 = %g Ohms/meter\n", Ro_hf * sqrt(line->freq / freq_hf) );
 
   /* incremental circuit model */
-  line->Lev = line->z0e * sqrt(line->kev) / LIGHTSPEED;
-  line->Cev = sqrt(line->kev) / (line->z0e * LIGHTSPEED);
-  line->Lodd = line->z0o * sqrt(line->kodd) / LIGHTSPEED;
-  line->Codd = sqrt(line->kodd) / (line->z0o * LIGHTSPEED);
+  line->Lev = line->z0e * sqrt(line->subs->er) / LIGHTSPEED;
+  line->Cev = sqrt(line->subs->er) / (line->z0e * LIGHTSPEED);
+  line->Lodd = line->z0o * sqrt(line->subs->er) / LIGHTSPEED;
+  line->Codd = sqrt(line->subs->er) / (line->z0o * LIGHTSPEED);
 
   /* incremental conductance */
   line->Gev  = 2.0 * M_PI * line->freq * line->Cev  * line->subs->tand;
@@ -273,8 +273,11 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   line->losslen_ev  = (ld + lce) * db_per_np;
   line->losslen_odd = (ld + lco) * db_per_np;
 
-  line->loss_ev  = line->losslen_ev  * line->len;
-  line->loss_odd = line->losslen_odd * line->len;
+  line->loss_ev  = line->losslen_ev  * line->l;
+  line->loss_odd = line->losslen_odd * line->l;
+
+  /* electrical length */
+  line->len = 360*line->l * line->freq * sqrt(line->subs->er) / LIGHTSPEED;
 
   return 0;
 }
@@ -291,7 +294,7 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   double len;
 
   double s, smin, smax, z0e, z0o, k;
-  double loss, kev, kodd, delta, cval, err, d;
+  double loss, delta, cval, err, d;
 
   double AW,F1,F2,F3;
 
@@ -301,8 +304,8 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
   int i;
   double dw, ds;
-  double ze0=0,ze1,ze2,dedw,deds;
-  double zo0=0,zo1,zo2,dodw,dods;
+  double ze0=0, ze1, ze2, dedw, deds;
+  double zo0=0, zo1, zo2, dodw, dods;
 
 #ifdef DEBUG_SYN
   printf("coupled_stripline_syn(): -------- Coupled_Stripline Synthesis ----------\n");
@@ -361,9 +364,10 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
   /* temp value for l used while finding w and s */
   l = 1000.0;
-  line->l=l;
+  line->l = l;
 
 
+  /* FIXME - change limits to be normalized to substrate thickness */
   /* limits on the allowed range for w */
   wmin = MIL2M(0.5);
   wmax = MIL2M(1000);
@@ -383,7 +387,8 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
 
   /*
-   * Initial guess at a solution
+   * Initial guess at a solution -- FIXME:  This is an initial guess
+   * for coupled microstrip _not_ coupled stripline.
    */
   AW = exp(z0*sqrt(er+1.0)/42.4) - 1.0;
   F1 = 8.0*sqrt(AW*(7.0 + 4.0/er)/11.0 + (1.0 + 1.0/er)/0.81)/AW;
@@ -416,8 +421,6 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
   l=100;
   loss=0;
-  kev=1;
-  kodd=1;
 
 
   iters = 0;
@@ -479,11 +482,26 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 	/* find the determinate */
 	d = dedw*dods - deds*dodw;
 	
-	/* estimate the new solution */
+	/* 
+	 * estimate the new solution, but don't change by more than
+	 * 10% at a time to avoid convergence problems
+	 */
 	dw = -1.0 *  ((ze0-z0e)*dods - (zo0-z0o)*deds)/d;
+	if( fabs(dw) > 0.1*w ) {
+	  if( dw > 0.0 )
+	    dw = 0.1 * w;
+	  else
+	    dw = -0.1 * w;
+	}
 	w = fabs(w + dw);
 
 	ds =         ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d;
+	if( fabs(ds) > 0.1*s ) {
+	  if( ds > 0.0 )
+	    ds = 0.1 * s;
+	  else
+	    ds = -0.1 * s;
+	}
 	s = fabs(s + ds);
 
 #ifdef DEBUG_SYN
@@ -507,7 +525,7 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 #endif
       }
     }
-  
+
   line->w = w;
   line->s = s;
   coupled_stripline_calc(line, line->freq);
@@ -563,9 +581,6 @@ static int find_z0(coupled_stripline_line *line)
 	    line->subs->er, &(line->z0e), &(line->z0o));
 
   line->z0  = sqrt(line->z0e * line->z0o);
-
-  line->kev  = line->subs->er;
-  line->kodd = line->subs->er;
 
   /* coupling coefficient */
   line->k = (line->z0e - line->z0o)/(line->z0e + line->z0o);
