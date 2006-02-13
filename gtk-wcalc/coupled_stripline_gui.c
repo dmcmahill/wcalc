@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline_gui.c,v 1.1 2006/02/12 06:27:58 dan Exp $ */
+/* $Id: coupled_stripline_gui.c,v 1.2 2006/02/13 19:20:21 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -672,31 +672,6 @@ static void outputs_init(coupled_stripline_gui *gui, GtkWidget *parent)
   table = gtk_table_new (5, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
-  /* ---------------- Keff-e -------------- */
-  text = gtk_label_new( "Keff-e" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_keffe = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_keffe, x+1, x+2, y, y+1,
-		    0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_keffe);
-
-  y++;
-
-  /* ---------------- Keff-o -------------- */
-  text = gtk_label_new( "Keff-o" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_keffo = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_keffo, x+1, x+2, y, y+1,
-		    0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_keffo);
-
-  y++;
 
   /* ---------------- Even mode Loss -------------- */
   text = gtk_label_new( "Even Mode Loss" );
