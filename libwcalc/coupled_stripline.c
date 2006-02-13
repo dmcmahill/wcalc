@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.7 2006/02/13 16:33:12 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.8 2006/02/13 19:19:36 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -99,6 +99,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 
   /* for skindepth calculation  */
   double mu, sigma;
+  double deltax_e, deltax_o, delta0;
 
   double db_per_np;
 
@@ -139,100 +140,72 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   mu = 4.0*M_PI*1e-7;
   
   /* skin depth in meters */
-  line->skindepth = sqrt(1.0 / (M_PI * line->freq * mu * sigma));
+  if( line->freq > 0.0 ) 
+    line->skindepth = sqrt(1.0 / (M_PI * line->freq * mu * sigma));
+  else
+    line->skindepth = 0.0;
 
 
-  if( line->subs->tmet > 3.0*line->skindepth ) {
-    /* Wheeler's incremental inductance */
+  if( line->freq > 0.0 ) {
+    /* 
+     * Find the high frequency asymptotic behaviour of the resistance
+     * using Wheelers incremental inductance rule as a frequency where
+     * we're well into the skin effect limited region.
+     */
     
-    /* clone the line */
     tmp_line = *line;
     tmp_line.subs = stripline_subs_new();
     *(tmp_line.subs) = *(line->subs);
-    
     tmp_line.subs->er = 1.0;
+    
+    /*
+     * pick a new analysis frequency that gives a skin depth which is
+     * 1/10 the metal thickness
+     *
+     * skindepth = sqrt(1.0 / (M_PI * freq * mu * sigma))
+     * skindepth^2 * PI * freq * mu * sigma = 1.0
+     * freq = 1.0 / (skindepth^2 * PI * mu * sigma)
+     */
+    tmp_line.freq = 
+      1.0 / ( pow(0.1 * line->subs->tmet, 2.0) * M_PI * mu * sigma);
+  
     rslt = find_z0(&tmp_line);
     z1e = tmp_line.z0e;
     z1o = tmp_line.z0o;
-    
-    tmp_line.w = line->w - line->skindepth;
-    tmp_line.s = line->s + line->skindepth;
-    tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
-    tmp_line.subs->h = line->subs->h + line->skindepth;
+
+    /* skindepth at which we'll do the following analysis */
+    delta0 = 0.1*line->subs->tmet;
+
+    tmp_line.w = line->w - delta0;
+    tmp_line.s = line->s + delta0;
+    tmp_line.subs->tmet = line->subs->tmet - delta0;
+    tmp_line.subs->h = line->subs->h + delta0;
     rslt = find_z0(&tmp_line);
     z2e = tmp_line.z0e;
     z2o = tmp_line.z0o;
     free(tmp_line.subs);
-  
-    /* conduction losses, nepers per meter */
-    lce = (M_PI*f/LIGHTSPEED)*(z2e - z1e)/line->z0e;
-    lco = (M_PI*f/LIGHTSPEED)*(z2o - z1o)/line->z0o;
-    line->Rev  = lce * 2.0 * line->z0e;
-    line->Rodd = lco * 2.0 * line->z0o;
 
+    /* find what frequency this analysis must have been at */
+    freq_hf = tmp_line.freq;
 
+    /* find high frequency resistance */
+    lce_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2e - z1e)/line->z0e;
+    lco_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2o - z1o)/line->z0o;
+    Re_hf   = lce_hf * 2.0 * line->z0e;
+    Ro_hf   = lco_hf * 2.0 * line->z0o;
   } else {
-    /* resistance per meter = 1/(Area*conductivity) */
-    line->Rev  = 1.0 / (line->w * line->subs->tmet * sigma);
-    line->Rodd = 1.0 / (line->w * line->subs->tmet * sigma);  
+    /* not really used, but this shuts up the compiler */
+    Re_hf = 0.0;
+    Ro_hf = 0.0;
+    delta0 = 0.0;
   }
 
 
-  tmp_line = *line;
-  tmp_line.subs = stripline_subs_new();
-  *(tmp_line.subs) = *(line->subs);
-  tmp_line.subs->er = 1.0;
-  
-  
-  /*
-   * pick a new analysis frequency that gives a skin depth which is
-   * 1/10 the metal thickness
-   *
-   * skindepth = sqrt(1.0 / (M_PI * freq * mu * sigma))
-   * skindepth^2 * PI * freq * mu * sigma = 1.0
-   * freq = 1.0 / (skindepth^2 * PI * mu * sigma)
-   */
-  tmp_line.freq = 
-      1.0 / ( pow(0.1 * line->subs->tmet, 2.0) * M_PI * mu * sigma);
-  
-  rslt = find_z0(&tmp_line);
-  z1e = tmp_line.z0e;
-  z1o = tmp_line.z0o;
-  
-  tmp_line.w = line->w - 0.1*line->subs->tmet;
-  tmp_line.s = line->s + 0.1*line->subs->tmet;
-  tmp_line.subs->tmet = line->subs->tmet - 0.1*line->subs->tmet;
-  tmp_line.subs->h = line->subs->h + 0.1*line->subs->tmet;
-  rslt = find_z0(&tmp_line);
-  z2e = tmp_line.z0e;
-  z2o = tmp_line.z0o;
-  free(tmp_line.subs);
-  
-  freq_hf = tmp_line.freq;
-  lce_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2e - z1e)/line->z0e;
-  lco_hf  = (M_PI*freq_hf/LIGHTSPEED)*(z2o - z1o)/line->z0o;
-  Re_hf   = lce_hf * 2.0 * line->z0e;
-  Ro_hf   = lco_hf * 2.0 * line->z0o;
-  printf("freq_hf = %g GHz\n", freq_hf/1e9);
-  printf("Re_hf = %g Ohms\n", Re_hf);
-  printf("Ro_hf = %g Ohms\n", Ro_hf);
-
+  /* DC resistance */
   Re_dc = 1.0 / (line->w * line->subs->tmet * sigma);
   Ro_dc = 1.0 / (line->w * line->subs->tmet * sigma);
-
-  printf("Re from eq = %g Ohms\n",
-	 0.5*Re_dc * line->subs->tmet / (line->skindepth * (1 - exp(-line->subs->tmet/line->skindepth))));
-
-  printf("Ro from eq = %g Ohms\n",
-	 0.5*Ro_dc * line->subs->tmet / (line->skindepth * (1 - exp(-line->subs->tmet/line->skindepth))));
-
-  printf("Re_hf from eq = %g Ohms\n",
-	 0.5*Re_dc * line->subs->tmet / (0.1*line->subs->tmet * (1 - exp(-10.0))));
-
-  printf("Ro from eq = %g Ohms\n",
-	 0.5*Ro_dc * line->subs->tmet / (0.1*line->subs->tmet * (1 - exp(-10.0))));
-
-
+  
+  
   /*
    * Now we have to figure out how to interpolate between our two
    * data points.
@@ -245,11 +218,82 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
    *
    * Since skindepth is proportional to 1/sqrt(freq), our true high
    * frequency resistance is R_hf * sqrt(freq / freq_hf)
+   *
+   *
+   * An approximate form for the resistance which is valid in both
+   * skin effect and low frequency regions is:
+   *
+   *               Rdc * T
+   * R = ----------------------------        (1)
+   *      delta * (1 - exp(-T/delta))
+   *
+   * where Rdc is the DC resistance, T is the thickness, and delta is
+   * the skin depth.
+   *
+   * At low frequencies, this becomes Rdc
+   * At high frequencies, this becomes Rdc*T/delta
+   *
+   * The trick now is we have expressions for both the DC resistance
+   * of our line and for the high frequency even/odd resistance
+   * behaviour.  If we define delta0 as the skindepth used to
+   * calculate R = Rhf, then at a different frequency, we have
+   * R = Rhf * delta0 / delta.  
+   *
+   * What we can do, which is a bit of a hack, but it makes us get the
+   * right values well into either region along with smooth curves in
+   * the middle is to modify the value of delta used in (1) above from
+   * the true skin depth in order to obtain the right limiting value
+   * for resistance well into the skin effect region.
+   *
+   * To do this, we simply set
+   *
+   * Rdc * T / deltaX = Rhf * delta0 / delta 
+   *
+   *                        Rdc * T
+   * =>  deltaX = delta * -------------
+   *                       Rhf * delta0
    */
-  printf("Rev1 = %g Ohms/meter\n", line->Rev);
-  printf("Rev2 = %g Ohms/meter\n", Re_hf * sqrt(line->freq / freq_hf) );
-  printf("Rod1 = %g Ohms/meter\n", line->Rodd);
-  printf("Rod2 = %g Ohms/meter\n", Ro_hf * sqrt(line->freq / freq_hf) );
+
+  if( line->freq > 0.0) {
+    /* find our "effective skindepth" */
+    deltax_e = line->skindepth * Re_dc * line->subs->tmet / (Re_hf * delta0);
+    deltax_o = line->skindepth * Ro_dc * line->subs->tmet / (Ro_hf * delta0);
+    
+    /*
+     * and plug into the resistance equation which should give the
+     * correct answer when well into either region and a decent answer
+     * in the in between region.
+     */
+    
+    line->Rev  = Re_dc * line->subs->tmet / (deltax_e * (1.0 - exp(-line->subs->tmet / deltax_e)));
+    line->Rodd = Ro_dc * line->subs->tmet / (deltax_o * (1.0 - exp(-line->subs->tmet / deltax_o)));
+    
+#ifdef DEBUG_CALC
+    printf("Rev   = %g Ohms\n", line->Rev);
+    printf("Re_dc = %g Ohms\n", Re_dc);
+    printf("Re_hf = %g Ohms\n", Re_hf * delta0 / line->skindepth);
+
+    printf("Rod   = %g Ohms\n", line->Rodd);
+    printf("Ro_dc = %g Ohms\n", Ro_dc);
+    printf("Ro_hf = %g Ohms\n", Ro_hf * delta0 / line->skindepth);
+#endif
+
+  } else {
+    line->Rev  = Re_dc;
+    line->Rodd = Ro_dc;
+  }
+
+  /*
+   * Apply the microstrip equation for surface roughness correction.
+   *
+   * FIXME -- it would be nice to see if this is even close to right
+   * for coupled stripline....
+   */
+
+  if( line->freq > 0.0 ) {
+    line->Rev  = line->Rev  * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough / line->skindepth),2.0)));
+    line->Rodd = line->Rodd * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough / line->skindepth),2.0)));
+  }
 
   /* incremental circuit model */
   line->Lev = line->z0e * sqrt(line->subs->er) / LIGHTSPEED;
@@ -277,7 +321,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   line->loss_odd = line->losslen_odd * line->l;
 
   /* electrical length */
-  line->len = 360*line->l * line->freq * sqrt(line->subs->er) / LIGHTSPEED;
+  line->len = 360.0 * line->l * line->freq * sqrt(line->subs->er) / LIGHTSPEED;
 
   return 0;
 }
