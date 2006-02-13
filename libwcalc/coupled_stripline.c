@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.4 2006/02/13 01:10:43 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.5 2006/02/13 04:01:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -217,6 +217,19 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 
   Re_dc = 1.0 / (line->w * line->subs->tmet * sigma);
   Ro_dc = 1.0 / (line->w * line->subs->tmet * sigma);
+
+  printf("Re from eq = %g Ohms\n",
+	 0.5*Re_dc * line->subs->tmet / (line->skindepth * (1 - exp(-line->subs->tmet/line->skindepth))));
+
+  printf("Ro from eq = %g Ohms\n",
+	 0.5*Ro_dc * line->subs->tmet / (line->skindepth * (1 - exp(-line->subs->tmet/line->skindepth))));
+
+  printf("Re_hf from eq = %g Ohms\n",
+	 0.5*Re_dc * line->subs->tmet / (0.1*line->subs->tmet * (1 - exp(-10.0))));
+
+  printf("Ro from eq = %g Ohms\n",
+	 0.5*Ro_dc * line->subs->tmet / (0.1*line->subs->tmet * (1 - exp(-10.0))));
+
 
   /*
    * Now we have to figure out how to interpolate between our two
