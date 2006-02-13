@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coupled_stripline.shtml,v 1.6 2004/07/28 11:49:05 dan Exp $ -->
+<!-- $Id: coupled_stripline.shtml,v 1.1 2006/02/12 21:03:33 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -42,15 +42,28 @@ stripline synthesis,
     <H2><A NAME="References">Selected References</A></H2>
     <OL>
       <LI>
-	Manfred Kirschning and Rolf Jansen, "Accurate Wide-Range
-	Design Equations for the Frequency-Dependent Characteristic of
-	Parallel Coupled Stripline Lines",
-	<em>IEEE Transactions on Microwave Theory and Techniques</em>,
-	Vol MTT-32, No 1, January 1984, p83-90.  Corrections in
-	MTT-33, No 3, March 1985, p. 288 
+	S. B. Cohn, "Shielded Coupled-Strip Transmission Line",
+	<em>IRE Transactions on Microwave Theory and Techniques</em>,
+	Vol MTT-3, No. 10, October 1955, pp. 29-38.
       </LI>
             
     </OL>
+
+    <HR>
+    <H2><A NAME="Comments">Comments</A></H2>
+    <P>
+    In the special case where the traces are infinitely thin, the coupled stripline
+    structure has an exact closed form solution for the even and odd mode impedances.
+    These solutions are given by Cohn in the above reference.  When the traces are not
+    infinitely thin, Cohn gives a modified expression which is approximate to correct
+    for the finite thickness.
+    </P>
+
+    <P>
+    Conductor losses are determined using Wheelers incremental inductance rule.  For low
+    frequencies, an approximate interpolation function has been used to interpolate between
+    the DC resistance and the skin effect limited resistance.
+    </P>
     </font>
 
   </td>
