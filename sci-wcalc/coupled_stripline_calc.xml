@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd">
+<TOP>
+<MAN>
+<!-- $Id: coupled_stripline_calc.xml,v 1.5 2005/10/21 02:05:12 dan Exp $ -->
+<!--
+    Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
+    All rights reserved.
+   
+    This code is derived from software written by Dan McMahill
+   
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and   or other materials provided with the distribution.
+    3. All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+           This product includes software developed by Dan McMahill
+     4. The name of the author may not be used to endorse or promote products
+        derived from this software without specific prior written permission.
+    
+     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+     BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+     AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+-->
+
+<NAME>coupled_stripline_calc</NAME>
+
+<SHORTDESCR>Coupled stripline transmission line analysis
+</SHORTDESCR>
+
+<SYNOPSIS>
+[z0,k,z0e,z0o,kev,kodd] = 
+  coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="w">width of coupled stripline lines (meters)</RHS>
+  <RHS name="s">spacing between coupled stripline lines (meters)</RHS>
+  <RHS name="h">substrate thickness (meters)</RHS>
+  <RHS name="l">lentgh of coupled stripline line (meters)</RHS>
+  <RHS name="tmet">metal thickness (meters)</RHS>
+  <RHS name="rho">resistivity of the metal (ohm-meters)</RHS>
+  <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
+  <RHS name="er">substrate relative permitivitty</RHS>
+  <RHS name="tand">substrate loss tangent</RHS>
+  <RHS name="f">analysis frequency (Hz)</RHS>
+
+  <LHS name="z0">calculated characteristic impedance (Ohms)</LHS>
+  <LHS name="k">calculated coupling coefficient</LHS>
+  <LHS name="z0e">calculated even mode characteristic impedance (Ohms)</LHS>
+  <LHS name="z0o">calculated odd mode characteristic impedance (Ohms)</LHS>
+  <LHS name="kev">calculated even mode effective relative permitivitty</LHS>
+  <LHS name="kev">calculated odd mode effective relative permitivitty</LHS>
+  <LHS name="loss">calculated loss of the line (dB)</LHS>
+  <LHS name="deltal">calculated open circuit end correction (meters)</LHS>
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to analyze the electrical characteristics of a 
+coupled stripline transmission line. The physical
+dimensions of the coupled stripline line are given as inputs and the
+characteristic impedance, effective dielectric constant, loss and
+open circuit end correction are calculated.
+
+The model accounts for dispersion (frequency dependent propagation
+velocity).
+
+<VERB>
+
+              |&lt;--W--&gt;|&lt;-S-&gt;|&lt;--W--&gt;|
+               _______       -------
+              | metal |     | metal | &lt;- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\     (
+    )   er,tand                       H   |       )
+   (                                     \|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+</VERB>
+</DESCRIPTION>
+
+<EXAMPLE>
+
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=20*sf;</SCICMD>      <COMMENT>width </COMMENT></SCIEX>
+  <SCIEX><SCICMD>s=8*sf;</SCICMD>       <COMMENT>spacing</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=15*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1;</SCICMD>        <COMMENT>resitivity relative to copper</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[z0,k,z0e,z0o,kev,kodd] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>  coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0=%g Ohms, k=%g',z0,k));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0e=%g Ohms, z0o=%g Ohms',z0e,z0o));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('kev=%g, kodd=%g',kev,kodd));</SCICMD></SCIEX>
+
+  <STDEX>
+*
+* ze = 55.27, zo = 45.23, ke = 2.261, ko = 2.009
+coupled_stripline_calc 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9
+* ze = 69.37, zo = 36.04, ke = 2.239, ko = 1.882
+coupled_stripline_calc 2.314e-3 0.123e-3 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9
+* ze = 86.74, zo = 28.82, ke = 2.180, ko = 1.833
+coupled_stripline_calc 1.744e-3 0.988e-5 1e-3 1.0 0.0 1.72e-8 0.0 2.55 0.0 6e9
+*
+  </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+   <ALSO>air_coil_calc</ALSO>
+   <ALSO>air_coil_syn</ALSO>
+   <ALSO>coax_calc</ALSO>
+   <ALSO>coax_syn</ALSO>
+   <ALSO>coupled_stripline_calc</ALSO>
+   <ALSO>coupled_stripline_syn</ALSO>
+   <ALSO>ic_stripline_calc</ALSO>
+   <ALSO>ic_stripline_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+</TOP>
+

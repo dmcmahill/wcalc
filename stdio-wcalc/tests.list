@@ -1,8 +1,8 @@
-# $Id$
+# $Id: tests.list,v 1.1 2004/09/03 02:52:28 dan Exp $
 #
-# $Id: run_tests.sh,v 1.13 2004/03/18 22:02:34 dan Exp $
+# $Id: tests.list,v 1.1 2004/09/03 02:52:28 dan Exp $
 #
-# Copyright (c) 2004 Dan McMahill
+# Copyright (c) 2004, 2006 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
@@ -37,6 +37,7 @@
 air_coil
 coax
 coupled_microstrip
+coupled_stripline
 ic_microstrip
 microstrip
 stripline

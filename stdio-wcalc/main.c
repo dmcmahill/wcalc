@@ -1,7 +1,7 @@
-/* $Id: main.c,v 1.18 2005/03/08 23:03:29 dan Exp $ */
+/* $Id: main.c,v 1.19 2005/10/15 00:40:02 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2005 Dan McMahill
+ * Copyright (c) 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -71,6 +71,7 @@
 #include "air_coil.h"
 #include "coax.h"
 #include "coupled_microstrip.h"
+#include "coupled_stripline.h"
 #include "ic_microstrip.h"
 #include "microstrip.h"
 #include "stripline.h"
@@ -85,6 +86,7 @@
 static void exec_air_coil_calc(double *args);
 static void exec_coax_calc(double *args);
 static void exec_coupled_microstrip_calc(double *args);
+static void exec_coupled_stripline_calc(double *args);
 static void exec_ic_microstrip_calc(double *args);
 static void exec_microstrip_calc(double *args);
 static void exec_stripline_calc(double *args);
@@ -92,6 +94,7 @@ static void exec_stripline_calc(double *args);
 static void exec_air_coil_syn(double *args);
 static void exec_coax_syn(double *args);
 static void exec_coupled_microstrip_syn(double *args);
+static void exec_coupled_stripline_syn(double *args);
 static void exec_ic_microstrip_syn(double *args);
 static void exec_microstrip_syn(double *args);
 static void exec_stripline_syn(double *args);
@@ -234,6 +237,12 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "coupled_microstrip_syn") == 0) {
       narg = 14;
       fn = &exec_coupled_microstrip_syn;
+    } else if(strcmp(tok, "coupled_stripline_calc") == 0) {
+      narg = 10;
+      fn = &exec_coupled_stripline_calc;
+    } else if(strcmp(tok, "coupled_stripline_syn") == 0) {
+      narg = 14;
+      fn = &exec_coupled_stripline_syn;
     } else if(strcmp(tok, "ic_microstrip_calc") == 0) {
       narg = 11;
       fn = &exec_ic_microstrip_calc;
@@ -532,6 +541,92 @@ static void exec_coupled_microstrip_syn(double *args)
 
   /* clean up */
   coupled_microstrip_line_free(line);
+  
+  return;
+}
+
+/* 
+ * [z0,k,z0e,z0o,kev,kodd,loss_ev,loss_odd, deltal_ev, deltal_odd] =
+ *   coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+ */
+static void exec_coupled_stripline_calc(double *args)
+{
+  /* our coupled_stripline for calculations */
+  coupled_stripline_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coupled_stripline_line_new();
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+
+  /* run the calculation */
+  if( coupled_stripline_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+  
+    /* print the outputs */
+    printf("%g %g %g %g %g %g %g %g %g %g\n", 
+	   line->z0, line->k,
+	   line->z0e, line->z0o, 
+	   line->kev, line->kodd,
+	   line->loss_ev, line->loss_odd, 
+	   line->deltale, line->deltalo);
+  }
+
+  /* clean up */
+  coupled_stripline_line_free(line);
+}
+  
+/* 
+ * [w_out,s_out,l_out] = 
+ *   coupled_stripline_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,0);
+ * [w_out,s_out,l_out] = 
+ *   coupled_stripline_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
+ */
+static void exec_coupled_stripline_syn(double *args)
+{
+  /* our coupled_stripline for calculations */
+  coupled_stripline_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coupled_stripline_line_new();
+  line->z0 = line->z0e = args[i++];
+  line->k  = line->z0o = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+  line->use_z0k     = !args[i++];
+
+  /* run the calculation */
+  if( coupled_stripline_syn(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+  
+    /* print the outputs */
+    printf("%g %g %g\n", 
+	   line->w, line->s, line->l);
+  }
+
+  /* clean up */
+  coupled_stripline_line_free(line);
   
   return;
 }

@@ -1,7 +1,7 @@
-## $Id: mex.mk,v 1.10 2001/11/04 19:24:00 dan Exp $
+## $Id: mex.mk,v 1.11 2001/12/11 11:49:55 dan Exp $
 ##
 
-## Copyright (c) 2001 Dan McMahill
+## Copyright (c) 2001, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -40,6 +40,8 @@ MEX_SRCS=	\
 	coax_syn.c \
 	coupled_microstrip_calc.c \
 	coupled_microstrip_syn.c \
+	coupled_stripline_calc.c \
+	coupled_stripline_syn.c \
 	ic_microstrip_calc.c \
 	ic_microstrip_syn.c \
 	microstrip_calc.c \

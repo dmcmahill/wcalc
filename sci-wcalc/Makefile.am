@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.49 2005/10/26 00:16:28 dan Exp $
+## $Id: Makefile.am,v 1.50 2005/10/28 21:40:31 dan Exp $
 
-## Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -96,6 +96,8 @@ TEST_FILES=	\
 	coax_syn.tst \
 	coupled_microstrip_calc.tst \
 	coupled_microstrip_syn.tst \
+	coupled_stripline_calc.tst \
+	coupled_stripline_syn.tst \
 	ic_microstrip_calc.tst \
 	ic_microstrip_syn.tst \
 	microstrip_calc.tst \

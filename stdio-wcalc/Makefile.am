@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.14 2005/10/24 21:54:57 dan Exp $
+## $Id: Makefile.am,v 1.15 2005/10/24 22:44:01 dan Exp $
 
 ##
-## Copyright (c) 2004, 2005 Dan McMahill
+## Copyright (c) 2004, 2005, 2006 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -77,6 +77,7 @@ TEST_INPUTS= \
 	air_coil.dat \
 	coax.dat \
 	coupled_microstrip.dat \
+	coupled_stripline.dat \
 	ic_microstrip.dat \
 	microstrip.dat \
 	stripline.dat
