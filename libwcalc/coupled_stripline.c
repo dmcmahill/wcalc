@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.9 2006/02/13 22:51:59 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.10 2006/02/15 13:53:18 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -656,22 +656,37 @@ static int find_z0(coupled_stripline_line *line)
   z0s_0t = single.z0;
 
 
-  /* fringing capacitance (uF / cm) */
-  cf_t = (0.885 * line->subs->er / M_PI) * (
+  /* fringing capacitance */
+  cf_t = (FREESPACE_E0 * line->subs->er / M_PI) * (
 	(2.0 / (1.0 - line->subs->tmet / line->subs->h)) *
 		log( (1.0/(1.0 - line->subs->tmet / line->subs->h)) + 1.0) -
 	(1.0 / (1.0 - line->subs->tmet / line->subs->h) - 1.0) *
 		log( (1.0/pow(1.0 - line->subs->tmet / line->subs->h, 2.0)) - 1.0) );
 
-  /* zero thickness fringing capacitance (uF / cm) */
-  cf_0 = (0.885 * line->subs->er / M_PI) * 2.0 * log(2.0);
+  /* zero thickness fringing capacitance  */
+  cf_0 = (FREESPACE_E0 * line->subs->er / M_PI) * 2.0 * log(2.0);
 
 
+  /* (18) from Cohn, (4.6.5.1) in Wadell */
   line->z0e = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0s_0t) - (1.0 / z0e_0t) ) );
-  line->z0o = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0o_0t) - (1.0 / z0s_0t) ) );
 
-  printf ("zero thickness:  z0e = %6.3f Ohms, z0o = %6.3f Ohms\n", z0e_0t, z0o_0t);
-  printf ("real thickness:  z0e = %6.3f Ohms, z0o = %6.3f Ohms\n", line->z0e, line->z0o);
+  if( line->s / line->subs->tmet >= 5.0 ) {
+    /*
+     * (20) from Cohn, (4.6.5.2) in Wadell -- note, Wadell has a sign
+     * error in the equation 
+     */
+    line->z0o = 1.0 / ( (1.0 / z0s) + (cf_t / cf_0) * ( (1.0 / z0o_0t) - (1.0 / z0s_0t) ) );
+  } else {
+    /*
+     * (22) from Cohn, (4.6.5.3) in Wadell -- note, Wadell has a
+     * couple of errors in the transcription from the original (Cohn)
+     */
+    line->z0o = 1.0 / ( (1.0 / z0o_0t) +
+			( (1.0 / z0s) - (1.0 / z0s_0t) ) -
+			(2.0 / FREESPACEZ0) * (cf_t/FREESPACE_E0 - cf_0/FREESPACE_E0) +
+			(2.0 * line->subs->tmet) / (FREESPACEZ0 * line->s)
+			);
+  }
 
   /*
    * find impedance and coupling coefficient
