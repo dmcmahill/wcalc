@@ -1,0 +1,35 @@
+# $Id$
+#----------------------------------
+# File:  microstrip.xsctn.in
+# Mon Sep 27 01:57:50 UTC 2004
+#----------------------------------
+
+package require csdl
+
+set _title "Microstrip Testbench"
+set ::Stackup::couplingLength "0.0254"
+set ::Stackup::riseTime "10"
+set ::Stackup::frequency "1e9"
+set ::Stackup::defaultLengthUnits "mils"
+set CSEG 100
+set DSEG 100
+
+GroundPlane GrouPlan1  \
+	 -thickness 1.4 \
+	 -yOffset 0.0 \
+	 -xOffset 0.0
+DielectricLayer Substrate  \
+	 -thickness @H@ \
+	 -lossTangent @TAND@ \
+	 -permittivity @ER@ \
+	 -permeability 1.0 \
+	 -yOffset 0.0 \
+	 -xOffset 0.0
+RectangleConductors Trace1  \
+	 -width @W@ \
+	 -pitch 1.0 \
+	 -conductivity @SIGMA@S/m \
+	 -height @TMET@ \
+	 -number 1 \
+	 -yOffset 0.0 \
+	 -xOffset 0.0
