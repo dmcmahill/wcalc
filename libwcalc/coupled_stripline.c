@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.8 2006/02/13 19:19:36 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.9 2006/02/13 22:51:59 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -49,6 +49,7 @@
 #include "units.h"
 #include "coupled_stripline.h"
 #include "coupled_stripline_loadsave.h"
+#include "stripline.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
@@ -615,15 +616,66 @@ static int z0_zerot(double w, double s, double b, double er,
  */
 static int find_z0(coupled_stripline_line *line)
 {
+  /* zero thickness even and odd impedances */
+  double z0e_0t, z0o_0t;
+
+  /* single stripline */
+  stripline_line single;
+  double z0s, z0s_0t;
+
+  double cf_t, cf_0;
+
+  int rslt;
 
   /*
    * Start of coupled stripline calculations
    */
 
-  /* zero thickness line */
+  /* zero thickness coupled line */
   z0_zerot( line->w, line->s, line->subs->h,
-	    line->subs->er, &(line->z0e), &(line->z0o));
+	    line->subs->er, &z0e_0t, &z0o_0t);
 
+
+  single.subs = stripline_subs_new();
+  *(single.subs) = *(line->subs);
+  single.w = line->w;
+  single.l = line->l;
+  single.freq = line->freq;
+
+  rslt = stripline_calc(&single, line->freq);
+  if( rslt != 0 ) {
+    alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+  }
+  z0s = single.z0;
+
+  single.subs->tmet = 0.0;
+  rslt = stripline_calc(&single, line->freq);
+  if( rslt != 0 ) {
+    alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+  }
+  z0s_0t = single.z0;
+
+
+  /* fringing capacitance (uF / cm) */
+  cf_t = (0.885 * line->subs->er / M_PI) * (
+	(2.0 / (1.0 - line->subs->tmet / line->subs->h)) *
+		log( (1.0/(1.0 - line->subs->tmet / line->subs->h)) + 1.0) -
+	(1.0 / (1.0 - line->subs->tmet / line->subs->h) - 1.0) *
+		log( (1.0/pow(1.0 - line->subs->tmet / line->subs->h, 2.0)) - 1.0) );
+
+  /* zero thickness fringing capacitance (uF / cm) */
+  cf_0 = (0.885 * line->subs->er / M_PI) * 2.0 * log(2.0);
+
+
+  line->z0e = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0s_0t) - (1.0 / z0e_0t) ) );
+  line->z0o = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0o_0t) - (1.0 / z0s_0t) ) );
+
+  printf ("zero thickness:  z0e = %6.3f Ohms, z0o = %6.3f Ohms\n", z0e_0t, z0o_0t);
+  printf ("real thickness:  z0e = %6.3f Ohms, z0o = %6.3f Ohms\n", line->z0e, line->z0o);
+
+  /*
+   * find impedance and coupling coefficient
+   */
   line->z0  = sqrt(line->z0e * line->z0o);
 
   /* coupling coefficient */
