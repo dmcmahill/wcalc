@@ -1,7 +1,7 @@
-/* $Id: physconst.h,v 1.4 2002/08/06 00:52:22 dan Exp $ */
+/* $Id: physconst.h,v 1.5 2004/08/06 01:49:16 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -42,8 +42,15 @@
 
 /* free space speed of light, meters/second */
 #define LIGHTSPEED 2.99792458e8
+
+/* free space permitivitty (Henries/meter) */
+#define FREESPACE_MU0  (4.0 * M_PI * 1.0e-7)
+
+/* free space permitivitty (Farads/meter) */
+#define FREESPACE_E0  (1.0 / (LIGHTSPEED * LIGHTSPEED * FREESPACE_MU0))
+
 /* free space impedance, Ohms */
-#define FREESPACEZ0 (4.0*M_PI*1.0e-7*LIGHTSPEED)
+#define FREESPACEZ0 (FREESPACE_MU0 * LIGHTSPEED)
 
 #define MIL2MICRON(x)  (x*25.4)
 #define MICRON2MIL(x)  (x/25.4)
