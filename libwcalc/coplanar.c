@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.6 2006/02/09 17:03:43 dan Exp $ */
+/*      $Id: coplanar.c,v 1.7 2006/02/11 02:50:30 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -225,7 +225,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
    */
 
   /* propagation velocity (meters/sec) */
-  v = LIGHTSPEED / sqrt(line->subs->er);
+  v = LIGHTSPEED / sqrt(line->keff);
   line->len = 360*line->l*f/v;
   
   /*
