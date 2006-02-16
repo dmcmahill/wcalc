@@ -1,4 +1,4 @@
-# $Id$
+# $Id: microstrip.xsctn.in,v 1.1 2006/02/15 17:53:18 dan Exp $
 #----------------------------------
 # File:  microstrip.xsctn.in
 # Mon Sep 27 01:57:50 UTC 2004
@@ -11,8 +11,8 @@ set ::Stackup::couplingLength "0.0254"
 set ::Stackup::riseTime "10"
 set ::Stackup::frequency "1e9"
 set ::Stackup::defaultLengthUnits "mils"
-set CSEG 100
-set DSEG 100
+set CSEG @CSEG@
+set DSEG @DSEG@
 
 GroundPlane GrouPlan1  \
 	 -thickness 1.4 \

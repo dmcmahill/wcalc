@@ -1,29 +1,33 @@
 #!/bin/sh
 #
-# $Id$
+# $Id: sweep_microstrip.sh.in,v 1.1 2006/02/15 17:53:19 dan Exp $
 #
 
 BEM=bem
 
-w=50
+nseg=1
+w=12
 er=4.8
 h=62
 tand=0.001
 tmet=1.4
-wmin=5
-wstep=1
-wmax=200
+wmin=10
+wstep=2
+wmax=20
 sigma=5e7
 
 nc=250
 nd=250
 
-w=$wmin
+#w=$wmin
 
 outf=sweep_microstrip.out
 rm -f $outf
-while test $w -le $wmax ; do
-	echo "---> w = $w"
+#while test $w -le $wmax ; do
+while test $nseg -le 100 ; do
+	echo "---> nseg = $nseg"
+	nc=$nseg
+	nd=$nseg
 	sed \
 		-e "s;@W@;$w;g" \
 		-e "s;@H@;$h;g" \
@@ -31,12 +35,15 @@ while test $w -le $wmax ; do
 		-e "s;@TAND@;$tand;g" \
 		-e "s;@SIGMA@;$sigma;g" \
 		-e "s;@TMET@;$tmet;g" \
+		-e "s;@CSEG@;$nseg;g" \
+		-e "s;@DSEG@;$nseg;g" \
 		microstrip.xsctn.in > microstrip.xsctn
 	$BEM microstrip $nc $nd >/dev/null
 	z0=` awk 'p==1 { print $5; p=2} /Characteristic Impedance/ {p=1}' microstrip.result`
 	keff=`awk 'p==1 { print (2.99792458e8/$5)^2; p=2} /Propagation Velocity/ {p=1}' microstrip.result`
 	echo "$w $z0 $keff" >> $outf
-	w=`expr $w + $wstep`
+	#w=`expr $w + $wstep`
+	nseg=`expr $nseg + 2`
 done
 
 
