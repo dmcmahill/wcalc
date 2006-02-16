@@ -1,4 +1,4 @@
-# $Id: README,v 1.3 2002/08/28 12:43:51 dan Exp $
+# $Id: README,v 1.4 2004/12/10 01:56:36 dan Exp $
 
 This directory contains several of the technical references used in the
 development of the routines in libwcalc.
@@ -27,7 +27,19 @@ B. R. Rao, "Effect of loss and frequency dispersion on the performance of
 microstrip directional couplers and coupled line filters," IEEE Transactions
 on Microwave Theory and Techniques, Vol. MTT-22, pp. 747-750, July 1974.
 
+=========================================================================
+COUPLED STRIPLINE
+=========================================================================
 
+Cohn_MTT-3.pdf
+--------------
+S. B. Cohn, "Shielded Coupled-Strip Transmission Line",
+Lines", IRE Transactions on Microwave Theory and Techniques, Vol MTT-3,
+No 10, October 1955, pp. 29-38.
+
+Gives characteristic impedance for even and odd mode for both the
+exact case of an infinitely thin strip and approximate formulas for
+non-zero strip thickness.
 
 =========================================================================
 MICROSTRIP
@@ -74,5 +86,15 @@ rt312.pdf
 Application note from Rogers Corp. regarding single microstrip.
 Uses Hammerstad and Jensen's impedance expression and the Kirschning
 and Jansen dispersion expressions.
+
+=========================================================================
+STRIPLINE
+=========================================================================
+
+Cohn_MTT-2.pdf
+--------------
+S. B. Cohn, "Characteristic Impedance of the Shielded-Strip Transmission Line",
+IRE Transactions on Microwave Theory and Techniques, Vol MTT-2,
+No 2, July 1954, pp. 52-57.
 
 
