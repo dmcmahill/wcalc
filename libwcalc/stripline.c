@@ -1,7 +1,7 @@
-/*      $Id: stripline.c,v 1.17 2004/11/22 22:36:17 dan Exp $ */
+/*      $Id: stripline.c,v 1.18 2004/12/04 00:26:50 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -35,6 +35,11 @@
 
 /*
  *  References:
+ *
+ *    S. B. Cohn, "Characteristic Impedance of the Shielded-Strip Transmission Line",
+ *    IRE Transactions on Microwave Theory and Techniques, Vol MTT-2,
+ *    No 2, July 1954, pp. 52-57.
+ *
  *    Stanislaw Rosloniec
  *    "Algorithms For Computer-Aided Design of Linear Microwave Circuits"
  *    Archtech House, 1990

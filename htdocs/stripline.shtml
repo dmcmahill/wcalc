@@ -2,8 +2,8 @@
 
 <html>
 <head>
-<!-- $Id: stripline.shtml,v 1.5 2002/05/14 00:46:00 dan Exp $ -->
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- $Id: stripline.shtml,v 1.6 2004/07/28 11:49:09 dan Exp $ -->
+<!-- Copyright (c) 2001, 2002, 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -42,6 +42,12 @@ stripline synthesis,
     <HR>
     <H2><A NAME="References">Selected References</A></H2>
     <OL>
+      <LI>
+          S. B. Cohn, "Characteristic Impedance of the Shielded-Strip Transmission Line",
+          <em>IRE Transactions on Microwave Theory and Techniques</em>, Vol MTT-2,
+          No 2, July 1954, pp. 52-57.
+      </LI>
+
       <LI>
 	H. A. Wheeler, "Formulas for the skin effect", <em>Proc. IRE</em>,
 	Vol. 30, No. 9, September 1942, pp. 412-4124
