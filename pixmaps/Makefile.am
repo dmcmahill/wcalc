@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.14 2006/01/09 20:31:06 dan Exp $
+## $Id: Makefile.am,v 1.15 2006/02/12 06:21:16 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill
@@ -61,6 +61,8 @@ TGIF_SRCS=	\
 		logo.obj \
 		microstrip.obj \
 		microstrip_model.obj \
+		rc.obj \
+		rl.obj \
 		splash.obj \
 		stripline.obj \
 		stripline_model.obj
