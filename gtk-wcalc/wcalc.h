@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.19 2005/10/30 17:57:09 dan Exp $ */
+/*      $Id: wcalc.h,v 1.20 2006/02/22 16:14:12 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -85,7 +85,7 @@ print_config *global_print_config;
 /* Width of entries used in many forms */
 /* with WC_GMT_G = %.4g, we might get "1.234e-11" which is 9 characters */
 #define WC_ENTRYLENGTH  9
-#define WC_WIDTH 60
+#define WC_WIDTH 70
 
 /* Padding used in all the forms */
 #define WC_XPAD 2
