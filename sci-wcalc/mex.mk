@@ -1,4 +1,4 @@
-## $Id: mex.mk,v 1.11 2001/12/11 11:49:55 dan Exp $
+## $Id: mex.mk,v 1.12 2006/02/13 16:56:01 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2006 Dan McMahill
@@ -38,6 +38,8 @@ MEX_SRCS=	\
 	air_coil_syn.c \
 	coax_calc.c \
 	coax_syn.c \
+	coplanar_calc.c \
+	coplanar_syn.c \
 	coupled_microstrip_calc.c \
 	coupled_microstrip_syn.c \
 	coupled_stripline_calc.c \

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd">
+<TOP>
+<MAN>
+<!-- $Id: coplanar_calc.xml,v 1.5 2005/10/24 20:45:54 dan Exp $ -->
+<!--
+    Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
+    All rights reserved.
+   
+    This code is derived from software written by Dan McMahill
+   
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and   or other materials provided with the distribution.
+    3. All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+           This product includes software developed by Dan McMahill
+     4. The name of the author may not be used to endorse or promote products
+        derived from this software without specific prior written permission.
+    
+     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+     BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+     AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+-->
+
+<NAME>coplanar_calc</NAME>
+
+<SHORTDESCR>Symmetric coplanar transmission line analysis
+</SHORTDESCR>
+
+<SYNOPSIS>
+[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = coplanar_calc(w,h,l,tmet,rho,rough,er,tand,f);
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="w">width of coplanar line (meters)</RHS>
+  <RHS name="h">substrate thickness (meters)</RHS>
+  <RHS name="l">lentgh of coplanar line (meters)</RHS>
+  <RHS name="tmet">metal thickness (meters)</RHS>
+  <RHS name="rho">resistivity of the line (relative to copper)</RHS>
+  <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
+  <RHS name="er">substrate relative permitivitty</RHS>
+  <RHS name="tand">substrate loss tangent</RHS>
+  <RHS name="f">analysis frequency (Hz)</RHS>
+
+  <LHS name="z0">calculated characteristic impedance (Ohms)</LHS>
+  <LHS name="keff">calculated effective relative permitivity</LHS>
+  <LHS name="elen">calculated electrical length of the line (degrees)</LHS>
+  <LHS name="loss">calculated loss of the line (dB)</LHS>
+  <LHS name="L">calculated inductance per length (Henries/meter)</LHS>
+  <LHS name="R">calculated resistance per length (Ohms/meter)</LHS>
+  <LHS name="C">calculated capacitance per length (Farads/meter)</LHS>
+  <LHS name="G">calculated conductance per length (Siemens/meter)</LHS>
+  <LHS name="lc">conductor loss (dB/meter)</LHS>
+  <LHS name="ld">dielectric loss (dB/meter)</LHS>
+  <LHS name="deltal">calculated open circuit end correction (meters)</LHS>
+  <LHS name="depth">calculated skin depth (meters)</LHS>
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to analyze the electrical characteristics of a single 
+coplanar transmission line. The physical
+dimensions of the coplanar line are given as inputs and the
+characteristic impedance, effective dielectric constant, loss and
+open circuit end correction are calculated.
+
+The model accounts for dispersion (frequency dependent propagation
+velocity).
+
+<VERB>
+
+                 |&lt;--W--&gt;|
+                  _______    
+                 | metal | &lt;- rho,rough
+    ----------------------------------------------
+   (  dielectric                         /|\     (
+    )   er,tand                       H   |       )
+   (                                     \|/     (
+    ----------------------------------------------
+    XXXXXXXXXXXXXXXXXX ground XXXXXXXXXXXXXXXXXXXX
+
+</VERB>
+</DESCRIPTION>
+
+<EXAMPLE>
+
+  <SCIEX><SCICMD>sf=25.4e-6;</SCICMD>   <COMMENT>mils to meters conversion factor</COMMENT></SCIEX>
+  <SCIEX><SCICMD>w=20*sf;</SCICMD>      <COMMENT>width</COMMENT></SCIEX>
+  <SCIEX><SCICMD>h=15*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
+  <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>  <COMMENT>resitivity</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
+  <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
+  <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = ...</SCICMD></SCIEX>
+  <SCIEX><SCICMD>  coplanar_calc(w,h,l,tmet,rho,rough,er,tand,f);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('z0   = %8.4g Ohms', z0));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('keff = %8.4g ', keff));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('elen = %8.4g degrees', elen));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('loss = %8.4g dB', loss));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('L    = %8.4g H/m', L));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('R    = %8.4g Ohms/m', R));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('C    = %8.4g F/m', C));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('G    = %8.4g S/m', G));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('lc   = %8.4g dB/m', lc));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('ld   = %8.4g dB/m', ld));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('open end correction = %8.4g mil', deltal/sf));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('skin depth = %8.4g um', depth*1e6));</SCICMD></SCIEX>
+
+  <STDEX>
+*
+* Z0 = 50 Ohms, Keff = 6.972
+coplanar_calc 0.877e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
+* Z0 = 75 Ohms, Keff = 2.033
+coplanar_calc 1.379e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6
+*
+  </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+   <ALSO>air_coil_calc</ALSO>
+   <ALSO>air_coil_syn</ALSO>
+   <ALSO>coax_calc</ALSO>
+   <ALSO>coax_syn</ALSO>
+   <ALSO>coupled_microstrip_calc</ALSO>
+   <ALSO>coupled_microstrip_syn</ALSO>
+   <ALSO>ic_microstrip_calc</ALSO>
+   <ALSO>ic_microstrip_syn</ALSO>
+   <ALSO>microstrip_calc</ALSO>
+   <ALSO>microstrip_syn</ALSO>
+   <ALSO>stripline_calc</ALSO>
+   <ALSO>stripline_syn</ALSO>
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+</TOP>
+
