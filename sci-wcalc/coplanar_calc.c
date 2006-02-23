@@ -1,6 +1,6 @@
-/* $Id: coplanar_calc.c,v 1.5 2004/09/08 22:39:47 dan Exp $ */
+/* $Id: coplanar_calc.c,v 1.1 2006/02/23 14:08:08 dan Exp $ */
 
-static char vcid[] = "$Id: coplanar_calc.c,v 1.5 2004/09/08 22:39:47 dan Exp $";
+static char vcid[] = "$Id: coplanar_calc.c,v 1.1 2006/02/23 14:08:08 dan Exp $";
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
@@ -250,8 +250,8 @@ void mexFunction(
     R[ind]    = line->Rs;
     C[ind]    = line->Cs;
     G[ind]    = line->Gs;
-    lc[ind]   = line->alpha_c;
-    ld[ind]   = line->alpha_d;
+    lc[ind]   = line->lc;
+    ld[ind]   = line->ld;
     deltal[ind]  = line->deltal;
     depth[ind]   = line->skindepth;
   }
