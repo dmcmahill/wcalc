@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.18 2004/12/04 00:26:50 dan Exp $ */
+/*      $Id: stripline.c,v 1.19 2006/02/22 13:52:48 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -271,7 +271,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	*/
    
        /* loss in nepers/meter */
-       ld=line->Gs*line->z0/2;
+       ld = G*line->z0/2;
 
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
