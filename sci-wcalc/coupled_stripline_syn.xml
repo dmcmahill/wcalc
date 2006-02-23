@@ -2,7 +2,7 @@
 <!DOCTYPE MAN SYSTEM "man.dtd">
 <TOP>
 <MAN>
-<!-- $Id: coupled_stripline_syn.xml,v 1.5 2005/10/21 02:05:13 dan Exp $ -->
+<!-- $Id: coupled_stripline_syn.xml,v 1.1 2006/02/13 16:56:01 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
     All rights reserved.
@@ -141,12 +141,12 @@ coupled_stripline_syn 55.277 45.227 90 2.763e-3 1.213e-3 1e-3 1.0 0.0 1.72e-8 0.
    <ALSO>air_coil_syn</ALSO>
    <ALSO>coax_calc</ALSO>
    <ALSO>coax_syn</ALSO>
-   <ALSO>coupled_stripline_calc</ALSO>
-   <ALSO>coupled_stripline_syn</ALSO>
-   <ALSO>ic_stripline_calc</ALSO>
-   <ALSO>ic_stripline_syn</ALSO>
-   <ALSO>stripline_calc</ALSO>
-   <ALSO>stripline_syn</ALSO>
+   <ALSO>coupled_microstrip_calc</ALSO>
+   <ALSO>coupled_microstrip_syn</ALSO>
+   <ALSO>ic_microstrip_calc</ALSO>
+   <ALSO>ic_microstrip_syn</ALSO>
+   <ALSO>microstrip_calc</ALSO>
+   <ALSO>microstrip_syn</ALSO>
    <ALSO>stripline_calc</ALSO>
    <ALSO>stripline_syn</ALSO>
 </SEE_ALSO>
