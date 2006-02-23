@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<!DOCTYPE MAN SYSTEM "man.dtd">
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
 <TOP>
 <MAN>
-<!-- $Id: coplanar_syn.xml,v 1.5 2005/10/24 20:41:02 dan Exp $ -->
+<!-- $Id: coplanar_syn.xml,v 1.1 2006/02/23 14:08:10 dan Exp $ -->
 <!--
     Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
     All rights reserved.
@@ -130,18 +132,7 @@ coplanar_syn 30.0 90.0  2.201e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
 </EXAMPLE>
 
 <SEE_ALSO>
-   <ALSO>air_coil_calc</ALSO>
-   <ALSO>air_coil_syn</ALSO>
-   <ALSO>coax_calc</ALSO>
-   <ALSO>coax_syn</ALSO>
-   <ALSO>coupled_microstrip_calc</ALSO>
-   <ALSO>coupled_microstrip_syn</ALSO>
-   <ALSO>ic_microstrip_calc</ALSO>
-   <ALSO>ic_microstrip_syn</ALSO>
-   <ALSO>microstrip_calc</ALSO>
-   <ALSO>microstrip_syn</ALSO>
-   <ALSO>stripline_calc</ALSO>
-   <ALSO>stripline_syn</ALSO>
+&see_also;
 </SEE_ALSO>
 
 <AUTHOR>

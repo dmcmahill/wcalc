@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<!DOCTYPE MAN SYSTEM "man.dtd">
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
 <TOP>
 <MAN>
-<!-- $Id: coax_calc.xml,v 1.4 2005/10/21 02:05:11 dan Exp $ -->
+<!-- $Id: coax_calc.xml,v 1.5 2005/10/24 20:41:34 dan Exp $ -->
 <!--
-    Copyright (c) 2001, 2004, 2005 Dan McMahill
+    Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
     All rights reserved.
    
     This code is derived from software written by Dan McMahill
@@ -110,18 +112,7 @@ coax_calc 1.520e-3 3.5e-3 0.0e-4 1.0e-3 3.5e-8 3.5e-8 1.00022 0.0 1.0 1.0e9
 </EXAMPLE>
 
 <SEE_ALSO>
-   <ALSO>air_coil_calc</ALSO>
-   <ALSO>air_coil_syn</ALSO>
-   <ALSO>coax_calc</ALSO>
-   <ALSO>coax_syn</ALSO>
-   <ALSO>coupled_microstrip_calc</ALSO>
-   <ALSO>coupled_microstrip_syn</ALSO>
-   <ALSO>ic_microstrip_calc</ALSO>
-   <ALSO>ic_microstrip_syn</ALSO>
-   <ALSO>microstrip_calc</ALSO>
-   <ALSO>microstrip_syn</ALSO>
-   <ALSO>stripline_calc</ALSO>
-   <ALSO>stripline_syn</ALSO>
+&see_also;
 </SEE_ALSO>
 
 <AUTHOR>

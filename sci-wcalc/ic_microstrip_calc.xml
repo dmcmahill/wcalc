@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<!DOCTYPE MAN SYSTEM "man.dtd">
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
 <TOP>
 <MAN>
-<!-- $Id: ic_microstrip_calc.xml,v 1.5 2005/10/21 02:05:13 dan Exp $ -->
+<!-- $Id: ic_microstrip_calc.xml,v 1.6 2005/10/24 20:43:33 dan Exp $ -->
 <!--
-    Copyright (c) 2001, 2004, 2005 Dan McMahill
+    Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
     All rights reserved.
    
     This code is derived from software written by Dan McMahill
@@ -124,18 +126,7 @@ ic_microstrip_calc 50e-6 1e-3 1.0e-6 4.5 200e-6 9.6 0.1 1.0e-6 3.0e-8 0.1e-6 2.4
 </EXAMPLE>
 
 <SEE_ALSO>
-   <ALSO>air_coil_calc</ALSO>
-   <ALSO>air_coil_syn</ALSO>
-   <ALSO>coax_calc</ALSO>
-   <ALSO>coax_syn</ALSO>
-   <ALSO>coupled_microstrip_calc</ALSO>
-   <ALSO>coupled_microstrip_syn</ALSO>
-   <ALSO>ic_microstrip_calc</ALSO>
-   <ALSO>ic_microstrip_syn</ALSO>
-   <ALSO>microstrip_calc</ALSO>
-   <ALSO>microstrip_syn</ALSO>
-   <ALSO>stripline_calc</ALSO>
-   <ALSO>stripline_syn</ALSO>
+&see_also;
 </SEE_ALSO>
 
 <AUTHOR>
