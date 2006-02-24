@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.20 2006/02/13 16:56:03 dan Exp $ */
+/* $Id: main.c,v 1.21 2006/02/13 19:20:23 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2005, 2006 Dan McMahill
@@ -70,6 +70,7 @@
 
 #include "air_coil.h"
 #include "coax.h"
+#include "coplanar.h"
 #include "coupled_microstrip.h"
 #include "coupled_stripline.h"
 #include "ic_microstrip.h"
@@ -85,6 +86,7 @@
 /* local prototypes */
 static void exec_air_coil_calc(double *args);
 static void exec_coax_calc(double *args);
+static void exec_coplanar_calc(double *args);
 static void exec_coupled_microstrip_calc(double *args);
 static void exec_coupled_stripline_calc(double *args);
 static void exec_ic_microstrip_calc(double *args);
@@ -93,6 +95,7 @@ static void exec_stripline_calc(double *args);
 
 static void exec_air_coil_syn(double *args);
 static void exec_coax_syn(double *args);
+static void exec_coplanar_syn(double *args);
 static void exec_coupled_microstrip_syn(double *args);
 static void exec_coupled_stripline_syn(double *args);
 static void exec_ic_microstrip_syn(double *args);
@@ -231,6 +234,12 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "coax_syn") == 0) {
       narg = 12;
       fn = &exec_coax_syn;
+    } else if(strcmp(tok, "coplanar_calc") == 0) {
+      narg = 10; /* FIXME */
+      fn = &exec_coplanar_calc;
+    } else if(strcmp(tok, "coplanar_syn") == 0) {
+      narg = 12; /* FIXME */
+      fn = &exec_coplanar_syn;
     } else if(strcmp(tok, "coupled_microstrip_calc") == 0) {
       narg = 10;
       fn = &exec_coupled_microstrip_calc;
@@ -455,6 +464,84 @@ static void exec_coax_syn(double *args)
 
   /* clean up */
   coax_free(line);
+  
+  return;
+}
+
+/*
+ * FIXME
+ */
+static void exec_coplanar_calc(double *args)
+{
+  /* our coax for calculations */
+  coplanar_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coplanar_line_new();
+  line->a        = args[i++];
+  line->b        = args[i++];
+  line->c        = args[i++];
+  line->tshield  = args[i++];
+  line->rho_a    = args[i++];
+  line->rho_b    = args[i++];
+  line->er       = args[i++];
+  line->tand     = args[i++];
+  line->len      = args[i++];
+  line->freq     = args[i++];
+
+  /* run the calculation */
+  if( coplanar_calc(line, line->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g %g %g %g\n", 
+	   line->z0, line->elen,
+	   line->loss,
+	   line->L, line->R, line->C, line->G);
+  }
+
+  /* clean up */
+  coplanar_line_free(line);
+  
+  return;
+}
+
+/*
+ * FIXME
+ */
+static void exec_coplanar_syn(double *args)
+{
+  /* our coax for calculations */
+  coplanar_line *line;
+  int i = 0;
+
+  /* create the line and fill in the parameters */
+  line = coplanar_line_new();
+  line->z0       = args[i++];
+  line->elen     = args[i++];
+  line->a        = args[i++];
+  line->b        = args[i++];
+  line->c        = args[i++];
+  line->tshield  = args[i++];
+  line->rho_a    = args[i++];
+  line->rho_b    = args[i++];
+  line->er       = args[i++];
+  line->tand     = args[i++];
+  line->freq     = args[i++];
+
+  /* run the calculation */
+  if( coplanar_syn(line, line->freq, args[i++]) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g\n", 
+	   line->a, line->b, line->c,
+	   line->er, line->len);
+  }
+
+  /* clean up */
+  coplanar_line_free(line);
   
   return;
 }
