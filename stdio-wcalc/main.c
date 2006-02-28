@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.21 2006/02/13 19:20:23 dan Exp $ */
+/* $Id: main.c,v 1.22 2006/02/24 10:51:14 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2005, 2006 Dan McMahill
@@ -479,26 +479,25 @@ static void exec_coplanar_calc(double *args)
 
   /* create the line and fill in the parameters */
   line = coplanar_line_new();
-  line->a        = args[i++];
-  line->b        = args[i++];
-  line->c        = args[i++];
-  line->tshield  = args[i++];
-  line->rho_a    = args[i++];
-  line->rho_b    = args[i++];
-  line->er       = args[i++];
-  line->tand     = args[i++];
-  line->len      = args[i++];
-  line->freq     = args[i++];
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
 
   /* run the calculation */
   if( coplanar_calc(line, line->freq) ) {
     printf("%s", ERRMSG);
   } else { 
     /* print the outputs */
-    printf("%g %g %g %g %g %g %g\n", 
-	   line->z0, line->elen,
-	   line->loss,
-	   line->L, line->R, line->C, line->G);
+    printf("%g %g %g %g %g %g %g %g %g %g %g %g \n", line->z0, line->keff,
+	   line->len, line->loss, line->Ls, line->Rs, line->Cs, line->Gs,
+	   line->lc, line->ld, line->deltal, line->skindepth);
   }
 
   /* clean up */
@@ -515,29 +514,33 @@ static void exec_coplanar_syn(double *args)
   /* our coax for calculations */
   coplanar_line *line;
   int i = 0;
+  int flag;
 
   /* create the line and fill in the parameters */
   line = coplanar_line_new();
-  line->z0       = args[i++];
-  line->elen     = args[i++];
-  line->a        = args[i++];
-  line->b        = args[i++];
-  line->c        = args[i++];
-  line->tshield  = args[i++];
-  line->rho_a    = args[i++];
-  line->rho_b    = args[i++];
-  line->er       = args[i++];
-  line->tand     = args[i++];
-  line->freq     = args[i++];
+  line->Xo          = 0.0;
+  line->Ro = line->z0 = args[i++];
+  line->len         = args[i++];
+  line->w           = args[i++];
+  line->s           = args[i++];
+  line->subs->h     = args[i++];
+  line->l           = args[i++];
+  line->subs->tmet  = args[i++];
+  line->subs->rho   = args[i++];
+  line->subs->rough = args[i++];
+  line->subs->er    = args[i++];
+  line->subs->tand  = args[i++];
+  line->freq        = args[i++];
+  flag              = args[i++];
 
   /* run the calculation */
   if( coplanar_syn(line, line->freq, args[i++]) ) {
     printf("%s", ERRMSG);
   } else {
+
     /* print the outputs */
-    printf("%g %g %g %g %g\n", 
-	   line->a, line->b, line->c,
-	   line->er, line->len);
+    printf("%g %g %g %g %g\n", line->w, line->s, line->subs->h,
+	   line->l, line->subs->er);
   }
 
   /* clean up */
