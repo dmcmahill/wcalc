@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.20 2006/02/23 13:45:05 dan Exp $ */
+/*      $Id: stripline.c,v 1.21 2006/03/01 19:53:33 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -341,9 +341,9 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   lc = (M_PI*f/LIGHTSPEED)*(z2 - z1)/z0;
 #ifdef DEBUG_CALC
 	   printf("stripline_calc_int(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
-		  z1,z2,z0,lc);
+		  z1, z2, z0, lc);
 #endif
-	   R = lc*2*line->z0;
+	   R = lc * 2.0 * z0;
 
 	 }
 
