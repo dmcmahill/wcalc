@@ -1,4 +1,4 @@
-<!-- $Id: coplanar.html,v 1.1 2006/01/31 13:37:26 dan Exp $ -->
+<!-- $Id: coplanar.html,v 1.2 2006/01/31 13:38:16 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
@@ -288,6 +288,11 @@ coplanar waveguide
 <TR>
 <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
 <INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+
+<TD><INPUT TYPE="CHECKBOX" NAME="withgnd"
+           <@s@line->with_ground ? "checked" : ""@>
+           onChange="valsChanged()"></TD>
+<TD>Include bottom side ground</TD>
 </TR>
 
 <TR>

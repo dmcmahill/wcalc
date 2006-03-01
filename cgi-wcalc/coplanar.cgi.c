@@ -1,4 +1,4 @@
-/* $Id: coplanar.cgi.c,v 1.2 2006/02/12 13:26:58 dan Exp $ */
+/* $Id: coplanar.cgi.c,v 1.3 2006/03/01 15:31:35 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -315,6 +315,13 @@ int cgiMain(void){
     if( freq <= 0.0 ) {
       elen = defELEN;
       printFormError("Electrical length must be %gt 0");
+    }
+
+    /* with/without bottom side ground plane checkbox */
+    if( cgiFormCheckboxSingle("withgnd") == cgiFormSuccess) {
+      line->with_ground = 1;
+    } else {
+      line->with_ground = 0;
     }
 
     /* copy data over to the line structure */
