@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.cgi.c,v 1.13 2005/12/07 22:54:48 dan Exp $ */
+/* $Id: coupled_stripline.cgi.c,v 1.1 2006/02/12 21:00:04 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -128,9 +128,6 @@ int cgiMain(void){
   double Ro=0.0;
   double elen;
 
-  /* delay on the line (ns) */
-  double delay;
-  
   /* these are either "" or "checked\0" */
   char zkchecked[8];
   char evodchecked[8];
@@ -143,6 +140,13 @@ int cgiMain(void){
   cgi_units_menu *menu_freq, *menu_loss, *menu_losslen;
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
+
+  /*
+   * uncomment to be able to run in the debugger.
+   * access the CGI URL that gives the problem, then change foo.cgi to 
+   * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
+   */
+  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
   /* create the coupled_stripline line */
   line = coupled_stripline_line_new();
@@ -167,15 +171,15 @@ int cgiMain(void){
   cgi_units_attach_entry(menu_deltal, "entry_deltal");
 
   /* flags to the program: */
-  if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
+  if(cgiFormStringNoNewlines("analyze", str_action, ACTION_LEN) ==
      cgiFormSuccess){
     action = ANALYZE;
   }
-  else if(cgiFormStringNoNewlines("synth_w",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("synth_w", str_action, ACTION_LEN) ==
      cgiFormSuccess){
     action = SYNTH_W;
   }
-  else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
+  else if(cgiFormStringNoNewlines("reset", str_action, ACTION_LEN) ==
      cgiFormSuccess){
     action = RESET;
   }
@@ -469,20 +473,6 @@ int cgiMain(void){
     break;
 
   }
-
-  /* XXX this last section is bogus */
-
-  /* electrical and physical length */
-  elen = line->len;
-
-  /*
-   * delay on line (ns)
-   * 2 pi f Td = elen pi/180
-   * Td = (pi/180) elen/(2 pi f) = elen/(360 f)
-   * and in ns,
-   * Td = elen/(360 f *1e-9)
-   */
-  delay = elen /(360.0 * line->freq * 1e-9);
 
   /* include the HTML output */
 #include "header_html.c"

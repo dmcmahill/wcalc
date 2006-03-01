@@ -1,4 +1,4 @@
-<!-- $Id: coupled_stripline.html,v 1.1 2006/02/12 21:00:05 dan Exp $ -->
+<!-- $Id: coupled_stripline.html,v 1.2 2006/02/13 19:20:20 dan Exp $ -->
 <!--
  * Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
@@ -149,7 +149,7 @@ coupled microstrip
 
 <TR>
 <TD>Delay =</TD>
-<TD><@g@delay/line->units_delay->sf@></TD>
+<TD><@g@line->delay/line->units_delay->sf@></TD>
 <TD>
 <@s@cgi_units_menu_display(menu_delay)@>
 </TD>
@@ -325,7 +325,7 @@ coupled microstrip
 <!-- XXX -->
 <TR>
 <TD>Electrical Length</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@elen@>"
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="elen" VALUE="<@g@line->len@>"
            onChange="valsChanged()"></TD>
 <TD>[degrees]</TD>
 </TR>
