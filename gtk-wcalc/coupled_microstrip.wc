@@ -90,8 +90,8 @@ units_rough = 5
 # [mil]
 
 # Delay units
-units_delay = 0
-# [as]
+units_delay = 3
+# [ns]
 
 # Skin depth units
 units_depth = 5
