@@ -1,4 +1,4 @@
-/* $Id: coplanar.cgi.c,v 1.1 2006/01/31 13:37:25 dan Exp $ */
+/* $Id: coplanar.cgi.c,v 1.2 2006/02/12 13:26:58 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -126,6 +126,12 @@ int cgiMain(void){
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
 
+  /*
+   * uncomment to be able to run in the debugger.
+   * access the CGI URL that gives the problem, then change foo.cgi to 
+   * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
+   */
+  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
   /* create the coplanar line */
   line = coplanar_line_new();

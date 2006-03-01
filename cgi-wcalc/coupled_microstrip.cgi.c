@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.12 2004/08/31 21:53:04 dan Exp $ */
+/* $Id: coupled_microstrip.cgi.c,v 1.13 2005/12/07 22:54:48 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2003, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -143,6 +143,13 @@ int cgiMain(void){
   cgi_units_menu *menu_freq, *menu_loss, *menu_losslen;
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal;
+
+  /*
+   * uncomment to be able to run in the debugger.
+   * access the CGI URL that gives the problem, then change foo.cgi to 
+   * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
+   */
+  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
   /* create the coupled_microstrip line */
   line = coupled_microstrip_line_new();
@@ -482,7 +489,7 @@ int cgiMain(void){
    * and in ns,
    * Td = elen/(360 f *1e-9)
    */
-  delay = elen /(360.0 * line->freq * 1e-9);
+  delay = elen /(360.0 * line->freq);
 
   /* include the HTML output */
 #include "header_html.c"

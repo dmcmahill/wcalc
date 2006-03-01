@@ -1,7 +1,7 @@
-/* $Id: ic_microstrip.cgi.c,v 1.8 2004/08/31 21:53:05 dan Exp $ */
+/* $Id: ic_microstrip.cgi.c,v 1.9 2004/12/03 05:13:45 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -122,6 +122,13 @@ int cgiMain(void){
   cgi_units_menu *menu_len, *menu_freq, *menu_loss, *menu_losslen;
   cgi_units_menu *menu_rho, *menu_rough, *menu_delay, *menu_depth;
   cgi_units_menu *menu_deltal, *menu_sigmas;
+
+  /*
+   * uncomment to be able to run in the debugger.
+   * access the CGI URL that gives the problem, then change foo.cgi to 
+   * capture.cgi and reload.  That dumps the env to /tmp/capcgi.dat.
+   */
+  /* cgiReadEnvironment("/tmp/capcgi.dat"); */
 
   /* create the IC microstrip line */
   line = ic_microstrip_line_new();
