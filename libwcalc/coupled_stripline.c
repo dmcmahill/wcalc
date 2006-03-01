@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.10 2006/02/15 13:53:18 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.11 2006/02/15 15:15:22 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -323,6 +323,13 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 
   /* electrical length */
   line->len = 360.0 * line->l * line->freq * sqrt(line->subs->er) / LIGHTSPEED;
+
+  /* 
+   * delay on line.
+   *
+   * delay = length / velocity
+   */
+   line->delay = line->l * sqrt(line->subs->er) / LIGHTSPEED;
 
   return 0;
 }

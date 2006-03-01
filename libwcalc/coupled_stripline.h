@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.h,v 1.1 2006/02/12 06:16:26 dan Exp $ */
+/* $Id: coupled_stripline.h,v 1.2 2006/02/13 19:19:36 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -61,6 +61,8 @@ typedef struct COUPLED_STRIPLINE_LINE
   /* electrical length (degrees) */
   double len;
 
+  /* delay (seconds) */
+  double delay;
 
   /* open circuit end line correction */
   double deltale, deltalo;
