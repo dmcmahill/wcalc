@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline_gui.c,v 1.2 2006/02/13 19:20:21 dan Exp $ */
+/* $Id: coupled_stripline_gui.c,v 1.3 2006/02/13 19:54:04 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -290,7 +290,7 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
 
   y++;
 
-  /* ---------------- Width  -------------- */
+  /* ---------------- Gap  -------------- */
 
   text = gtk_label_new( "Spacing (S)" );
   gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
@@ -779,6 +779,25 @@ static void outputs_init(coupled_stripline_gui *gui, GtkWidget *parent)
   
   y++;
 
+  /* ---------------- Delay -------------- */
+  text = gtk_label_new( "Delay" );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
+  gtk_table_attach (GTK_TABLE(table), gui->label_delay, x+1, x+2, y, y+1,
+		    0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_show(gui->label_delay);
+
+  text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
+			NULL, NULL, WC_FMT_G, 1);
+
+
   /* ----------------  COLUMN #2 -------------- */
   text = gtk_label_new( " " );
   gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
@@ -965,78 +984,6 @@ static void outputs_init(coupled_stripline_gui *gui, GtkWidget *parent)
 
   y++;
   
-  /* XXX */
-#ifdef notdef
-  /* ---------------- Delay -------------- */
-  text = gtk_label_new( "Delay" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
-		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(gui->label_delay);
-
-  text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
-		   3, 4, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
-			NULL, NULL, WC_FMT_G, 1);
-
-
-  /* ---------------- R -------------- */
-  text = gtk_label_new( "R" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_Rs = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
-		    5, 6, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_Rs);
-
-  text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
-			NULL, NULL, WC_FMT_G, 1);
-
-  /* ---------------- C -------------- */
-  text = gtk_label_new( "C" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_Cp = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
-		    5, 6, 2, 3, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_Cp);
-
-  text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
-			NULL, NULL, WC_FMT_G, 1);
-
-  /* ---------------- G -------------- */
-  text = gtk_label_new( "G" );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_Gp = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
-		    5, 6, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_Gp);
-
-  text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
-			NULL, NULL, WC_FMT_G, 1);
-#endif
-
   /* spacer */
 
   text = gtk_label_new( "                " );
