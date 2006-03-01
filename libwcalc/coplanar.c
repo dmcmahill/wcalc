@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.7 2006/02/11 02:50:30 dan Exp $ */
+/*      $Id: coplanar.c,v 1.8 2006/02/15 19:11:12 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -176,9 +176,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     b = line->w + 2.0 * line->s;
 
     /* Wadell (3.4.1.8), (3.4.1.9) */
-    at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-    bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-
+    //at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    //bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    at = a; bt = b;
     /* Wadell (3.4.1.6) */
     k1 = sinh(M_PI * at / (4.0 * line->subs->h)) / sinh(M_PI * bt / (4.0 * line->subs->h));
 
@@ -198,6 +198,24 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
     /* for coplanar waveguide (ground signal ground) */
     z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kpt);
+
+    //#ifdef DEBUG_CALC
+    printf("%s():  using the equations without ground plane\n", __FUNCTION__);
+    printf("%s():  a     = %g\n", __FUNCTION__, a);
+    printf("%s():  b     = %g\n", __FUNCTION__, b);
+    printf("%s():  at    = %g\n", __FUNCTION__, at);
+    printf("%s():  bt    = %g\n", __FUNCTION__, bt);
+    printf("%s():  k1    = %g\n", __FUNCTION__, k1);
+    printf("%s():  k     = %g\n", __FUNCTION__, k);
+    printf("%s():  kt    = %g\n", __FUNCTION__, kt);
+    printf("%s():  k_kp  = %g\n", __FUNCTION__, k_kp);
+    printf("%s():  k_kp1 = %g\n", __FUNCTION__, k_kp1);
+    printf("%s():  k_kpt = %g\n", __FUNCTION__, k_kpt);
+    printf("%s():  eff   = %g\n", __FUNCTION__, eeff);
+    printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
+    printf("%s():  z0    = %g\n", __FUNCTION__, z0);
+    //#endif
+
   } else {  
     /*
      * These equations are _with_ the bottom side ground plane.
@@ -214,6 +232,15 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
       (1.0 + k_kp1/k_kp);
 
     z0 = (FREESPACEZ0 / (2.0 * sqrt(line->keff))) / (k_kp + k_kp1);
+#ifdef DEBUG_CALC
+    printf("%s():  using the equations with ground plane\n", __FUNCTION__);
+    printf("%s():  k     = %g\n", __FUNCTION__, k);
+    printf("%s():  k1    = %g\n", __FUNCTION__, k1);
+    printf("%s():  k_kp  = %g\n", __FUNCTION__, k_kp);
+    printf("%s():  k_kp1 = %g\n", __FUNCTION__, k_kp1);
+    printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
+    printf("%s():  z0    = %g\n", __FUNCTION__, z0);
+#endif
   }
 
 #ifdef DEBUG_CALC
@@ -457,14 +484,8 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 {
   int rslt;
 
-  double l;
   double Ro, Xo;
-  double v,len;
-
-  /* the parameters which define the structure */
-  double w;
-  double tmet;
-  double h,es,tand;
+  double v, len;
 
   /* permeability and permitivity of free space */
   double mu0, e0;
@@ -561,26 +582,14 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
   Ro = line->Ro;
   Xo = line->Xo;
-  len = line->len;
-
-  /* Metal width, length, and thickness */
-  w = line->w;
-  l = line->l;
-  tmet = line->subs->tmet;
-
-  /* Substrate thickness, relative permitivity, and loss tangent */
-  h = line->subs->h;
-  es = line->subs->er;
-  tand = line->subs->tand;
 
 
   /*
    * temp value for l used while synthesizing the other parameters.
    * We'll correct l later.
    */
-
-  l = 1000.0;
-  line->l=l;
+  len = line->len;  /* remember what electrical length we want */
+  line->l = 1.0;
 
 #ifdef DEBUG_SYN
   printf("coplanar_syn(): --------------- Coplanar Synthesis -----------\n");
@@ -607,14 +616,14 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 	 line->freq/line->units_freq->sf, line->units_freq->name);
   printf("coplanar_syn(): -------------- --------------------- ----------\n");
   printf("coplanar_syn(): Desired Zo                  = %g ohm\n",Ro);
-  printf("coplanar_syn(): Desired electrical length   = %g degrees\n",len);
+  printf("coplanar_syn(): Desired electrical length   = %g degrees\n", len);
   printf("coplanar_syn(): -------------- --------------------- ----------\n");
   printf("coplanar_syn(): Starting optimization value = %g\n",var);
   printf("coplanar_syn(): Optimization flag           = %d\n",flag);
   printf("coplanar_syn(): -------------- --------------------- ----------\n");
 #endif
 
-  if (!done){
+  if (!done) {
     /* Initialize the various error values */
     *optpar = varmin;
     rslt = coplanar_calc_int(line,f,NOLOSS);
@@ -642,7 +651,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     errold = line->z0 - Ro;
 
     /* see if we've actually been able to bracket the solution */
-    if (errmax*errmin > 0){
+    if (errmax*errmin > 0) {
       alert("Could not bracket the solution.\n"
 	    "Synthesis failed.\n");
       return -1;
@@ -658,20 +667,22 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
   }
 
   /* the actual iterations */
-  while (!done){
-
+  while (!done) {
     /* update the interation count */
     iters = iters + 1;
     
     /* calculate an estimate of the derivative */
-    deriv = (err-errold)/(var-varold);
+    deriv = (err - errold) / (var - varold);
+
+    printf("Iteration #%d:  varmin = %g, var = %g, varold = %g, varmax = %g, err = %g, errold = %g, deriv = %g\n", 
+	   iters, varmin, var, varold, varmax, err, errold, deriv);
 
     /* copy over the current estimate to the previous one */
     varold = var;
     errold = err;
 
     /* try a quasi-newton iteration */
-    var = var - err/deriv;
+    var = var - err / deriv;
   
     
     /*
@@ -680,16 +691,17 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
      * bisection step to reduce the bracket.
      */
 
-    if ( (var>varmax) || (var<varmin) ){
-#ifdef DEBUG_SYN
+    if ( (var > varmax) || (var < varmin) ){
+      //#ifdef DEBUG_SYN
       printf("coplanar_syn():  Taking a bisection step\n");
-#endif
+      //#endif
       var = (varmin + varmax)/2.0;
     }
 
     /* update the error value */
     *optpar = var;
-    rslt = coplanar_calc_int(line,f,NOLOSS);
+    rslt = coplanar_calc_int(line, f, NOLOSS);
+    printf("line->z0 = %g Ohms\n", line->z0);
     err = line->z0 - Ro;
     if (rslt)
       return rslt;
@@ -710,7 +722,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 	     iters);
 #endif
     }
-    else if ( fabs((var-varold)/var) < reltol){
+    else if ( fabs( (var - varold) / var) < reltol){
       done = 1;
 #ifdef DEBUG_SYN
       printf("coplanar_syn():  reltol converged after iteration #%d\n",
@@ -719,30 +731,33 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     }
     else if (iters >= maxiters){
       alert("Synthesis failed to converge in\n"
-	    "%d iterations\n", maxiters);
+	    "%d iterations.  Final optimization parameters:\n"
+	    "  min = %g\n"
+	    "  val = %g\n"
+	    "  max = %g\n", maxiters, varmin, var, varmax);
       return -1;
     }
     
 
 #ifdef DEBUG_SYN
-      printf("coplanar_syn(): iteration #%d:  var = %g\terr = %g\n",iters,var,err);
+      printf("coplanar_syn(): iteration #%d:  var = %g\terr = %g\n", iters, var, err);
 #endif
       /* done with iteration */
   }
 
   /* velocity on line */
-  coplanar_calc(line,f);
+  coplanar_calc(line, f);
 
   v = LIGHTSPEED / sqrt(line->subs->er);
 
-  line->l = (len/360)*(v/f);
+  line->l = (len/360.0) * (v/f);
 
 
   /* recalculate using real length to find loss  */
   coplanar_calc(line,f);
   
 #ifdef DEBUG_SYN
-  printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n",line->z0,line->len);
+  printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n", line->z0, line->len);
   printf("produced:\n");
   printf("\twidth = %g [m] \n\tspacing = %g [m]\n\tlength = %g [m]\n",
 	 line->w, line->s, line->l);
