@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.8 2006/02/15 19:11:12 dan Exp $ */
+/*      $Id: coplanar.c,v 1.9 2006/03/01 22:40:02 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -176,9 +176,20 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     b = line->w + 2.0 * line->s;
 
     /* Wadell (3.4.1.8), (3.4.1.9) */
-    //at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-    //bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-    at = a; bt = b;
+    at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    
+    /*
+     * we have to be a bit careful here.  If we're not careful, we can
+     * end up with b < a which is nonsense and it will cause the
+     * calculation of the elliptic integral ratios to produce NaN
+     */
+    if( bt <= at ) {
+      at = a;
+      bt = b;
+      alert("Warning:  bt <= at so I am reverting to zero thickness equations\n");
+    }
+
     /* Wadell (3.4.1.6) */
     k1 = sinh(M_PI * at / (4.0 * line->subs->h)) / sinh(M_PI * bt / (4.0 * line->subs->h));
 
@@ -199,7 +210,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     /* for coplanar waveguide (ground signal ground) */
     z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kpt);
 
-    //#ifdef DEBUG_CALC
+#ifdef DEBUG_CALC
     printf("%s():  using the equations without ground plane\n", __FUNCTION__);
     printf("%s():  a     = %g\n", __FUNCTION__, a);
     printf("%s():  b     = %g\n", __FUNCTION__, b);
@@ -214,7 +225,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     printf("%s():  eff   = %g\n", __FUNCTION__, eeff);
     printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
     printf("%s():  z0    = %g\n", __FUNCTION__, z0);
-    //#endif
+#endif
 
   } else {  
     /*
