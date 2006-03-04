@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.9 2006/03/01 22:40:02 dan Exp $ */
+/*      $Id: coplanar.c,v 1.10 2006/03/04 16:03:10 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -685,9 +685,10 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     /* calculate an estimate of the derivative */
     deriv = (err - errold) / (var - varold);
 
+#ifdef DEBUG_SYN
     printf("Iteration #%d:  varmin = %g, var = %g, varold = %g, varmax = %g, err = %g, errold = %g, deriv = %g\n", 
 	   iters, varmin, var, varold, varmax, err, errold, deriv);
-
+#endif
     /* copy over the current estimate to the previous one */
     varold = var;
     errold = err;
@@ -703,16 +704,18 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
      */
 
     if ( (var > varmax) || (var < varmin) ){
-      //#ifdef DEBUG_SYN
+#ifdef DEBUG_SYN
       printf("coplanar_syn():  Taking a bisection step\n");
-      //#endif
+#endif
       var = (varmin + varmax)/2.0;
     }
 
     /* update the error value */
     *optpar = var;
     rslt = coplanar_calc_int(line, f, NOLOSS);
+#ifdef DEBUG_SYN
     printf("line->z0 = %g Ohms\n", line->z0);
+#endif
     err = line->z0 - Ro;
     if (rslt)
       return rslt;
