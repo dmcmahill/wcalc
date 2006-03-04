@@ -1,4 +1,4 @@
-/*      $Id: coplanar.h,v 1.4 2006/01/31 13:52:55 dan Exp $ */
+/*      $Id: coplanar.h,v 1.5 2006/02/01 00:23:27 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -117,7 +117,6 @@ coplanar_subs *coplanar_subs_new(void);
 #define CPWSYN_S    1    /* Synthesize the spacing to the top side ground */
 #define CPWSYN_H    2    /* Synthesize the substrate thickness */
 #define CPWSYN_ER   3    /* Synthesize the dielectric constant */
-#define CPWSYN_L    4    /* Synthesize the length */
 
 
 

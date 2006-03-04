@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.10 2006/03/04 16:03:10 dan Exp $ */
+/*      $Id: coplanar.c,v 1.11 2006/03/04 16:06:56 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -571,14 +571,6 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     varmax = 100.0;
     varmin = 1.0;
     var    = 5.0;
-    break;
-
-  case CPWSYN_L:
-    optpar = &(line->l);
-    varmax = 100.0;
-    varmin = 1.0;
-    var    = 5.0;
-    done = 1;
     break;
 
   default:
