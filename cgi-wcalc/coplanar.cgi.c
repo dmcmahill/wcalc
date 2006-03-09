@@ -1,4 +1,4 @@
-/* $Id: coplanar.cgi.c,v 1.3 2006/03/01 15:31:35 dan Exp $ */
+/* $Id: coplanar.cgi.c,v 1.4 2006/03/01 21:23:08 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -75,8 +75,7 @@
 #define SYNTH_H   3
 #define SYNTH_W   4
 #define SYNTH_ES  5
-#define SYNTH_L   6
-#define SYNTH_S   7 
+#define SYNTH_S   6
 
 
 
@@ -176,10 +175,6 @@ int cgiMain(void){
   else if(cgiFormStringNoNewlines("synth_es",str_action,ACTION_LEN) ==
      cgiFormSuccess){
     action = SYNTH_ES;
-  }
-  else if(cgiFormStringNoNewlines("synth_l",str_action,ACTION_LEN) ==
-     cgiFormSuccess){
-    action = SYNTH_L;
   }
   else if(cgiFormStringNoNewlines("reset",str_action,ACTION_LEN) ==
      cgiFormSuccess){
@@ -443,13 +438,6 @@ int cgiMain(void){
     coplanar_syn(line, line->freq, CPWSYN_ER);
     fprintf(cgiOut,"</pre>\n");
     es = line->subs->er;
-    break;
-
-  case SYNTH_L:
-    fprintf(cgiOut,"<pre>");
-    coplanar_syn(line, line->freq, CPWSYN_L);
-    fprintf(cgiOut,"</pre>\n");
-    l = line->l;
     break;
 
   }
