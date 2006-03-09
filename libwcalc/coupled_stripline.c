@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.11 2006/02/15 15:15:22 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.12 2006/03/01 18:09:31 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -147,7 +147,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
     line->skindepth = 0.0;
 
 
-  if( line->freq > 0.0 ) {
+  if( (line->freq > 0.0) && (line->subs->tmet > 0.0) ) {
     /* 
      * Find the high frequency asymptotic behaviour of the resistance
      * using Wheelers incremental inductance rule as a frequency where
@@ -202,10 +202,15 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   }
 
 
-  /* DC resistance */
-  Re_dc = 1.0 / (line->w * line->subs->tmet * sigma);
-  Ro_dc = 1.0 / (line->w * line->subs->tmet * sigma);
-  
+  if( line->subs->tmet > 0.0 ) {
+    /* DC resistance */
+    Re_dc = 1.0 / (line->w * line->subs->tmet * sigma);
+    Ro_dc = 1.0 / (line->w * line->subs->tmet * sigma);
+  } else {
+    /* if we have zero metal thickness, just shut off conductor loss */
+    Re_dc = 0.0;
+    Ro_dc = 0.0;
+  }
   
   /*
    * Now we have to figure out how to interpolate between our two
@@ -255,7 +260,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
    *                       Rhf * delta0
    */
 
-  if( line->freq > 0.0) {
+  if( (line->freq > 0.0) && (line->subs->tmet > 0.0) ) {
     /* find our "effective skindepth" */
     deltax_e = line->skindepth * Re_dc * line->subs->tmet / (Re_hf * delta0);
     deltax_o = line->skindepth * Ro_dc * line->subs->tmet / (Ro_hf * delta0);
@@ -613,7 +618,11 @@ static int z0_zerot(double w, double s, double b, double er,
 
   /* (5) from Cohn */
   *z0o = (FREESPACEZ0 / 4.0) * sqrt(1.0/er) / k_over_kp( ko );
-    
+
+#ifdef DEBUG_CALC
+  printf("z0_zerot():  ke = %g, ko = %g, *z0e = %g, *z0o = %g\n", ke, ko, *z0e, *z0o);
+#endif
+
   return 0;
 }
 
@@ -643,56 +652,74 @@ static int find_z0(coupled_stripline_line *line)
 	    line->subs->er, &z0e_0t, &z0o_0t);
 
 
-  single.subs = stripline_subs_new();
-  *(single.subs) = *(line->subs);
-  single.w = line->w;
-  single.l = line->l;
-  single.freq = line->freq;
-
-  rslt = stripline_calc(&single, line->freq);
-  if( rslt != 0 ) {
-    alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
-  }
-  z0s = single.z0;
-
-  single.subs->tmet = 0.0;
-  rslt = stripline_calc(&single, line->freq);
-  if( rslt != 0 ) {
-    alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
-  }
-  z0s_0t = single.z0;
-
-
-  /* fringing capacitance */
-  cf_t = (FREESPACE_E0 * line->subs->er / M_PI) * (
-	(2.0 / (1.0 - line->subs->tmet / line->subs->h)) *
-		log( (1.0/(1.0 - line->subs->tmet / line->subs->h)) + 1.0) -
-	(1.0 / (1.0 - line->subs->tmet / line->subs->h) - 1.0) *
-		log( (1.0/pow(1.0 - line->subs->tmet / line->subs->h, 2.0)) - 1.0) );
-
-  /* zero thickness fringing capacitance  */
-  cf_0 = (FREESPACE_E0 * line->subs->er / M_PI) * 2.0 * log(2.0);
-
-
-  /* (18) from Cohn, (4.6.5.1) in Wadell */
-  line->z0e = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0s_0t) - (1.0 / z0e_0t) ) );
-
-  if( line->s / line->subs->tmet >= 5.0 ) {
-    /*
-     * (20) from Cohn, (4.6.5.2) in Wadell -- note, Wadell has a sign
-     * error in the equation 
-     */
-    line->z0o = 1.0 / ( (1.0 / z0s) + (cf_t / cf_0) * ( (1.0 / z0o_0t) - (1.0 / z0s_0t) ) );
+  if( line->subs->tmet == 0.0 ) {
+    line->z0e = z0e_0t;
+    line->z0o = z0o_0t;
   } else {
-    /*
-     * (22) from Cohn, (4.6.5.3) in Wadell -- note, Wadell has a
-     * couple of errors in the transcription from the original (Cohn)
-     */
-    line->z0o = 1.0 / ( (1.0 / z0o_0t) +
-			( (1.0 / z0s) - (1.0 / z0s_0t) ) -
-			(2.0 / FREESPACEZ0) * (cf_t/FREESPACE_E0 - cf_0/FREESPACE_E0) +
-			(2.0 * line->subs->tmet) / (FREESPACEZ0 * line->s)
-			);
+    single.subs = stripline_subs_new();
+    *(single.subs) = *(line->subs);
+    single.w = line->w;
+    single.l = line->l;
+    single.freq = line->freq;
+
+    rslt = stripline_calc(&single, line->freq);
+    if( rslt != 0 ) {
+      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+    }
+    z0s = single.z0;
+
+    single.subs->tmet = 0.0;
+    rslt = stripline_calc(&single, line->freq);
+    if( rslt != 0 ) {
+      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+    }
+    z0s_0t = single.z0;
+
+
+#ifdef DEBUG_CALC
+    printf("find_z0():  z0s = %g, z0s_0t = %g\n", z0s, z0s_0t);
+#endif
+
+    /* fringing capacitance */
+    cf_t = (FREESPACE_E0 * line->subs->er / M_PI) * (
+						     (2.0 / (1.0 - line->subs->tmet / line->subs->h)) *
+						     log( (1.0/(1.0 - line->subs->tmet / line->subs->h)) + 1.0) -
+						     (1.0 / (1.0 - line->subs->tmet / line->subs->h) - 1.0) *
+						     log( (1.0/pow(1.0 - line->subs->tmet / line->subs->h, 2.0)) - 1.0) );
+
+    /* zero thickness fringing capacitance  */
+    cf_0 = (FREESPACE_E0 * line->subs->er / M_PI) * 2.0 * log(2.0);
+
+
+    /* (18) from Cohn, (4.6.5.1) in Wadell */
+    line->z0e = 1.0 / ( (1.0 / z0s) - (cf_t / cf_0) * ( (1.0 / z0s_0t) - (1.0 / z0e_0t) ) );
+#ifdef DEBUG_CALC
+    printf("find_z0():  cf_t = %g, cf_0 = %g, z0e = %g\n", cf_t, cf_0, line->z0e);
+#endif
+
+    if( line->s >= 5.0 * line->subs->tmet) {
+      /*
+       * (20) from Cohn, (4.6.5.2) in Wadell -- note, Wadell has a sign
+       * error in the equation 
+       */
+      line->z0o = 1.0 / ( (1.0 / z0s) + (cf_t / cf_0) * ( (1.0 / z0o_0t) - (1.0 / z0s_0t) ) );
+#ifdef DEBUG_CALC
+      printf("find_z0():  Using s > 5 tmet case => z0o = %g\n", line->z0o);
+#endif
+    } else {
+      /*
+       * (22) from Cohn, (4.6.5.3) in Wadell -- note, Wadell has a
+       * couple of errors in the transcription from the original (Cohn)
+       */
+      line->z0o = 1.0 / ( (1.0 / z0o_0t) +
+			  ( (1.0 / z0s) - (1.0 / z0s_0t) ) -
+			  (2.0 / FREESPACEZ0) * (cf_t/FREESPACE_E0 - cf_0/FREESPACE_E0) +
+			  (2.0 * line->subs->tmet) / (FREESPACEZ0 * line->s)
+			  );
+#ifdef DEBUG_CALC
+      printf("find_z0():  Using s < 5 tmet case => z0o = %g\n", line->z0o);
+#endif
+    }
   }
 
   /*
