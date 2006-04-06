@@ -1,6 +1,6 @@
-# $Id: microstrip.dat,v 1.5 2004/11/24 02:01:37 dan Exp $
+# $Id: coplanar.dat,v 1.1 2006/04/06 13:31:53 dan Exp $
 #
-# microstrip test data
+# coplanar test data
 #
 *****************************************
 *
@@ -8,51 +8,55 @@
 *
 *****************************************
 *
-* [z0, keff, loss, deltal] =
-*   microstrip_calc(w,h,l,tmet,rho,rough,er,tand,f);
+* [z0, keff, len loss, L, R, C, G, lc, ld, deltal, skindepth] =
+*   coplanar_calc(w,s,h,l,tmet,rho,rough,er,tand,with_ground,f);
 *
 
-* z0, keff, loss, deltal
-
-* Microstrip calculation
-microstrip_calc 3.0e-3 3.0e-3 0.01 35.56e-6 1.72e-8 1e-6 4.8 0.001 1800e6
-
-*************** Table 6.5 From Rosloniec ************
+*************** From AppCad v 3.0.2
 *
 *
-* Z0 = 30 Ohms, Keff = 2.228
-microstrip_calc 5.678e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6
-* Z0 = 30 Ohms, Keff = 2.299
-microstrip_calc 5.558e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e10
-* Z0 = 30 Ohms, Keff = 7.042
-microstrip_calc 2.395e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e6
-* Z0 = 30 Ohms, Keff = 7.772
-microstrip_calc 2.201e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
-* Z0 = 50 Ohms, Keff = 2.122
-microstrip_calc 2.762e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6
-* Z0 = 50 Ohms, Keff = 2.177
-microstrip_calc 2.705e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e10
-* Z0 = 50 Ohms, Keff = 6.448
-microstrip_calc 0.961e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e6
-* Z0 = 50 Ohms, Keff = 6.972
-microstrip_calc 0.877e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
-* Z0 = 75 Ohms, Keff = 2.033
-microstrip_calc 1.379e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6
-* Z0 = 75 Ohms, Keff = 2.073
-microstrip_calc 1.352e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e10
-* Z0 = 75 Ohms, Keff = 6.067
-microstrip_calc 0.339e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e6
-* Z0 = 75 Ohms, Keff = 6.431
-microstrip_calc 0.307e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
+
+* no ground plane, Z0 = 120.6 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 1e-6 0 0 1.0 0.0 0 100e3
+* no ground plane, Z0 = 117.2 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 0.1  0 0 1.0 0.0 0 100e3
+* no ground plane, Z0 = 106.9 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 0.5 0 0 1.0 0.0 0 100e3
+* no ground plane, Z0 = 95.5 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 1.0  0 0 1.0 0.0 0 100e3
 
 
-*************** From LineCalc ************
-* w=0.6mm, L=100mm, H=0.6mm, Tmet=0.025mm, rough=25.4e-6mm
-* Line Calc gives
-* Z0=48.08720336054 E_EFF=305.9271827158
-* K_EFF=6.490417898558 A_DB=0.621663265207 Skin depth=0.002485570190
+* with ground plane, Z0 = 117.4 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 1e-6 0 0 1.0 0.0 1 100e3
+* with ground plane, Z0 = 115.7 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 0.1 0 0 1.0 0.0 1 100e3
+* with ground plane, Z0 = 110.5 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 0.5 0 0 1.0 0.0 1 100e3
+* with ground plane, Z0 = 104.1 Ohms, Keff = 1.0, Length = 120.1 degrees
+coplanar_calc 10 5 25 1000 1.0 0 0 1.0 0.0 1 100e3
 
-microstrip_calc 0.6e-3 0.6e-3 100e-3 0.025e-3 2.44e-8 25.4e-9 9.9 0.022 1e9
+**
+** Er = 4.8
+**
+
+* no ground plane, Z0 = 71.4 Ohms, Keff = 2.85, Length = 202.7 degrees
+coplanar_calc 10 5 25 1000 1e-6 0 0 4.8 0.0 0 100e3
+* no ground plane, Z0 = 69.6 Ohms, Keff = 2.83, Length = 202.1 degrees
+coplanar_calc 10 5 25 1000 0.1  0 0 4.8 0.0 0 100e3
+* no ground plane, Z0 = 64.2 Ohms, Keff = 2.77, Length = 199.8 degrees
+coplanar_calc 10 5 25 1000 0.5 0 0 4.8 0.0 0 100e3
+* no ground plane, Z0 = 58.1 Ohms, Keff = 2.70, Length = 197.2 degrees
+coplanar_calc 10 5 25 1000 1.0  0 0 4.8 0.0 0 100e3
+
+* with ground plane, Z0 = 68.3 Ohms, Keff = 2.95, Length = 206.3 degrees
+coplanar_calc 10 5 25 1000 1e-6 0 0 4.8 0.0 1 100e3
+* with ground plane, Z0 = 67.9 Ohms, Keff = 2.91, Length = 204.7 degrees
+coplanar_calc 10 5 25 1000 0.1 0 0 4.8 0.0 1 100e3
+* with ground plane, Z0 = 66.5 Ohms, Keff = 2.76, Length = 199.4 degrees
+coplanar_calc 10 5 25 1000 0.5 0 0 4.8 0.0 1 100e3
+* with ground plane, Z0 = 64.7 Ohms, Keff = 2.59, Length = 193.2 degrees
+coplanar_calc 10 5 25 1000 1.0 0 0 4.8 0.0 1 100e3
+
 
 *****************************************
 *
@@ -61,18 +65,6 @@ microstrip_calc 0.6e-3 0.6e-3 100e-3 0.025e-3 2.44e-8 25.4e-9 9.9 0.022 1e9
 *****************************************
 *
 * [w_out,h_out,l_out,er_out] = ...
-*    microstrip_syn(z0,elen,w,h,l,tmet,rho,rough,er,tand,f,flag);
-*
+*    coplanar_syn(z0,elen,w,s,h,l,tmet,rho,rough,er,tand,with_ground,f,flag)
 
-*************** Table 6.5 From Rosloniec ************
-*
-*
-* Z0 = 30 Ohms, er=2.55, f=1 MHz
-microstrip_syn 30.0 90.0 5.678e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e6  0
-* Z0 = 30 Ohms, er=2.55, f=10 GHz
-microstrip_syn 30.0 90.0 5.558e-3 1e-3 1.0 3e-5 1.72e-8 0.0 2.55 0.0 1e10 0
-* Z0 = 30 Ohms, er=9.6, f=1 MHz
-microstrip_syn 30.0 90.0 2.395e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e6  0
-* Z0 = 30 Ohms, er=9.6, f=10 GHz
-microstrip_syn 30.0 90.0  2.201e-3 1e-3 1.0 3e-5 1.72e-8 0.0 9.60 0.0 1e10
 
