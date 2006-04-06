@@ -1,6 +1,6 @@
-# $Id: tests.list,v 1.1 2004/09/03 02:52:28 dan Exp $
+# $Id: tests.list,v 1.2 2006/02/13 16:56:03 dan Exp $
 #
-# $Id: tests.list,v 1.1 2004/09/03 02:52:28 dan Exp $
+# $Id: tests.list,v 1.2 2006/02/13 16:56:03 dan Exp $
 #
 # Copyright (c) 2004, 2006 Dan McMahill
 # All rights reserved.
@@ -36,6 +36,7 @@
 
 air_coil
 coax
+coplanar
 coupled_microstrip
 coupled_stripline
 ic_microstrip
