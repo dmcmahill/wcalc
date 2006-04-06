@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.23 2006/02/28 02:33:54 dan Exp $ */
+/* $Id: main.c,v 1.24 2006/04/06 13:27:43 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2005, 2006 Dan McMahill
@@ -235,7 +235,7 @@ static void execute_file(FILE *fp, char *fname)
       narg = 12;
       fn = &exec_coax_syn;
     } else if(strcmp(tok, "coplanar_calc") == 0) {
-      narg = 10; /* FIXME */
+      narg = 11;
       fn = &exec_coplanar_calc;
     } else if(strcmp(tok, "coplanar_syn") == 0) {
       narg = 12; /* FIXME */
@@ -468,9 +468,6 @@ static void exec_coax_syn(double *args)
   return;
 }
 
-/*
- * FIXME
- */
 static void exec_coplanar_calc(double *args)
 {
   /* our coax for calculations */
@@ -488,6 +485,7 @@ static void exec_coplanar_calc(double *args)
   line->subs->rough = args[i++];
   line->subs->er    = args[i++];
   line->subs->tand  = args[i++];
+  line->with_ground = args[i++];
   line->freq        = args[i++];
 
   /* run the calculation */
