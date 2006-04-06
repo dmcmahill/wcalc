@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.11 2006/03/04 16:06:56 dan Exp $ */
+/*      $Id: coplanar.c,v 1.12 2006/03/04 17:06:59 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -143,7 +143,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /* loss variables*/
   double lambdag, q;
   double z1,z2,lc,ld,delta;
-  double mu,sigma;
+  double mu;
 
   int rslt;
   coplanar_line tmp_line;
@@ -175,10 +175,15 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     a = line->w;
     b = line->w + 2.0 * line->s;
 
-    /* Wadell (3.4.1.8), (3.4.1.9) */
-    at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-    bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-    
+    /* Wadell (3.4.1.8), (3.4.1.9) but avoid issues with tmet = 0 */
+    if( line->subs->tmet > 0.0) {
+      at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+      bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+    } else {
+      at = a;
+      bt = b;
+    }
+
     /*
      * we have to be a bit careful here.  If we're not careful, we can
      * end up with b < a which is nonsense and it will cause the
@@ -310,8 +315,19 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
       /* freq * wavelength = velocity */
       lambdag = (LIGHTSPEED/sqrt(line->keff)) / line->freq;
 
-      /* q from Wadell (2.7.2.1) */
-      q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
+#ifdef DEBUG_CALC
+    printf("coplanar_calc_int():  no ground plane equations\n");
+    printf("                      lambdag = %g\n", lambdag);
+    printf("                      keff    = %g\n", line->keff);
+    printf("                      er      = %g\n", line->subs->er);
+#endif
+
+      /* q from Wadell (2.7.2.1) avoiding a 0/0 error  */
+      /* FIXME -- what is the right thing here?  */
+      if( fabs(line->subs->er*line->keff - line->keff) < 1e-6 )
+	q = 1.0;
+      else
+	q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
 
       /* loss from Wadell (3.4.1.10) */
       ld = q * line->subs->er * line->subs->tand / (line->keff * lambdag);
@@ -331,22 +347,20 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      */
        
     /* calculate skin depth */
-   
-    /* conductivity  */
-    sigma = 1.0 / line->subs->rho;
-   
+
     /* permeability of free space */
     mu = 4.0*M_PI*1e-7;
    
     /* skin depth in meters */
-    line->skindepth = sqrt(1.0/(M_PI*f*mu*sigma));
+    line->skindepth = sqrt(line->subs->rho/(M_PI*f*mu));
+
     delta = line->skindepth;
        
     /* make a copy, we'll want it  later */
     depth = delta;
 
     /* warn the user if the loss calc is suspect. */
-    if(line->subs->tmet < 3.0*line->skindepth)
+    if(line->subs->tmet < 3.0*line->skindepth && line->subs->tmet > 0.0)
       {
 	alert("Warning:  The metal thickness is less than\n"
 	      "three skin depths.  Use the loss results with\n"
@@ -361,7 +375,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      * but I dont have time right now to come up
      * with a better result.
      */
-    if(line->skindepth <= line->subs->tmet/3.0)
+    if(line->skindepth < line->subs->tmet/3.0)
       {
    
 	/* Use Wheelers "incremental inductance" approach */
@@ -402,10 +416,10 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
       }
 
     /* "dc" case  */
-    else if(line->subs->tmet > 0.0)
+    else if(line->subs->tmet > 0.0 && line->subs->rho > 0.0)
       {
 	/* resistance per meter = 1/(Area*conductivity) */
-	R = 1/(line->w*line->subs->tmet*sigma);  
+	R = line->subs->rho/(line->w*line->subs->tmet);  
   
 	/* conduction losses, nepers per meter */
 	lc = R/(2.0*z0);
@@ -443,7 +457,8 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      * the correct equation is penciled in my copy and was 
      * found in Hammerstad and Bekkadal
      */
-    lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
+    if( lc > 0.0 )
+      lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
    
     /*
      * Total Loss
