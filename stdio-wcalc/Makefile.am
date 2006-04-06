@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.15 2005/10/24 22:44:01 dan Exp $
+## $Id: Makefile.am,v 1.16 2006/02/13 16:56:02 dan Exp $
 
 ##
 ## Copyright (c) 2004, 2005, 2006 Dan McMahill
@@ -76,6 +76,7 @@ stdio_wcalc_LDADD = @WCALC_LDADD@
 TEST_INPUTS= \
 	air_coil.dat \
 	coax.dat \
+	coplanar.dat \
 	coupled_microstrip.dat \
 	coupled_stripline.dat \
 	ic_microstrip.dat \
