@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.12 2004/11/24 06:22:45 dan Exp $ */
+/* $Id: air_coil.c,v 1.13 2006/01/11 23:04:13 dan Exp $ */
 
 /*
  * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
@@ -322,7 +322,6 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 #ifdef DEBUG_CALC
   printf("air_coil_calc():  Q scale factor to account for resistivity = %g\n", Qsf);
 #endif
-  printf("air_coil_calc():  Q scale factor to account for resistivity = %g\n", Qsf);
 
   w = (freq*1e-6) / SRF;
 
@@ -357,11 +356,16 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   /* DC resistance */
   Rdc = coil->rho * wirelen / (M_PI*pow(0.5*awg2dia(coil->AWGf), 2.0));
+#ifdef DEBUG_CALC
   printf("air_coil_calc():  wirelen = %g meters, Rdc = %g Ohms\n", wirelen, Rdc);
+#endif
 
   /* Q found from low frequency resistance */
   Qdc = 2.0 * M_PI * freq * coil->L / Rdc;
+
+#ifdef DEBUG_CALC
   printf("air_coil_calc():  Q using Rdc = %g.  Q using skin effect = %g\n", Qdc, coil->Q);
+#endif
 
 
   coil->freq = freq;
