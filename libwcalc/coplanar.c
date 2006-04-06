@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.12 2006/03/04 17:06:59 dan Exp $ */
+/*      $Id: coplanar.c,v 1.13 2006/04/06 18:19:51 dan Exp $ */
 
 /*
  * Copyright (c) 2006 Dan McMahill
@@ -237,6 +237,11 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      * These equations are _with_ the bottom side ground plane.
      *
      * See Wadell, eq 3.4.3.1 through 3.4.3.6 on p. 79
+     */
+
+    /*
+     * FIXME -- surely these are not accurate without accounting for
+     * metal thickness...
      */
     k = line->w / (line->w + 2.0*line->s);
     k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
