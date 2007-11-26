@@ -1,4 +1,4 @@
-# $Id: coplanar.dat,v 1.1 2006/04/06 13:31:53 dan Exp $
+# $Id: coplanar.dat,v 1.2 2006/04/06 18:19:30 dan Exp $
 #
 # coplanar test data
 #
@@ -16,44 +16,69 @@
 *
 *
 
+*
+* 10 mil width, 5 mil gap, 25 mil substrate.  Er = 1.0
+* Step the metal thickness from 0 (1e-6) to 1.0 mil
+*
+
 * no ground plane, Z0 = 120.6 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 1e-6 0 0 1.0 0.0 0 100e3
+
 * no ground plane, Z0 = 117.2 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 0.1  0 0 1.0 0.0 0 100e3
+
 * no ground plane, Z0 = 106.9 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 0.5 0 0 1.0 0.0 0 100e3
+
 * no ground plane, Z0 = 95.5 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 1.0  0 0 1.0 0.0 0 100e3
 
+*
+* Same thing with ground plane in place
+*
 
 * with ground plane, Z0 = 117.4 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 1e-6 0 0 1.0 0.0 1 100e3
+
 * with ground plane, Z0 = 115.7 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 0.1 0 0 1.0 0.0 1 100e3
+
 * with ground plane, Z0 = 110.5 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 0.5 0 0 1.0 0.0 1 100e3
+
 * with ground plane, Z0 = 104.1 Ohms, Keff = 1.0, Length = 120.1 degrees
 coplanar_calc 10 5 25 1000 1.0 0 0 1.0 0.0 1 100e3
 
-**
-** Er = 4.8
-**
+*
+* 10 mil width, 5 mil gap, 25 mil substrate.  Er = 4.8
+* Step the metal thickness from 0 (1e-6) to 1.0 mil
+*
 
 * no ground plane, Z0 = 71.4 Ohms, Keff = 2.85, Length = 202.7 degrees
 coplanar_calc 10 5 25 1000 1e-6 0 0 4.8 0.0 0 100e3
+
 * no ground plane, Z0 = 69.6 Ohms, Keff = 2.83, Length = 202.1 degrees
 coplanar_calc 10 5 25 1000 0.1  0 0 4.8 0.0 0 100e3
+
 * no ground plane, Z0 = 64.2 Ohms, Keff = 2.77, Length = 199.8 degrees
 coplanar_calc 10 5 25 1000 0.5 0 0 4.8 0.0 0 100e3
+
 * no ground plane, Z0 = 58.1 Ohms, Keff = 2.70, Length = 197.2 degrees
 coplanar_calc 10 5 25 1000 1.0  0 0 4.8 0.0 0 100e3
 
+*
+* Same thing with ground plane in place
+*
+
 * with ground plane, Z0 = 68.3 Ohms, Keff = 2.95, Length = 206.3 degrees
 coplanar_calc 10 5 25 1000 1e-6 0 0 4.8 0.0 1 100e3
+
 * with ground plane, Z0 = 67.9 Ohms, Keff = 2.91, Length = 204.7 degrees
 coplanar_calc 10 5 25 1000 0.1 0 0 4.8 0.0 1 100e3
+
 * with ground plane, Z0 = 66.5 Ohms, Keff = 2.76, Length = 199.4 degrees
 coplanar_calc 10 5 25 1000 0.5 0 0 4.8 0.0 1 100e3
+
 * with ground plane, Z0 = 64.7 Ohms, Keff = 2.59, Length = 193.2 degrees
 coplanar_calc 10 5 25 1000 1.0 0 0 4.8 0.0 1 100e3
 
@@ -66,5 +91,15 @@ coplanar_calc 10 5 25 1000 1.0 0 0 4.8 0.0 1 100e3
 *
 * [w_out,h_out,l_out,er_out] = ...
 *    coplanar_syn(z0,elen,w,s,h,l,tmet,rho,rough,er,tand,with_ground,f,flag)
+*
+*   0    /* Synthesize the metal width         */
+*   1    /* Synthesize the spacing to the top side ground */
+*   2    /* Synthesize the substrate thickness */
+*   3    /* Synthesize the dielectric constant */
 
+* 50 Ohm line on Er = 4.8, 
+coplanar_syn 50 90 10 5 25 1000 1.0 0 0 4.8 0.01 0 1e9 0
+coplanar_syn 50 90 10 5 25 1000 1.0 0 0 4.8 0.01 0 1e9 1
+coplanar_syn 50 90 10 5 25 1000 1.0 0 0 4.8 0.01 1 1e9 2
+coplanar_syn 50 90 10 5 25 1000 1.0 0 0 4.8 0.01 0 1e9 3
 
