@@ -1,7 +1,7 @@
-/* $Id: main.c,v 1.24 2006/04/06 13:27:43 dan Exp $ */
+/* $Id: main.c,v 1.25 2006/04/06 18:19:23 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2005, 2006 Dan McMahill
+ * Copyright (c) 2004, 2005, 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -238,7 +238,7 @@ static void execute_file(FILE *fp, char *fname)
       narg = 11;
       fn = &exec_coplanar_calc;
     } else if(strcmp(tok, "coplanar_syn") == 0) {
-      narg = 12; /* FIXME */
+      narg = 14;
       fn = &exec_coplanar_syn;
     } else if(strcmp(tok, "coupled_microstrip_calc") == 0) {
       narg = 10;
@@ -528,11 +528,12 @@ static void exec_coplanar_syn(double *args)
   line->subs->rough = args[i++];
   line->subs->er    = args[i++];
   line->subs->tand  = args[i++];
+  line->with_ground = args[i++];
   line->freq        = args[i++];
   flag              = args[i++];
 
   /* run the calculation */
-  if( coplanar_syn(line, line->freq, args[i++]) ) {
+  if( coplanar_syn(line, line->freq, flag) ) {
     printf("%s", ERRMSG);
   } else {
 
