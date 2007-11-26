@@ -1,11 +1,122 @@
 #!/bin/sh
 #
-# $Id: build_wcalc,v 1.1 2005/11/05 01:53:58 dan Exp $
+# $Id: build_wcalc,v 1.2 2006/01/03 05:27:51 dan Exp $
 #
+
+# Copyright (c) 2006, 2007 Dan McMahill
+# All rights reserved.
+#
+# This code is derived from software written by Dan McMahill
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#        This product includes software developed by Dan McMahill
+# 4. The name of the author may not be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+# AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
 
 # Run this under cygwin to build wcalc and create a windows installer for
 # it.  Thanks to Bob Paddock for pointing me to NSIS and answering some 
 # beginner windows questions.
+
+
+# error out on failed commands whose return code wasn't explicitly
+# checked
+set -e
+
+usage() {
+cat << EOF
+
+$0 [options]
+
+Builds a non-cygwin version of wcalc and create a standalone
+windows installer.
+
+Supported options:
+
+  --debug         - Omits the compiler flag which prevents
+                    a command window from being opened.  This
+                    is useful when trying to use debug printf's
+
+  --help          - Show this message and exit.
+
+  --skip-build    - Skip the "make" step of the process.
+
+  --skip-config   - Skip the "./configure" step of the process.
+
+  --skip-install  - Skip the "make install" step of the process.
+
+For the $0 script to work, you must have the gtk_win32 files
+installed on your system in very specific locations.  Edit $0
+to change these.  While you are at it, feel free to provide a
+patch to improve the documentation about those libraries.
+
+EOF
+}
+
+debug=no
+do_config=yes
+do_build=yes
+do_install=yes
+while test $# -ne 0 ; do
+	case $1 in
+		--debug)
+			debug=yes
+			shift
+			;;
+
+		--help)
+			usage
+			exit 0
+			;;
+
+		--skip-build)
+			do_build=no
+			shift
+			;;
+
+		--skip-config)
+			do_config=no
+			shift
+			;;
+
+		--skip-install)
+			do_install=no
+			shift
+			;;
+
+		-*)
+			echo "ERROR:  Unknown option $1"
+			usage
+			exit 1
+			;;
+
+		*)
+			break
+			;;
+	esac
+done
+
 
 # where gtk_win32 is installed
 gtk_win32=c:\\cygwin\\home\\${USER}\\gtk_win32
@@ -14,13 +125,11 @@ gtk_win32=c:\\cygwin\\home\\${USER}\\gtk_win32
 gtk_win32_runtime=c:\\\\cygwin\\\\home\\\\${USER}\\\\gtk_win32_runtime
 
 # wcalc version
-wcalc_version=1.0A
+wcalc_version=`awk '/AM_INIT_AUTOMAKE/ {gsub(/.*,[ \t]*/, ""); gsub(/\).*/, ""); print}' configure.ac `
+echo "wcalc_version=${wcalc_version}"
 
 # location of the NSIS makensis executible (see http://nsis.sourceforge.net)
 makensis="/cygdrive/c/Program Files/NSIS/makensis.exe"
-
-do_config=${DO_CONFIG:-yes}
-do_build=${DO_BUILD:-yes}
 
 # ########################################################################
 #
@@ -92,7 +201,6 @@ sed \
 
 echo "Creating windows installer"
 "${makensis}" ${src_dir}/wcalc.nsi
-
 
 echo "Windows installer left in ${srcdir}:"
 ls -l ${srcdir}/*.exe
