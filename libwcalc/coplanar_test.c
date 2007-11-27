@@ -1,7 +1,7 @@
-/* $Id: coplanar_test.c,v 1.3 2004/08/31 21:38:23 dan Exp $ */
+/* $Id: coplanar_test.c,v 1.1 2006/01/08 06:35:29 dan Exp $ */
 
 /*
- * Copyright (c) 2006 Dan McMahill
+ * Copyright (c) 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -55,20 +55,20 @@
 
 int main(int argc, char **argv)
 {
+#ifdef notdef
   /* inches to meters */
   double sf=0.0254;
-#ifdef notdef
   double a=7;
   double b[]={3.040,3.038,3.026,3.040,3.040,3.040};
   double c[]={0,1,2,1,2,3};
   int i;
   int npts = sizeof(b)/sizeof(double);
-#endif
   double freq;
-  char *str, *str2;
   char rline[MAXLINELEN];
   char *tok;
   FILE *fp;
+#endif
+  char *str, *str2;
 
   coplanar_line *line, *line2;
 
