@@ -24,7 +24,7 @@ VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 datadir = @datadir@
-localedir = $(datadir)/locale
+localedir = /usr/pkg/share/locale
 gettextsrcdir = $(datadir)/gettext/po
 
 INSTALL = @INSTALL@
@@ -156,7 +156,7 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
 
 install: install-exec install-data
 install-exec:
-install-data: install-data-@USE_NLS@
+install-data:
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkinstalldirs) $(DESTDIR)$(gettextsrcdir); \
 	  for file in $(DISTFILES.common) Makevars.template; do \
@@ -215,7 +215,7 @@ install-strip: install
 
 installdirs: installdirs-exec installdirs-data
 installdirs-exec:
-installdirs-data: installdirs-data-@USE_NLS@
+installdirs-data:
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkinstalldirs) $(DESTDIR)$(gettextsrcdir); \
 	else \

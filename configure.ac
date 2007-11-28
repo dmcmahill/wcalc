@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.99 2006/01/03 05:27:50 dan Exp $
+dnl $Id: configure.ac,v 1.1 2007/11/26 22:08:02 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -1102,7 +1102,7 @@ AC_SUBST(AWK_GENSUB_NO)
 
 dnl check for headers
 AC_HEADER_STDC
-AC_CHECK_HEADERS(string.h)
+AC_CHECK_HEADERS(locale.h string.h)
 
 dnl check for libc functions
 AC_CHECK_FUNCS(vsnprintf)
@@ -1113,7 +1113,7 @@ AC_CHECK_FUNCS(rint)
 
 
 dnl gettext
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 
 # ------------- GTK -------------------
 dnl GTK checks
@@ -1308,7 +1308,6 @@ AC_OUTPUT(
 	Makefile 
 	doc/Makefile
 	include/Makefile
-	intl/Makefile
 	m4/Makefile
 	po/Makefile.in
 	libwcalc/Makefile

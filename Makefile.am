@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.25 2005/10/15 00:40:43 dan Exp $
+## $Id: Makefile.am,v 1.26 2005/11/05 01:53:53 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2003, 2004 Dan McMahill
@@ -33,11 +33,11 @@
 ##  SUCH DAMAGE.
 ##
 
-SUBDIRS= m4 include intl po @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
+SUBDIRS= m4 include po @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
 		@GTK_WCALC@ @CGI_WCALC@ \
 		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils doc win32
 
-DIST_SUBDIRS= m4 include intl po libwcalc pixmaps stdio-wcalc gtk-wcalc \
+DIST_SUBDIRS= m4 include po libwcalc pixmaps stdio-wcalc gtk-wcalc \
 		cgi-wcalc octave-wcalc sci-wcalc mex-wcalc htdocs utils doc win32
 
 ACLOCAL_AMFLAGS=	-I m4

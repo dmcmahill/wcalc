@@ -1,3 +1,8 @@
+2007-11-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Remove intl.
+	(DIST_SUBDIRS): Remove intl.
+
 2006-01-02 23:08  dan
 
 	* po/es.po: fix a minor typo
