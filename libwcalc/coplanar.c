@@ -1,7 +1,7 @@
-/*      $Id: coplanar.c,v 1.13 2006/04/06 18:19:51 dan Exp $ */
+/*      $Id: coplanar.c,v 1.14 2006/04/06 20:10:17 dan Exp $ */
 
 /*
- * Copyright (c) 2006 Dan McMahill
+ * Copyright (c) 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -300,7 +300,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   
   /* resistance and conductance will be updated below */
   R = 0.0;
-  G = 1.0;
+  G = 2*M_PI*f*C*line->subs->tand;
 
   delay = line->l / v;
 
@@ -318,7 +318,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     if( line->with_ground == 0) {
 
       /* freq * wavelength = velocity */
-      lambdag = (LIGHTSPEED/sqrt(line->keff)) / line->freq;
+      lambdag = (LIGHTSPEED/sqrt(line->keff)) / f;
 
 #ifdef DEBUG_CALC
     printf("coplanar_calc_int():  no ground plane equations\n");
@@ -336,9 +336,14 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
       /* loss from Wadell (3.4.1.10) */
       ld = q * line->subs->er * line->subs->tand / (line->keff * lambdag);
+
+      /* Equivalent shunt conductance (Siemens/meter) */
+      G = 2.0*ld/z0;
+
     } else {
       /* loss in nepers/meter */
-      ld = line->Gs*line->z0/2;
+      ld = G*z0/2;
+
       
       /* loss in dB/meter */
       ld = 20.0*log10(exp(1.0)) * ld;
@@ -416,7 +421,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	printf("%s(): HF conduction loss, z1=%g,z2=%g,z0=%g,lc=%g\n",
 	       __FUNCTION__, z1, z2, z0, lc);
 #endif
-	R = lc*2*line->z0;
+	R = lc*2*z0;
 
       }
 
@@ -500,7 +505,14 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   line->Rs = R; 
   line->Cs = C;
   line->Gs = G;
-   
+
+#ifdef DEBUG_CALC
+    printf("%s():  L     = %g\n", __FUNCTION__, L);
+    printf("%s():  R     = %g\n", __FUNCTION__, R);
+    printf("%s():  C     = %g\n", __FUNCTION__, C);
+    printf("%s():  G     = %g\n", __FUNCTION__, G);
+#endif
+
   return 0;
 }
 
