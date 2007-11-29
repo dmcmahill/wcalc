@@ -40,7 +40,7 @@ disp(sprintf('elen = %8.4g degrees',elen));
  
 disp(sprintf('loss = %8.4g dB',loss));
  
- loss =   0.2498 dB   
+ loss =   0.3291 dB   
  
 disp(sprintf('L    = %8.4g H/m',L));
  
@@ -48,7 +48,7 @@ disp(sprintf('L    = %8.4g H/m',L));
  
 disp(sprintf('R    = %8.4g Ohms/m',R));
  
- R    =    34.45 Ohms/m   
+ R    =     22.7 Ohms/m   
  
 disp(sprintf('C    = %8.4g F/m',C));
  
@@ -64,7 +64,7 @@ disp(sprintf('lc   = %8.4g dB/m',lc));
  
 disp(sprintf('ld   = %8.4g dB/m',ld));
  
- ld   =  0.05015 dB/m   
+ ld   =   0.1295 dB/m   
  
 disp(sprintf('open end correction = %8.4g mil', deltal/sf));
  
