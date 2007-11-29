@@ -4,9 +4,9 @@
 ]>
 <TOP>
 <MAN>
-<!-- $Id: coupled_microstrip_syn.xml,v 1.5 2005/10/21 02:05:13 dan Exp $ -->
+<!-- $Id: coupled_microstrip_syn.xml,v 1.6 2006/02/23 14:25:05 dan Exp $ -->
 <!--
-    Copyright (c) 2001, 2004, 2005, 2006 Dan McMahill
+    Copyright (c) 2001, 2004, 2005, 2006, 2007 Dan McMahill
     All rights reserved.
    
     This code is derived from software written by Dan McMahill
@@ -67,8 +67,8 @@
   <RHS name="f">synthesis frequency (Hz)</RHS>
   <RHS name="flag">indicates which parameters should be optimized
     <ENUM>
-      <ITEM name="flag=0">synthesize based on characteristic impedance and coupling coefficient</ITEM>
-      <ITEM name="flag=1">synthesize based on even and odd mode characteristic impedances</ITEM>
+      <ITEM name="flag=1">synthesize based on characteristic impedance and coupling coefficient</ITEM>
+      <ITEM name="flag=0">synthesize based on even and odd mode characteristic impedances</ITEM>
     </ENUM>
   </RHS>
 
@@ -124,7 +124,7 @@ velocity).
   <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
   <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
   <SCIEX><SCICMD>f=2.4e9;</SCICMD>      <COMMENT>frequency</COMMENT></SCIEX>
-  <SCIEX><SCICMD>flag=0;</SCICMD>       <COMMENT>synthesize from z0 and k (instead</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=1;</SCICMD>       <COMMENT>synthesize from z0 and k (instead</COMMENT></SCIEX>
   <SCIEX><SCICMD>       </SCICMD>       <COMMENT>of z0e and z0o)</COMMENT></SCIEX>
   <SCIEX><SCICMD>[w_out,s_out,l_out] = ...</SCICMD></SCIEX>
   <SCIEX><SCICMD>    coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);</SCICMD></SCIEX>
