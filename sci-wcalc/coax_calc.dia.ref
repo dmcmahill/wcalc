@@ -42,7 +42,7 @@ disp(sprintf('elen = %8.4g degrees',elen));
  
 disp(sprintf('loss = %8.4g dB',loss));
  
- loss =   0.5376 dB   
+ loss =   0.5478 dB   
  
 disp(sprintf('L    = %8.4g H/m',L));
  
@@ -50,7 +50,7 @@ disp(sprintf('L    = %8.4g H/m',L));
  
 disp(sprintf('R    = %8.4g Ohms/m',R));
  
- R    =    2.651 Ohms/m   
+ R    =    2.757 Ohms/m   
  
 disp(sprintf('C    = %8.4g F/m',C));
  
@@ -62,7 +62,7 @@ disp(sprintf('G    = %8.4g S/m',G));
  
 disp(sprintf('Conductor loss  = %8.4g dB/m', lc));
  
- Conductor loss  =    0.257 dB/m   
+ Conductor loss  =   0.2673 dB/m   
  
 disp(sprintf('Dielectric loss = %8.4g dB/m', ld));
  
