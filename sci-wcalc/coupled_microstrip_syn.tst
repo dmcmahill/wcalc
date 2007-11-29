@@ -16,7 +16,7 @@ rough=0.05*sf;    // metal surface roughness
 er=4.5;           // relative dielectric constant
 tand=0.01;        // loss tangent
 f=2.4e9;          // frequency
-flag=0;           // synthesize from z0 and k (instead
+flag=1;           // synthesize from z0 and k (instead
                   // of z0e and z0o)
 [w_out,s_out,l_out] = ...                
     coupled_microstrip_syn(z0,k,elen,w,s,h,l,tmet,rho,rough,er,tand,f,flag);

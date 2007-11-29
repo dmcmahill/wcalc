@@ -1,9 +1,9 @@
-/* $Id: coupled_stripline_syn.c,v 1.7 2004/11/09 12:55:45 dan Exp $ */
+/* $Id: coupled_stripline_syn.c,v 1.1 2006/02/13 16:56:00 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_stripline_syn.c,v 1.7 2004/11/09 12:55:45 dan Exp $";
+static char vcid[] = "$Id: coupled_stripline_syn.c,v 1.1 2006/02/13 16:56:00 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -226,11 +226,11 @@ void mexFunction(
     line->z0e         = z0[*ind_z0];
     line->z0o         = k[*ind_k];
     line->len         = elen[*ind_elen];
-    line->use_z0k     = elen[*ind_flag];
+    line->use_z0k     = flag[*ind_flag];
    
 
-    if ((flag[*ind_flag] > 3) || (flag[*ind_flag] < 0) ) {
-      mexErrMsgTxt("flag must be one of 0,1,2,3 in COUPLED_STRIPLINE_SYN");
+    if ((flag[*ind_flag] > 1) || (flag[*ind_flag] < 0) ) {
+      mexErrMsgTxt("flag must be one of {0,1} in COUPLED_STRIPLINE_SYN");
     }
 
     /* run the calculation */

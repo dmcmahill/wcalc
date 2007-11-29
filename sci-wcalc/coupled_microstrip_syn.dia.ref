@@ -36,7 +36,7 @@ tand=0.01;        // loss tangent
  
 f=2.4e9;          // frequency
  
-flag=0;           // synthesize from z0 and k (instead
+flag=1;           // synthesize from z0 and k (instead
  
                   // of z0e and z0o)
  
