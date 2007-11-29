@@ -1,9 +1,9 @@
-/* $Id: coplanar_calc.c,v 1.1 2006/02/23 14:08:08 dan Exp $ */
+/* $Id: coplanar_calc.c,v 1.2 2006/02/23 20:57:54 dan Exp $ */
 
-static char vcid[] = "$Id: coplanar_calc.c,v 1.1 2006/02/23 14:08:08 dan Exp $";
+static char vcid[] = "$Id: coplanar_calc.c,v 1.2 2006/02/23 20:57:54 dan Exp $";
 
 /*
- * Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -51,20 +51,22 @@ static char vcid[] = "$Id: coplanar_calc.c,v 1.1 2006/02/23 14:08:08 dan Exp $";
 
 /*
  * function [z0,keff,loss,deltal] = 
- *       coplanar_calc(w,h,l,tmet,rho,rough,er,tand,f);
+ *       coplanar_calc(w,s,h,l,tmet,rho,rough,er,tand,with_ground,f);
  */
 
 /* Input Arguments */
 
 #define	W_IN	  prhs[0]
-#define	H_IN	  prhs[1]
-#define	L_IN	  prhs[2]
-#define	TMET_IN   prhs[3]
-#define	RHO_IN    prhs[4]
-#define	ROUGH_IN  prhs[5]
-#define	ER_IN	  prhs[6]
-#define	TAND_IN	  prhs[7]
-#define	FREQ_IN	  prhs[8]
+#define	S_IN	  prhs[1]
+#define	H_IN	  prhs[2]
+#define	L_IN	  prhs[3]
+#define	TMET_IN   prhs[4]
+#define	RHO_IN    prhs[5]
+#define	ROUGH_IN  prhs[6]
+#define	ER_IN	  prhs[7]
+#define	TAND_IN	  prhs[8]
+#define	GND_IN	  prhs[9]
+#define	FREQ_IN	  prhs[10]
 
 /* Output Arguments */
 
@@ -126,9 +128,9 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *w,*h,*l,*tmet,*rho,*rough,*er,*tand,*freq;
-  unsigned int *ind_w,*ind_h,*ind_l,*ind_tmet,*ind_rho;
-  unsigned int *ind_rough,*ind_er,*ind_tand,*ind_freq;
+  double *w,*s,*h,*l,*tmet,*rho,*rough,*er,*tand,*gnd,*freq;
+  unsigned int *ind_w,*ind_s,*ind_h,*ind_l,*ind_tmet,*ind_rho;
+  unsigned int *ind_rough,*ind_er,*ind_tand,*ind_gnd,*ind_freq;
 
   /* outputs */
   double	*z0, *keff, *elen, *loss, *L, *R, *C, *G;
@@ -160,9 +162,9 @@ void mexFunction(
   }
 
   /* Check for proper number of arguments */
-  if (nrhs != 9) {
+  if (nrhs != 11) {
     mexErrMsgTxt("wrong number of input arguments to COPLANAR_CALC"
-		 " (needs 9).");
+		 " (needs 11).");
   } 
 
   if (nlhs > 12) {
@@ -181,6 +183,7 @@ void mexFunction(
    *              pointer)
    */
   CHECK_INPUT(W_IN, W, ind_w, w);
+  CHECK_INPUT(S_IN, S, ind_s, s);
   CHECK_INPUT(H_IN, H, ind_h, h);
   CHECK_INPUT(L_IN, L, ind_l, l);
   CHECK_INPUT(TMET_IN, TMET, ind_tmet, tmet);
@@ -188,6 +191,7 @@ void mexFunction(
   CHECK_INPUT(ROUGH_IN, ROUGH, ind_rough, rough);
   CHECK_INPUT(ER_IN, ER, ind_er, er);
   CHECK_INPUT(TAND_IN, TAND, ind_tand, tand);
+  CHECK_INPUT(GND_IN, GND, ind_gnd, gnd);
   CHECK_INPUT(FREQ_IN, FREQ, ind_freq, freq);
 
   /* Create matrices for the return arguments */
@@ -229,6 +233,7 @@ void mexFunction(
      * done when processsing the input arguments.
      */
     line->w           = w[*ind_w];
+    line->s           = s[*ind_s];
     line->l           = l[*ind_l];
     line->subs->h     = h[*ind_h];
     line->subs->tmet  = tmet[*ind_tmet];
@@ -236,7 +241,12 @@ void mexFunction(
     line->subs->rough = rough[*ind_rough];
     line->subs->er    = er[*ind_er];
     line->subs->tand  = tand[*ind_tand];
+    line->with_ground = gnd[*ind_gnd];
     line->freq        = freq[*ind_freq];
+
+    if ((line->with_ground != 0) && (line->with_ground != 1)) {
+	  mexErrMsgTxt("with_ground must be one of {0, 1} in COPLANAR_CALC");
+    }
 
     /* run the calculation */
     coplanar_calc(line,line->freq);
