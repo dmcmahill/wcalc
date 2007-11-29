@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.c,v 1.25 2004/11/22 22:36:23 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.26 2005/01/06 22:52:50 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -45,6 +45,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "misc.h"
 #include "physconst.h"
 #include "units.h"
 #include "coupled_microstrip.h"

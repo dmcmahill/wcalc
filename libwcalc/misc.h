@@ -1,7 +1,7 @@
-/* $Id: misc.h,v 1.8 2004/07/21 17:35:18 dan Exp $ */
+/* $Id: misc.h,v 1.9 2004/08/02 20:58:46 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -38,5 +38,11 @@
 
 double dia2awg(double dia);
 double awg2dia(double AWG);
+
+#ifndef __GNUC__
+#define __FUNCTION1(a,b) a ":" #b
+#define __FUNCTION2(a,b) __FUNCTION1(a,b)
+#define __FUNCTION__ __FUNCTION2(__FILE__,__LINE__)
+#endif
 
 #endif /*__MISC_H__*/

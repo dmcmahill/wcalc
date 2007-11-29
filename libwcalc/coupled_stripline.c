@@ -1,4 +1,4 @@
-/* $Id: coupled_stripline.c,v 1.12 2006/03/01 18:09:31 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.13 2006/03/09 16:07:05 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
@@ -45,6 +45,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "misc.h"
 #include "physconst.h"
 #include "units.h"
 #include "coupled_stripline.h"
