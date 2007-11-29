@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.1 2007/11/26 22:08:02 dan Exp $
+dnl $Id: configure.ac,v 1.2 2007/11/28 14:47:23 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
-dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-dnl Dan McMahill
+dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+dnl 2007 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -36,7 +36,6 @@ dnl SUCH DAMAGE.
 dnl
 
 AC_INIT(gtk-wcalc/wcalc.c)
-# don't forget to update the version in win32/build_wcalc too
 AM_INIT_AUTOMAKE(wcalc, 1.0A)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -49,8 +48,8 @@ AC_MSG_CHECKING(for windows)
 case $host in
 	*-*-cygwin* )
 		WIN32=yes
-		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS:--mms-bitfields -mno-cygwin -mwindows}"
-		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS:--mms-bitfields -mno-cygwin -mwindows}"
+		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS}"
+		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS}"
 		;;
 
 	*-*-mingw* )
@@ -697,7 +696,7 @@ wc_gtk1_wcalc_yesno=no
 wc_gtk1_askedfor=no
 
 AC_ARG_ENABLE([gtk1],
-[  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1 [default=yes]],
+[  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1 [default=no]],
 [
 if test "X$enable_gtk1" = "Xno" ; then
 	GTK1=no
@@ -705,41 +704,41 @@ if test "X$enable_gtk1" = "Xno" ; then
 else
 	GTK1=yes
 	wc_gtk1_wcalc_yesno=yes
-	wc_gtk1_askedfor=yes
 fi
 ],
 [
-GTK1=yes
-wc_gtk1_wcalc_yesno=yes
+GTK1=no
+wc_gtk1_wcalc_yesno=no
 ])
 
-wc_gtk2_wcalc_yesno=no
+wc_gtk2_wcalc_yesno=yes
 
 AC_ARG_ENABLE([gtk2],
-[  --enable-gtk2           Causes the GTK+ frontend to be built with gtk2 [default=no]],
+[  --enable-gtk2           Causes the GTK+ frontend to be built with gtk2 [default=yes]],
 [
 if test "X$enable_gtk2" = "Xno" ; then
 	GTK2=no
 	wc_gtk2_wcalc_yesno=no
+	wc_gtk2_askedfor=yes
 else
 	GTK2=yes
 	wc_gtk2_wcalc_yesno=yes
 fi
 ],
 [
-GTK2=no
-wc_gtk2_wcalc_yesno=no
+GTK2=yes
+wc_gtk2_wcalc_yesno=yes
 ])
 
 #
-# If the user has asked for gtk2 with --enable-gtk2 and not explicitly asked
-# for gtk1 with --enable-gtk1 (but got gtk1 enabled simply via the defaults)
-# then disable gtk1.  This way you can do --enable-gtk2 without needing 
-# --disable-gtk1
+# If the user has asked for gtk1 with --enable-gtk1 and not explicitly asked
+# for gtk2 with --enable-gtk2 (but got gtk2 enabled simply via the defaults)
+# then disable gtk2.  This way you can do --enable-gtk1 without needing 
+# --disable-gtk2
 #
-if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" -a "X$wc_gtk1_askedfor" = "Xno"; then
-	GTK1=no
-	wc_gtk1_wcalc_yesno=no
+if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" -a "X$wc_gtk2_askedfor" = "Xno"; then
+	GTK2=no
+	wc_gtk2_wcalc_yesno=no
 fi
 
 if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" ; then
@@ -1272,6 +1271,32 @@ if test "x$GCC" = "xyes"; then
 fi
 AC_SUBST(LIBWALC_LDFLAGS)
 
+AC_OUTPUT(
+	Makefile 
+	doc/Makefile
+	include/Makefile
+	m4/Makefile
+	po/Makefile.in
+	libwcalc/Makefile
+	libwcalc/wcalc-config
+	libwcalc/wcalc.pc
+	cgi-wcalc/Makefile
+	gtk-wcalc/Makefile
+	htdocs/Makefile
+	htdocs/mex-man/Makefile
+	htdocs/octave-man/Makefile
+	htdocs/sci-man/Makefile
+	htdocs/stdio-man/Makefile
+	mex-wcalc/Makefile
+	mex-wcalc/mexopts.sh
+	octave-wcalc/Makefile
+	sci-wcalc/Makefile
+	stdio-wcalc/Makefile
+	pixmaps/Makefile
+	utils/Makefile
+	win32/Makefile
+)
+
 
 # print a summary of paths and such since there are a bunch
 AC_MSG_NOTICE([
@@ -1302,31 +1327,5 @@ cgi path       = $CGIPATH
 
 --------------------------------------------
 ]
-)
-
-AC_OUTPUT(
-	Makefile 
-	doc/Makefile
-	include/Makefile
-	m4/Makefile
-	po/Makefile.in
-	libwcalc/Makefile
-	libwcalc/wcalc-config
-	libwcalc/wcalc.pc
-	cgi-wcalc/Makefile
-	gtk-wcalc/Makefile
-	htdocs/Makefile
-	htdocs/mex-man/Makefile
-	htdocs/octave-man/Makefile
-	htdocs/sci-man/Makefile
-	htdocs/stdio-man/Makefile
-	mex-wcalc/Makefile
-	mex-wcalc/mexopts.sh
-	octave-wcalc/Makefile
-	sci-wcalc/Makefile
-	stdio-wcalc/Makefile
-	pixmaps/Makefile
-	utils/Makefile
-	win32/Makefile
 )
 
