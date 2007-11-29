@@ -1,0 +1,139 @@
+ 
+ 
+exec test_wcalc.sce;
+shared archive loaded
+ 
+ 
+disp('**** coplanar_calc ****');
+ 
+ **** coplanar_calc ****   
+ 
+sf=25.4e-6;       // mils to meters conversion factor
+ 
+w=20*sf;          // width
+ 
+s=20*sf;          // gap to the ground plane
+ 
+h=15*sf;          // height
+ 
+l=1100*sf;        // length
+ 
+tmet=1.4*sf;      // metal thickness
+ 
+rho=1.72e-8;      // resitivity
+ 
+rough=0.05*sf;    // metal surface roughness
+ 
+er=4.5;           // relative dielectric constant
+ 
+tand=0.01;        // loss tangent
+ 
+with_ground=0;    // flag that indicates if a bottom side ground is used
+ 
+f=2.4e9;          // frequency
+ 
+[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = coplanar_calc(w,s,h,l,tmet,rho,rough,er,tand,with_ground,f);
+ 
+disp(sprintf('z0   = %8.4g Ohms',z0));
+ 
+ z0   =     88.8 Ohms   
+ 
+disp(sprintf('keff = %8.4g ',keff));
+ 
+ keff =    2.247    
+ 
+disp(sprintf('elen = %8.4g degrees',elen));
+ 
+ elen =    120.7 degrees   
+ 
+disp(sprintf('loss = %8.4g dB',loss));
+ 
+ loss =   0.2288 dB   
+ 
+disp(sprintf('L    = %8.4g H/m',L));
+ 
+ L    = 4.441e-07 H/m   
+ 
+disp(sprintf('R    = %8.4g Ohms/m',R));
+ 
+ R    =    26.75 Ohms/m   
+ 
+disp(sprintf('C    = %8.4g F/m',C));
+ 
+ C    = 5.631e-11 F/m   
+ 
+disp(sprintf('G    = %8.4g S/m',G));
+ 
+ G    = 0.003862 S/m   
+ 
+disp(sprintf('lc   = %8.4g dB/m',lc));
+ 
+ lc   =  0.05734 dB/m   
+ 
+disp(sprintf('ld   = %8.4g dB/m',ld));
+ 
+ ld   =   0.1715 dB/m   
+ 
+disp(sprintf('open end correction = %8.4g mil', deltal/sf));
+ 
+ open end correction =        0 mil   
+ 
+disp(sprintf('skin depth = %8.4g um', depth*1e6));
+ 
+ skin depth =    1.347 um   
+ 
+ 
+with_ground=1;
+ 
+[z0,keff,elen,loss,L,R,C,G,lc,ld,deltal,depth] = coplanar_calc(w,s,h,l,tmet,rho,rough,er,tand,with_ground,f);
+ 
+disp(sprintf('z0   = %8.4g Ohms',z0));
+ 
+ z0   =    59.93 Ohms   
+ 
+disp(sprintf('keff = %8.4g ',keff));
+ 
+ keff =    3.222    
+ 
+disp(sprintf('elen = %8.4g degrees',elen));
+ 
+ elen =    144.5 degrees   
+ 
+disp(sprintf('loss = %8.4g dB',loss));
+ 
+ loss =   0.1544 dB   
+ 
+disp(sprintf('L    = %8.4g H/m',L));
+ 
+ L    = 3.588e-07 H/m   
+ 
+disp(sprintf('R    = %8.4g Ohms/m',R));
+ 
+ R    =    14.13 Ohms/m   
+ 
+disp(sprintf('C    = %8.4g F/m',C));
+ 
+ C    = 9.99e-11 F/m   
+ 
+disp(sprintf('G    = %8.4g S/m',G));
+ 
+ G    =  0.01507 S/m   
+ 
+disp(sprintf('lc   = %8.4g dB/m',lc));
+ 
+ lc   =  0.04488 dB/m   
+ 
+disp(sprintf('ld   = %8.4g dB/m',ld));
+ 
+ ld   =   0.1096 dB/m   
+ 
+disp(sprintf('open end correction = %8.4g mil', deltal/sf));
+ 
+ open end correction =        0 mil   
+ 
+disp(sprintf('skin depth = %8.4g um', depth*1e6));
+ 
+ skin depth =    1.347 um   
+ 
+ 
+ 
