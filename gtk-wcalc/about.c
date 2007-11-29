@@ -1,8 +1,8 @@
-/* $Id: about.c,v 1.20 2006/01/02 23:57:06 dan Exp $ */
+/* $Id: about.c,v 1.21 2006/01/03 13:11:16 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005,
- * 2006 Dan McMahill
+ * 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -68,8 +68,8 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006\n" \
-"Dan McMahill."
+"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, \n" \
+"2007 Dan McMahill."
 
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
@@ -122,7 +122,7 @@ void about_popup(void)
 #define COPYRIGHT_TEXT \
 "Wcalc\n" \
 "\n" \
-"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill\n" \
+"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Dan McMahill\n" \
 "All rights reserved.\n" \
 "\n" \
 "This code is derived from software written by Dan McMahill\n" \

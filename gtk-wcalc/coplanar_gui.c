@@ -1,7 +1,7 @@
-/* $Id: coplanar_gui.c,v 1.4 2006/02/08 14:58:42 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.5 2006/02/08 15:03:03 dan Exp $ */
 
 /*
- * Copyright (c) 2006 Dan McMahill
+ * Copyright (c) 2006, 2007 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
