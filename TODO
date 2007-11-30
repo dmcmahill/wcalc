@@ -1,4 +1,4 @@
-$Id: TODO,v 1.4 2006/01/03 04:07:29 dan Exp $
+$Id: TODO,v 1.5 2006/01/10 17:06:59 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
@@ -16,7 +16,9 @@ $Id: TODO,v 1.4 2006/01/03 04:07:29 dan Exp $
   Nov/Dec 1997 for transmission line based model for helical coils.
   Maybe get a better Q/SRF prediction? 
 
-- Research and add coplanar waveguide
+- Improve the coplanar waveguide model.  The model from Wadell's book
+  has been implemented and compared to HP's AppCAD, but HP doesn't give
+  a reference.  
 
 - Research and add spiral inductors with the ability to write out a fasthenry
   model
@@ -34,3 +36,14 @@ $Id: TODO,v 1.4 2006/01/03 04:07:29 dan Exp $
   x,y variables to keep track of the position of widgets in the table.
   This will make form modifications much easier.  The other gtk frontends
   are ok already.
+
+- Add the ability to write out a fasthenry model for some of the structures.
+
+- Figure out how to use LC (finite difference time domain, FDTD, electromagnetic
+  simulator) and script it to be able to generate some plots of impedance and
+  loss for various structues.  This would provide the basis for some accuracy
+  checking of wcalc.  
+
+- Add the ability to write out a LC model for the structures.
+
+
