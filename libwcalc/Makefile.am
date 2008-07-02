@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.27 2006/01/06 15:08:50 dan Exp $
+## $Id: Makefile.am,v 1.28 2006/02/12 06:16:24 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -41,6 +41,8 @@ pkgincludedir=	$(includedir)/${PACKAGE}-${VERSION}
 pkginclude_DATA =  \
 	air_coil.h \
 	air_coil_loadsave.h \
+	bars.h \
+	bars_loadsave.h \
 	coax.h \
 	coax_loadsave.h \
 	coplanar.h \
@@ -65,7 +67,7 @@ pkginclude_DATA =  \
 pkgconfigdir            = $(libdir)/pkgconfig
 pkgconfig_DATA          = wcalc.pc
 
-noinst_PROGRAMS = coax_test coplanar_test coupled_microstrip_test \
+noinst_PROGRAMS = bars_test coax_test coplanar_test coupled_microstrip_test \
 	ic_microstrip_test mathutil_test \
 	make_defaults microstrip_test units_test
 
@@ -94,6 +96,10 @@ libwcalc_la_SOURCES = \
 	air_coil.h \
 	air_coil_loadsave.c \
 	air_coil_loadsave.h \
+	bars.c \
+	bars.h \
+	bars_loadsave.c \
+	bars_loadsave.h \
 	coax.c \
 	coax.h \
 	coax_loadsave.c \

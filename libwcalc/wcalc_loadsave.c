@@ -1,7 +1,7 @@
-/* $Id: wcalc_loadsave.c,v 1.25 2006/01/09 21:09:25 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.26 2006/02/12 06:16:27 dan Exp $ */
 
 /*
- * Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -129,6 +129,9 @@ int wcalc_load(FILE *fp)
   
   if (strcmp(val, FILE_AIR_COIL) == 0) {
     return MODEL_AIR_COIL;
+  }
+  else if (strcmp(val, FILE_BARS) == 0) {
+    return MODEL_BARS;
   }
   else if (strcmp(val, FILE_COAX) == 0) {
     return MODEL_COAX;
