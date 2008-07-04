@@ -1,4 +1,4 @@
-/* $Id: defaults.h,v 1.2 2006/01/08 06:34:44 dan Exp $ */
+/* $Id: defaults.h,v 1.3 2006/02/12 06:16:27 dan Exp $ */
 
 /*
  * Copyright (c) 2004, 2006 Dan McMahill
@@ -37,6 +37,7 @@
 #define __DEFAULTS_H__
 
 extern const char *default_air_coil;
+extern const char *default_bars;
 extern const char *default_coax;
 extern const char *default_coplanar;
 extern const char *default_coupled_microstrip;

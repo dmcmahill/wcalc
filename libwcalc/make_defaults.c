@@ -1,7 +1,7 @@
-/* $Id: make_defaults.c,v 1.2 2006/01/08 06:34:31 dan Exp $ */
+/* $Id: make_defaults.c,v 1.3 2006/02/12 06:16:27 dan Exp $ */
 
 /*
- * Copyright (c) 2004, 2006 Dan McMahill
+ * Copyright (c) 2004, 2006, 2008 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -53,6 +53,8 @@
 
 #include "air_coil.h"
 #include "air_coil_loadsave.h"
+#include "bars.h"
+#include "bars_loadsave.h"
 #include "coax.h"
 #include "coax_loadsave.h"
 #include "coplanar.h"
@@ -83,6 +85,7 @@ int main(int argc, char **argv)
   char fname[FILENAME_MAX];
 
   air_coil_coil *coil;
+  bars *b;
   coax_line *coax;
   coplanar_line *cpw_line;
   coupled_microstrip_line *cms_line;
@@ -91,7 +94,7 @@ int main(int argc, char **argv)
   microstrip_line *ms_line;
   stripline_line *st_line;
 
-  printf("/* $Id: make_defaults.c,v 1.2 2006/01/08 06:34:31 dan Exp $ */\n\n");
+  printf("/* $Id: make_defaults.c,v 1.3 2006/02/12 06:16:27 dan Exp $ */\n\n");
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
   printf("/* use \"make_defaults\" to generate */\n\n");
 
@@ -104,6 +107,17 @@ int main(int argc, char **argv)
     printf("const char *default_air_coil=\"%s\";\n", str);
     free(str);
     air_coil_free(coil);
+    fclose(fp);
+  }
+
+  sprintf(fname, "%s/%s", dir, "bars.wc");
+  if( (fp = fopen(fname, "r")) != NULL ) {
+    b = bars_new();
+    bars_load(b, fp);
+    str = bars_save_string(b);
+    printf("const char *default_bars=\"%s\";\n", str);
+    free(str);
+    bars_free(b);
     fclose(fp);
   }
 
