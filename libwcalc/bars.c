@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.14 2006/04/06 04:20:03 dan Exp $ */
+/* $Id: bars.c,v 1.1 2008/07/02 15:03:51 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
+#define DEBUG_CALC 0
 /* #define DEBUG_CALC */  /* debug the bars_calc() function */
 /* #define DEBUG_SYN  */  /* debug the bars_syn() function  */
 
@@ -82,31 +82,57 @@
 
 
 /* This is the function in (14) in Hoer and Love */
-static double Mb_fn(double a, double b, double c, double d, double x,double y,double z)
+static double Mb_fn(double x, double y, double z)
 {
 
   double rslt = 0.0;
   double mag, mag2;
 
+  /*
+  printf("%s(x=%g, y=%g, z=%g)\n", __FUNCTION__, x, y, z);
+  */
   mag2 = x*x + y*y + z*z;
-  mag = sqrt(mag);
+  mag = sqrt(mag2);
 
-  rslt += (y*y*z*z/4.0 - y*y*y*y/24.0 - z*z*z*z/24.0) * x * 
-    log( (x + mag) / sqrt( y*y + z*z));
+#if defined(DEBUG_CALC) &&  (DEBUG_CALC > 1)
+  printf("%s():  mag = %g\n", __FUNCTION__, mag);
+#endif
 
-  rslt += (x*x*z*z/4.0 - x*x*x*x/24.0 - z*z*z*z/24.0) * y * 
-    log( (y + mag) / sqrt( x*x + z*z));
+  /* 
+   * we have to watch out for y and z both being equal to zero.
+   * in that case we have 0/0
+   *
+   * Try setting z = y and we have
+   *
+   * (y^4 / 4.0 - y^4 / 24.0 - y^4 / 24) * x * log (x + m) / sqrt(2
+   * y^2)
+   * => 0
+   */
+  if( (x > 0 && y > 0) ||
+      (x > 0 && z > 0) ||
+      (y > 0 && z > 0) ) {
 
-  rslt += (x*x*y*y/4.0 - x*x*x*x/24.0 - y*y*y*y/24.0) * z * 
-    log( (z + mag) / sqrt( x*x + y*y));
+    rslt += (y*y*z*z/4.0 - y*y*y*y/24.0 - z*z*z*z/24.0) * x * 
+      log( (x + mag) / sqrt( y*y + z*z));
 
-  rslt += (1.0 / 60.0) * (x*x*x*x + y*y*y*y + z*z*z*z - 3*x*x*y*y - 3*y*y*z*z - 3*x*x*z*z) * mag;
+    rslt += (x*x*z*z/4.0 - x*x*x*x/24.0 - z*z*z*z/24.0) * y * 
+      log( (y + mag) / sqrt( x*x + z*z));
+    
+    rslt += (x*x*y*y/4.0 - x*x*x*x/24.0 - y*y*y*y/24.0) * z * 
+      log( (z + mag) / sqrt( x*x + y*y));
+  }
+
+  /* this term should be fine */
+  rslt += (1.0 / 60.0) * (x*x*x*x + y*y*y*y + z*z*z*z - 3*x*x*y*y 
+			  - 3*y*y*z*z - 3*x*x*z*z) * mag;
   
-  rslt -=  (x*y*z*z*z/6.0) * atan( x*y / (z*mag));
-
-  rslt -=  (x*y*y*y*z/6.0) * atan( x*z / (y*mag));
-
-  rslt -=  (x*x*x*y*z/6.0) * atan( y*z / (x*mag));
+  if(x > 0 && y > 0 && z > 0) {
+    rslt -=  (x*y*z*z*z/6.0) * atan2( x*y, z*mag);
+    
+    rslt -=  (x*y*y*y*z/6.0) * atan2( x*z, y*mag);
+    
+    rslt -=  (x*x*x*y*z/6.0) * atan2( y*z, x*mag);
+  }
 
   return rslt;
 }
@@ -115,8 +141,9 @@ static double Mb_fn(double a, double b, double c, double d, double x,double y,do
 /* (14) */
 static double Mb(bars *b)
 {
-  double rslt;
+  double rslt, tmp;
   double q[5], r[5], s[5];
+  unsigned int i, j, k;
 
   q[1] = b->E - b->a;
   q[2] = b->E + b->d - b->a;
@@ -133,15 +160,37 @@ static double Mb(bars *b)
   s[3] = b->l3 + b->l2;
   s[4] = b->l3;
 
+  for(i=1; i<=4; i++) {
+    printf("%s():  q[%d] = %g\n", __FUNCTION__, i, q[i]);
+  }
+
+  for(i=1; i<=4; i++) {
+    printf("%s():  r[%d] = %g\n", __FUNCTION__, i, r[i]);
+  }
+
+  for(i=1; i<=4; i++) {
+    printf("%s():  s[%d] = %g\n", __FUNCTION__, i, s[i]);
+  }
+
   rslt = 0.0;
   for(i=1 ; i<=4 ; i++) {
     for(j=1 ; j<=4 ; j++) {
       for(k=1 ; k<=4 ; k++) {
-	rslt += pow(-1.0, i + j + k + 1) * Mb_fn(b->a, b->b, b->c, b->d, q[i], r[j], s[k]);
+	tmp = pow(-1.0, (double) (i + j + k + 1)) * 
+	  Mb_fn(q[i], r[j], s[k]);
+	rslt += tmp;
+	printf("[%g %g %g] : %.8g  -------> %.8g\n", q[i], r[j], s[k], tmp, rslt);
       }
     }
   }
   
+  /*
+   *  the 1e-7 differs from the 0.001 in the paper so I get a function
+   * that takes meters in and gives Henries out instead of cm in and
+   * microhenries out
+   */
+  rslt = (1e-7 / (b->a * b->b * b->c * b->d)) * rslt;
+
   return rslt;
 }
 
@@ -149,20 +198,22 @@ static double Mb(bars *b)
 static double Lb(bars *b, int w)
 {
   double rslt;
-  double q[5], r[5], s[5];
+  double q[3], r[3], s[3];
+  unsigned int i, j, k;
+  double a, bb;
 
   if (w == 1) {
     q[1] = b->a;
     r[1] = b->b;
     s[1] = b->l1;
     a = b->a;
-    b = b->b;
+    bb = b->b;
   } else if (w==2) {
     q[1] = b->c;
     r[1] = b->d;
     s[1] = b->l2;
-    a = b->c;
-    b = b->d;
+    a = b->d;
+    bb = b->c;
   } else {
     fprintf(stderr, "bars.c: Lb() - w = %d is not allowed.  Internal error.\n", w);
     exit(1);
@@ -176,10 +227,17 @@ static double Lb(bars *b, int w)
   for(i=1 ; i<=2 ; i++) {
     for(j=1 ; j<=2 ; j++) {
       for(k=1 ; k<=2 ; k++) {
-	rslt += pow(-1.0, i + j + k + 1) * Mb_fn(a, b, a, b, q[i], r[j], s[k])
-	  }
+	rslt += pow(-1.0, (double)(i + j + k + 1)) * Mb_fn(q[i], r[j], s[k]);
+      }
     }
   }
+
+  /*
+   *  the 8e-7 differs from the 0.008 in the paper so I get a function
+   * that takes meters in and gives Henries out instead of cm in and
+   * microhenries out
+   */
+  rslt = (8e-7 / (a*a*bb*bb)) * rslt;
 
   return rslt;
 }
@@ -214,7 +272,7 @@ int bars_calc(bars *b, double freq)
   printf("bars_calc():  l3   = %g\n", b->l3);
 
   printf("bars_calc():  ----------------------\n");
-  printf("bars_calc():  freq = %g MHz\n",b->freq*1e6);
+  printf("bars_calc():  freq = %g MHz\n",b->freq/1e6);
   printf("bars_calc():  ----------------------\n");
 #endif
 

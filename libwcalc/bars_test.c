@@ -1,4 +1,4 @@
-/* $Id: coax_test.c,v 1.7 2005/01/06 22:52:35 dan Exp $ */
+/* $Id: bars_test.c,v 1.1 2008/07/02 15:03:52 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -35,6 +35,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "bars.h"
 #include "bars_loadsave.h"
@@ -51,33 +52,49 @@ int main(int argc, char **argv)
 
   b = bars_new();
 
-  b->a = 10.0;
-  b->b = 1.0;
-  b->l1 = 1000.0;
+  b->a = 10.0e-6;
+  b->b = 1.0e-6;
+  b->l1 = 1000.0e-6;
 
-  b->c = 20.0;
-  b->d = 1.0;
-  b->l2 = 1000.0;
+  b->d = 20.0e-6;
+  b->c = 1.0e-6;
+  b->l2 = 1000.0e-6;
 
-  b->E  = 0.5*(b->a + b->c) + 2.0;
-  b->P  = 1.0;
+  b->E  = b->a + 2.0e-6;
+  b->P  = 0.0;
   b->l3 = 0.0;
 
   b->freq = 1.0e9;
 
-  gap = 1.0;
-  while (gap <= 10.0 ; gap += 1.0) {
-    b->E = 0.5*(b->a + b->c) + gap;
+  gap = 1.0e-6;
+  while (gap <= 10.0e-6) {
+    b->E = b->a + gap;
 
     bars_calc(b, b->freq);
-    printf("%g: %g pH, %g pH, %g pH, %g\n", gap, b->L1, b->L2, b->M, b->k);
+    printf("%g: %g pH, %g pH, %g pH, %g\n", gap, 
+	   b->L1/1e-12, b->L2/1e-12, b->M/1e-12, b->k);
+
+    gap += 1.0e-6;
   }
 
-  str = bars_save_string(line);
+  printf("STRUCTURE #2\n");
+  b->d = 10.0e-6;
+  gap = 1.0e-6;
+  while (gap <= 10.0e-6) {
+    b->E = b->a + gap;
+
+    bars_calc(b, b->freq);
+    printf("%g: %g pH, %g pH, %g pH, %g\n", gap, 
+	   b->L1/1e-12, b->L2/1e-12, b->M/1e-12, b->k);
+
+    gap += 1.0e-6;
+  }
+
+  str = bars_save_string(b);
   printf("Example of bars_save_string() output:\n\"%s\"\n\n", str);
   free(str);
 
-  bars_free(line);
+  bars_free(b);
 
   return 0;
 }

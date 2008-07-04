@@ -1,4 +1,4 @@
-/* $Id: bars.h,v 1.5 2004/07/26 01:09:16 dan Exp $ */
+/* $Id: bars.h,v 1.1 2008/07/02 15:03:52 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -58,6 +58,9 @@ typedef struct BARS
 
   /* coupling coefficient */
   double k;
+
+  /* operating frequency */
+  double freq;
 
   /* user units */
   wc_units *units_xy, *units_z;
