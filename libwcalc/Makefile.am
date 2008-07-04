@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.28 2006/02/12 06:16:24 dan Exp $
+## $Id: Makefile.am,v 1.29 2008/07/02 15:03:54 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -72,6 +72,7 @@ noinst_PROGRAMS = bars_test coax_test coplanar_test coupled_microstrip_test \
 	make_defaults microstrip_test units_test
 
 coax_test_SOURCES = alert.c coax_test.c
+bars_test_SOURCES = alert.c bars_test.c
 coplanar_test_SOURCES = alert.c coplanar_test.c
 coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c 
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
