@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.1 2008/07/02 15:03:51 dan Exp $ */
+/* $Id: bars.c,v 1.2 2008/07/04 16:10:12 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -108,30 +108,37 @@ static double Mb_fn(double x, double y, double z)
    * y^2)
    * => 0
    */
-  if( (x > 0 && y > 0) ||
-      (x > 0 && z > 0) ||
-      (y > 0 && z > 0) ) {
 
-    rslt += (y*y*z*z/4.0 - y*y*y*y/24.0 - z*z*z*z/24.0) * x * 
-      log( (x + mag) / sqrt( y*y + z*z));
-
-    rslt += (x*x*z*z/4.0 - x*x*x*x/24.0 - z*z*z*z/24.0) * y * 
+  if ( (x != 0 && y != 0) ||
+       (x != 0 && z != 0) ||
+       (y != 0 && z != 0) ) {
+    /* at least 2 != 0 */
+    rslt += (pow(y,2.0)*pow(z,2.0)/4.0 - pow(y,4.0)/24.0 - pow(z,4.0)/24.0) * x * 
+      log( (x + mag) / sqrt( y*y + z*z)) ;
+    
+    rslt += (pow(x,2.0)*pow(z,2.0)/4.0 - pow(x,4.0)/24.0 - pow(z,4.0)/24.0) * y * 
       log( (y + mag) / sqrt( x*x + z*z));
     
-    rslt += (x*x*y*y/4.0 - x*x*x*x/24.0 - y*y*y*y/24.0) * z * 
+    rslt += (pow(x,2.0)*pow(y,2.0)/4.0 - pow(x,4.0)/24.0 - pow(y,4.0)/24.0) * z * 
       log( (z + mag) / sqrt( x*x + y*y));
+    
   }
 
-  /* this term should be fine */
-  rslt += (1.0 / 60.0) * (x*x*x*x + y*y*y*y + z*z*z*z - 3*x*x*y*y 
-			  - 3*y*y*z*z - 3*x*x*z*z) * mag;
-  
-  if(x > 0 && y > 0 && z > 0) {
-    rslt -=  (x*y*z*z*z/6.0) * atan2( x*y, z*mag);
+  if( x!= 0 || y != 0 || z != 0) {
+    rslt += (1.0 / 60.0) * (pow(x,4.0) + pow(y,4.0) + pow(z,4.0) - 3*pow(x,2.0)*pow(y,2.0)
+			    - 3*pow(y,2.0)*pow(z,2.0) - 3*pow(x,2.0)*pow(z,2.0)) * mag ;
+  }
+
+  /* if any of x, y, z are zero the the followng terms are zero */
+  if ( x != 0 && y != 0 && z != 0) {
+    /* all != 0 */
+
+    rslt -= (x*y*pow(z,3.0)/6.0) * atan2( x*y, z*mag);
+      
+    rslt -= (x*pow(y,3.0)*z/6.0) * atan2( x*z, y*mag);
     
-    rslt -=  (x*y*y*y*z/6.0) * atan2( x*z, y*mag);
-    
-    rslt -=  (x*x*x*y*z/6.0) * atan2( y*z, x*mag);
+    rslt -= (pow(x,3.0)*y*z/6.0) * atan2( y*z, x*mag);
+
   }
 
   return rslt;
@@ -160,6 +167,7 @@ static double Mb(bars *b)
   s[3] = b->l3 + b->l2;
   s[4] = b->l3;
 
+#if 0
   for(i=1; i<=4; i++) {
     printf("%s():  q[%d] = %g\n", __FUNCTION__, i, q[i]);
   }
@@ -171,6 +179,7 @@ static double Mb(bars *b)
   for(i=1; i<=4; i++) {
     printf("%s():  s[%d] = %g\n", __FUNCTION__, i, s[i]);
   }
+#endif
 
   rslt = 0.0;
   for(i=1 ; i<=4 ; i++) {
@@ -179,7 +188,9 @@ static double Mb(bars *b)
 	tmp = pow(-1.0, (double) (i + j + k + 1)) * 
 	  Mb_fn(q[i], r[j], s[k]);
 	rslt += tmp;
-	printf("[%g %g %g] : %.8g  -------> %.8g\n", q[i], r[j], s[k], tmp, rslt);
+	/*     
+	 * printf("[%d %d %d] [%g %g %g] : %.8g  -------> %.8g\n", i-1, j-1, k-1, q[i], r[j], s[k], tmp, rslt);
+	 */
       }
     }
   }

@@ -1,4 +1,4 @@
-/* $Id: bars_test.c,v 1.1 2008/07/02 15:03:52 dan Exp $ */
+/* $Id: bars_test.c,v 1.2 2008/07/04 16:10:12 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -60,11 +60,17 @@ int main(int argc, char **argv)
   b->c = 1.0e-6;
   b->l2 = 1000.0e-6;
 
-  b->E  = b->a + 2.0e-6;
+  b->E  = b->a + 1.0e-6;
   b->P  = 0.0;
   b->l3 = 0.0;
 
   b->freq = 1.0e9;
+  
+  printf("START\n");
+  bars_calc(b, b->freq);
+  printf("%g: %g pH, %g pH, %g pH, %g\n", gap, 
+	 b->L1/1e-12, b->L2/1e-12, b->M/1e-12, b->k);
+  return 0;
 
   gap = 1.0e-6;
   while (gap <= 10.0e-6) {
