@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.15 2006/02/12 06:21:16 dan Exp $
+## $Id: Makefile.am,v 1.16 2006/02/22 16:03:32 dan Exp $
 ##
 
-## Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill
+## Copyright (c) 2001, 2002, 2005, 2006, 2008 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -50,6 +50,7 @@ EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
 TGIF_SRCS=	\
 		air_coil.obj \
 		alert_fig.obj \
+		bars_fig.obj \
 		coax.obj \
 		coax_model.obj \
 		coplanar.obj \
