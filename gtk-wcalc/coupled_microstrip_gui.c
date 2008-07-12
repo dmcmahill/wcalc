@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.10 2005/01/18 17:46:48 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.11 2005/10/12 18:12:02 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -290,7 +290,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   y++;
 
-  /* ---------------- Width  -------------- */
+  /* ---------------- Spacing  -------------- */
 
   text = gtk_label_new( "Spacing (S)" );
   gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 

@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.35 2006/01/09 20:30:44 dan Exp $
+## $Id: Makefile.am,v 1.36 2006/02/12 06:27:57 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -42,6 +42,8 @@ wcalc_SOURCES = \
 	alert.c \
 	air_coil_gui.c \
 	air_coil_gui.h \
+	bars_gui.c \
+	bars_gui.h \
 	coax_gui.c \
 	coax_gui.h \
 	coplanar_gui.c \
@@ -81,6 +83,7 @@ install-data-local:	install-man
 pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgdata_DATA= \
 	air_coil.wc \
+	bars.wc \
 	coax.wc \
 	coupled_microstrip.wc \
 	coupled_stripline.wc \

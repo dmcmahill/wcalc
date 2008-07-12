@@ -1,0 +1,49 @@
+# $Id: air_coil.wc,v 1.2 2004/08/04 23:47:30 dan Exp $
+#
+# File:      /export/disk1/dan/wcalc/gtk-wcalc/air_coil.wc
+# Modified:  Tue Jul 27 21:42:35 2004
+# Wcalc Version 0.5
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = bars
+
+
+[bars]
+
+# Air coil file version
+file_version = 0.1
+
+a = 10.0e-6
+b = 1.0e-6
+c = 1.0e-6
+d = 20e-6
+l1 = 1000.0e-6
+l2 = 1000.0e-6
+E = 12.0e-6
+P = 0.0
+l3 = 0.0
+
+L1 = 1.0
+L2 = 1.0
+M = 1.0
+k = 0.0
+
+freq = 100000000
+
+
+# Desired user units and associated scale factors
+
+# Length units
+units_xy = 6
+units_z = 6
+# [inch]
+
+# Inductance units
+units_L = 1
+# [nH]
+
+# Frequency units
+units_freq = 3
+# [MHz]
+

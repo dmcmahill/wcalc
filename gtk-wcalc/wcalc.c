@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.30 2006/01/09 20:30:45 dan Exp $ */
+/* $Id: wcalc.c,v 1.31 2006/02/12 06:27:59 dan Exp $ */
 
 /*
- * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * Copyright (c) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
  * All rights reserved.
  *
  * This code is derived from software written by Dan McMahill
@@ -34,7 +34,7 @@
  */
 
 /* #define DEBUG */
-
+#define DEBUG
 #include "config.h"
 
 #include <gtk/gtk.h>
@@ -57,6 +57,7 @@
 
 /* the individual models */
 #include "air_coil_gui.h"
+#include "bars_gui.h"
 #include "coax_gui.h"
 #include "coplanar_gui.h"
 #include "coupled_microstrip_gui.h"
@@ -274,6 +275,13 @@ static void global_model_init()
   global_model_new = g_list_append(global_model_new, (gpointer) air_coil_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_AIR_COIL);
 
+  /* ************************  Bars ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Parallel Rectangular Bars");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_Bars");
+  global_model_new = g_list_append(global_model_new, (gpointer) bars_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_BARS);
+
   /* ************************  Coax ******************** */
   global_model_names = g_list_append(global_model_names,
 				     "Coaxial Transmission Line");
@@ -487,6 +495,10 @@ void wcalc_setup (gpointer data,
       new_cmd = (void *) air_coil_gui_new;
       break;
 
+    case MODEL_BARS:
+      new_cmd = (void *) bars_gui_new;
+      break;
+      
     case MODEL_COAX:
       new_cmd = (void *) coax_gui_new;
       break;
@@ -735,8 +747,8 @@ void wcalc_set_title(Wcalc * wcalc)
   wcalc->save_needed = wcalc->window_title + strlen(wcalc->window_title) - 1;
   
 #ifdef DEBUG
-    g_print("wcalc.c:wcalc_set_title():  wcalc->window_title = \"%s\" (%p) %d len\n",
-	    wcalc->window_title, wcalc->window_title, strlen(wcalc->window_title);
+    g_print("wcalc.c:wcalc_set_title():  wcalc->window_title = \"%s\" (%p) %ld len\n",
+	    wcalc->window_title, wcalc->window_title, (long) strlen(wcalc->window_title));
     g_print("wcalc.c:wcalc_set_title():  wcalc->file_saveneeded = \"%c\" (%p)\n", 
 	    *(wcalc->save_needed), wcalc->save_needed);
 #endif
