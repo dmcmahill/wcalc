@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.16 2006/02/13 16:56:02 dan Exp $
+## $Id: Makefile.am,v 1.17 2006/04/06 13:30:41 dan Exp $
 
 ##
-## Copyright (c) 2004, 2005, 2006 Dan McMahill
+## Copyright (c) 2004, 2005, 2006, 2008 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -71,7 +71,11 @@ INCLUDES =  -DVER=\"@VERSION@\" \
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
-stdio_wcalc_LDADD = @WCALC_LDADD@
+if WC_LOCAL_LIBWCALC
+stdio_wcalc_LDADD = ../libwcalc/libwcalc.la
+else
+stdio_wcalc_LDADD =
+endif
 
 TEST_INPUTS= \
 	air_coil.dat \

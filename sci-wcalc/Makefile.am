@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.52 2006/02/23 14:08:07 dan Exp $
+## $Id: Makefile.am,v 1.53 2006/02/23 14:25:01 dan Exp $
 
-## Copyright (c) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -57,7 +57,12 @@ libsci_wcalc_la_SOURCES = \
 	libsci_wcalc.c \
 	${MEX_SRCS}
 
-libsci_wcalc_la_LIBADD = @WCALC_LDADD@
+if WC_LOCAL_LIBWCALC
+libsci_wcalc_la_LIBADD = ../libwcalc/libwcalc.la
+else
+libsci_wcalc_la_LIBADD = 
+endif
+
 # Scilab seems to really want the .so extension
 libsci_wcalc_la_LDFLAGS = -avoid-version -export-dynamic -module -shrext ".so"
 

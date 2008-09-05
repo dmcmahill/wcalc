@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.36 2006/02/12 06:27:57 dan Exp $
+## $Id: Makefile.am,v 1.37 2008/07/12 04:28:09 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -117,7 +117,12 @@ INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
-wcalc_LDADD = @WCALC_LDADD@
+if WC_LOCAL_LIBWCALC
+wcalc_LDADD = ../libwcalc/libwcalc.la
+else
+wcalc_LDADD =
+endif
+
 wcalc_LDFLAGS = @GTK_LIBS@ @WCALC_LIBS@
 
 all-local: runwcalc

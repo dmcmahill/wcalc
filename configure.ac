@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.2 2007/11/28 14:47:23 dan Exp $
+dnl $Id: configure.ac,v 1.3 2007/11/29 23:05:57 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007 Dan McMahill
+dnl 2007, 2008 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl This code is derived from software written by Dan McMahill
@@ -166,7 +166,6 @@ PIXMAPS=pixmaps
 LIB_WCALC=
 INTLPO=
 WCALC_CFLAGS=-I\${top_srcdir}/libwcalc
-WCALC_LDADD=../libwcalc/libwcalc.la
 WCALC_LIBS=
 wc_libwcalc_yesno=yes
 
@@ -208,48 +207,19 @@ PKG_CHECK_MODULES(WCALC, wcalc = ${VERSION},
 	AC_MSG_RESULT([$WCALC_LIBS])
 
 	PIXMAPS=
-	WCALC_LDADD=
 ,
 	AC_ERROR([Unable to locate an installed libwcalc-${VERSION}])
 )
 
 fi
 
-# 
-# pkg-config seems to be the default these days instead of foo-config
-# for every pkg 'foo' so use that.
-#
-if test "X" = "Y" ; then
-AC_PATH_PROG(WCALC_CONFIG, wcalc-config, none)
-if test "X$WCALC_CONFIG" != "Xnone" ; then
-	AC_MSG_CHECKING([installed libwcalc version])
-	WCALC_VER=`$WCALC_CONFIG --version` 
-	AC_MSG_RESULT([$WCALC_VER])
- 	if test "X$WCALC_VER" != "X${VERSION}" ; then
-		AC_ERROR([This package needs version ${VERSION} of libwcalc])
-	fi
-
-	AC_MSG_CHECKING([for libwcalc headers])
-	WCALC_CFLAGS=-I`$WCALC_CONFIG --includedir`
-	AC_MSG_RESULT([$WCALC_CFLAGS])
-	
-	AC_MSG_CHECKING([for libwcalc library])
-	WCALC_LIBS=`$WCALC_CONFIG --libs`
-	AC_MSG_RESULT([$WCALC_LIBS])
-
-	PIXMAPS=
-	WCALC_LDADD=
-else
-	AC_ERROR([No installed libwcalc found])
-fi
-fi
+# set to true if we're building our own copy of libwcalc
+AM_CONDITIONAL(WC_LOCAL_LIBWCALC, test x$wc_libwcalc_yesno = xyes)
 
 AC_SUBST(LIB_WCALC)
 AC_SUBST(INTLPO)
 AC_SUBST(PIXMAPS)
 AC_SUBST(WCALC_CFLAGS)
-AC_SUBST(WCALC_CONFIG)
-AC_SUBST(WCALC_LDADD)
 AC_SUBST(WCALC_LIBS)
 
 #
@@ -504,7 +474,7 @@ if test "X$OCT_WCALC" != "X"; then
 	AC_MSG_CHECKING([for where we should install octave .m files])
 	AC_MSG_RESULT([$MYSITEOCTM])
 
-	# if we're building out own libwcalc, then 
+	# if we're building our own libwcalc, then 
 	# we don't have an installed place to link to yet
 	AC_MSG_CHECKING([for the octave mex library arguments])
 	if test "X$WCALC_LIBS" = "X" ; then

@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.29 2008/07/02 15:03:54 dan Exp $
+## $Id: Makefile.am,v 1.30 2008/07/04 16:26:23 dan Exp $
 
 ##
 ## Copyright (c) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -91,6 +91,32 @@ BUILT_SOURCES=	defaults.c
 LDADD = libwcalc.la
 
 AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
+
+# libwcalc shared library version.  A fairly strict rule should
+# be followed for when this version is updated.  Those rules,
+# taken from the libtool manual, are as follows
+#
+# - Format is current:revision:age
+#
+# 1. Start with version information of `0:0:0' for each libtool library.
+#
+# 2. Update the version information only immediately before a public
+#    release of your software. More frequent updates are unnecessary,
+#    and only guarantee that the current interface number gets larger faster.
+#
+# 3. If the library source code has changed at all since the last update,
+#    then increment revision (`c:r:a' becomes `c:r+1:a').
+#
+# 4. If any interfaces have been added, removed, or changed since the last
+#    update, increment current, and set revision to 0.
+#
+# 5. If any interfaces have been added since the last public release, then
+#    increment age.
+#
+# 6. If any interfaces have been removed since the last public release, then
+#    set age to 0.
+#
+#libwcalc_la_LDFLAGS = -version-info 0:1:0
 
 libwcalc_la_SOURCES = \
 	air_coil.c \

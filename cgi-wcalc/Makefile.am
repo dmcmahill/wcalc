@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.23 2006/01/31 13:37:25 dan Exp $
+## $Id: Makefile.am,v 1.24 2006/02/12 21:00:06 dan Exp $
 
 ##
-## Copyright (c) 2001, 2002, 2004, 2006 Dan McMahill
+## Copyright (c) 2001, 2002, 2004, 2006, 2008 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -74,7 +74,11 @@ stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
 INCLUDES =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
 
-LDADD = @WCALC_LDADD@
+if WC_LOCAL_LIBWCALC
+LDADD = ../libwcalc/libwcalc.la
+else
+LDADD = 
+endif
 
 AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@ @CGI_STATIC@
 
