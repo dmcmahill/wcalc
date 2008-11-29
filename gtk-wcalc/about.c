@@ -1,37 +1,24 @@
-/* $Id: about.c,v 1.21 2006/01/03 13:11:16 dan Exp $ */
+/* $Id: about.c,v 1.22 2007/11/29 17:30:31 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005,
  * 2006, 2007 Dan McMahill
  * All rights reserved.
  *
- * This code is derived from software written by Dan McMahill
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *        This product includes software developed by Dan McMahill
- * 4. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
- * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
  */
 
 #include <stdio.h>
@@ -69,7 +56,7 @@ VER \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
 "Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, \n" \
-"2007 Dan McMahill."
+"2007, 2008 Dan McMahill."
 
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
@@ -122,37 +109,21 @@ void about_popup(void)
 #define COPYRIGHT_TEXT \
 "Wcalc\n" \
 "\n" \
-"Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Dan McMahill\n" \
+"Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Dan McMahill\n" \
 "All rights reserved.\n" \
 "\n" \
-"This code is derived from software written by Dan McMahill\n" \
+"This program is free software; you can redistribute it and/or modify\n" \
+"it under the terms of the GNU General Public License as published by\n" \
+"the Free Software Foundation; version 2 of the License.\n" \
 "\n" \
-"Redistribution and use in source and binary forms, with or without\n" \
-"modification, are permitted provided that the following conditions\n" \
-"are met:\n" \
-"1. Redistributions of source code must retain the above copyright\n" \
-"   notice, this list of conditions and the following disclaimer.\n" \
-"2. Redistributions in binary form must reproduce the above copyright\n" \
-"   notice, this list of conditions and the following disclaimer in the\n" \
-"   documentation and/or other materials provided with the distribution.\n" \
-"3. All advertising materials mentioning features or use of this software\n" \
-"   must display the following acknowledgement:\n" \
-"       This product includes software developed by Dan McMahill\n" \
-"4. The name of the author may not be used to endorse or promote products\n" \
-"   derived from this software without specific prior written permission.\n" \
+"This program is distributed in the hope that it will be useful,\n" \
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n" \
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" \
+"GNU General Public License for more details.\n" \
 "\n" \
-"THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n" \
-"IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES\n" \
-"OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n" \
-"IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,\n" \
-"INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,\n" \
-"BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n" \
-"LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED\n" \
-"AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\n" \
-"OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n" \
-"OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n" \
-"SUCH DAMAGE.\n"
-
+"You should have received a copy of the GNU General Public License\n" \
+"along with this program; if not, write to the Free Software\n" \
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n"
 
 void copyright_popup(void)
 {
