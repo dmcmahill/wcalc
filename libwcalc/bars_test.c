@@ -1,4 +1,4 @@
-/* $Id: bars_test.c,v 1.2 2008/07/04 16:10:12 dan Exp $ */
+/* $Id: bars_test.c,v 1.3 2008/07/05 03:03:50 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 {
   bars *b;
   char *str;
-  double gap;
+  double gap = 1.0e-6;
 
   b = bars_new();
 
@@ -60,18 +60,24 @@ int main(int argc, char **argv)
   b->c = 1.0e-6;
   b->l2 = 1000.0e-6;
 
-  b->E  = b->a + 1.0e-6;
+  b->E  = b->a + gap;
   b->P  = 0.0;
   b->l3 = 0.0;
 
   b->freq = 1.0e9;
-  
-  printf("START\n");
+ 
+  printf("A reasonable default:\n");
   bars_calc(b, b->freq);
   printf("%g: %g pH, %g pH, %g pH, %g\n", gap, 
 	 b->L1/1e-12, b->L2/1e-12, b->M/1e-12, b->k);
-  return 0;
 
+  str = bars_save_string(b);
+  printf("Example of bars_save_string() output:\n\"%s\"\n\n", str);
+  free(str);
+
+
+  printf("a = %g um, b = %g um, d = %g um, c = %g um\n", b->a/1e-6, b->b/1e-6, b->d/1e-6, b->c/1e-6);
+  printf("l1 = %g um, l2 = %g um, l3 = %g um\n", b->l1/1e-6, b->l2/1e-6, b->l3/1e-6);
   gap = 1.0e-6;
   while (gap <= 10.0e-6) {
     b->E = b->a + gap;
@@ -85,6 +91,8 @@ int main(int argc, char **argv)
 
   printf("STRUCTURE #2\n");
   b->d = 10.0e-6;
+  printf("a = %g um, b = %g um, d = %g um, c = %g um\n", b->a/1e-6, b->b/1e-6, b->d/1e-6, b->c/1e-6);
+  printf("l1 = %g um, l2 = %g um, l3 = %g um\n", b->l1/1e-6, b->l2/1e-6, b->l3/1e-6);
   gap = 1.0e-6;
   while (gap <= 10.0e-6) {
     b->E = b->a + gap;
@@ -95,10 +103,6 @@ int main(int argc, char **argv)
 
     gap += 1.0e-6;
   }
-
-  str = bars_save_string(b);
-  printf("Example of bars_save_string() output:\n\"%s\"\n\n", str);
-  free(str);
 
   bars_free(b);
 

@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.32 2005/10/29 19:07:30 dan Exp $ */
+/* $Id: bars_gui.c,v 1.1 2008/07/12 04:28:10 dan Exp $ */
 
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008 Dan McMahill
@@ -289,14 +289,22 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
    */
 
   /*
-  text = wc_units_menu_new(gui->line->units_xy, WC_WCALC(gui), &ug);
+  xy_ug = wc_units_menu_new(gui->line->units_xy, WC_WCALC(gui), &ug);
+
   gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_loss_ev, &(gui->line->loss_ev), 
 			NULL, NULL, WC_FMT_G, 1);
-  */
+
   ug = NULL;
+  lwht = gtk_label_new( "" );
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
+  gtk_widget_show(lwht);
+  wc_units_attach_units_label(ug, lwht);
+  */
 
   /* ---------------- Bar 1, width, height, length  -------------- */
   wc_table_add(table, gui, "Bar 1 Width (a)", &(gui->text_a), gui->b->units_xy, ug, &x, &y);
@@ -309,9 +317,9 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
   wc_table_add(table, gui, "Bar 2 Length (l2)", &(gui->text_l2), gui->b->units_z, ug, &x, &y);
 
   /* ---------------- Bar 2, position  -------------- */
-  wc_table_add(table, gui, "Bar 2 Width (E)", &(gui->text_E), gui->b->units_xy, ug, &x, &y);
-  wc_table_add(table, gui, "Bar 2 Thickness (P)", &(gui->text_P), gui->b->units_xy, ug, &x, &y);
-  wc_table_add(table, gui, "Bar 2 Length (l3)", &(gui->text_l3), gui->b->units_z, ug, &x, &y);
+  wc_table_add(table, gui, "X offset (E)", &(gui->text_E), gui->b->units_xy, ug, &x, &y);
+  wc_table_add(table, gui, "Y offset (P)", &(gui->text_P), gui->b->units_xy, ug, &x, &y);
+  wc_table_add(table, gui, "Z offset (l3)", &(gui->text_l3), gui->b->units_z, ug, &x, &y);
 
   /* ---------------- Frequency -------------- */
   wc_table_add(table, gui, "Frequency", &(gui->text_freq), gui->b->units_freq, ug, &x, &y);

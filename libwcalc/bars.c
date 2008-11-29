@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.2 2008/07/04 16:10:12 dan Exp $ */
+/* $Id: bars.c,v 1.3 2008/07/05 03:03:50 dan Exp $ */
 
 /*
  * Copyright (c) 2008 Dan McMahill
@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#define DEBUG_CALC 0
+
 /* #define DEBUG_CALC */  /* debug the bars_calc() function */
 /* #define DEBUG_SYN  */  /* debug the bars_syn() function  */
 
