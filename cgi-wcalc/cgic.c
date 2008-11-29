@@ -1,4 +1,4 @@
-/* $Id: cgic.c,v 1.5 2002/02/20 01:10:08 dan Exp $ */
+/* $Id: cgic.c,v 1.6 2002/05/10 22:52:28 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \
@@ -1097,7 +1097,7 @@ static int cgiStrEqNc(char *s1, char *s2) {
 			return 0;
 		}
 		if (isalpha((int) *s1)) {
-			if (tolower(*s1) != tolower(*s2)) {
+			if (tolower((int) *s1) != tolower((int) *s2)) {
 				return 0;
 			}
 		} else if ((*s1) != (*s2)) {
