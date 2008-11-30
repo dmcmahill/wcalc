@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.7 2004/11/04 03:51:34 dan Exp $
+dnl $Id: acinclude.m4,v 1.8 2008/11/29 20:41:28 dan Exp $
 dnl
 dnl Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill
 dnl All rights reserved.
@@ -66,12 +66,29 @@ AC_DEFUN([AC_AWK_GENSUB],
 AC_TRY_AWK([{gensub(/foo/,"bar","g");}] ,[$1] ,[$2])
 ])dnl
 
+# see if AWK has the 'gsub' function
+# AC_AWK_GSUB(ACTION-IF-TRUE [, ACTION-IF-FALSE])
+#
+AC_DEFUN([AC_AWK_GSUB],
+[AC_MSG_CHECKING([whether awk ($AWK) has gsub])
+AC_TRY_AWK([{gsub(/foo/,"bar");}] ,[$1] ,[$2])
+])dnl
+
 # see if AWK has the 'strftime' function
 # AC_AWK_STRFTIME(ACTION-IF-TRUE [, ACTION-IF-FALSE])
 #
 AC_DEFUN([AC_AWK_STRFTIME],
 [AC_MSG_CHECKING([whether awk ($AWK) has strftime])
 AC_TRY_AWK([{print strftime()}] ,[$1] ,[$2])
+])dnl
+
+
+# see if AWK has the 'toupper' function
+# AC_AWK_TOUPPER(ACTION-IF-TRUE [, ACTION-IF-FALSE])
+#
+AC_DEFUN([AC_AWK_TOUPPER],
+[AC_MSG_CHECKING([whether awk ($AWK) has toupper])
+AC_TRY_AWK([{print toupper("test")}] ,[$1] ,[$2])
 ])dnl
 
 
