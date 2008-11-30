@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.32 2008/07/12 04:28:12 dan Exp $ */
+/* $Id: wcalc.c,v 1.33 2008/11/29 20:41:54 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -223,6 +223,7 @@ int main( int   argc,
   }
   textdomain (PACKAGE);
 
+  /* FIXME -- do a better job with WCALC_RCDIR and HOME.  Look to pcb or gerbv */
   homedir = getenv("HOME");
 
   gtk_init (&argc, &argv);
