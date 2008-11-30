@@ -1,15 +1,17 @@
-$Id: NEWS,v 1.4 2006/01/03 00:03:15 dan Exp $
+$Id: NEWS,v 1.5 2006/02/13 16:57:50 dan Exp $
 
 Wcalc -- history of user-visible changes. 
 
 Copyright (c) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
-2006 Dan McMahill
+2006, 2007, 2008 Dan McMahill
 
 Please report bugs on the sourceforge project page.
 
 ===============
 Version 1.1
 ===============
+Added self and mutual inductance of two rectangular bars.
+
 Added coplanar waveguide model.
 
 Added coupled stripline model.
