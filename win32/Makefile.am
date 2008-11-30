@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2008/11/29 20:42:47 dan Exp $
+## $Id: Makefile.am,v 1.3 2008/11/29 22:10:46 dan Exp $
 
 ##
 ## Copyright (C) 2005, 2008 Dan McMahill
@@ -21,7 +21,7 @@
 
 EXTRA_DIST= build_wcalc wcalc.nsi.in Readme.txt \
 	${TGIF_OBJS} ${XPMS} ${PPMS_16} ${PPMS_256} ${ICONS} \
-	registerExtension.nsh
+	registerExtension.nsh extract_gtk_win32
 
 TGIF_OBJS=	wcalc_icon_big.obj wcalc_icon_med.obj wcalc_icon_sml.obj
 XPMS=		${TGIF_OBJS:.obj=.xpm}
