@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.27 2007/11/28 14:47:23 dan Exp $
+## $Id: Makefile.am,v 1.28 2008/11/29 20:41:28 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2003, 2004 Dan McMahill
@@ -36,7 +36,6 @@ EXTRA_DIST= config.rpath \
 	ps_footer.c \
 	ps_microstrip.c \
 	AUTHORS \
-	COPYING.win32 \
 	README.newmodel \
 	README.win32 \
 	TODO
