@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.4 2008/09/05 11:50:51 dan Exp $
+dnl $Id: configure.ac,v 1.5 2008/11/29 20:41:29 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -56,6 +56,13 @@ AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
+
+if test "x$WIN32" = "xyes" ; then
+	AC_CHECK_TOOL([WINDRES], [windres], [no])
+	if test "$WINDRES" = "no" ; then
+		AC_MSG_ERROR([Could not locate windres.  This is a required tool for the windows build.])
+	fi
+fi
 
 #
 # used for processing the drawings to give png's

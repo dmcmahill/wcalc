@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.38 2008/09/05 11:50:53 dan Exp $
+## $Id: Makefile.am,v 1.39 2008/11/29 20:41:37 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -121,7 +121,7 @@ distclean-local:
 
 if WIN32
 wcalc_icon.o : wcalc_icon.ico $(srcdir)/wcalc.rc
-	windres $(srcdir)/wcalc.rc $@
+	$(WINDRES) $(srcdir)/wcalc.rc $@
 
 wcalc_icon.ico: $(top_srcdir)/win32/wcalc_icon.ico
 	cp $(top_srcdir)/win32/wcalc_icon.ico $@
