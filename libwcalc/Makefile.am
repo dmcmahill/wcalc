@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.31 2008/09/05 11:50:53 dan Exp $
+## $Id: Makefile.am,v 1.32 2008/11/29 20:41:59 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -102,7 +102,7 @@ AM_LDFLAGS=	${LIBWALC_LDFLAGS} ${DMALLOC_LIBS} ${EFENCE_LIBS}
 # 6. If any interfaces have been removed since the last public release, then
 #    set age to 0.
 #
-#libwcalc_la_LDFLAGS = -version-info 0:1:0
+libwcalc_la_LDFLAGS = -version-info 0:1:0 -no-undefined
 
 libwcalc_la_SOURCES = \
 	air_coil.c \
