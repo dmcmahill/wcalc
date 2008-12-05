@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.32 2008/11/29 20:41:59 dan Exp $
+## $Id: Makefile.am,v 1.33 2008/12/05 04:26:57 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
@@ -71,8 +71,10 @@ EXTRA_DIST=	coupled_microstrip.data wcalc-config.in wcalc.pc.in libwcalc.h
 
 BUILT_SOURCES=	defaults.c
 
-@MAINTAINER_MODE_TRUE@defaults.c: make_defaults
-@MAINTAINER_MODE_TRUE@	./make_defaults > $@
+if MAINTAINER_MODDE
+defaults.c: make_defaults
+	./make_defaults > $@
+endif
 
 LDADD = libwcalc.la
 
