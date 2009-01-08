@@ -1,4 +1,4 @@
-/* $Id: start.c,v 1.19 2008/11/29 20:41:52 dan Exp $ */
+/* $Id: start.c,v 1.20 2009/01/08 04:14:13 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2007, 2008, 2009 Dan McMahill
@@ -49,8 +49,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005,\n" \
-"2006, 2008, 2009 Dan McMahill."
+"Wcalc is copyright (C) 1999-2009 Dan McMahill."
 
 
 /*
