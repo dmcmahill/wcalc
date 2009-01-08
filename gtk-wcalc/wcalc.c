@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.33 2008/11/29 20:41:54 dan Exp $ */
+/* $Id: wcalc.c,v 1.34 2008/11/30 14:42:10 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -21,7 +21,6 @@
  */
 
 /* #define DEBUG */
-#define DEBUG
 #include "config.h"
 
 #include <gtk/gtk.h>
