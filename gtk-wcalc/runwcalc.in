@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: runwcalc.in,v 1.4 2005/10/25 20:35:36 dan Exp $
+# $Id: runwcalc.in,v 1.5 2008/07/12 04:27:45 dan Exp $
 #
 # Copyright (c) 2001, 2004, 2005, 2008 Dan McMahill
 # All rights reserved.
@@ -64,6 +64,16 @@ else
 fi
 export LD_LIBRARY_PATH
 echo "Set LD_LIBRARY_PATH to ${LD_LIBRARY_PATH}"
+
+
+LIBWCALC=${LIBWCALC_DIR}/libwcalc.so
+if test "X${LD_PRELOAD}" = "X" ; then
+	LD_PRELOAD=${LIBWCALC}
+else
+	LD_PRELOAD=${LIBWCALC}:${LD_PRELOAD}
+fi
+export LD_PRELOAD
+echo "Set LD_PRELOAD to ${LD_PRELOAD}"
 
 mv -f wcalc wcalc.orig
 sed -e 's;LD_LIBRARY_PATH="/;LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/;g' wcalc.orig > wcalc
