@@ -1,7 +1,7 @@
-/* $Id: print.c,v 1.10 2005/11/06 02:24:11 dan Exp $ */
+/* $Id: print.c,v 1.11 2008/11/29 20:41:51 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002 Dan McMahill
+ * Copyright (C) 2001, 2002, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -191,7 +191,7 @@ void print_popup(gpointer data,
   gtk_grab_add(window);
 
   /* set other properties */
-  gtk_window_set_title (GTK_WINDOW (window), "WaveCalc: Print");
+  gtk_window_set_title (GTK_WINDOW (window), "Wcalc: Print");
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
 

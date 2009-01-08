@@ -1,4 +1,4 @@
-/* $Id: alert.c,v 1.12 2006/01/02 23:54:11 dan Exp $ */
+/* $Id: alert.c,v 1.13 2008/11/29 20:41:40 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2003, 2005, 2006 Dan McMahill
@@ -51,7 +51,7 @@
 #endif
 
 #define ABOUT_TEXT \
-"WaveCalc\n" \
+"Wcalc\n" \
 "\n" \
 "Version " \
 VER \
@@ -61,8 +61,8 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"WaveCalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006\n" \
-"Dan McMahill."
+"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006\n" \
+"2007, 2008, 2009 Dan McMahill."
 
 
 /* 
