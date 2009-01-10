@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.7 2005/02/22 12:49:06 dan Exp $ -->
+<!-- $Id: coax.shtml,v 1.8 2005/09/09 14:36:41 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -37,7 +37,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="coax.png"
-    alt="Coaxial Transmissian Line Image" width="327" height="265" hspace="10" vspace="5">
+    alt="Coaxial Transmission Line Image" width="327" height="265" hspace="10" vspace="5">
     </center>
 
     <font face="helvetica, arial">
