@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.4 2008/11/29 18:58:04 dan Exp $ */
+/* $Id: bars.c,v 1.5 2008/11/29 20:42:02 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill
@@ -175,9 +175,10 @@ static double Mb(bars *b)
 	tmp = pow(-1.0, (double) (i + j + k + 1)) * 
 	  Mb_fn(q[i], r[j], s[k]);
 	rslt += tmp;
-	/*     
-	 * printf("[%d %d %d] [%g %g %g] : %.8g  -------> %.8g\n", i-1, j-1, k-1, q[i], r[j], s[k], tmp, rslt);
-	 */
+#ifdef DEBUG_CALC
+	printf("[%d %d %d] [%g %g %g] : %.8g  -------> %.8g\n", 
+	       i-1, j-1, k-1, q[i], r[j], s[k], tmp, rslt);
+#endif
       }
     }
   }
@@ -244,6 +245,51 @@ static double Lb(bars *b, int w)
 
 int bars_calc(bars *b, double freq)
 {
+    int touching = 1;
+
+    if(freq < 0.0) {
+	alert("Frequency must be >= 0");
+	return -1;
+    }
+
+    /* check that none of our individual bar dimensions are negative */
+    if( b->b < 0 || b->a < 0 || b->c < 0 || b->d < 0) {
+	alert("a, b, d, c must all be >= 0");
+	return -1;
+    }
+
+    if(b->l1 <= 0 || b->l2 <= 0) {
+	alert("l1 and l2 must be > 0");
+    }
+
+    /* now see if the bars are touching. */
+
+    /* see if we have overlap in the X-dimension */
+    if( (b->E > b->a) || (b->E + b->d < 0) ) {
+	touching = 0;
+    }
+    
+    /* see if we have overlap in the Y-dimension */
+    if( (b->P > b->b) || (b->P + b->c < 0) ) {
+	touching = 0;
+    }
+    
+    /* see if we have overlap in the Z-dimension */
+    if( (b->l3 > b->l1) || (b->l3 + b->l2 < 0) ) {
+	touching = 0;
+    }
+
+    /* for the bars to touch, we have to have overlap in all 3 dimensions */
+
+    if(touching) {
+	alert("The bars are touching.  This is not allowed");
+	return -1;
+    }
+
+  b->L1 = Lb(b, 1);
+  b->L2 = Lb(b, 2);
+  b->M = Mb(b);
+  b->k = b->M / sqrt(b->L1 * b->L2);
 
 #ifdef DEBUG_CALC
   printf("bars_calc():  ----------------------\n");
@@ -274,10 +320,6 @@ int bars_calc(bars *b, double freq)
   printf("bars_calc():  ----------------------\n");
 #endif
 
-  b->L1 = Lb(b, 1);
-  b->L2 = Lb(b, 2);
-  b->M = Mb(b);
-  b->k = b->M / sqrt(b->L1 * b->L2);
 
 #ifdef DEBUG_CALC
   printf("bars_calc():  ----------------------\n");
@@ -358,7 +400,6 @@ void bars_free(bars *b)
 {
 
   wc_units_free(b->units_xy);
-  wc_units_free(b->units_z);
   wc_units_free(b->units_L);
   wc_units_free(b->units_freq);
 
@@ -379,7 +420,6 @@ bars *bars_new()
 
   /* Create the units */
   newb->units_xy = wc_units_new(WC_UNITS_LENGTH);
-  newb->units_z = wc_units_new(WC_UNITS_LENGTH);
   newb->units_L = wc_units_new(WC_UNITS_INDUCTANCE);
   newb->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
 

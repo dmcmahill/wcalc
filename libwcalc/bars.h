@@ -1,4 +1,4 @@
-/* $Id: bars.h,v 1.2 2008/07/04 16:10:13 dan Exp $ */
+/* $Id: bars.h,v 1.3 2008/11/29 20:42:03 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill
@@ -50,7 +50,7 @@ typedef struct BARS
   double freq;
 
   /* user units */
-  wc_units *units_xy, *units_z;
+  wc_units *units_xy;
   wc_units *units_L;
   wc_units *units_freq;
 

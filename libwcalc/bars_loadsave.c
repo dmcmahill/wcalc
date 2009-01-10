@@ -1,4 +1,4 @@
-/* $Id: bars_loadsave.c,v 1.1 2008/07/02 15:03:52 dan Exp $ */
+/* $Id: bars_loadsave.c,v 1.2 2008/11/29 20:42:03 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill
@@ -97,8 +97,6 @@ static fspec * get_fspec(void)
     fspec_add_comment(myspec, "Desired user units and associated scale factors");
     fspec_add_key(myspec, "units_xy", "Width/Height units",  
 		  'u', &b->units_xy);
-    fspec_add_key(myspec, "units_z", "Length units",  
-		  'u', &b->units_z);
     fspec_add_key(myspec, "units_L", "Inductance units",  
 		  'u', &b->units_L);
     fspec_add_key(myspec, "units_freq", "Frequency units",  
