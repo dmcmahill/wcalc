@@ -1,4 +1,4 @@
-# $Id: air_coil.wc,v 1.2 2004/08/04 23:47:30 dan Exp $
+# $Id: bars.wc,v 1.1 2008/07/12 04:28:10 dan Exp $
 #
 # File:      /export/disk1/dan/wcalc/gtk-wcalc/air_coil.wc
 # Modified:  Tue Jul 27 21:42:35 2004
@@ -36,7 +36,6 @@ freq = 100000000
 
 # Length units
 units_xy = 6
-units_z = 6
 # [inch]
 
 # Inductance units
