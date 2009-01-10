@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.34 2006/02/12 21:03:32 dan Exp $
+## $Id: Makefile.am,v 1.35 2008/11/29 20:41:56 dan Exp $
 ##
 
-## Copyright (C) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -40,6 +40,7 @@ SHTML_IN=	\
 	about.shtml \
 	air_coil.shtml \
 	AWG.shtml \
+	bars.shtml \
 	bugs.shtml \
 	cgi-wcalc.shtml \
 	coax.shtml \

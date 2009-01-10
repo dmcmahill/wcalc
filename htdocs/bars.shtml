@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: coax.shtml,v 1.8 2005/09/09 14:36:41 dan Exp $ -->
+<!-- Copyright (c) 2009
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Coaxial Transmission Line Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+bars,
+mutual inductance,
+coax,
+coaxial,
+coaxial transmission line,
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Parallel Rectangular Bars Inductance
+    </font>
+    <br>
+    <br>
+    <img src="bars_fig.png"
+    alt="Parallel Rectangular Bars Image" width="593" height="203" hspace="10" vspace="5">
+    </center>
+
+    <font face="helvetica, arial">
+    <HR> 
+    <H2><A NAME="References">Selected References</A></H2>
+    <OL>
+      <LI>
+	Cletus Hoer and Carl Love, "Exact Inductance Equations for Rectangular
+        Conductors With Applications to More Complicated Geometries", <em>Journal of Research of the National
+        Bureau of Standards -- C. Engineering andn Instrumentation</em>,
+	Vol. 69C, No. 2, April-June 1965, pp. 127-137
+      </LI>
+      
+    </OL>
+
+    <HR> 
+    <H2><A NAME="bugs">Known Issues</A></H2>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>
