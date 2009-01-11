@@ -1,4 +1,4 @@
-/* $Id: bars.cgi.c,v 1.1 2009/01/11 05:30:09 dan Exp $ */
+/* $Id: bars.cgi.c,v 1.2 2009/01/11 06:42:51 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -94,7 +94,7 @@ int cgiMain(void){
   bars *bar;
   double freq;
 
-  double a, b, l1, d, c, l2, E, P, l3, L1, L2, M, k;
+  double a, b, l1, d, c, l2, E, P, l3;
 
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
@@ -158,7 +158,7 @@ int cgiMain(void){
     cgi_units_menu_read();
     
 
-    /* Number of turns */
+    /* Width of bar #1 */
     if(cgiFormDouble("a", &a, defA/bar->units_xy->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
@@ -167,6 +167,82 @@ int cgiMain(void){
     if( a < 0.0 ) {
       a = defA/bar->units_xy->sf;
       printFormError("Width of bar must be &gt = 0");
+    }
+    
+    /* Thickness of bar #1 */
+    if(cgiFormDouble("b", &b, defB/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading thickness of bar #1");
+    }
+    if( b < 0.0 ) {
+      b = defB/bar->units_xy->sf;
+      printFormError("Thickness of bar must be &gt = 0");
+    }
+    
+    /* Length of bar #1 */
+    if(cgiFormDouble("l1", &l1, defL1/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading length of bar #1");
+    }
+    if( l1 <= 0.0 ) {
+      l1 = defL1/bar->units_xy->sf;
+      printFormError("Length of bar must be &gt 0");
+    }
+    
+    /* Width of bar #2 */
+    if(cgiFormDouble("d", &d, defD/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading width of bar #2");
+    }
+    if( d < 0.0 ) {
+      d = defD/bar->units_xy->sf;
+      printFormError("Width of bar must be &gt = 0");
+    }
+    
+    /* Thickness of bar #2 */
+    if(cgiFormDouble("c", &c, defC/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading thickness of bar #2");
+    }
+    if( c < 0.0 ) {
+      c = defC/bar->units_xy->sf;
+      printFormError("Thickness of bar must be &gt = 0");
+    }
+    
+    /* Length of bar #2 */
+    if(cgiFormDouble("l2", &l2, defL2/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading length of bar #2");
+    }
+    if( l2 <= 0.0 ) {
+      l2 = defL2/bar->units_xy->sf;
+      printFormError("Length of bar must be &gt 0");
+    }
+    
+    /* Width position of bar #2 */
+    if(cgiFormDouble("E", &E, defE/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading bar #2 position in the width direction");
+    }
+    
+    /* Thickness position of bar #2 */
+    if(cgiFormDouble("P", &P, defP/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading bar #2 position in the thickness direction");
+    }
+    
+    /* Length positoin of bar #2 */
+    if(cgiFormDouble("l3", &l3, defL3/bar->units_xy->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading bar #2 position in the length direction");
     }
     
     /* Frequency of operation  */
