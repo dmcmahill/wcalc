@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.27 2008/11/29 20:42:44 dan Exp $ */
+/* $Id: main.c,v 1.28 2009/01/11 05:49:32 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2005, 2006, 2007, 2009 Dan McMahill
@@ -405,7 +405,7 @@ static void exec_bars_calc(double *args)
   bar->P        = args[i++];
   bar->l3       = args[i++];
 
-  line->freq    = args[i++];
+  bar->freq    = args[i++];
 
   /* run the calculation */
   if( bars_calc(bar, bar->freq) ) {
