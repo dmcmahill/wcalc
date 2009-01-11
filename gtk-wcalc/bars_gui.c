@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.3 2008/11/29 20:41:41 dan Exp $ */
+/* $Id: bars_gui.c,v 1.4 2009/01/10 20:56:16 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -46,6 +46,8 @@
 #include "bars_gui.h"
 #include "bars_loadsave.h"
 #include "physconst.h"
+
+#include "utils.h"
 
 #include "wcalc.h"
 
@@ -191,176 +193,6 @@ void bars_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
  * Private Functions
  */
 
-/*
- * table = table that we are adding cells to
- * gui = the top wcalc gui
- * text = the static text label
- * label = the entry box
- * units = the units
- * ug = units gui
- * x, y = current x,y location
- */
-
-/*
- * We need to be able to do the following:
- *
- * add an entry with 
- *    - no units
- *    - a new units menu
- *    - attach to an existing units menu
- *
- * add a label with
- *    - no units
- *    - a new units menu
- *    - attach to an existing units menu
- *
- * Labels get updated by the units menus.  Entries do not.
- *
- *
- */
-
-typedef  enum {
-    WC_ENTRY_NO_UG, WC_ENTRY_NEW_UG, WC_ENTRY_USE_UG,
-    WC_LABEL_NO_UG, WC_LABEL_NEW_UG, WC_LABEL_USE_UG
-} wc_table_row_type;
-
-#define wc_table_add_entry_no_units(table, gui, text, entry, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), NULL, NULL, NULL, \
-		   (x), (y), WC_ENTRY_NO_UG))
-
-#define wc_table_add_entry_new_units(table, gui, text, entry, units, ug, mks, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), (units), (ug), (mks), \
-		   (x), (y), WC_ENTRY_NEW_UG))
-
-#define wc_table_add_entry_attach_units(table, gui, text, entry, units, ug, mks, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), (units), (ug), (mks), \
-		   (x), (y), WC_ENTRY_USE_UG))
-
-#define wc_table_add_label_no_units(table, gui, text, entry, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), NULL, NULL, NULL, \
-		   (x), (y), WC_LABEL_NO_UG))
-
-#define wc_table_add_label_new_units(table, gui, text, entry, units, ug, mks, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), (units), (ug), (mks), \
-		   (x), (y), WC_LABEL_NEW_UG))
-
-#define wc_table_add_label_attach_units(table, gui, text, entry, units, ug, mks, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), (units), (ug), (mks), \
-		   (x), (y), WC_LABEL_USE_UG))
-
-
-
-
-static void wc_table_add(GtkWidget *table, void * gui, const char *text, 
-			 GtkWidget **label, wc_units *units,
-			 wc_units_gui **ug, double *mks_val, 
-			 int *x, int *y, wc_table_row_type type)
-{
-    GtkWidget *name;
-    int isentry = 0;
-
-    /* The static label on the left (i.e. "Width" or "Height") */
-    name = gtk_label_new( text );
-    gtk_table_attach(GTK_TABLE(table), name, *x, *x+1, *y, *y+1, 
-		     0, 0, WC_XPAD, WC_YPAD);
-    gtk_widget_show(name);
-    
-    /* The text entry or dynamic label */
-    switch(type) {
-    case WC_ENTRY_NO_UG:
-    case WC_ENTRY_NEW_UG:
-    case WC_ENTRY_USE_UG:
-	*(label) = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-	gtk_entry_set_text(GTK_ENTRY(*label), WC_OUTPUT_TEXT);
-	isentry = 1;
-	break;
-	
-    case WC_LABEL_NO_UG:
-    case WC_LABEL_NEW_UG:
-    case WC_LABEL_USE_UG:
-	*(label) = gtk_label_new( WC_OUTPUT_TEXT );
-	break;
-	
-    default:
-	fprintf(stderr, "%s():  type = %d which is invalid.  Please report this bug\n", 
-		__FUNCTION__, type);
-	exit(1);
-    }
-    
-    /* add the entry or dynamic label to the table */
-    gtk_table_attach (GTK_TABLE(table), *label, *x+1, *x+2, *y, *y+1, 
-		      0, 0, WC_XPAD, WC_YPAD);
-    gtk_widget_set_usize(GTK_WIDGET(*label),WC_WIDTH,0);
-    
-    if( isentry ) {
-	gtk_signal_connect (GTK_OBJECT (*label), "changed",
-			    GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-	gtk_signal_connect (GTK_OBJECT (*label), "changed",
-			    GTK_SIGNAL_FUNC (vals_changedCB), gui);
-    }
-    gtk_widget_show(*label);
-    
-    
-    /* add the units if needed */
-    switch(type) {
-	
-    case WC_ENTRY_NO_UG:
-    case WC_LABEL_NO_UG:
-	/* no units */
-	break;
-	
-    case WC_ENTRY_NEW_UG:
-    case WC_LABEL_NEW_UG:
-	/* new units */
-	assert(units != NULL);
-	name = wc_units_menu_new(units, WC_WCALC(gui), ug);
-	gtk_table_attach(GTK_TABLE(table), name, 
-			 *x+2, *x+3, *y, *y+1, 
-			 GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-	/* now attach to our numeric value */
-	if(isentry) {
-	    wc_units_attach_entry(*ug, *label, mks_val, 
-				  NULL, NULL, WC_FMT_G, 0);
-	} else {
-	    wc_units_attach_label(*ug, *label, mks_val, 
-				  NULL, NULL, WC_FMT_G, 1);
-	}
-	break;
-	
-	
-    case WC_ENTRY_USE_UG:
-    case WC_LABEL_USE_UG:
-	/* use existing units */
-
-	/* create the label (Henries/Meter for example) */
-	name = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), name, *x+2, *x+3, *y, *y+1,
-			 GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-	gtk_misc_set_alignment(GTK_MISC(name),0,0);
-
-	/* attach it so that it gets updated */
-	wc_units_attach_units_label(*ug, name);
-
-	/* now attach to our numeric value */
-	if(isentry) {
-	    wc_units_attach_entry(*ug, *label, mks_val, 
-				  NULL, NULL, WC_FMT_G, 0);
-	} else {
-	    wc_units_attach_label(*ug, *label, mks_val, 
-				  NULL, NULL, WC_FMT_G, 1);
-	}
-	break;
-	
-    default:
-	fprintf(stderr, "%s():  type = %d which is invalid.  Please report this bug\n", 
-		__FUNCTION__, type);
-	exit(1);
-	
-    }
-    
-    (*y)++;
-}
 
 static void values_init(bars_gui *gui, GtkWidget *parent)
 {
