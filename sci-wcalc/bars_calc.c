@@ -1,6 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $ */
+/* $Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $";
+static char vcid[] = "$Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $";
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -174,13 +174,6 @@ void mexFunction(
     CHECK_INPUT(L3_IN, L3, ind_l3, l3);
 
     CHECK_INPUT(FREQ_IN, FREQ, ind_freq, freq);
-    
-    else {
-	if ( (flag = malloc(sizeof(double))) == NULL ) {
-	    fprintf(stderr,"bars_calc.c:  malloc() failed\n");
-	    exit(1);
-	}
-    }
 
     /* Create matrices for the return arguments */
     L1_OUT    = mxCreateDoubleMatrix(rows, cols, mxREAL);
@@ -192,7 +185,7 @@ void mexFunction(
     L1 = mxGetPr(L1_OUT);
     L2 = mxGetPr(L2_OUT);
     M  = mxGetPr(M_OUT);
-    k  = mxGetPr(k_OUT);
+    k  = mxGetPr(K_OUT);
     
     /* the actual computation */
     bar = bars_new();
@@ -230,7 +223,7 @@ void mexFunction(
     }
     
     /* clean up */
-    bar_free(bar);
+    bars_free(bar);
     
     return;
 }
