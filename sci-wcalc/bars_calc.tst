@@ -22,7 +22,7 @@ l3   = 0;     // Position of bar #2 in the length direction
 f    = 1e9;   // operating frequency (Hz)
 
 [L1, L2, M, k] = ...
-  bars_calc(a, b, l1, d, c, l2, E, P, l3, freq);
+  bars_calc(a, b, l1, d, c, l2, E, P, l3, f);
 
 disp(sprintf("L1 = %g nH\n", L1*1e9));
 disp(sprintf("L2 = %g nH\n", L2*1e9));
