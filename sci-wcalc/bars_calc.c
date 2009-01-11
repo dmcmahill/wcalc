@@ -1,6 +1,6 @@
-/* $Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $ */
+/* $Id: bars_calc.c,v 1.2 2009/01/11 07:15:03 dan Exp $ */
 
-static char vcid[] = "$Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $";
+static char vcid[] = "$Id: bars_calc.c,v 1.2 2009/01/11 07:15:03 dan Exp $";
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -29,6 +29,7 @@ static char vcid[] = "$Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "alert.h"
 #include "bars.h"
 #include "physconst.h"
 
@@ -39,8 +40,8 @@ static char vcid[] = "$Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $";
 #endif
 
 /*
- * function [L, Q, SRF, len, fill, Lmax] =
- *       air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag) 
+ * function [L1, L2, M, k] =
+ *       bars_calc(a, b, l1, d, c, l2, E, P, l3, freq)
  */
 
 /* Input Arguments */
@@ -48,12 +49,15 @@ static char vcid[] = "$Id: bars_calc.c,v 1.1 2009/01/11 04:10:17 dan Exp $";
 #define	A_IN     prhs[0]
 #define	B_IN     prhs[1]
 #define	L1_IN    prhs[2]
+
 #define	D_IN     prhs[3]
 #define	C_IN     prhs[4]
 #define	L2_IN    prhs[5]
+
 #define	E_IN     prhs[6]
 #define	P_IN     prhs[7]
 #define	L3_IN    prhs[8]
+
 #define	FREQ_IN  prhs[9]
 
 /* Output Arguments */
@@ -205,9 +209,9 @@ void mexFunction(
 	bar->c       = c[*ind_c];
 	bar->l2      = l2[*ind_l2];
 
-	bar->E       = a[*ind_E];
-	bar->P       = b[*ind_P];
-	bar->l3      = l1[*ind_l3];
+	bar->E       = E[*ind_E];
+	bar->P       = P[*ind_P];
+	bar->l3      = l3[*ind_l3];
 
 	bar->freq    = freq[*ind_freq];
 

@@ -43,7 +43,7 @@ f    = 1e9;   // operating frequency (Hz)
  
 [L1, L2, M, k] =0...
   bars_calc(a, b, l1, d, c, l2, E, P, l3, f);
-The bars are touching.  This is not allowed 
+ 
  
 disp(sprintf("L1 = %g nH\n", L1*1e9));
  
@@ -55,10 +55,10 @@ disp(sprintf("L2 = %g nH\n", L2*1e9));
  
 disp(sprintf("M  = %g nH\n", M*1e9));
  
- M  = 0.789561 nH   
+ M  = 0.839194 nH   
  
 disp(sprintf("k  = %g\n", k));
  
- k  = 0.734701   
+ k  = 0.735581   
  
  
