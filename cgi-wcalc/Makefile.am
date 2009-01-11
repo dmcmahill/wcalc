@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.25 2008/09/05 11:50:52 dan Exp $
+## $Id: Makefile.am,v 1.26 2008/11/29 20:41:30 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2006, 2008 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -23,6 +23,7 @@ cgibinexecdir = @CGIBINDIR@
 
 cgibinexec_PROGRAMS = \
 	air_coil.cgi \
+	bars.cgi \
 	coax.cgi \
 	coplanar.cgi \
 	coupled_microstrip.cgi \
@@ -41,6 +42,8 @@ COMMON = alert.c cgic.c cgic.h cgi-common.c cgi-common.h cgi-units.c cgi-units.h
 air_coil_cgi_SOURCES = air_coil.cgi.c ${COMMON}
 
 capture_cgi_SOURCES = capture.c ${COMMON}
+
+bars_cgi_SOURCES = bars.cgi.c ${COMMON}
 
 coax_cgi_SOURCES = coax.cgi.c ${COMMON}
 
@@ -70,6 +73,7 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@ @CGI_STATIC@
 
 HTML_FILES= \
 	air_coil.html \
+	bars.html \
 	coax.html \
 	coplanar.html \
 	coupled_microstrip.html \

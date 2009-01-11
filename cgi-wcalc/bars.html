@@ -1,0 +1,233 @@
+<!-- $Id: air_coil.html,v 1.16 2005/10/13 22:40:24 dan Exp $ -->
+<!--
+ * Copyright (c) 2009 Dan McMahill
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Self and Mutual Inductance of a Pair of Parallel Rectangular Bars</TITLE>
+<!-- Created by: Dan McMahill, 2009/01/10 -->
+<LINK REV="made" HREF="mailto:nospam_to_mcmahill@alum.mit.make_edu">
+<link rel="shortcut icon" href="<@s@HTMLPATH@>/favicon.ico" type="image/x-icon">    
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="description" content="Self and Mutual Inductance of a Pair of Parallel Rectangular Bars">
+<meta name="keywords" content="
+mutual inductance,
+parallel bars,
+inductance of parallel bars,
+mutual inductance of parallel bars
+">
+<@s@cgi_units_menu_init()@>
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
+
+<H1 ALIGN="CENTER">Parallel Rectangular Bars Self/Mutual Inductance</H1>
+
+<P>
+
+
+<FORM NAME="wcalc" METHOD=GET ACTION="bars.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRC="<@s@HTMLPATH@>bars_fig.png" WIDTH=593 HEIGHT=203
+     ALT="[Parallel Rectangular Bars Drawing]"></TD>
+</TR>
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+
+<TR>
+<TD>Width of Bar #1 (a)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" 
+     VALUE="<@g@bar->a/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<!-- xy units menu -->
+<@s@cgi_units_menu_display(menu_xy)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Thickness of Bar #1 (b)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" 
+     VALUE="<@g@bar->b/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_b">
+</TD>
+</TR>
+
+<TR>
+<TD>Length of Bar #1 (l1)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l1" 
+     VALUE="<@g@bar->l1/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l1">
+</TD>
+</TR>
+
+
+<TR>
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" 
+     VALUE="<@g@bar->freq/bar->units_freq->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<!-- frequency units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+<TD></TD>
+</TR>
+
+</TABLE>  <!-- end of model parameter table -->
+</TD>
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+
+
+<TR>
+<TD>Width of Bar #2 (d)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="d" 
+     VALUE="<@g@bar->d/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_d">
+</TD>
+</TR>
+
+<TR>
+<TD>Thickness of Bar #2 (c)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="c" 
+     VALUE="<@g@bar->c/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_c">
+</TD>
+</TR>
+
+<TR>
+<TD>Length of Bar #2 (L2)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l2" 
+     VALUE="<@g@bar->l2/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l2">
+</TD>
+</TR>
+
+<TR>
+<TD>Bar #2 Width Position (E)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="E" 
+     VALUE="<@g@bar->E/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_E">
+</TD>
+</TR>
+
+<TR>
+<TD>Bar #2 Thickness Position (P)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="P" 
+     VALUE="<@g@bar->P/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_P">
+</TD>
+</TR>
+
+<TR>
+<TD>Bar #2 Length Position (L3)</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l3" 
+     VALUE="<@g@bar->l3/bar->units_xy->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l3">
+</TD>
+</TR>
+
+
+</TABLE>
+
+</TR>
+
+<TR><TABLE>
+
+<TR>
+<TD>Bar #1 Self Inductance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="L1" VALUE="<@g@bar->L1/bar->units_L->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<!-- inductance units menu -->
+<@s@cgi_units_menu_display(menu_L)@>
+</TD>
+
+<TD></TD>
+<TD>Bar #2 Self Inductance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="L2" VALUE="<@g@bar->L2/bar->units_L->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_L2">
+</TD>
+</TR>
+
+<TR>
+<TD>Mutual Inductance</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="M" VALUE="<@g@bar->M/bar->units_L->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_M">
+</TD>
+
+<TD></TD>
+
+<TD>Coupling Coefficient</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="k" VALUE="<@g@bar->k@>"
+        onChange="valsChanged()"></TD>
+<TD>
+</TD>
+</TR>
+
+</TR></TABLE>
+
+</TABLE>
+
+</FORM>
+
+
