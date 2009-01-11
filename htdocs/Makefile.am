@@ -1,4 +1,5 @@
-## $Id: Makefile.am,v 1.35 2008/11/29 20:41:56 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.36 2009/01/10 21:11:24 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
@@ -114,7 +115,9 @@ ${HTML_OUT} : ${INCL_FILES}
 
 CGIPATH=	@CGIPATH@
 
-@SOURCEFORGE_YES@SHTML2HTML_SF= sourceforge=1 
+if SOURCEFORGE
+SHTML2HTML_SF= sourceforge=1 
+endif
 
 FORMAT_TAB  = ${AWK} -f $(top_srcdir)/utils/format_tab type=html html_no_table=yes
 

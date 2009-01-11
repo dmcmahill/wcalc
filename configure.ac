@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.5 2008/11/29 20:41:29 dan Exp $
+dnl $Id: configure.ac,v 1.6 2008/12/03 23:46:49 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -549,25 +549,20 @@ AC_ARG_ENABLE([sourceforge],
 [  --enable-sourceforge    Causes the sourceforge specific web content to be added [default=no]],
 [
 if test "X$enable_sourceforge" = "Xno" ; then
-	SOURCEFORGE_NO=""
-	SOURCEFORGE_YES="#"
 	AC_MSG_RESULT([no])
 	wc_sf_wcalc_yesno=no
 else
-	SOURCEFORGE_NO="#" 
-	SOURCEFORGE_YES="" 
 	AC_MSG_RESULT([yes])
 	wc_sf_wcalc_yesno=yes
 fi
 ],
 [
-SOURCEFORGE_NO=""
-SOURCEFORGE_YES="#"
 AC_MSG_RESULT([no])
 wc_sf_wcalc_yesno=no
 ])
-AC_SUBST(SOURCEFORGE_NO)
-AC_SUBST(SOURCEFORGE_YES)
+
+AM_CONDITIONAL(SOURCEFORGE, test x$wc_sf_wcalc_yesno = xyes)
+
 # ------------- done with --enable-sourceforge -------------------
 
 # ------------- enable/disable stdio frontend  -------------------
@@ -1053,14 +1048,12 @@ AC_PROG_MAKE_SET
 dnl check for AWK capabilities
 AC_AWK_GENSUB(
 [
-AWK_GENSUB_YES=""
-AWK_GENSUB_NO="@#"
+wc_gensub_yesno=yes
 ] ,[
-AWK_GENSUB_YES="@#"
-AWK_GENSUB_NO=""
+wc_gensub_yesno=no
 ])
-AC_SUBST(AWK_GENSUB_YES)
-AC_SUBST(AWK_GENSUB_NO)
+
+AM_CONDITIONAL(AWK_GENSUB, test x$wc_gensub_yesno = xyes)
 
 dnl check for headers
 AC_HEADER_STDC

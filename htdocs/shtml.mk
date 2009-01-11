@@ -1,37 +1,23 @@
-## $Id: shtml.mk,v 1.4 2002/05/10 22:49:38 dan Exp $
+## $Id: shtml.mk,v 1.5 2004/09/02 00:51:43 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill
 ## All rights reserved.
 ##
-## This code is derived from software written by Dan McMahill
-##
-## Redistribution and use in source and binary forms, with or without
-## modification, are permitted provided that the following conditions
-## are met:
-## 1. Redistributions of source code must retain the above copyright
-##    notice, this list of conditions and the following disclaimer.
-## 2. Redistributions in binary form must reproduce the above copyright
-##    notice, this list of conditions and the following disclaimer in the
-##    documentation and/or other materials provided with the distribution.
-## 3. All advertising materials mentioning features or use of this software
-##    must display the following acknowledgement:
-##        This product includes software developed by Dan McMahill
-##  4. The name of the author may not be used to endorse or promote products
-##     derived from this software without specific prior written permission.
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; version 2 of the License.
 ## 
-##  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-##  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-##  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-##  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-##  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-##  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-##  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-##  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-##  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-##  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-##  SUCH DAMAGE.
-##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+
 
 # the include= is a ':' seperated search path for SSI directives
 SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_PATH) $(SHTML2HTML_SF)
@@ -41,12 +27,15 @@ SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_P
 SUFFIXES+= .shtml .html
 
 .shtml.html :
-	@AWK_GENSUB_YES@$(SHTML2HTML) $< | sed 's;/cgi-bin/;${CGIPATH};g' > $@
-	@@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
-	@@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
-	@@AWK_GENSUB_NO@ echo "          .html files from the .shtml files.  If you need"
-	@@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
-	@@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
-	@@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
-	@@AWK_GENSUB_NO@ echo "          particular awk program."
+if AWK_GENSUB
+	$(SHTML2HTML) $< | sed 's;/cgi-bin/;${CGIPATH};g' > $@
+else
+	@echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@echo "          function.  This prevents the rebuilding of the"
+	@echo "          .html files from the .shtml files.  If you need"
+	@echo "          this functionality, you will need to install gawk."
+	@echo "          By setting the variable AWK in your configure"
+	@echo "          environment, you can force configure to find a"
+	@echo "          particular awk program."
+endif
 

@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.26 2008/11/29 20:41:30 dan Exp $
+## $Id: Makefile.am,v 1.27 2009/01/11 05:30:08 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
@@ -91,7 +91,9 @@ BUILT_SOURCES = ${ID_FILES} ${CHTML_FILES}
 
 EXTRA_DIST=	${BUILT_SOURCES} ${HTML_FILES} 
 
-@SOURCEFORGE_YES@HTML2C_SF= sourceforge=1
+if SOURCEFORGE
+HTML2C_SF= sourceforge=1
+endif
 
 HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut ${HTML2C_SF}
 HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
@@ -99,24 +101,29 @@ HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/
 SUFFIXES = .html 
 
 %_html.c : %.html
-	@AWK_GENSUB_YES@ $(HTML2C) $< > $@
-	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
-	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
-	@AWK_GENSUB_NO@ echo "          .html.c files from the .html files.  If you need"
-	@AWK_GENSUB_NO@ echo "          this functionality, you will need to install gawk."
-	@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
-	@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
-	@AWK_GENSUB_NO@ echo "          particular awk program."
-
+if AWK_GENSUB
+	$(HTML2C) $< > $@
+else
+	@echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@echo "          function.  This prevents the rebuilding of the"
+	@echo "          .html.c files from the .html files.  If you need"
+	@echo "          this functionality, you will need to install gawk."
+	@echo "          By setting the variable AWK in your configure"
+	@echo "          environment, you can force configure to find a"
+	@echo "          particular awk program."
+endif
 
 %_id.h : %.html
+if AWK_GENSUB
 	$(HTML2ID) $< > $@
-	@AWK_GENSUB_NO@ echo "WARNING:  your awk (${AWK}) does not include the gensub()"
-	@AWK_GENSUB_NO@ echo "          function.  This prevents the rebuilding of the"
-	@AWK_GENSUB_NO@ echo "          _id.h files from the .html files.  If you need"
-	@AWK_GENSUB_NO@ echo "          this functionality, (which you should not),"
-	@AWK_GENSUB_NO@ echo "          you will need to install gawk."
-	@AWK_GENSUB_NO@ echo "          By setting the variable AWK in your configure"
-	@AWK_GENSUB_NO@ echo "          environment, you can force configure to find a"
-	@AWK_GENSUB_NO@ echo "          particular awk program."
+else
+	@echo "WARNING:  your awk (${AWK}) does not include the gensub()"
+	@echo "          function.  This prevents the rebuilding of the"
+	@echo "          _id.h files from the .html files.  If you need"
+	@echo "          this functionality, (which you should not),"
+	@echo "          you will need to install gawk."
+	@echo "          By setting the variable AWK in your configure"
+	@echo "          environment, you can force configure to find a"
+	@echo "          particular awk program."
+endif
 
