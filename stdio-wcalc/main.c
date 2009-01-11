@@ -1,7 +1,7 @@
-/* $Id: main.c,v 1.26 2007/11/26 20:17:32 dan Exp $ */
+/* $Id: main.c,v 1.27 2008/11/29 20:42:44 dan Exp $ */
 
 /*
- * Copyright (C) 2004, 2005, 2006, 2007 Dan McMahill
+ * Copyright (C) 2004, 2005, 2006, 2007, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -56,6 +56,7 @@
 /* Headers for the various structures we can analyze */
 
 #include "air_coil.h"
+#include "bars.h"
 #include "coax.h"
 #include "coplanar.h"
 #include "coupled_microstrip.h"
@@ -72,6 +73,7 @@
 
 /* local prototypes */
 static void exec_air_coil_calc(double *args);
+static void exec_bars_calc(double *args);
 static void exec_coax_calc(double *args);
 static void exec_coplanar_calc(double *args);
 static void exec_coupled_microstrip_calc(double *args);
@@ -215,6 +217,9 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "air_coil_syn") == 0) {
       narg = 9;
       fn = &exec_air_coil_syn;
+    } else if(strcmp(tok, "bars_calc") == 0) {
+      narg = 10;
+      fn = &exec_bars_calc;
     } else if(strcmp(tok, "coax_calc") == 0) {
       narg = 10;
       fn = &exec_coax_calc;
@@ -375,6 +380,48 @@ static void exec_air_coil_syn(double *args)
   return;
 }
 
+/*
+ * [L1, L2, M, k] = 
+ *  bars_calc(a, b, l1, d, c, l2, E, P, l3, f);
+ */
+static void exec_bars_calc(double *args)
+{
+  /* our bars for calculations */
+  bars *bar;
+  int i = 0;
+
+  /* create the bars and fill in the parameters */
+  bar = bars_new();
+
+  bar->a        = args[i++];
+  bar->b        = args[i++];
+  bar->l1       = args[i++];
+
+  bar->d        = args[i++];
+  bar->c        = args[i++];
+  bar->l2       = args[i++];
+
+  bar->E        = args[i++];
+  bar->P        = args[i++];
+  bar->l3       = args[i++];
+
+  line->freq    = args[i++];
+
+  /* run the calculation */
+  if( bars_calc(bar, bar->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g\n", 
+	   bar->L1, bar->L2,
+	   bar->M, bar->k);
+  }
+
+  /* clean up */
+  bars_free(bar);
+  
+  return;
+}
 /*
  * [z0,elen,loss,L,R,C,G] = 
  *  coax_calc(a,b,c,t,rho_a,rho_b,er,tand,len,f);

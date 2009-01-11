@@ -1,0 +1,28 @@
+*
+*  [L,Q,SRF,len_out,fill_out] = 
+*    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+*
+*
+* Air coil calculation using length
+*
+--> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+1.10075e-07 321.76 8.46621e+08 0.0127 3.10406 2.41605e-07
+*
+* Air coil calculation using fill
+*
+--> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
+2.16686e-07 241.287 6.42239e+08 0.0049097 1.2 2.41605e-07
+*
+*  [N, LEN, FILL] = 
+*      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
+*
+*
+* Air coil synthesis, flag == 0 (minimize # of turns)
+*
+--> air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+4 0.00462394 1.69523
+*
+* Air coil synthesis, flag == 1 (fixed # of turns)
+*
+--> air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
+6 0.0143109 3.49777

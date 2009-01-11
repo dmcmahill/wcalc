@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.18 2008/09/05 11:50:55 dan Exp $
+## $Id: Makefile.am,v 1.19 2008/11/29 20:42:43 dan Exp $
 
 ##
 ## Copyright (C) 2004, 2005, 2006, 2008 Dan McMahill
@@ -65,6 +65,7 @@ endif
 
 TEST_INPUTS= \
 	air_coil.dat \
+	bars.dat \
 	coax.dat \
 	coplanar.dat \
 	coupled_microstrip.dat \

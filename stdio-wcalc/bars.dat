@@ -1,0 +1,16 @@
+# $Id: air_coil.dat,v 1.3 2004/11/22 22:36:39 dan Exp $
+#
+# bars test data
+#
+
+*
+*  [L1, L2, M, k] = 
+*    bars_calc(a, b, l1, d, c, l2, E, P, l3, freq);
+*
+
+*
+* Bars calculation.  Two conductors, 1 um thick, 10 um wide, 1um gap, 1mmm long
+*
+bars_calc 10e-6 1e-6 1e-3 10e-6 1e-6 1e-3 12e-6 0 0 1e9
+*
+
