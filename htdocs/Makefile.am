@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.36 2009/01/10 21:11:24 dan Exp $
+## $Id: Makefile.am,v 1.37 2009/01/11 15:22:44 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
@@ -112,6 +112,11 @@ EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} favicon.ico favicon.xpm shtml.mk c
 
 # add the dependency on the .incl files
 ${HTML_OUT} : ${INCL_FILES}
+
+mex-wcalc : mex-man/whatis.incl
+octave-wcalc : octave-man/whatis.incl
+sci-wcalc : sci-man/whatis.incl
+stdio-wcalc : stdio-man/whatis.incl
 
 CGIPATH=	@CGIPATH@
 

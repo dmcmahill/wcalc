@@ -1,4 +1,4 @@
-## $Id: common-man.mk,v 1.8 2005/10/25 19:23:00 dan Exp $
+## $Id: common-man.mk,v 1.9 2009/01/11 15:22:44 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill
@@ -41,6 +41,7 @@ MAINTAINERCLEANFILES=	${SCIMANHTML} ${SCIMANSHTML} ${BUILT_SOURCES}
 # if we don't have xsltproc then we don't want to remove the provided
 # whatis.incl.   If we have xsltproc, then go ahead.
 if MISSING_XSLT
+else
 CLEANFILES=		whatis.incl
 endif
 
@@ -50,7 +51,7 @@ EXTRA_DIST= man_start.incl man_end.incl ${SCIMANHTML} ${SCIMANSHTML} ${BUILT_SOU
 CP_INCL= sed -e 's;a href=";a href="../;g' \
 	-e 's;img src=";img src="../;g'
 
-${SCIMANHTML}: left_column.incl main_footer.incl
+${SCIMANHTML}: left_column.incl main_footer.incl whatis.incl
 
 if SOURCEFORGE
 SHTML2HTML_SF= sourceforge=1
