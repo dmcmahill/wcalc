@@ -1,6 +1,6 @@
-// $Id: wcalc-demo.dem,v 1.1 2002/05/26 01:49:25 dan Exp $
+// $Id: wcalc-demo.dem,v 1.2 2005/10/26 00:16:30 dan Exp $
 //
-// Copyright (c) 2002, 2005 Dan McMahill
+// Copyright (c) 2002, 2005, 2009 Dan McMahill
 // All rights reserved.
 //
 // This code is derived from software written by Dan McMahill
@@ -40,6 +40,7 @@ deff('[]=notimpl()','printf(""Demo not implemented yet\n"");')
 
 demolist=[
     'Air Core Inductor Analysis','air_coil_calc.dem';
+    'Parallel Rectangular Bars Analysis','bars_calc.dem';
     'Coupled Microstrip Synthesis','xbasc();notimpl();'];
 
 while %t then

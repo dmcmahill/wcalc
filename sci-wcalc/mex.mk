@@ -1,7 +1,7 @@
-## $Id: mex.mk,v 1.12 2006/02/13 16:56:01 dan Exp $
+## $Id: mex.mk,v 1.13 2006/02/23 14:08:10 dan Exp $
 ##
 
-## Copyright (c) 2001, 2006 Dan McMahill
+## Copyright (c) 2001, 2006, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## This code is derived from software written by Dan McMahill
@@ -36,6 +36,7 @@
 MEX_SRCS=	\
 	air_coil_calc.c \
 	air_coil_syn.c \
+	bars_calc.c \
 	coax_calc.c \
 	coax_syn.c \
 	coplanar_calc.c \

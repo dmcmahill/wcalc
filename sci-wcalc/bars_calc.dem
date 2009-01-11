@@ -1,0 +1,54 @@
+// $Id: air_coil_calc.dem,v 1.1 2005/10/26 00:16:29 dan Exp $
+//
+// Copyright (c) 2009 Dan McMahill
+// All rights reserved.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; version 2 of the License.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+// --------------------------------------------------------
+// Self and mutual inductance of a pair of rectangular bars
+// --------------------------------------------------------
+
+// dimensions in meters
+a    = 10e-6; // Width of bar #1
+b    = 1e-6;  // Thickness of bar #1
+l1   = 1e-3;  // Length of bar #1
+
+d    = 10e-6; // Width of bar #2
+c    = 1e-6;  // Thickness of bar #2
+l2   = 1e-3;  // Length of bar #2
+
+E    = 12e-6; // Position of bar #2 in the width direction
+P    = 0;     // Position of bar #2 in the thickness direction
+l3   = 0;     // Position of bar #2 in the length direction
+
+f    = 1e9;   // operating frequency (Hz)
+
+[L1, L2, M, k] = ...
+  bars_calc(a, b, l1, d, c, l2, E, P, l3, freq);
+
+printf("L1 = %g nH\n", L1*1e9);
+printf("L2 = %g nH\n", L2*1e9);
+printf("M  = %g nH\n", M*1e9);
+printf("k  = %g\n", k);
+
+gap = linspace(0.5e-6, 20e-6, 100);
+[L1, L2, M, k] = ...
+  bars_calc(a, b, l1, d, c, l2, a + gap, P, l3, freq);
+xbasc(); xselect();
+plot2d(gap/1e-6, k);
+xgrid(3);
+xtitle('Coupling Coefficient versus Gap','um','k');
+

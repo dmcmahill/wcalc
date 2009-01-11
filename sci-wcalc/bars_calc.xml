@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
+<TOP>
+<MAN>
+<!-- $Id: air_coil_calc.xml,v 1.6 2008/11/29 20:42:28 dan Exp $ -->
+<!--
+    Copyright (C) 2009 Dan McMahill
+    All rights reserved.
+   
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; version 2 of the License.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    
+-->
+
+<NAME>bars_calc</NAME>
+
+<SHORTDESCR>Self and mutual inductance of a pair of parallel rectangular bars
+</SHORTDESCR>
+
+<SYNOPSIS>
+[L1, L2, M, k] = bars_calc(a,b,l1,d,c,l2,E,P,L3,freq);
+</SYNOPSIS>
+
+<PARAMETERS>
+ <RHS name="a">Width of bar 1 (meters)</RHS>
+ <RHS name="b">Thickness of bar 1 (meters)</RHS>
+ <RHS name="l1">Length of bar 1 (meters)</RHS>
+ <RHS name="d">Width of bar 2 (meters)</RHS>
+ <RHS name="c">Thickness of bar 2 (meters)</RHS>
+ <RHS name="l2">Length of bar 2 (meters)</RHS>
+ <RHS name="E">Position of bar 2 in the width direction (meters)</RHS>
+ <RHS name="P">Position of bar 2 in the thickness direction (meters)</RHS>
+ <RHS name="l3">Position of bar 2 in the length direction (meters)</RHS>
+
+ <RHS name="freq">analysis frequency (Hertz)</RHS>
+
+ <LHS name="L1">Bar 1 self inductance (Henries)</LHS>
+ <LHS name="L2">Bar 2 self inductance (Henries)</LHS>
+ <LHS name="M">Mutual inductance (Henries)</LHS>
+ <LHS name="k">Coupling coefficient</LHS>
+
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to analyze the self and mutual inductances of two parallel
+rectanglar bars.
+</DESCRIPTION>
+
+<EXAMPLE>
+       <SCIEX><SCICMD>a=10e-6;</SCICMD>          <COMMENT>Width of bar #1</COMMENT></SCIEX>
+       <SCIEX><SCICMD>b=1e-6;</SCICMD>           <COMMENT>Thickness of bar #1</COMMENT></SCIEX>
+       <SCIEX><SCICMD>l1=1e-3;</SCICMD>          <COMMENT>Length of bar #1</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>d=10e-6;</SCICMD>          <COMMENT>Width of bar #2</COMMENT></SCIEX>
+       <SCIEX><SCICMD>c=1e-6;</SCICMD>           <COMMENT>Thickness of bar #2</COMMENT></SCIEX>
+       <SCIEX><SCICMD>l2=1e-3;</SCICMD>          <COMMENT>Length of bar #2</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>E=12e-6;</SCICMD>          <COMMENT>Position of bar #2 in the width direction</COMMENT></SCIEX>
+       <SCIEX><SCICMD>P=0;</SCICMD>              <COMMENT>Position of bar #2 in the thickness direction</COMMENT></SCIEX>
+       <SCIEX><SCICMD>l3=0;</SCICMD>             <COMMENT>Position of bar #2 in the length direction</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>f=1e9;</SCICMD>           <COMMENT>1 GHz operation</COMMENT></SCIEX>
+       <SCIEX><SCICMD>[L1, L2, M, k] = bars_calc(a,b,l1,d,c,l2,E,P,l3,f);</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('L1=%g nH',L1*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('L2=%g nH',L2*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('M =%g nH',M*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('k =%g',k));</SCICMD></SCIEX>
+       <STDEX>
+*
+* Bars calculation.  Two conductors, 1 um thick, 10 um wide, 1um gap, 1mmm long
+*
+bars_calc 10e-6 1e-6 1e-3 10e-6 1e-6 1e-3 12e-6 0 0 1e9
+*
+*
+       </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+&see_also;
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+</TOP>
+

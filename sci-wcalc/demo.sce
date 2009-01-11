@@ -1,6 +1,6 @@
-// $Id$
+// $Id: demo.sce,v 1.1 2001/11/05 01:29:10 dan Exp $
 //
-// Copyright (c) 2001 Dan McMahill
+// Copyright (c) 2001, 2009 Dan McMahill
 // All rights reserved.
 //
 // This code is derived from software written by Dan McMahill

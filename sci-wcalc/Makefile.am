@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.54 2008/09/05 11:50:54 dan Exp $
+## $Id: Makefile.am,v 1.55 2008/11/29 20:42:27 dan Exp $
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
 ## All rights reserved.
@@ -29,7 +29,8 @@ demo_DATA=	${SCIDEMOS}
 
 SCIDEMOS=	wcalc-demo.dem \
 	air_coil_calc.dem \
-	air_coil_syn.dem
+	air_coil_syn.dem \
+	bars_calc.dem
 
 SCI_VER=		@SCI_VER@
 scilibdir=	${libdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}
@@ -83,6 +84,7 @@ check_SCRIPTS=	${RUN_TESTS}
 TEST_FILES=	\
 	air_coil_calc.tst \
 	air_coil_syn.tst \
+	bars_calc.tst \
 	coax_calc.tst \
 	coax_syn.tst \
 	coplanar_calc.tst \
