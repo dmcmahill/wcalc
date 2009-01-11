@@ -51,7 +51,7 @@ disp(sprintf("L1 = %g nH\n", L1*1e9));
  
 disp(sprintf("L2 = %g nH\n", L2*1e9));
  
- L2 = 1.01232 nH   
+ L2 = 1.14086 nH   
  
 disp(sprintf("M  = %g nH\n", M*1e9));
  
