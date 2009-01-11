@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wcalc 0.3\n"
-"POT-Creation-Date: 2005-10-27 13:35-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-11 03:07-0500\n"
 "PO-Revision-Date: 2003-01-07 20:08-0500\n"
 "Last-Translator: Dan McMahill <dmcmahill@netbsd.org>\n"
 "Language-Team: Dan McMahill <dmcmahill@netbsd.org>\n"
@@ -14,125 +15,125 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtk-wcalc/menus.c:89
+#: gtk-wcalc/menus.c:76
 msgid "/_File"
 msgstr "/_Archivo"
 
-#: gtk-wcalc/menus.c:90
+#: gtk-wcalc/menus.c:77
 msgid "/File/_New"
 msgstr "/Archivo/_Nuevo"
 
-#: gtk-wcalc/menus.c:91
+#: gtk-wcalc/menus.c:78
 msgid "/File/sep1"
 msgstr "/Archivo/sep1"
 
-#: gtk-wcalc/menus.c:92
+#: gtk-wcalc/menus.c:79
 msgid "/File/_Open"
 msgstr "/Archivo/_Abrir"
 
-#: gtk-wcalc/menus.c:93
+#: gtk-wcalc/menus.c:80
 msgid "/File/_Save"
 msgstr "/Archivo/_Salvar"
 
-#: gtk-wcalc/menus.c:94
+#: gtk-wcalc/menus.c:81
 msgid "/File/Save _As"
 msgstr "/Archivo/Salvar como"
 
-#: gtk-wcalc/menus.c:95
+#: gtk-wcalc/menus.c:82
 msgid "/File/sep2"
 msgstr "/Archivo/sep2"
 
-#: gtk-wcalc/menus.c:96
+#: gtk-wcalc/menus.c:83
 msgid "/File/_Print"
 msgstr "/Archivo/Imprimir"
 
-#: gtk-wcalc/menus.c:97
+#: gtk-wcalc/menus.c:84
 msgid "/File/sep3"
 msgstr "/Archivo/sep3"
 
-#: gtk-wcalc/menus.c:98
+#: gtk-wcalc/menus.c:85
 msgid "/File/Close"
 msgstr "/Archivo/Cerrar"
 
-#: gtk-wcalc/menus.c:99
+#: gtk-wcalc/menus.c:86
 msgid "/File/Quit"
 msgstr "/Archivo/Salir"
 
-#: gtk-wcalc/menus.c:100
+#: gtk-wcalc/menus.c:87
 msgid "/_Options"
 msgstr ""
 
-#: gtk-wcalc/menus.c:101
+#: gtk-wcalc/menus.c:88
 msgid "/Options/tearoff"
 msgstr ""
 
-#: gtk-wcalc/menus.c:102
+#: gtk-wcalc/menus.c:89
 msgid "/_Window"
 msgstr ""
 
-#: gtk-wcalc/menus.c:103
+#: gtk-wcalc/menus.c:90
 msgid "/Window/tearoff"
 msgstr ""
 
-#: gtk-wcalc/menus.c:104
+#: gtk-wcalc/menus.c:91
 msgid "/_Help"
 msgstr "/_Ayuda"
 
-#: gtk-wcalc/menus.c:105
+#: gtk-wcalc/menus.c:92
 msgid "/_Help/About"
 msgstr "/_Ayuda/Sobre"
 
-#: gtk-wcalc/menus.c:106
+#: gtk-wcalc/menus.c:93
 msgid "/_Help/Copyright"
 msgstr "/_Ayuda/Propiedad Literaria"
 
-#: gtk-wcalc/menus.c:107
+#: gtk-wcalc/menus.c:94
 msgid "/_Help/_Material Properties"
 msgstr "/_Ayuda/_Cualidades de Materiales"
 
-#: gtk-wcalc/menus.c:108
+#: gtk-wcalc/menus.c:95
 msgid "/_Help/_Material Properties/_Permeabilities"
 msgstr "/_Ayuda/_Cualidades de Materiales/_Permeabilities"
 
-#: gtk-wcalc/menus.c:110
+#: gtk-wcalc/menus.c:97
 msgid "/_Help/_Material Properties/_Permitivities"
 msgstr "/_Ayuda/_Cualidades de Materiales/_Permitivities"
 
-#: gtk-wcalc/menus.c:112
+#: gtk-wcalc/menus.c:99
 msgid "/_Help/_Material Properties/_Resistivities"
 msgstr "/_Ayuda/_Cualidades de Materiales/_Resistivities"
 
-#: gtk-wcalc/menus.c:114
+#: gtk-wcalc/menus.c:101
 msgid "/_Help/_Material Properties/_Units"
 msgstr "/_Ayuda/_Cualidades de Materiales/_Units"
 
-#: gtk-wcalc/menus.c:116
+#: gtk-wcalc/menus.c:103
 msgid "/_Help/_Material Properties/_Wire Sizes"
 msgstr "/_Ayuda/_Cualidades de Materiales/_Wire Sizes"
 
-#: gtk-wcalc/menus.c:206
+#: gtk-wcalc/menus.c:193
 #, c-format
 msgid "window_close():  Called with input pointer %p\n"
 msgstr ""
 
-#: gtk-wcalc/menus.c:207
+#: gtk-wcalc/menus.c:194
 #, c-format
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
 
-#: gtk-wcalc/start.c:243
+#: gtk-wcalc/start.c:229
 msgid "Open..."
 msgstr "Abrir..."
 
-#: gtk-wcalc/start.c:253
+#: gtk-wcalc/start.c:239
 msgid "New"
 msgstr "Nuevo"
 
-#: gtk-wcalc/start.c:272
+#: gtk-wcalc/start.c:258
 msgid "Quit"
 msgstr "Salir"
 
-#: gtk-wcalc/start.c:291
+#: gtk-wcalc/start.c:277
 msgid ""
 "**** WARNING ****\n"
 "This is a development snapshot\n"
