@@ -1,4 +1,4 @@
-/* $Id: air_coil.cgi.c,v 1.22 2008/11/29 20:41:31 dan Exp $ */
+/* $Id: bars.cgi.c,v 1.1 2009/01/11 05:30:09 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -117,8 +117,8 @@ int cgiMain(void){
   bar = bars_new();
 
   menu_xy = cgi_units_menu_new(bar->units_xy);
-  menu_L = cgi_units_menu_new(coil->units_L);
-  menu_freq = cgi_units_menu_new(coil->units_freq);
+  menu_L = cgi_units_menu_new(bar->units_L);
+  menu_freq = cgi_units_menu_new(bar->units_freq);
 
   cgi_units_attach_entry(menu_xy, "entry_b");
   cgi_units_attach_entry(menu_xy, "entry_l1");
@@ -170,18 +170,18 @@ int cgiMain(void){
     }
     
     /* Frequency of operation  */
-    if(cgiFormDouble("freq", &freq, defFREQ/coil->units_freq->sf) !=
+    if(cgiFormDouble("freq", &freq, defFREQ/bar->units_freq->sf) !=
        cgiFormSuccess){
       inputErr(&input_err);
       printFormError("Error reading frequency");
     }
     if( freq < 0.0 ) {
-      freq = defFREQ/coil->units_freq->sf;
+      freq = defFREQ/bar->units_freq->sf;
       printFormError("Frequency may not be negative");
     }    
 
 
-    /* copy data over to the coil structure */
+    /* copy data over to the bars structure */
     bar->a   = a * bar->units_xy->sf;
     bar->b   = b * bar->units_xy->sf;
     bar->l1  = l1 * bar->units_xy->sf;
@@ -207,7 +207,7 @@ int cgiMain(void){
 #ifdef DEBUG
       printf(_("%s:  loading cookie \"%s\"\n"), name_string, cookie_load_str);
 #endif
-      air_coil_load_string(coil, cookie_load_str);
+      bars_load_string(bar, cookie_load_str);
 #ifdef DEBUG
       printf(_("%s:  finished loading cookie\n"),name_string);
 #endif
