@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.7 2009/01/11 15:22:42 dan Exp $
+te dnl $Id: configure.ac,v 1.7 2009/01/11 15:22:42 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -21,17 +21,10 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 dnl 
 
-AC_INIT([wcalc], [1.0A])
-AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
-AC_PREREQ([2.59])
-AM_INIT_AUTOMAKE([1.9])
-
-dnl Create a configuration header
-AM_CONFIG_HEADER([config.h])
-
-dnl Initialize maintainer mode
+AC_INIT(gtk-wcalc/wcalc.c)
+AM_INIT_AUTOMAKE(wcalc, 1.0A)
+AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
-
 
 AC_DEFINE(DEVEL_VERSION, 1, [Define if this is a development snapshot and we want to warn users about that])
 
@@ -322,57 +315,115 @@ AC_ARG_WITH([octave],
 if test "X$with_octave" = "Xno" ; then
 	OCT_WCALC=""
 elif test "X$with_octave" = "Xyes" ; then
-	AC_PATH_PROG([OCTAVE], [octave], no)
-	if test "X$OCTAVE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no)
-	if test "X$OCTAVE_CONFIG" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no)
-	if test "X$MKOCTFILE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([OCTMEX], [mex], no)
-	if test "X$OCTMEX" = "Xno" ; then
-		AC_ERROR([No octave mex could be found])
-	fi
-
 	OCT_WCALC=octave-wcalc
 	wc_oct_wcalc_yesno=yes
+	OCT_PATH=$PATH
 else
 	OCT=$with_octave
-	AC_PATH_PROG([OCTAVE], [octave], no, [$OCT/bin:$PATH])
-	if test "X$OCTAVE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no, [$OCT/bin:$PATH])
-	if test "X$OCTAVE_CONFIG" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no, [$OCT/bin:$PATH])
-	if test "X$MKOCTFILE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
-	fi
-
-	AC_PATH_PROG([OCTMEX], [mex], no, [$OCT/bin:$PATH])
-	if test "X$OCTMEX" = "Xno" ; then
-		AC_ERROR([No octave mex could be found])
-	fi
-
 	OCT_WCALC=octave-wcalc
 	wc_oct_wcalc_yesno=yes
+	OCT_PATH="${OCT}/bin:${PATH}"
 fi
 ])
 
 
-if test "X$OCT_WCALC" != "X"; then
+if test "X$wc_oct_wcalc_yesno" = "Xyes"; then
+
+   	################################################
+	##
+	## octave executable
+	##
+
+	AC_PATH_PROG([OCTAVE], [octave], no, [$OCT_PATH])
+	if test "X$OCTAVE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+   	################################################
+	##
+	## octave-config executable
+	##
+
+	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no, [$OCT_PATH])
+	if test "X$OCTAVE_CONFIG" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+   	################################################
+	##
+	## mkoctfile executable
+	##
+
+	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no, [$OCT_PATH])
+	if test "X$MKOCTFILE" = "Xno" ; then
+		AC_ERROR([No octave installation could be found])
+	fi
+
+   	################################################
+	##
+	## See if this is a new (octave-3 or late in the 2.9
+	## series) where mex support is in mkoctfile
+	##
+
+
+	wc_mkoctfile_is_mex=no
+	AC_MSG_CHECKING([if $MKOCTFILE accepts --mex])
+	AC_LANG(C)
+	ac_ext=c
+	ac_cpp='$MKOCTFILE --mex $CPPFLAGS'
+	ac_compile='$MKOCTFILE --mex -c conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+	ac_link='$MKOCTFILE --mex conftest.$ac_ext $LIBS >&AS_MESSAGE_LOG_FD'
+	ac_compiler_gnu=$ac_cv_c_compiler_gnu
+	save_ac_exeext=$ac_exeext
+	ac_exeext=.mex
+
+	AC_LINK_IFELSE([
+#include "mex.h"
+void mexFunction(
+                 int nlhs,
+                 mxArray *plhs[[]],
+                 int nrhs,
+#if !defined(V4_COMPAT) && !defined(SCI_MEX)
+                 const mxArray *prhs[[]]
+#else
+                 mxArray *prhs[[]]
+#endif
+                 )
+{
+	mexPrintf("Hello, world\n");
+}
+],
+	AC_MSG_RESULT([yes])
+	wc_mkoctfile_is_mex=yes
+	OCT_MEX_EXEEXT=.mex
+,
+	AC_MSG_RESULT([no])
+	wc_mkoctfile_is_mex=no
+	OCT_MEX_EXEEXT=.oct
+)
+
+	# restore the language settings
+	ac_exeext=$save_ac_exeext
+	AC_LANG(C)
+
+	if test "$wc_mkoctfile_is_mex" = "yes" ; then
+		OCTMEX="$MKOCTFILE --mex"
+	else
+
+
+   	################################################
+	##
+	## Our mkoctfile wasn't new enough to support --mex
+	## so search for 'mex' and make sure it is octave
+	## mex as opposed to matlab mex.
+	##
+
+	AC_PATH_PROG([OCTMEX], [mex], no, [$OCT_PATH])
+	if test "X$OCTMEX" = "Xno" ; then
+		AC_ERROR([No octave mex could be found])
+	fi
+
+
 	AC_MSG_CHECKING([if $OCTMEX is octave mex])
 	AC_LANG(C)
 	ac_ext=c
@@ -403,11 +454,25 @@ void mexFunction(
 ,
 	AC_ERROR([$OCTMEX is either broken or is not octave mex])
 )
+	# restore the language settings
+	ac_exeext=$save_ac_exeext
+	AC_LANG(C)
+
+	fi
 
 if test "X${_use_rpath}" = "Xyes" ; then
+	AC_LANG(C)
+	ac_ext=c
+	ac_cpp='$OCTMEX $CPPFLAGS'
+	ac_compile='$OCTMEX -c conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+	ac_link='$OCTMEX conftest.$ac_ext $LIBS >&AS_MESSAGE_LOG_FD'
+	ac_compiler_gnu=$ac_cv_c_compiler_gnu
+	save_ac_exeext=$ac_exeext
+	ac_exeext=$OCT_MEX_EXEEXT
+
 	wc_save_LIBS="$LIBS"
 	rpath=""
-	for fl in "-R" "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
+	for fl in  "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
 	    AC_LINK_IFELSE([
@@ -507,6 +572,7 @@ else
 	OCT_VER=""
 fi
 
+AC_SUBST(OCT_MEX_EXEEXT)
 AC_SUBST(WCALC_OCTLIBS)
 AC_SUBST(OCT_WCALC)
 AC_SUBST(OCTAVE)

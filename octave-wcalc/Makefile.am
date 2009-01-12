@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.16 2005/10/27 13:23:05 dan Exp $
+## $Id: Makefile.am,v 1.17 2008/11/29 20:42:26 dan Exp $
 ##
 
 ## Copyright (C) 2002, 2004, 2005 Dan McMahill
@@ -31,18 +31,19 @@ include $(top_srcdir)/sci-wcalc/mex.mk
 MEX=	@OCTMEX@
 
 # the suffix for the compiled mex file
-MEXSFX=	oct
+MEXSFX=	@OCT_MEX_EXEEXT@
 
 octfiledir=	${libexecdir}/@MYSITEOCT@/${PACKAGE}-${VERSION}
 fcnfiledir=	${libexecdir}/@MYSITEOCTM@/${PACKAGE}-${VERSION}
 octfile_DATA=	${MEX_FILES}
-# octave embedds the help information in the .oct file so the .m
+
+# octave embeds the help information in the .oct file so the .m
 # files are not needed
-#fcnfile_DATA=	${MEX_MANS}
+fcnfile_DATA=	${MEX_MANS}
 
 noinst_SCRIPTS=		runoctave
 
-MEX_FILES=	${MEX_SRCS:.c=.${MEXSFX}}
+MEX_FILES=	${MEX_SRCS:.c=${MEXSFX}}
 MEX_MANS=	${MEX_SRCS:.c=.m}
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
 MEX_TMP_OBJ_FILES=	${MEX_TMP_CXX_FILES:.cc=.o}
@@ -75,9 +76,9 @@ octaverc: $(srcdir)/octaverc.in
 		$(srcdir)/octaverc.in > octaverc
 
 # All the new suffix rules
-SUFFIXES= .c .${MEXSFX} .m .cat .man .txt
+SUFFIXES= .c ${MEXSFX} .m .cat .man .txt
 
-%.${MEXSFX} : %.c %.m
+%${MEXSFX} : %.c %.m
 	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
 
