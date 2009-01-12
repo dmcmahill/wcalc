@@ -1,9 +1,9 @@
-te dnl $Id: configure.ac,v 1.7 2009/01/11 15:22:42 dan Exp $
+te dnl $Id: configure.ac,v 1.9 2009/01/12 03:47:47 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
-dnl Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007, 2008 Dan McMahill
+dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+dnl 2007, 2008, 2009 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl 
@@ -21,9 +21,15 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 dnl 
 
-AC_INIT(gtk-wcalc/wcalc.c)
-AM_INIT_AUTOMAKE(wcalc, 1.0A)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([wcalc], [1.0A])
+AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
+AC_PREREQ([2.59])
+AM_INIT_AUTOMAKE([1.9])
+
+dnl Create a configuration header
+AM_CONFIG_HEADER([config.h])
+
+dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
 AC_DEFINE(DEVEL_VERSION, 1, [Define if this is a development snapshot and we want to warn users about that])
