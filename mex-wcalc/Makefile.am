@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.24 2005/10/27 12:54:26 dan Exp $
+## $Id: Makefile.am,v 1.25 2008/11/29 20:42:25 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2004, 2005 Dan McMahill
@@ -85,6 +85,13 @@ matlab_startup.m: $(srcdir)/matlab_startup.m.in
 # All the new suffix rules
 SUFFIXES= .c .${MEXSFX}.la .m .txt
 
+# matlab mex is not parallel safe.  This is partly because I have listed
+# alert.c on the build command line so each mex job compiles alert.c  But
+# even without this issue, mex compiles mexversion.c from the matlab install
+# tree as well and we have no control over that.  We could potentially
+# arrange to use a temp directory for each mex file, but that sounds ugly
+# so for now, just prevent parallel makes.
+.NOTPARALLEL :
 .c.${MEXSFX}.la :
 	$(MEX) -v $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
