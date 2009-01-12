@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.3 2008/11/29 22:10:46 dan Exp $
+## $Id: Makefile.am,v 1.4 2008/11/30 01:14:01 dan Exp $
 
 ##
-## Copyright (C) 2005, 2008 Dan McMahill
+## Copyright (C) 2005, 2008, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -30,12 +30,6 @@ PPMS_256=	${TGIF_OBJS:.obj=_256.ppm}
 ICONS=		wcalc_icon.ico
 
 TGIF_PROG=	XENVIRONMENT=$(top_srcdir)/pixmaps/Xdefaults.tgif @TGIF@ -print -color -xpm
-
-pkgdatadir=     ${datadir}/${PACKAGE}-${VERSION}
-
-if WIN32
-pkgdata_DATA=	Readme.txt
-endif
 
 
 SUFFIXES=	.xpm .obj _16.ppm _256.ppm .ico
@@ -79,4 +73,16 @@ if MISSING_XPMTOPPM
 else
 	${PPMTOWINICON} -output $@ ${PPMS_16} ${PPMS_256}
 endif
+
+
+pkgdatadir=     ${datadir}/${PACKAGE}-${VERSION}
+if WIN32
+pkgdata_DATA=   Readme.txt COPYING.txt
+
+COPYING.txt: $(top_srcdir)/COPYING
+	awk '{print $$0 "\r"}' $(top_srcdir)/COPYING > $@
+
+CLEANFILES = BUGS.txt COPYING.txt
+endif
+
 
