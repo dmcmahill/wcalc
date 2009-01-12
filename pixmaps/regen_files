@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+MAKE=${MAKE:-make}
+echo "Building all generated graphic files"
+${MAKE} -f regen.mk
+
