@@ -1,4 +1,4 @@
-<!-- $Id: bars.html,v 1.1 2009/01/11 05:30:09 dan Exp $ -->
+<!-- $Id: bars.html,v 1.2 2009/01/13 02:10:36 dan Exp $ -->
 <!--
  * Copyright (c) 2009 Dan McMahill
  * All rights reserved.
@@ -45,81 +45,75 @@ mutual inductance of parallel bars
 
 
 <FORM NAME="wcalc" METHOD=GET ACTION="bars.cgi">
-<TABLE>
-<TR>
-<TD>
+  <TABLE>
+    <TR>
+      <TD>
 
-<TABLE>
-<TR ALIGN="CENTER">
-<TD><IMG SRC="<@s@HTMLPATH@>bars_fig.png" WIDTH=593 HEIGHT=203
-     ALT="[Parallel Rectangular Bars Drawing]"></TD>
-</TR>
-<TR ALIGN="CENTER">
-<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
-</TR>
+        <TABLE>
+          <TR ALIGN="CENTER">
+            <TD><IMG SRC="<@s@HTMLPATH@>bars_fig.png" WIDTH=593 HEIGHT=203
+                 ALT="[Parallel Rectangular Bars Drawing]"></TD>
+          </TR>
 
-<TR ALIGN="CENTER">
-<TD>
+          <TR ALIGN="CENTER">
+            <TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+          </TR>
 
-<TABLE>
-
-<TR>
-<TD>Width of Bar #1 (a)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" 
-     VALUE="<@g@bar->a/bar->units_xy->sf@>"
-        onChange="valsChanged()"></TD>
-<TD>
-<!-- xy units menu -->
-<@s@cgi_units_menu_display(menu_xy)@>
-</TD>
-</TR>
-
-<TR>
-<TD>Thickness of Bar #1 (b)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" 
-     VALUE="<@g@bar->b/bar->units_xy->sf@>"
-        onChange="valsChanged()"></TD>
-<TD>
-<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_b">
-</TD>
-</TR>
-
-<TR>
-<TD>Length of Bar #1 (l1)</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="l1" 
-     VALUE="<@g@bar->l1/bar->units_xy->sf@>"
-        onChange="valsChanged()"></TD>
-<TD>
-<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l1">
-</TD>
-</TR>
+          <TR ALIGN="CENTER">
+            <TD>
+              <TABLE>
+                <TR>
+                  <TD>Frequency</TD>
+                  <TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" 
+                       VALUE="<@g@bar->freq/bar->units_freq->sf@>"
+                       onChange="valsChanged()"></TD>
+                  <TD>
+                    <!-- frequency units menu -->
+                    <@s@cgi_units_menu_display(menu_freq)@>
+                  </TD>
+                </TR>
 
 
-<TR>
-<TD>Frequency</TD>
-<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" 
-     VALUE="<@g@bar->freq/bar->units_freq->sf@>"
-        onChange="valsChanged()"></TD>
-<TD>
-<!-- frequency units menu -->
-<@s@cgi_units_menu_display(menu_freq)@>
-</TD>
-</TR>
+              </TABLE>  <!-- end of model parameter table -->
+            </TD>
+          </TR>
 
-<TR>
-<TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
-<INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
-<TD></TD>
-</TR>
+        </TABLE>  <!-- end left hand 1/2 of main table -->
 
-</TABLE>  <!-- end of model parameter table -->
-</TD>
-</TR>
+      <TD>
+        <TABLE>
 
-</TABLE>  <!-- end left hand 1/2 of main table -->
 
-<TD>
-<TABLE>
+                <TR>
+                  <TD>Width of Bar #1 (a)</TD>
+                  <TD><INPUT TYPE="TEXT" SIZE=10 NAME="a" 
+                       VALUE="<@g@bar->a/bar->units_xy->sf@>"
+                       onChange="valsChanged()"></TD>
+                  <TD>
+                    <!-- xy units menu -->
+                    <@s@cgi_units_menu_display(menu_xy)@>
+                  </TD>
+                </TR>
+
+                <TR>
+                  <TD>Thickness of Bar #1 (b)</TD>
+                  <TD><INPUT TYPE="TEXT" SIZE=10 NAME="b" 
+                       VALUE="<@g@bar->b/bar->units_xy->sf@>"
+                       onChange="valsChanged()"></TD>
+                  <TD>
+                    <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_b">
+                  </TD>
+                </TR>
+
+                <TR>
+                  <TD>Length of Bar #1 (l1)</TD>
+                  <TD><INPUT TYPE="TEXT" SIZE=10 NAME="l1" 
+                       VALUE="<@g@bar->l1/bar->units_xy->sf@>"
+                       onChange="valsChanged()"></TD>
+                  <TD>
+                    <INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_l1">
+                  </TD>
+                </TR>
 
 
 <TR>
@@ -182,6 +176,11 @@ mutual inductance of parallel bars
 </TD>
 </TR>
 
+                <TR>
+                  <TD><INPUT TYPE="SUBMIT" NAME="analyze" VALUE="Analyze">
+                    <INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+                  <TD></TD>
+                </TR>
 
 </TABLE>
 
