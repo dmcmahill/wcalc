@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: faq.shtml,v 1.6 2005/11/01 02:00:08 dan Exp $ -->
+<!-- $Id: faq.shtml,v 1.7 2005/11/05 01:53:56 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -45,6 +45,16 @@ stripline synthesis,
 	using <a href="http://www.mingw.org/">MinGW</a>.
     </p>
 
+    <H2>Why don't you distribute binaries for my favorite operating system?</H2>
+    <p>
+	I don't have the resources to provide precompiled binaries for many 
+	different operating systems.  Many Linux and BSD operating systems 
+	have native packaging systems that would be the appropriate place for
+	binaries.  I do, however, provide a windows installer.  This is in
+	recognition of the fact that it is far more common for a windows machine
+	to not have any development tools on it than for a Linux or BSD system.
+    </p>
+
     <H2>I can't get the matlab interface to work on my computer!</H2>
     <p>
     Due to the high cost of Matlab, I have a very limited access to systems where
@@ -58,6 +68,21 @@ stripline synthesis,
     <p>
     Please submit bug reports and patches at the
     <A HREF="http://www.sourceforge.net/projects/wcalc">Wcalc Sourceforge Project Page</A>.
+    When you do file a bug report, the following information is required for me to be able
+    to do anything useful:
+	<ul>
+	  <li>wcalc version</li>
+	  <li>operating system and version.  If it is a unix-like
+    operating system, <tt>uname -a</tt> is often times helpful.</li>
+          <li><em>Exact</em> arguments given to the <tt>configure</tt>
+    script if you built from sources.</li>
+          <li>How to reproduce the problem.</li>
+          <li>If the program produces an output that you believe to be
+    incorrect, please say what the correct output should be and
+    provide a reference.  Many of the calculations used by wcalc are
+    approximate because no exact closed form solution is known.</li>
+	</ul>
+    Any bug report that simply says "program not work" will be ignored.
     </p>
 
     <H2>Wcalc is awesome.  Why is it free?</H2>
@@ -70,6 +95,11 @@ stripline synthesis,
     from using all of these free tools, it seemed appropriate to give something back.
     Besides, Wcalc has been a hobby project of mine and it pleases me to know that
     others find it useful.
+    </p>
+
+    <H2>Are you trying to sell something?</H2>
+    <p>
+    No.
     </p>
 
     </font>
