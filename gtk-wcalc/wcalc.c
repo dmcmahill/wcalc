@@ -1,7 +1,7 @@
-/* $Id: wcalc.c,v 1.34 2008/11/30 14:42:10 dan Exp $ */
+/* $Id: wcalc.c,v 1.35 2009/01/08 03:38:18 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
  * All rights reserved.
  *
  * 

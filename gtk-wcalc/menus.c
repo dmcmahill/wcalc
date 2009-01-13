@@ -1,7 +1,7 @@
-/* $Id: menus.c,v 1.14 2005/10/30 17:57:08 dan Exp $ */
+/* $Id: menus.c,v 1.15 2008/11/29 20:41:50 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -31,6 +31,7 @@
 
 #include "about.h"
 #include "files.h"
+#include "newprint.h"
 #include "print.h"
 #include "wcalc.h"
 
@@ -81,6 +82,7 @@ static GtkItemFactoryEntry static_menu_items[] = {
   { N_("/File/Save _As"),   NULL,          wcalc_save_as,    0, NULL },
   { N_("/File/sep2"),       NULL,          NULL,             0, "<Separator>" },
   { N_("/File/_Print"),     "<control>P",  print_popup,      0, NULL },
+  { N_("/File/_NewPrint"),     "<control>R",  newprint_popup,      0, NULL },
   { N_("/File/sep3"),       NULL,          NULL,             0, "<Separator>" },
   { N_("/File/Close"),      "<control>W",  window_close,     0, NULL },
   { N_("/File/Quit"),       "<control>Q",  gtk_main_quit,    0, NULL },

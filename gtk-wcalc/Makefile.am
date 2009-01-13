@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.40 2008/12/03 23:46:50 dan Exp $
+## $Id: Makefile.am,v 1.41 2009/01/11 15:57:19 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -50,6 +50,8 @@ wcalc_SOURCES = \
 	menus.h \
 	microstrip_gui.c \
 	microstrip_gui.h \
+	newprint.c \
+	newprint.h \
 	print.c \
 	print.h \
 	start.c \
