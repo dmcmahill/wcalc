@@ -1,4 +1,4 @@
-/* $Id: print.c,v 1.12 2009/01/08 03:38:36 dan Exp $ */
+/* $Id: newprint.c,v 1.1 2009/01/13 14:36:09 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -37,6 +37,7 @@
 
 #include <gtk/gtk.h>
 
+#include "units.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -65,7 +66,7 @@ begin_print (GtkPrintOperation *operation,
 	     gpointer user_data)
 {
   PrintData *data = (PrintData *)user_data;
-  char *contents = "hello\nthis is a test\nof gtkprint\nI hope I can use it\n";
+  char *contents;
   int i;
   double height;
  	
@@ -74,7 +75,8 @@ begin_print (GtkPrintOperation *operation,
   data->lines_per_page = floor (height / data->font_size);
  	
   //g_file_get_contents (data->filename, &contents, NULL, NULL);
- 	
+  contents = g_strdup_printf("hello\nthis is a test\nof gtkprint\nI hope I can use it\n");
+
   data->lines = g_strsplit (contents, "\n", 0);
   g_free (contents);
  	
@@ -98,14 +100,17 @@ draw_page (GtkPrintOperation *operation,
   cairo_t *cr;
   PangoLayout *layout;
   gint text_width, text_height;
-  gdouble width;
+  gdouble width, height;
   gint line, i;
   PangoFontDescription *desc;
   gchar *page_str;
  	
   cr = gtk_print_context_get_cairo_context (context);
   width = gtk_print_context_get_width (context);
- 	
+  height = gtk_print_context_get_height (context);
+  
+  g_print("%s():  width = %g, height = %g\n", __FUNCTION__, width, height);
+
   cairo_rectangle (cr, 0, 0, width, HEADER_HEIGHT);
  	
   cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
@@ -131,6 +136,8 @@ draw_page (GtkPrintOperation *operation,
       pango_layout_get_pixel_size (layout, &text_width, &text_height);
     }
  	
+  g_print("%s():  text_width = %d, text_height = %d\n", __FUNCTION__, text_width, text_height);
+
   cairo_move_to (cr, (width - text_width) / 2, 
 		 (HEADER_HEIGHT - text_height) / 2);
   pango_cairo_show_layout (cr, layout);
@@ -146,8 +153,11 @@ draw_page (GtkPrintOperation *operation,
  	
   g_object_unref (layout);
  	
+
+  /* Now set up the pango layout for the text portion of the output */
   layout = gtk_print_context_create_pango_layout (context);
- 	
+
+  /* pick the font and font size */
   desc = pango_font_description_from_string ("monospace");
   pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
   pango_layout_set_font_description (layout, desc);
@@ -161,6 +171,8 @@ draw_page (GtkPrintOperation *operation,
     {
       pango_layout_set_text (layout, data->lines[line], -1);
       pango_cairo_show_layout (cr, layout);
+
+      /* moves back to x=y and move down by one line */
       cairo_rel_move_to (cr, 0, data->font_size);
       line++;
     }
@@ -184,7 +196,7 @@ end_print (GtkPrintOperation *operation,
 
 
 GtkWidget *
-do_printing (GtkWidget *do_widget)
+do_printing (GtkWidget *do_widget, Wcalc *wcalc)
 {
   GtkPrintOperation *operation;
   PrintData *data;
@@ -193,7 +205,7 @@ do_printing (GtkWidget *do_widget)
   operation = gtk_print_operation_new ();
   data = g_new0 (PrintData, 1);
   //data->filename = demo_find_file ("printing.c", NULL);
-  data->filename = "testfile.c";
+  data->filename = g_strdup(wcalc->model_name);
 
   data->font_size = 12.0;
  	
@@ -224,7 +236,8 @@ do_printing (GtkWidget *do_widget)
     g_error_free (error);
     
     g_signal_connect (dialog, "response",
-		      G_CALLBACK (gtk_widget_destroy), NULL);
+		      G_CALLBACK (gtk_widget_destroy), 
+		      NULL);
     
     gtk_widget_show (dialog);
   }
@@ -234,14 +247,23 @@ do_printing (GtkWidget *do_widget)
 }
 
 
+/*
+ * data is the Wcalc *
+ * action is whats specified in menus.c
+ * widget is the GtkMenuItem *
+ */
 void newprint_popup(gpointer data,
-                 guint action,
-				  GtkWidget *widget)
+		    guint action,
+		    GtkWidget *widget)
 {
+  Wcalc * wcalc;
 
-printf("%s(%p, %d, %p)\n", __FUNCTION__, data, action, widget);
-do_printing(widget);
+  wcalc = WC_WCALC(data);
 
+  printf("%s(%p, %d, %p)\n", __FUNCTION__, data, action, widget);
+
+  do_printing(wcalc->window, wcalc);
+  
 }
 
  

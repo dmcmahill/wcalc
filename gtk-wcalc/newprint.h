@@ -1,4 +1,4 @@
-/* $Id: print.h,v 1.5 2008/11/29 20:41:52 dan Exp $ */
+/* $Id: newprint.h,v 1.1 2009/01/13 14:36:09 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -23,10 +23,27 @@
 #ifndef __NEWPRINT_H__
 #define __NEWPRINT_H__
 
+#include "units.h"
+
+typedef struct printValue
+{
+  gchar *name;
+  union {
+    gdouble fval;
+    gint ival;
+    gchar *sval;
+  } val;
+  
+  enum {FLOAT, INT, STRING} type;
+
+  wc_units *units;
+} PrintValue;
+
+
 /* data should be a pointer to the current wcalc */
 void newprint_popup(gpointer data,
-		 guint action,
-		 GtkWidget *widget);
+		    guint action,
+		    GtkWidget *widget);
 
 
 #endif /*__NEWPRINT_H__*/

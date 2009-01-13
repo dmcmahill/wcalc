@@ -1,4 +1,4 @@
-/*      $Id: wcalc.h,v 1.21 2006/02/22 16:32:00 dan Exp $ */
+/*      $Id: wcalc.h,v 1.22 2008/11/29 20:41:55 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -110,6 +110,7 @@ typedef struct WCALC
   int (*analyze) (void);
   int (*synthesize) (void);
   int (*display) (void);
+  GList * (*dump_values) (struct WCALC *);
 
   /*
    * Required data

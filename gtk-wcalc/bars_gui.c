@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.4 2009/01/10 20:56:16 dan Exp $ */
+/* $Id: bars_gui.c,v 1.5 2009/01/11 15:57:20 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -57,6 +57,8 @@
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
 
+static GList * dump_values(Wcalc *wcalc);
+
 static void analyze( GtkWidget *w, gpointer data );
 static void calculate( bars_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( bars_gui *gui);
@@ -105,6 +107,7 @@ bars_gui *bars_gui_new(void)
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
+  wcalc->dump_values = dump_values;
 
   wcalc->file_name=NULL;
   wcalc->file_basename=NULL;
@@ -556,6 +559,24 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 	  wcalc,fp,name);
 #endif
   bars_save(WC_BARS_GUI(wcalc)->b,fp,name);
+}
+
+static GList * dump_values(Wcalc *wcalc)
+{
+  GList * list;
+  bars_gui *gui;
+  bars * b;
+
+  gui = WC_BARS_GUI(wcalc);
+  b = gui->b;
+
+  list = NULL;
+  list = g_list_append(list, "hello");
+  list = g_list_append(list, "there");
+  list = g_list_append(list, "I am a ");
+  list = g_list_append(list, "bars");
+  
+  return list;
 }
 
 

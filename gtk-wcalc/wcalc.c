@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.35 2009/01/08 03:38:18 dan Exp $ */
+/* $Id: wcalc.c,v 1.36 2009/01/13 14:36:10 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
@@ -563,7 +563,8 @@ void wcalc_setup (gpointer data,
   window_list = g_slist_append(window_list, wcalc->window);
 
 #ifdef DEBUG
-  g_print("wcalc_setup():  Just set wcalc->window = %p\n", wcalc->window);
+  g_print("wcalc_setup():  Created new wcalc = %p and set wcalc->window = %p\n", 
+	  wcalc, wcalc->window);
 #endif
   if ( fname != NULL ) {
     wcalc->file_name = fname;
@@ -655,6 +656,8 @@ Wcalc *Wcalc_new(void)
   new->init_done=0;
 
   new->units_menu_list = NULL;
+
+  new->dump_values = NULL;
 
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);
