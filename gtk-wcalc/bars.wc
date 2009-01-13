@@ -14,25 +14,25 @@ model_name = bars
 file_version = 0.1
 
 # Bar #1 width (x-dimension, meters)
-a = 9.99998e-06
+a = 10.0e-06
 
 # Bar #1 height (y-dimension, meters)
-b = 9.99998e-07
+b = 1.0e-6
 
 # Bar #1 length (z-dimension, meters)
-l1 = 0.000999998
+l1 = 0.001
 
 # Bar #2 width (x-dimension, meters)
-c = 9.99998e-07
+c = 10.0e-6
 
 # Bar #2 height (y-dimension, meters)
-d = 1.999996e-05
+d = 1.0e-6
 
 # Bar #2 length (z-dimension, meters)
-l2 = 0.000999998
+l2 = 0.001
 
 # Bar #2 x offset (meters)
-E = 1.199896e-05
+E = 12e-6
 
 # Bar #2 y offset (meters)
 P = 0
