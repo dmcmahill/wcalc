@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.5 2009/01/11 15:57:20 dan Exp $ */
+/* $Id: bars_gui.c,v 1.6 2009/01/13 20:35:17 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -571,11 +571,23 @@ static GList * dump_values(Wcalc *wcalc)
   b = gui->b;
 
   list = NULL;
-  list = g_list_append(list, "hello");
-  list = g_list_append(list, "there");
-  list = g_list_append(list, "I am a ");
-  list = g_list_append(list, "bars");
-  
+  list = wc_add_double_print("Width of bar #1 (a)", b->a, b->units_xy, list);
+  list = wc_add_double_print("Thickness of bar #1 (b)", b->b, b->units_xy, list);
+  list = wc_add_double_print("Length of bar #1 (l1)", b->l1, b->units_xy, list);
+
+  list = wc_add_double_print("Width of bar #2 (d)", b->d, b->units_xy, list);
+  list = wc_add_double_print("Thickness of bar #2 (c)", b->c, b->units_xy, list);
+  list = wc_add_double_print("Length of bar #2 (l2)", b->l2, b->units_xy, list);
+
+  list = wc_add_double_print("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
+  list = wc_add_double_print("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
+  list = wc_add_double_print("Bar #2 position in the length direction (l3)", b->l3, b->units_xy, list);
+
+  list = wc_add_double_print("Bar #1 Self Inductance (L1)", b->L1, b->units_L, list);
+  list = wc_add_double_print("Bar #2 Self Inductance (L2)", b->L2, b->units_L, list);
+  list = wc_add_double_print("Mutual Inductance (M)", b->M, b->units_L, list);
+  list = wc_add_double_print("Coupling Coefficient (k)", b->k, NULL, list);
+
   return list;
 }
 

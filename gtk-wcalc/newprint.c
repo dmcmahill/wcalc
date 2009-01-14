@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.1 2009/01/13 14:36:09 dan Exp $ */
+/* $Id: newprint.c,v 1.2 2009/01/13 20:35:18 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -37,6 +37,7 @@
 
 #include <gtk/gtk.h>
 
+#include "newprint.h"
 #include "units.h"
 #include "wcalc.h"
 
@@ -51,6 +52,8 @@
  	
 typedef struct
 {
+  Wcalc *wcalc;
+
   gchar *filename;
   gdouble font_size;
  	
@@ -69,22 +72,61 @@ begin_print (GtkPrintOperation *operation,
   char *contents;
   int i;
   double height;
- 	
+  Wcalc *w;
+  GList *list;
+  guint nv, j;
+  PrintValue *pv;
+
   height = gtk_print_context_get_height (context) - HEADER_HEIGHT - HEADER_GAP;
  	
   data->lines_per_page = floor (height / data->font_size);
  	
-  //g_file_get_contents (data->filename, &contents, NULL, NULL);
-  contents = g_strdup_printf("hello\nthis is a test\nof gtkprint\nI hope I can use it\n");
+  w = data->wcalc;
+  list = NULL;
+  if(w->dump_values != NULL) {
+    list = w->dump_values(w);
+  }
 
-  data->lines = g_strsplit (contents, "\n", 0);
-  g_free (contents);
+  g_print("%s():  list = %p\n", __FUNCTION__, list);
+
+  nv = g_list_length( list );
+  data->lines = (gchar **) g_malloc((nv + 1) * sizeof(gchar *));
+  if( data->lines == NULL ) {
+    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
+    exit(1);
+  }
+
+  data->lines[nv] = NULL;
+  for(j = 0 ; j < nv; j++) {
+    pv = g_list_nth_data(list, j);
+    g_print("list[%d]. Type = %d = %p\n", j, pv->type, pv);
+    switch(pv->type) {
+    case FLOAT:
+      data->lines[j] = g_strdup_printf("%s = %g", pv->name, pv->val.fval);
+      break;
+
+    case INT:
+      data->lines[j] = g_strdup_printf("%s = %d", pv->name, pv->val.ival);
+      break;
+
+    case STRING:
+      data->lines[j] = g_strdup_printf("%s = %s", pv->name, pv->val.sval);
+      break;
+    }
+  }
+  //g_file_get_contents (data->filename, &contents, NULL, NULL);
+  //contents = g_strdup_printf("hello\nthis is a test\nof gtkprint\nI hope I can use it\n");
+  
+  //data->lines = g_strsplit (contents, "\n", 0);
+  //g_free (contents);
  	
-  i = 0;
-  while (data->lines[i] != NULL)
-    i++;
+  //i = 0;
+  //while (data->lines[i] != NULL)
+  //i++;
  	
-  data->num_lines = i;
+  //data->num_lines = i;
+
+  data->num_lines = nv;
   data->num_pages = (data->num_lines - 1) / data->lines_per_page + 1;
  	
   gtk_print_operation_set_n_pages (operation, data->num_pages);
@@ -206,6 +248,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
   data = g_new0 (PrintData, 1);
   //data->filename = demo_find_file ("printing.c", NULL);
   data->filename = g_strdup(wcalc->model_name);
+  data->wcalc = wcalc;
 
   data->font_size = 12.0;
  	
@@ -266,4 +309,82 @@ void newprint_popup(gpointer data,
   
 }
 
- 
+
+GList * wc_add_double_print(gchar * name, double val, wc_units *units, GList *list)
+{
+  PrintValue *v;
+
+  g_print("%s(%s, %g, %p, %p)\n", __FUNCTION__, name, val, units, list);
+
+  v = (PrintValue *) g_malloc(sizeof(PrintValue));
+  if (v == NULL) {
+    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
+    exit(1);
+  }
+
+  v->name = g_strdup( name );
+  v->val.fval = val;
+  v->type = FLOAT;
+  v->units = units;
+  
+  return g_list_append(list, v);
+}
+
+
+GList * wc_add_int_print(gchar * name, int val, wc_units *units, GList *list)
+{
+  PrintValue *v;
+
+  g_print("%s(%s, %d, %p, %p)\n", __FUNCTION__, name, val, units, list);
+  
+  v = (PrintValue *) g_malloc(sizeof(PrintValue));
+  if (v == NULL) {
+    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
+    exit(1);
+  }
+
+  v->name = g_strdup( name );
+  v->val.ival = val;
+  v->type = INT;
+  v->units = units;
+  
+  return g_list_append(list, v);
+}
+
+GList * wc_add_string_print(gchar * name, gchar * val, wc_units *units, GList *list)
+{
+  PrintValue *v;
+
+  g_print("%s(\"%s\", \"%s\", %p, %p)\n", __FUNCTION__, name, val, units, list);
+
+  v = (PrintValue *) g_malloc(sizeof(PrintValue));
+  if (v == NULL) {
+    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
+    exit(1);
+  }
+
+  v->name = g_strdup( name );
+  v->val.sval = g_strdup( val );
+  v->type = STRING;
+  v->units = units;
+  
+  return g_list_append(list, v);
+}
+
+void wc_print_value_free(PrintValue * val)
+{
+  if( val == NULL) {
+    return;
+  }
+
+  if( val->name != NULL ) {
+    g_free( val->name );
+  }
+
+  if( val->type == STRING && val->val.sval != NULL ) {
+    g_free(val->val.sval);
+  }
+
+  free( val );
+}
+

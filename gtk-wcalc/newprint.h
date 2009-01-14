@@ -1,4 +1,4 @@
-/* $Id: newprint.h,v 1.1 2009/01/13 14:36:09 dan Exp $ */
+/* $Id: newprint.h,v 1.2 2009/01/13 20:35:18 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -39,6 +39,10 @@ typedef struct printValue
   wc_units *units;
 } PrintValue;
 
+GList * wc_add_double_print(gchar * name, double val, wc_units *units, GList *list);
+GList * wc_add_int_print(gchar * name, int val, wc_units *units, GList *list);
+GList * wc_add_string_print(gchar * name, gchar * val, wc_units *units, GList *list);
+void wc_print_value_free(PrintValue * val);
 
 /* data should be a pointer to the current wcalc */
 void newprint_popup(gpointer data,
