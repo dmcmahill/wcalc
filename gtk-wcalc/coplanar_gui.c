@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.c,v 1.6 2007/11/29 17:30:32 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.7 2008/11/29 20:41:43 dan Exp $ */
 
 /*
  * Copyright (C) 2006, 2007 Dan McMahill
@@ -1000,10 +1000,13 @@ static void calculate( coplanar_gui *gui, GtkWidget *w, gpointer data )
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
    */
-  if (rslt==0)
+  if (rslt==0) {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
-  else
+    WC_WCALC(gui)->values_in_sync = TRUE;
+  } else {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
+    WC_WCALC(gui)->values_in_sync = FALSE;
+  }
 
 }
 

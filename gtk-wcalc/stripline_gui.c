@@ -1,4 +1,4 @@
-/* $Id: stripline_gui.c,v 1.20 2006/01/10 16:35:20 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.21 2008/11/29 20:41:53 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
@@ -912,11 +912,13 @@ static void calculate( stripline_gui *gui, GtkWidget *w, gpointer data )
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
    */
-  if (rslt==0)
+  if (rslt==0) {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
-  else
+    WC_WCALC(gui)->values_in_sync = TRUE;
+  } else {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
-
+    WC_WCALC(gui)->values_in_sync = FALSE;
+  }
 }
 
 static void update_display(stripline_gui *gui)

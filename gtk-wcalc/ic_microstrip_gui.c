@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.14 2005/10/29 19:07:31 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.15 2008/11/29 20:41:48 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -946,10 +946,13 @@ static void calculate( ic_microstrip_gui *gui, GtkWidget *w, gpointer data )
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
    */
-  if (rslt==0)
+  if (rslt==0) {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
-  else
+    WC_WCALC(gui)->values_in_sync = TRUE;
+  } else {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
+    WC_WCALC(gui)->values_in_sync = FALSE;
+  }
 
 }
 

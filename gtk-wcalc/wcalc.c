@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.36 2009/01/13 14:36:10 dan Exp $ */
+/* $Id: wcalc.c,v 1.37 2009/01/13 20:35:18 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
@@ -754,6 +754,8 @@ void vals_changedCB(GtkWidget *widget, gpointer data )
 
   if(gui->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
+
+  gui->values_in_sync = FALSE; 
 }
 
 

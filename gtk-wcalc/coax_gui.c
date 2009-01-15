@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.32 2005/10/29 19:07:30 dan Exp $ */
+/* $Id: coax_gui.c,v 1.33 2008/11/29 20:41:42 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
@@ -1033,10 +1033,13 @@ static void calculate( coax_gui *gui, GtkWidget *w, gpointer data )
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
    */
-  if (rslt==0)
+  if (rslt==0) {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
-  else
-    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), _("Values out of\nrange."));
+    WC_WCALC(gui)->values_in_sync = TRUE;
+  } else {
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
+    WC_WCALC(gui)->values_in_sync = FALSE;
+  }
 
 }
 

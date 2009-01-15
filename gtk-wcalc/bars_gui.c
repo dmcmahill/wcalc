@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.6 2009/01/13 20:35:17 dan Exp $ */
+/* $Id: bars_gui.c,v 1.7 2009/01/14 02:46:01 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -45,6 +45,7 @@
 #include "bars.h"
 #include "bars_gui.h"
 #include "bars_loadsave.h"
+#include "newprint.h"
 #include "physconst.h"
 
 #include "utils.h"
@@ -456,10 +457,13 @@ static void calculate( bars_gui *gui, GtkWidget *w, gpointer data )
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
    */
-  if (rslt==0)
+  if (rslt==0) {
     gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "");
-  else
-    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), _("Values out of\nrange."));
+    WC_WCALC(gui)->values_in_sync = TRUE;
+  } else {
+    gtk_label_set_text(GTK_LABEL(WC_WCALC(gui)->text_status), "Values out of\nrange.");
+    WC_WCALC(gui)->values_in_sync = FALSE;
+  }
 
 }
 
