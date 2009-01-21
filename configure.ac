@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.9 2009/01/12 03:47:47 dan Exp $
+te dnl $Id: configure.ac,v 1.10 2009/01/12 19:31:58 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -61,7 +61,7 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 if test "x$WIN32" = "xyes" ; then
 	AC_CHECK_TOOL([WINDRES], [windres], [no])
