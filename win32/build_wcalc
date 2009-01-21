@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build_wcalc,v 1.5 2008/11/30 13:57:39 dan Exp $
+# $Id: build_wcalc,v 1.6 2009/01/12 23:32:32 dan Exp $
 #
 
 # error out on failed commands whose return code wasn't explicitly
@@ -198,6 +198,7 @@ echo "Configuring for cygwin"
 	--disable-dependency-tracking \
 	--disable-htdocs \
 	--disable-cgi \
+	--disable-stdio \
 	--disable-nls \
 	--disable-update-desktop-database \
 	--disable-update-mime-database \
