@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.3 2009/01/14 02:46:02 dan Exp $ */
+/* $Id: newprint.c,v 1.4 2009/01/15 15:54:13 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -38,6 +38,7 @@
 #include <gtk/gtk.h>
 
 #include "newprint.h"
+#include "render_figures.h"
 #include "units.h"
 #include "wcalc.h"
 
@@ -155,6 +156,11 @@ begin_print (GtkPrintOperation *operation,
 				       pv->name, pv->val.sval,
 				       units_name);
       break;
+
+    case CAIRO:
+      data->lines[j] = g_strdup_printf("[CAIRO FIGURE HERE]");
+      break;
+
     }
 
     free(units_name);
@@ -187,6 +193,7 @@ draw_page (GtkPrintOperation *operation,
   cairo_t *cr;
   PangoLayout *layout;
   gint text_width, text_height, header_height;
+  gdouble w,h;
   gdouble width, height;
   gint line, i;
   PangoFontDescription *desc;
@@ -300,20 +307,29 @@ draw_page (GtkPrintOperation *operation,
 #endif
 
 #if 0
-  image_surface = cairo_image_surface_create_from_png ("../pixmaps/bars_fig.png");
-  //w = cairo_image_surface_get_width (image);
-  //h = cairo_image_surface_get_height (image);
+  //image_surface = cairo_image_surface_create_from_png ("../pixmaps/bars_fig.png");
+  image_surface = cairo_image_surface_create_from_png ("foo.png");
+  w = cairo_image_surface_get_width (image_surface);
+  h = cairo_image_surface_get_height (image_surface);
+  g_print("%s():  w = %g, h = %g\n", __FUNCTION__, w, h);
 
-  cairo_translate (cr, 28.0, 228.0);
+  cairo_translate (cr, 28.0, 500.0);
 
   //cairo_rotate (cr, 45* M_PI/180);
   //cairo_scale  (cr, 256.0/w, 256.0/h);
   //cairo_translate (cr, -0.5*w, -0.5*h);
+  cairo_scale  (cr, 72.0/600.0, 72.0/600.0);
 
   cairo_set_source_surface (cr, image_surface, 0, 0);
   cairo_paint (cr);
   cairo_surface_destroy (image_surface);
 #endif
+
+  /* FIXME -- center the graphic left/right */
+  cairo_translate (cr, 0, header_height + HEADER_GAP);
+  bars_fig_init();
+  bars_fig_render[0](NULL, cr);
+  cairo_translate (cr, 0, 0);
 
   /*
    * *********************************************************************
@@ -325,7 +341,8 @@ draw_page (GtkPrintOperation *operation,
   layout = gtk_print_context_create_pango_layout (context);
 
   /* pick the font and font size */
-  desc = pango_font_description_from_string ("monospace");
+  /* monospace, sans-serif, serif */
+  desc = pango_font_description_from_string ("serif");
 
   /* A size value of 10 * PANGO_SCALE is a 10 point font. */
   pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
@@ -334,7 +351,7 @@ draw_page (GtkPrintOperation *operation,
  	
 
   /* now print out each line of text for this page */
-  cairo_move_to (cr, 0, header_height + HEADER_GAP);
+  cairo_move_to (cr, 0, header_height + HEADER_GAP + bars_fig_height[0]);
   line = page_nr * data->lines_per_page;
   for (i = 0; i < data->lines_per_page && line < data->num_lines; i++)
     {
@@ -493,7 +510,7 @@ void newprint_popup(gpointer data,
 }
 
 
-GList * wc_add_double_print(gchar * name, double val, wc_units *units, GList *list)
+GList * wc_print_add_double(gchar * name, double val, wc_units *units, GList *list)
 {
   PrintValue *v;
 
@@ -514,7 +531,7 @@ GList * wc_add_double_print(gchar * name, double val, wc_units *units, GList *li
 }
 
 
-GList * wc_add_int_print(gchar * name, int val, wc_units *units, GList *list)
+GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list)
 {
   PrintValue *v;
 
@@ -534,7 +551,7 @@ GList * wc_add_int_print(gchar * name, int val, wc_units *units, GList *list)
   return g_list_append(list, v);
 }
 
-GList * wc_add_string_print(gchar * name, gchar * val, wc_units *units, GList *list)
+GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *list)
 {
   PrintValue *v;
 
@@ -550,6 +567,26 @@ GList * wc_add_string_print(gchar * name, gchar * val, wc_units *units, GList *l
   v->val.sval = g_strdup( val );
   v->type = STRING;
   v->units = units;
+  
+  return g_list_append(list, v);
+}
+
+GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), GList *list)
+{
+  PrintValue *v;
+
+  g_print("%s(%p, %p)\n", __FUNCTION__, fn, list);
+
+  v = (PrintValue *) g_malloc(sizeof(PrintValue));
+  if (v == NULL) {
+    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
+    exit(1);
+  }
+
+  v->name = g_strdup( "Cairo Figure" );
+  v->val.cairoval = fn;
+  v->type = CAIRO;
+  v->units = NULL;
   
   return g_list_append(list, v);
 }
