@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.4 2009/01/15 15:54:13 dan Exp $ */
+/* $Id: newprint.c,v 1.5 2009/01/27 04:08:03 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -207,7 +207,7 @@ draw_page (GtkPrintOperation *operation,
   width = gtk_print_context_get_width (context);
   height = gtk_print_context_get_height (context);
   
-
+  printf("gtk_print_context width = %g, height = %g\n", width, height);
   
 
   /* now we create our pango layout for holding the text */
@@ -283,53 +283,14 @@ draw_page (GtkPrintOperation *operation,
 
   g_object_unref (layout);
  	
-  /*
-   * *********************************************************************
-   *  print out the graphics
-   * *********************************************************************
-   */
-
-#if 0
-#include "pixmaps/bars_fig.xpm"
-  /*
-    CAIRO_FORMAT_ARGB32,
-    CAIRO_FORMAT_RGB24,
-    CAIRO_FORMAT_A8,
-    CAIRO_FORMAT_A1
-  */
-  image_surface = cairo_image_surface_create_for_data(bars_fig,
-						      CAIRO_FORMAT_A8,
-						      593,
-						      203,
-						      300);
-  cairo_set_source_surface(cr, image_surface, 50, 50);
-  cairo_fill(cr);
-#endif
-
-#if 0
-  //image_surface = cairo_image_surface_create_from_png ("../pixmaps/bars_fig.png");
-  image_surface = cairo_image_surface_create_from_png ("foo.png");
-  w = cairo_image_surface_get_width (image_surface);
-  h = cairo_image_surface_get_height (image_surface);
-  g_print("%s():  w = %g, h = %g\n", __FUNCTION__, w, h);
-
-  cairo_translate (cr, 28.0, 500.0);
-
-  //cairo_rotate (cr, 45* M_PI/180);
-  //cairo_scale  (cr, 256.0/w, 256.0/h);
-  //cairo_translate (cr, -0.5*w, -0.5*h);
-  cairo_scale  (cr, 72.0/600.0, 72.0/600.0);
-
-  cairo_set_source_surface (cr, image_surface, 0, 0);
-  cairo_paint (cr);
-  cairo_surface_destroy (image_surface);
-#endif
 
   /* FIXME -- center the graphic left/right */
-  cairo_translate (cr, 0, header_height + HEADER_GAP);
+  cairo_save (cr);
+  cairo_translate (cr, width/2 - bars_fig_width[0]/2, header_height + HEADER_GAP);
   bars_fig_init();
   bars_fig_render[0](NULL, cr);
-  cairo_translate (cr, 0, 0);
+  cairo_restore (cr);
+  cairo_rel_move_to (cr, 0, bars_fig_height[0]);
 
   /*
    * *********************************************************************
@@ -349,6 +310,12 @@ draw_page (GtkPrintOperation *operation,
   pango_layout_set_font_description (layout, desc);
   pango_font_description_free (desc);
  	
+  /* FIXME -- smarter scaling here */
+  pango_layout_set_width (layout, pango_units_from_double(5.0*72.0));
+  pango_layout_set_indent (layout, pango_units_from_double(-0.5*72.0));
+
+  /* turn on wrapping of long lines */
+  pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
   /* now print out each line of text for this page */
   cairo_move_to (cr, 0, header_height + HEADER_GAP + bars_fig_height[0]);
@@ -358,8 +325,13 @@ draw_page (GtkPrintOperation *operation,
       pango_layout_set_text (layout, data->lines[line], -1);
       pango_cairo_show_layout (cr, layout);
 
+      
+      pango_layout_get_pixel_size (layout, &text_width, &text_height);
+      g_print("After adding %s  text_width = %d, text_height = %d\n",
+	      data->lines[line], text_width, text_height);
       /* moves back to x=y and move down by one line */
-      cairo_rel_move_to (cr, 0, data->font_size);
+      cairo_rel_move_to (cr, 0, text_height);
+
       line++;
     }
 
@@ -526,7 +498,9 @@ GList * wc_print_add_double(gchar * name, double val, wc_units *units, GList *li
   v->val.fval = val;
   v->type = FLOAT;
   v->units = units;
-  
+  v->width = 0;
+  v->height = 0;
+
   return g_list_append(list, v);
 }
 
@@ -547,6 +521,8 @@ GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list)
   v->val.ival = val;
   v->type = INT;
   v->units = units;
+  v->width = 0;
+  v->height = 0;
   
   return g_list_append(list, v);
 }
@@ -567,11 +543,14 @@ GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *l
   v->val.sval = g_strdup( val );
   v->type = STRING;
   v->units = units;
+  v->width = 0;
+  v->height = 0;
   
   return g_list_append(list, v);
 }
 
-GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), GList *list)
+GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), 
+			   int width, int height, GList *list)
 {
   PrintValue *v;
 
@@ -587,7 +566,9 @@ GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), GL
   v->val.cairoval = fn;
   v->type = CAIRO;
   v->units = NULL;
-  
+  v->width = width;
+  v->height = height;
+
   return g_list_append(list, v);
 }
 

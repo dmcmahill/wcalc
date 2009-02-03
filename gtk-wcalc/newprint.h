@@ -1,4 +1,4 @@
-/* $Id: newprint.h,v 1.3 2009/01/14 02:46:02 dan Exp $ */
+/* $Id: newprint.h,v 1.4 2009/01/27 04:08:04 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -36,6 +36,7 @@ typedef struct printValue
     cairo_t * (*cairoval)(cairo_surface_t *, cairo_t *);
   } val;
   
+  int width, height;
   enum {FLOAT, INT, STRING, CAIRO} type;
 
   wc_units *units;
@@ -44,6 +45,8 @@ typedef struct printValue
 GList * wc_print_add_double(gchar * name, double val, wc_units *units, GList *list);
 GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list);
 GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *list);
+GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), 
+			   int width, int height, GList *list);
 void wc_print_value_free(PrintValue * val);
 
 /* data should be a pointer to the current wcalc */
