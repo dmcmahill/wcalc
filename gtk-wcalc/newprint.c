@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.7 2009/02/04 01:37:33 dan Exp $ */
+/* $Id: newprint.c,v 1.8 2009/02/04 01:55:23 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -55,12 +55,8 @@ typedef struct
 {
   Wcalc *wcalc;
 
-  gchar *filename;
   gdouble font_size;
  	
-  gint lines_per_page;
-  gchar **lines;
-  gint num_lines;
   gint num_pages;
 
   GList * print_list;
@@ -79,11 +75,6 @@ begin_print (GtkPrintOperation *operation,
   PrintData *data = (PrintData *)user_data;
   gdouble height;
   Wcalc *w;
-  GList *list;
-  guint nv, j;
-  PrintValue *pv;
-  double sf;
-  char *units_name;
 
   /* 
    * get the height in points (we set the units to points in
@@ -94,12 +85,6 @@ begin_print (GtkPrintOperation *operation,
   #define HEADER_HEIGHT 150
   height = gtk_print_context_get_height (context) - HEADER_HEIGHT - HEADER_GAP;
   #undef HEADER_HEIGHT
-
-  /* 
-   * font_size is also in points so we can find how many lines
-   * fit on each page this way.
-   */
-  data->lines_per_page = floor (height / data->font_size);
 
 
   /*
@@ -120,10 +105,6 @@ begin_print (GtkPrintOperation *operation,
   data->paginations = g_list_append(data->paginations, 0);
   data->paginations = g_list_append(data->paginations, g_list_length(data->print_list) );
 
-  /* FIXME -- remove */
-  /* store the number of lines */
-  nv = g_list_length(data->print_list);
-  data->num_lines = nv;
 
   /*
    *  figure out the number of pages (probably always 1 for this
@@ -150,16 +131,14 @@ draw_page (GtkPrintOperation *operation,
   cairo_t *cr;
   PangoLayout *layout;
   gint text_width, text_height, header_height;
-  gdouble w,h;
   gdouble width, height;
-  gint line, i;
+  gint i;
   PangoFontDescription *desc;
   gchar *page_str;
-  cairo_surface_t *image_surface;
   PrintValue *pv;
   double sf;
   char *units_name;
-  gchar *text;
+  gchar *text = NULL, *text2 = NULL;
   double x, y;
 
   /* get the cairo context for our page */
@@ -168,8 +147,6 @@ draw_page (GtkPrintOperation *operation,
   /* figure out width and height */
   width = gtk_print_context_get_width (context);
   height = gtk_print_context_get_height (context);
-  
-  printf("gtk_print_context width = %g, height = %g\n", width, height);
   
 
   /*
@@ -190,7 +167,8 @@ draw_page (GtkPrintOperation *operation,
 			      "<span size=\"smaller\">Version %s</span>\n"
 			      "%s\n"
 			      "<span size=\"smaller\">Model Version %s</span>"
-			      "</markup>", VERSION, data->wcalc->model_name, data->wcalc->model_version);
+			      "</markup>", VERSION, data->wcalc->model_name,
+			      data->wcalc->model_version);
 
 
   pango_layout_set_markup(layout, page_str, -1);
@@ -198,8 +176,6 @@ draw_page (GtkPrintOperation *operation,
 
   pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
   pango_layout_get_pixel_size (layout, &text_width, &text_height);
-  g_print("After adding the marked up page header text, text_width = %d, text_height = %d\n",
-	  text_width, text_height);
   header_height = text_height + 2.0 * HEADER_BORDER;
 
 
@@ -241,6 +217,50 @@ draw_page (GtkPrintOperation *operation,
 
   /*
    * *********************************************************************
+   *  put down an advertisement at the bottom
+   * *********************************************************************
+   */
+  layout = gtk_print_context_create_pango_layout (context);
+
+  /* pick the font and set the font */
+  desc = pango_font_description_from_string ("sans 10");
+  pango_layout_set_font_description (layout, desc);
+  pango_font_description_free (desc);
+ 	
+
+  /* create the string and put it in our layout */
+  page_str = g_strdup_printf ("<markup><i>http://wcalc.sf.net</i>\n%s</markup>",
+			      data->wcalc->file_name != NULL ?
+			      data->wcalc->file_name : "untitled");
+
+  pango_layout_set_markup(layout, page_str, -1);
+  g_free(page_str);
+
+  pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
+  pango_layout_get_pixel_size (layout, &text_width, &text_height);
+
+  /* define the rectangle */
+  cairo_rectangle (cr, 0, height - text_height, width, text_height);
+
+  /* fill it */
+  cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
+  cairo_fill_preserve (cr);
+ 	
+  /* and put a black line around the rectangle */
+  cairo_set_source_rgb (cr, 0, 0, 0);
+  cairo_set_line_width (cr, 1);
+  cairo_stroke (cr);
+
+  /* and finally add the header text */
+  cairo_move_to (cr, (width - text_width) / 2, height - text_height);
+  pango_cairo_show_layout (cr, layout);
+
+  g_object_unref (layout);
+ 	
+  cairo_move_to (cr, x, y);
+
+  /*
+   * *********************************************************************
    *  print out the data
    * *********************************************************************
    */
@@ -260,8 +280,11 @@ draw_page (GtkPrintOperation *operation,
   pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
 
   /* FIXME -- smarter scaling here */
-  pango_layout_set_width (layout, pango_units_from_double(5.0*72.0));
-  pango_layout_set_indent (layout, pango_units_from_double(-0.5*72.0));
+#define TEXT_COLUMN_WIDTH 5.0
+#define TEXT_COLUMN_INDENT -0.5
+
+  pango_layout_set_width (layout, pango_units_from_double(TEXT_COLUMN_WIDTH*72.0));
+  pango_layout_set_indent (layout, pango_units_from_double(TEXT_COLUMN_INDENT*72.0));
 
   /* turn on wrapping of long lines */
   pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
@@ -274,7 +297,6 @@ draw_page (GtkPrintOperation *operation,
       i < g_list_nth_data(data->paginations, page_nr + 1) ;
       i++) {
 
-    g_print ("%s():  Working on entry #%d\n", __FUNCTION__, i);
     /* Get the next bit of data to print */
     pv = g_list_nth_data(data->print_list, i);
     if( pv->units != NULL ) {
@@ -292,21 +314,18 @@ draw_page (GtkPrintOperation *operation,
      */
     switch(pv->type) {
     case FLOAT:
-      text = g_strdup_printf("%s \t= %g %s", 
-				       pv->name, pv->val.fval/sf,
-				       units_name);
+      text = g_strdup (pv->name);
+      text2 = g_strdup_printf("= %g %s", pv->val.fval/sf, units_name);
       break;
 
     case INT:
-      text = g_strdup_printf("%s \t= %d %s", 
-				       pv->name, (int) (pv->val.ival/sf),
-				       units_name);
+      text = g_strdup (pv->name);
+      text2 = g_strdup_printf("= %d %s", (int) (pv->val.ival/sf), units_name);
       break;
 
     case STRING:
-      text = g_strdup_printf("%s \t= %s %s", 
-				       pv->name, pv->val.sval,
-				       units_name);
+      text = g_strdup (pv->name);
+      text2 = g_strdup_printf("= %s %s", pv->val.sval, units_name);
       break;
 
     case CAIRO:
@@ -340,15 +359,21 @@ draw_page (GtkPrintOperation *operation,
       cairo_move_to (cr, 0, y + pv->height);
 
     } else {
+      cairo_get_current_point (cr, &x, &y);
+
       pango_layout_set_text (layout, text, -1);
       pango_cairo_show_layout (cr, layout);
       pango_layout_get_pixel_size (layout, &text_width, &text_height);
-      g_print("After adding %s  text_width = %d, text_height = %d\n",
-	      text, text_width, text_height);
+
+      cairo_rel_move_to (cr, (TEXT_COLUMN_WIDTH+0.25)*72.0, 0);
+      pango_layout_set_text (layout, text2, -1);
+      pango_cairo_show_layout (cr, layout);
+      cairo_move_to (cr, x, y);
+
       /* moves back to x=y and move down by one line */
       cairo_rel_move_to (cr, 0, text_height);
       cairo_get_current_point (cr, &x, &y);
-      g_print ("%s():  height = %g but current y = %g\n", __FUNCTION__, height, y);
+
     }
     g_free(text);
       
@@ -364,9 +389,6 @@ end_print (GtkPrintOperation *operation,
 {
   PrintData *data = (PrintData *)user_data;
  	
-  g_free (data->filename);
-  // FIXME
-  //g_strfreev (data->lines);
   g_free (data);
 }
  	
@@ -395,7 +417,6 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
    * data needed to render the outputs.
    */
   data = g_new0 (PrintData, 1);
-  data->filename = g_strdup(wcalc->model_name);
   data->wcalc = wcalc;
   data->font_size = 12.0;
  	
@@ -506,8 +527,6 @@ GList * wc_print_add_double(gchar * name, double val, wc_units *units, GList *li
 {
   PrintValue *v;
 
-  g_print("%s(%s, %g, %p, %p)\n", __FUNCTION__, name, val, units, list);
-
   v = (PrintValue *) g_malloc(sizeof(PrintValue));
   if (v == NULL) {
     fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
@@ -529,8 +548,6 @@ GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list)
 {
   PrintValue *v;
 
-  g_print("%s(%s, %d, %p, %p)\n", __FUNCTION__, name, val, units, list);
-  
   v = (PrintValue *) g_malloc(sizeof(PrintValue));
   if (v == NULL) {
     fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
@@ -550,8 +567,6 @@ GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list)
 GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *list)
 {
   PrintValue *v;
-
-  g_print("%s(\"%s\", \"%s\", %p, %p)\n", __FUNCTION__, name, val, units, list);
 
   v = (PrintValue *) g_malloc(sizeof(PrintValue));
   if (v == NULL) {
@@ -573,8 +588,6 @@ GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr),
 			   int width, int height, GList *list)
 {
   PrintValue *v;
-
-  g_print("%s(%p, %p)\n", __FUNCTION__, fn, list);
 
   v = (PrintValue *) g_malloc(sizeof(PrintValue));
   if (v == NULL) {
