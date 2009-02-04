@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.5 2009/01/27 04:08:03 dan Exp $ */
+/* $Id: newprint.c,v 1.6 2009/02/03 22:37:23 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -62,6 +62,10 @@ typedef struct
   gchar **lines;
   gint num_lines;
   gint num_pages;
+
+  GList * print_list;
+  GList * paginations;
+
 } PrintData;
 
 
@@ -107,74 +111,27 @@ begin_print (GtkPrintOperation *operation,
    * value (double, int, or string), and a pointer to wcalc units
    */
   w = data->wcalc;
-  list = NULL;
+  data->print_list = NULL;
   if(w->dump_values != NULL) {
-    list = w->dump_values(w);
+    data->print_list = w->dump_values(w);
   }
 
-  nv = g_list_length( list );
-  data->lines = (gchar **) g_malloc((nv + 1) * sizeof(gchar *));
-  if( data->lines == NULL ) {
-    fprintf(stderr, "%s():  malloc failed\n", __FUNCTION__);
-    exit(1);
-  }
+  data->paginations = NULL;
+  data->paginations = g_list_append(data->paginations, 0);
+  data->paginations = g_list_append(data->paginations, 3);
+  data->paginations = g_list_append(data->paginations, g_list_length(data->print_list) );
 
-  data->lines[nv] = NULL;
-  for(j = 0 ; j < nv; j++) {
-    pv = g_list_nth_data(list, j);
-    if( pv->units != NULL ) {
-      sf = pv->units->sf;
-      units_name = wc_units_to_str(pv->units);
-    } else {
-      sf = 1.0;
-      units_name = strdup( "" );
-    }
-
-    /* 
-     * FIXME -- we need to deal with long strings in pv->name.  How
-     * do I go about wrapping it to the next line?  Also some sort of
-     * tabs to align all the "=" would be nice as well as a way to
-     * use greek letters for some of the units.
-     * Maybe I need to be realloc()-int data->lines all the time
-     * so I can add new lines to break up long strings as I go?
-     */
-    switch(pv->type) {
-    case FLOAT:
-      data->lines[j] = g_strdup_printf("%s = %g %s", 
-				       pv->name, pv->val.fval/sf,
-				       units_name);
-      break;
-
-    case INT:
-      data->lines[j] = g_strdup_printf("%s = %d %s", 
-				       pv->name, (int) (pv->val.ival/sf),
-				       units_name);
-      break;
-
-    case STRING:
-      data->lines[j] = g_strdup_printf("%s = %s %s", 
-				       pv->name, pv->val.sval,
-				       units_name);
-      break;
-
-    case CAIRO:
-      data->lines[j] = g_strdup_printf("[CAIRO FIGURE HERE]");
-      break;
-
-    }
-
-    free(units_name);
-  }
-
+  /* FIXME -- remove */
   /* store the number of lines */
+  nv = g_list_length(data->print_list);
   data->num_lines = nv;
 
   /*
    *  figure out the number of pages (probably always 1 for this
    * program)
    */
-  data->num_pages = (data->num_lines - 1) / data->lines_per_page + 1;
- 	
+  data->num_pages = 2;
+  
   /*
    * Tell the print_operation how many pages because it will
    *   a) fill in the # of pages in the dialog and
@@ -182,6 +139,7 @@ begin_print (GtkPrintOperation *operation,
    */
   gtk_print_operation_set_n_pages (operation, data->num_pages);
 }
+
  	
 static void
 draw_page (GtkPrintOperation *operation,
@@ -199,6 +157,10 @@ draw_page (GtkPrintOperation *operation,
   PangoFontDescription *desc;
   gchar *page_str;
   cairo_surface_t *image_surface;
+  PrintValue *pv;
+  double sf;
+  char *units_name;
+  gchar *text;
 
   /* get the cairo context for our page */
   cr = gtk_print_context_get_cairo_context (context);
@@ -284,14 +246,6 @@ draw_page (GtkPrintOperation *operation,
   g_object_unref (layout);
  	
 
-  /* FIXME -- center the graphic left/right */
-  cairo_save (cr);
-  cairo_translate (cr, width/2 - bars_fig_width[0]/2, header_height + HEADER_GAP);
-  bars_fig_init();
-  bars_fig_render[0](NULL, cr);
-  cairo_restore (cr);
-  cairo_rel_move_to (cr, 0, bars_fig_height[0]);
-
   /*
    * *********************************************************************
    *  print out the data
@@ -310,6 +264,8 @@ draw_page (GtkPrintOperation *operation,
   pango_layout_set_font_description (layout, desc);
   pango_font_description_free (desc);
  	
+  pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+
   /* FIXME -- smarter scaling here */
   pango_layout_set_width (layout, pango_units_from_double(5.0*72.0));
   pango_layout_set_indent (layout, pango_units_from_double(-0.5*72.0));
@@ -318,22 +274,80 @@ draw_page (GtkPrintOperation *operation,
   pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
   /* now print out each line of text for this page */
-  cairo_move_to (cr, 0, header_height + HEADER_GAP + bars_fig_height[0]);
-  line = page_nr * data->lines_per_page;
-  for (i = 0; i < data->lines_per_page && line < data->num_lines; i++)
-    {
-      pango_layout_set_text (layout, data->lines[line], -1);
-      pango_cairo_show_layout (cr, layout);
+  cairo_move_to (cr, 0, header_height + HEADER_GAP);
 
-      
+  for(i = g_list_nth_data(data->paginations, page_nr) ;
+      i < g_list_nth_data(data->paginations, page_nr + 1) ;
+      i++) {
+
+    g_print ("%s():  Working on entry #%d\n", __FUNCTION__, i);
+    /* Get the next bit of data to print */
+    pv = g_list_nth_data(data->print_list, i);
+    if( pv->units != NULL ) {
+      sf = pv->units->sf;
+      units_name = wc_units_to_str(pv->units);
+    } else {
+      sf = 1.0;
+      units_name = strdup( "" );
+    }
+
+    /* 
+     * FIXME -- we need to deal with long strings in pv->name.  How
+     * do I go about wrapping it to the next line?  Also some sort of
+     * tabs to align all the "=" would be nice as well as a way to
+     * use greek letters for some of the units.
+     * Maybe I need to be realloc()-int data->lines all the time
+     * so I can add new lines to break up long strings as I go?
+     */
+    switch(pv->type) {
+    case FLOAT:
+      text = g_strdup_printf("%s = %g %s", 
+				       pv->name, pv->val.fval/sf,
+				       units_name);
+      break;
+
+    case INT:
+      text = g_strdup_printf("%s = %d %s", 
+				       pv->name, (int) (pv->val.ival/sf),
+				       units_name);
+      break;
+
+    case STRING:
+      text = g_strdup_printf("%s = %s %s", 
+				       pv->name, pv->val.sval,
+				       units_name);
+      break;
+
+    case CAIRO:
+      text = g_strdup_printf("[CAIRO FIGURE HERE]");
+      break;
+
+    }
+
+    free(units_name);
+
+    if(pv->type == CAIRO) {
+      double x,y;
+      cairo_get_current_point (cr, &x, &y);
+
+      cairo_save (cr);
+      cairo_translate (cr, width/2 - pv->width/2, y);
+      pv->val.cairoval(NULL, cr);
+      cairo_restore (cr);
+      cairo_move_to (cr, 0, y + pv->height);
+
+    } else {
+      pango_layout_set_text (layout, text, -1);
+      pango_cairo_show_layout (cr, layout);
       pango_layout_get_pixel_size (layout, &text_width, &text_height);
       g_print("After adding %s  text_width = %d, text_height = %d\n",
-	      data->lines[line], text_width, text_height);
+	      text, text_width, text_height);
       /* moves back to x=y and move down by one line */
       cairo_rel_move_to (cr, 0, text_height);
-
-      line++;
     }
+    g_free(text);
+      
+  }
 
   g_object_unref (layout);
 }
@@ -346,7 +360,8 @@ end_print (GtkPrintOperation *operation,
   PrintData *data = (PrintData *)user_data;
  	
   g_free (data->filename);
-  g_strfreev (data->lines);
+  // FIXME
+  //g_strfreev (data->lines);
   g_free (data);
 }
  	

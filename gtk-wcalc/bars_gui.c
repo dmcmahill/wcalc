@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.9 2009/01/27 04:08:02 dan Exp $ */
+/* $Id: bars_gui.c,v 1.10 2009/02/03 22:37:22 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -589,6 +589,8 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Thickness of bar #2 (c)", b->c, b->units_xy, list);
     list = wc_print_add_double("Length of bar #2 (l2)", b->l2, b->units_xy, list);
     
+    list = wc_print_add_cairo(bars_fig_render[0], bars_fig_width[0], bars_fig_height[0], list);
+
     list = wc_print_add_double("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
     list = wc_print_add_double("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
     list = wc_print_add_double("Bar #2 position in the length direction (l3)", b->l3, b->units_xy, list);
