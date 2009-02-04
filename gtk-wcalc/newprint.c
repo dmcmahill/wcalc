@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.6 2009/02/03 22:37:23 dan Exp $ */
+/* $Id: newprint.c,v 1.7 2009/02/04 01:37:33 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -118,7 +118,6 @@ begin_print (GtkPrintOperation *operation,
 
   data->paginations = NULL;
   data->paginations = g_list_append(data->paginations, 0);
-  data->paginations = g_list_append(data->paginations, 3);
   data->paginations = g_list_append(data->paginations, g_list_length(data->print_list) );
 
   /* FIXME -- remove */
@@ -128,9 +127,9 @@ begin_print (GtkPrintOperation *operation,
 
   /*
    *  figure out the number of pages (probably always 1 for this
-   * program)
+   * program) FIXME
    */
-  data->num_pages = 2;
+  data->num_pages = 1;
   
   /*
    * Tell the print_operation how many pages because it will
@@ -161,6 +160,7 @@ draw_page (GtkPrintOperation *operation,
   double sf;
   char *units_name;
   gchar *text;
+  double x, y;
 
   /* get the cairo context for our page */
   cr = gtk_print_context_get_cairo_context (context);
@@ -172,15 +172,12 @@ draw_page (GtkPrintOperation *operation,
   printf("gtk_print_context width = %g, height = %g\n", width, height);
   
 
-  /* now we create our pango layout for holding the text */
-
-  layout = gtk_print_context_create_pango_layout (context);
-
   /*
    * *********************************************************************
    *  print out the name and version of this program 
    * *********************************************************************
    */
+  layout = gtk_print_context_create_pango_layout (context);
 
   /* pick the font and set the font */
   desc = pango_font_description_from_string ("sans 18");
@@ -196,7 +193,6 @@ draw_page (GtkPrintOperation *operation,
 			      "</markup>", VERSION, data->wcalc->model_name, data->wcalc->model_version);
 
 
-  //pango_layout_set_text(layout, page_str, -1);
   pango_layout_set_markup(layout, page_str, -1);
   g_free(page_str);
 
@@ -205,9 +201,6 @@ draw_page (GtkPrintOperation *operation,
   g_print("After adding the marked up page header text, text_width = %d, text_height = %d\n",
 	  text_width, text_height);
   header_height = text_height + 2.0 * HEADER_BORDER;
-
-
-
 
 
   /*
@@ -273,9 +266,10 @@ draw_page (GtkPrintOperation *operation,
   /* turn on wrapping of long lines */
   pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
-  /* now print out each line of text for this page */
+  /* Position ourselves below the header */
   cairo_move_to (cr, 0, header_height + HEADER_GAP);
 
+  /* now print out each line for this page */
   for(i = g_list_nth_data(data->paginations, page_nr) ;
       i < g_list_nth_data(data->paginations, page_nr + 1) ;
       i++) {
@@ -292,28 +286,25 @@ draw_page (GtkPrintOperation *operation,
     }
 
     /* 
-     * FIXME -- we need to deal with long strings in pv->name.  How
-     * do I go about wrapping it to the next line?  Also some sort of
+     * FIXME -- Some sort of
      * tabs to align all the "=" would be nice as well as a way to
      * use greek letters for some of the units.
-     * Maybe I need to be realloc()-int data->lines all the time
-     * so I can add new lines to break up long strings as I go?
      */
     switch(pv->type) {
     case FLOAT:
-      text = g_strdup_printf("%s = %g %s", 
+      text = g_strdup_printf("%s \t= %g %s", 
 				       pv->name, pv->val.fval/sf,
 				       units_name);
       break;
 
     case INT:
-      text = g_strdup_printf("%s = %d %s", 
+      text = g_strdup_printf("%s \t= %d %s", 
 				       pv->name, (int) (pv->val.ival/sf),
 				       units_name);
       break;
 
     case STRING:
-      text = g_strdup_printf("%s = %s %s", 
+      text = g_strdup_printf("%s \t= %s %s", 
 				       pv->name, pv->val.sval,
 				       units_name);
       break;
@@ -327,12 +318,24 @@ draw_page (GtkPrintOperation *operation,
     free(units_name);
 
     if(pv->type == CAIRO) {
-      double x,y;
       cairo_get_current_point (cr, &x, &y);
-
       cairo_save (cr);
+      /*
+       * The bounding box for our figure has its top left corner at
+       * 0,0 so we need to translate over by half the width of the
+       * page minus half the figure width and down by the current
+       * position on our page.  This results in a figure which is
+       * in line vertically and centered horizontally.
+       */
       cairo_translate (cr, width/2 - pv->width/2, y);
+
+      /* render the figure */
       pv->val.cairoval(NULL, cr);
+
+      /* 
+       * restore to undo the translation and move our current point
+       * down
+       */
       cairo_restore (cr);
       cairo_move_to (cr, 0, y + pv->height);
 
@@ -344,6 +347,8 @@ draw_page (GtkPrintOperation *operation,
 	      text, text_width, text_height);
       /* moves back to x=y and move down by one line */
       cairo_rel_move_to (cr, 0, text_height);
+      cairo_get_current_point (cr, &x, &y);
+      g_print ("%s():  height = %g but current y = %g\n", __FUNCTION__, height, y);
     }
     g_free(text);
       
