@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.17 2008/07/12 04:28:46 dan Exp $
+## $Id: Makefile.am,v 1.18 2008/11/29 20:42:27 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2005, 2006, 2008 Dan McMahill
@@ -73,6 +73,7 @@ SUFFIXES = .obj .xpm .xbm .gif .png .eps .c
 
 .eps.c :
 	$(EPS2C) fname=$*_eps $*.eps > $*.c
+	${HOME}/src/pstoedit-3.41/src/pstoedit -dt -f "cairo: -header figure_$*.h -funcname figure_$*" $*.eps figure_$*.c
 
 .obj.eps :
 if MISSING_TGIF
