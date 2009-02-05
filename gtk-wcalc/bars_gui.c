@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.10 2009/02/03 22:37:22 dan Exp $ */
+/* $Id: bars_gui.c,v 1.11 2009/02/04 01:37:32 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -58,7 +58,6 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
-
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -578,7 +577,9 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     bars_fig_init();
-    
+  } else {
+    // FIXME -- free the old list first!!!!
+    list = NULL;
     list = wc_print_add_cairo(bars_fig_render[0], bars_fig_width[0], bars_fig_height[0], list);
     
     list = wc_print_add_double("Width of bar #1 (a)", b->a, b->units_xy, list);
@@ -589,7 +590,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Thickness of bar #2 (c)", b->c, b->units_xy, list);
     list = wc_print_add_double("Length of bar #2 (l2)", b->l2, b->units_xy, list);
     
-    list = wc_print_add_cairo(bars_fig_render[0], bars_fig_width[0], bars_fig_height[0], list);
 
     list = wc_print_add_double("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
     list = wc_print_add_double("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
@@ -600,12 +600,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
     list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
 
-    list = wc_print_add_double("this is a super long line.  I wonder how it will show up "
-			       "when rendered with pango.  Is pango smart enough to wrap? "
-			       "what about my fairly lame newline math?  Will it deal or will it "
-			       "overwrite?  Here is a backslash n: \n"
-			       "followed by more stuff.", b->M, b->units_L, list);
-    list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
   }
 
   return list;

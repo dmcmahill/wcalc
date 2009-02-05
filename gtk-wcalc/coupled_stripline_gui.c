@@ -1,7 +1,7 @@
-/* $Id: coupled_stripline_gui.c,v 1.5 2008/11/29 20:41:46 dan Exp $ */
+/* $Id: coupled_stripline_gui.c,v 1.6 2009/01/15 15:52:45 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -40,6 +40,7 @@
 #include "coupled_stripline.h"
 #include "coupled_stripline_gui.h"
 #include "coupled_stripline_loadsave.h"
+#include "newprint.h"
 #include "physconst.h"
 #include "units.h"
 
@@ -54,6 +55,7 @@ static void use_z0k_pressed(GtkWidget *widget, gpointer data );
 static void use_z0ez0o_pressed(GtkWidget *widget, gpointer data );
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
+static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize( GtkWidget *w, gpointer data );
@@ -103,6 +105,7 @@ coupled_stripline_gui *coupled_stripline_gui_new(void)
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
+  wcalc->dump_values = dump_values;
 
   wcalc->file_name=NULL;
   wcalc->file_basename=NULL;
@@ -1381,6 +1384,72 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
   coupled_stripline_save(WC_COUPLED_STRIPLINE_GUI(wcalc)->line,fp,name);
 }
 
+static GList * dump_values(Wcalc *wcalc)
+{
+  static GList * list = NULL;
+  coupled_stripline_gui *gui;
+  coupled_stripline_line *l;
+
+  gui = WC_COUPLED_STRIPLINE_GUI(wcalc);
+  l = gui->line;
+
+  /* Initialize the graphics */
+  if( list == NULL ) {
+    //coupled_stripline_fig_init();
+  } else {
+    // FIXME -- free the old list first!!!!
+    list = NULL;
+    /*
+    list = wc_print_add_cairo(coupled_stripline_fig_render[0], coupled_stripline_fig_width[0], 
+			      coupled_stripline_fig_height[0], list);
+    */
+
+    list = wc_print_add_double("Width of lines (w)", l->w, l->units_lwst, list);
+    list = wc_print_add_double("Length of lines (l)", l->l, l->units_lwst, list);
+    list = wc_print_add_double("Gap between lines (s)", l->s, l->units_lwst, list);
+
+    list = wc_print_add_double("Dielectric thickness (h)", l->subs->h, l->units_lwst, list);
+    list = wc_print_add_double("Relative dielectric contant (er)", l->subs->er, NULL, list);
+    list = wc_print_add_double("Dielectric loss tangent (tand)", l->subs->tand, NULL, list);
+    list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwst, list);
+    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
+			       l->units_rough, list);
+
+    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+
+    list = wc_print_add_double("Characteristic Impedance", l->z0, NULL, list);
+    list = wc_print_add_double("Coupling coefficient", l->k, NULL, list);
+    list = wc_print_add_double("Even mode impedance", l->z0e, NULL, list);
+    list = wc_print_add_double("Odd mode impedance", l->z0o, NULL, list);
+
+    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
+
+    list = wc_print_add_double("Even mode loss", l->loss_ev, l->units_loss, list);
+    list = wc_print_add_double("Odd mode loss", l->loss_odd, l->units_loss, list);
+    list = wc_print_add_double("Even mode loss per length", l->losslen_ev, l->units_losslen, list);
+    list = wc_print_add_double("Odd mode loss per length", l->losslen_odd, l->units_losslen, list);
+
+    list = wc_print_add_double("Even mode open end length correction",
+			       l->deltale, l->units_deltal, list);
+    list = wc_print_add_double("Odd mode open end length correction",
+			       l->deltalo, l->units_deltal, list);
+     
+    list = wc_print_add_double("Even mode incremental Inductance", l->Lev, l->units_L, list);
+    list = wc_print_add_double("Even mode incremental Capacitance", l->Cev, l->units_C, list);
+    list = wc_print_add_double("Even mode incremental Resistance", l->Rev, l->units_R, list);
+    list = wc_print_add_double("Even mode incremental Conductance", l->Gev, l->units_G, list);
+
+    list = wc_print_add_double("Odd mode incremental Inductance", l->Lodd, l->units_L, list);
+    list = wc_print_add_double("Odd mode incremental Capacitance", l->Codd, l->units_C, list);
+    list = wc_print_add_double("Odd mode incremental Resistance", l->Rodd, l->units_R, list);
+    list = wc_print_add_double("Odd mode incremental Conductance", l->Godd, l->units_G, list);
+    
+  }
+
+  return list;
+}
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {

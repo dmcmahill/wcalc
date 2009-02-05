@@ -1,7 +1,7 @@
-/* $Id: stripline_gui.c,v 1.21 2008/11/29 20:41:53 dan Exp $ */
+/* $Id: stripline_gui.c,v 1.22 2009/01/15 15:52:48 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -37,6 +37,7 @@
 #include "menus.h"
 #include "misc.h"
 
+#include "newprint.h"
 #include "stripline.h"
 #include "stripline_gui.h"
 #include "stripline_loadsave.h"
@@ -51,6 +52,7 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
+static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
@@ -102,6 +104,7 @@ stripline_gui *stripline_gui_new(void)
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
+  wcalc->dump_values = dump_values;
 
   wcalc->file_name=NULL;
   wcalc->file_basename=NULL;
@@ -1045,6 +1048,60 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
   stripline_save(WC_STRIPLINE_GUI(wcalc)->line,fp,name);
 }
 
+static GList * dump_values(Wcalc *wcalc)
+{
+  static GList * list = NULL;
+  stripline_gui *gui;
+  stripline_line *l;
+
+  gui = WC_STRIPLINE_GUI(wcalc);
+  l = gui->line;
+
+  /* Initialize the graphics */
+  if( list == NULL ) {
+    //stripline_fig_init();
+  } else {
+    // FIXME -- free the old list first!!!!
+    list = NULL;
+    /*
+    list = wc_print_add_cairo(stripline_fig_render[0], stripline_fig_width[0], 
+			      stripline_fig_height[0], list);
+    */
+
+    list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
+    list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
+
+    list = wc_print_add_double("Dielectric thickness (h)", l->subs->h, l->units_lwht, list);
+    list = wc_print_add_double("Relative dielectric contant (er)", l->subs->er, NULL, list);
+    list = wc_print_add_double("Dielectric loss tangent (tand)", l->subs->tand, NULL, list);
+    list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwht, list);
+    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
+			       l->units_rough, list);
+
+    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+
+    list = wc_print_add_double("Characteristic Impedance", l->z0, NULL, list);
+    list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
+    list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
+    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
+
+    list = wc_print_add_double("Conductor loss", l->lc, l->units_loss, list);
+    list = wc_print_add_double("Dielectric loss", l->ld, l->units_loss, list);
+    list = wc_print_add_double("Total loss", l->loss, l->units_loss, list);
+    list = wc_print_add_double("Total loss per length", l->losslen, l->units_losslen, list);
+    list = wc_print_add_double("Open end length correction", l->deltal, l->units_deltal, list);
+     
+    list = wc_print_add_double("Incremental Inductance", l->Ls, l->units_L, list);
+    list = wc_print_add_double("Incremental Capacitance", l->Cs, l->units_C, list);
+    list = wc_print_add_double("Incremental Resistance", l->Rs, l->units_R, list);
+    list = wc_print_add_double("Incremental Conductance", l->Gs, l->units_G, list);
+    
+  }
+
+  return list;
+}
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {

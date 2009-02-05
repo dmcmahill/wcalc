@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.15 2008/11/29 20:41:48 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.16 2009/01/15 15:52:46 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -41,6 +41,7 @@
 #include "ic_microstrip.h"
 #include "ic_microstrip_gui.h"
 #include "ic_microstrip_loadsave.h"
+#include "newprint.h"
 #include "physconst.h"
 
 #include "gtk-units.h"
@@ -51,6 +52,7 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
+static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_w( GtkWidget *w, gpointer data );
@@ -102,6 +104,7 @@ ic_microstrip_gui *ic_microstrip_gui_new(void)
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
+  wcalc->dump_values = dump_values;
 
   wcalc->file_name=NULL;
   wcalc->file_basename=NULL;
@@ -1099,6 +1102,67 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
   ic_microstrip_save(WC_IC_MICROSTRIP_GUI(wcalc)->line,fp,name);
 }
 
+static GList * dump_values(Wcalc *wcalc)
+{
+  static GList * list = NULL;
+  ic_microstrip_gui *gui;
+  ic_microstrip_line *l;
+
+  gui = WC_IC_MICROSTRIP_GUI(wcalc);
+  l = gui->line;
+
+  /* Initialize the graphics */
+  if( list == NULL ) {
+    //ic_microstrip_fig_init();
+  } else {
+    // FIXME -- free the old list first!!!!
+    list = NULL;
+    /*
+    list = wc_print_add_cairo(ic_microstrip_fig_render[0], ic_microstrip_fig_width[0], 
+			      ic_microstrip_fig_height[0], list);
+    */
+
+    list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
+    list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
+
+    list = wc_print_add_double("Oxide thickness (tox)", l->subs->tox, l->units_lwht, list);
+    list = wc_print_add_double("Oxide relative dielectric contant (eox)", l->subs->eox, NULL, list);
+
+    list = wc_print_add_double("Substrate thickness (h)", l->subs->h, l->units_lwht, list);
+    list = wc_print_add_double("Substrate relative dielectric contant (es)", 
+			       l->subs->es, NULL, list);
+    list = wc_print_add_double("Substrate conductivity (sigmas)", 
+			       l->subs->es, l->units_sigmas, list);
+
+    list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwht, list);
+    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
+			       l->units_rough, list);
+
+    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+
+    list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
+    list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
+    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
+
+
+    list = wc_print_add_double("Metal skin depth", l->met_skindepth, l->units_depth, list);
+    list = wc_print_add_double("Substrate skin depth", l->subs_skindepth, l->units_depth, list);
+
+    list = wc_print_add_double("Total loss", l->loss, l->units_loss, list);
+    list = wc_print_add_double("Total loss per length", l->losslen, l->units_losslen, list);
+    list = wc_print_add_double("Total loss per wavelength", l->losslambda, NULL, list);
+     
+    list = wc_print_add_double("Incremental Inductance", l->Lmis, l->units_L, list);
+    list = wc_print_add_double("Incremental Capacitance", l->Cmis, l->units_C, list);
+    list = wc_print_add_double("Incremental Resistance", l->Rmis, l->units_R, list);
+    list = wc_print_add_double("Incremental Conductance", l->Gmis, l->units_G, list);
+    
+  }
+
+  return list;
+}
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {

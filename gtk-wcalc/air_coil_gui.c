@@ -1,7 +1,7 @@
-/* $Id: air_coil_gui.c,v 1.19 2008/11/29 20:41:39 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.20 2009/01/15 15:52:41 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -41,6 +41,7 @@
 #include "air_coil.h"
 #include "air_coil_gui.h"
 #include "air_coil_loadsave.h"
+#include "newprint.h"
 #include "physconst.h"
 
 #include "gtk-units.h"
@@ -51,6 +52,7 @@
 #endif
 
 static void print_ps(Wcalc *wcalc,FILE *fp);
+static GList * dump_values(Wcalc *wcalc);
 
 static void use_len_pressed(GtkWidget *widget, gpointer data );
 static void use_fill_pressed(GtkWidget *widget, gpointer data );
@@ -106,6 +108,7 @@ air_coil_gui *air_coil_gui_new(void)
   wcalc->analyze = NULL;
   wcalc->synthesize = NULL;
   wcalc->display = NULL;
+  wcalc->dump_values = dump_values;
 
   wcalc->file_name=NULL;
   wcalc->file_basename=NULL;
@@ -859,6 +862,46 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
   air_coil_save(WC_AIR_COIL_GUI(wcalc)->coil,fp,name);
 }
 
+static GList * dump_values(Wcalc *wcalc)
+{
+  static GList * list = NULL;
+  air_coil_gui *gui;
+  air_coil_coil * c;
+
+  gui = WC_AIR_COIL_GUI(wcalc);
+  c = gui->coil;
+
+  /* Initialize the graphics */
+  if( list == NULL ) {
+    //air_coil_fig_init();
+  } else {
+    // FIXME -- free the old list first!!!!
+    list = NULL;
+    //list = wc_print_add_cairo(air_coil_fig_render[0], air_coil_fig_width[0], air_coil_fig_height[0], list);
+    
+    list = wc_print_add_double("Number of turns (N)", c->Nf, NULL, list);
+    list = wc_print_add_double("Length of coil (len)", c->len, c->units_len, list);
+    list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
+    list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
+
+    list = wc_print_add_double("Wire resistivity (rho)", c->rho, c->units_rho, list);
+
+    list = wc_print_add_double("Inside diameter of coil (dia)", c->rho, c->units_dia, list);
+
+
+    list = wc_print_add_double("Coil inductance (L)", c->L, c->units_L, list);
+    list = wc_print_add_double("Coil maximum (closewound) inductance (Lmax)", c->Lmax, 
+			       c->units_L, list);
+
+    list = wc_print_add_double("Analysis frequency", c->freq, c->units_freq, list);
+    list = wc_print_add_double("Coil quality factor (Q)", c->Q, NULL, list);
+    list = wc_print_add_double("Self resonant frequency", c->SRF, c->units_SRF, list);
+
+
+  }
+
+  return list;
+}
 
 static void print_ps(Wcalc *wcalc, FILE *fp)
 {
