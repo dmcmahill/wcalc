@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.14 2009/01/15 15:52:44 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.15 2009/02/05 05:42:51 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
@@ -37,6 +37,9 @@
 #include "menus.h"
 #include "misc.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_coupled_microstrip.h"
+#endif
 #include "coupled_microstrip.h"
 #include "coupled_microstrip_gui.h"
 #include "coupled_microstrip_loadsave.h"
@@ -1473,6 +1476,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   coupled_microstrip_gui *gui;
   coupled_microstrip_line *l;
 
@@ -1481,14 +1485,12 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    //coupled_microstrip_fig_init();
-  } else {
+    figure_coupled_microstrip_init();
+  }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    /*
-    list = wc_print_add_cairo(coupled_microstrip_fig_render[0], coupled_microstrip_fig_width[0], 
-			      coupled_microstrip_fig_height[0], list);
-    */
+    list = wc_print_add_cairo(figure_coupled_microstrip_render[0], figure_coupled_microstrip_width[0], 
+			      figure_coupled_microstrip_height[0], list);
 
     list = wc_print_add_double("Width of lines (w)", l->w, l->units_lwst, list);
     list = wc_print_add_double("Length of lines (l)", l->l, l->units_lwst, list);
@@ -1509,7 +1511,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Even mode impedance", l->z0e, NULL, list);
     list = wc_print_add_double("Odd mode impedance", l->z0o, NULL, list);
 
-    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Electrical length", l->len, NULL, list);
 
     list = wc_print_add_double("Even mode loss", l->loss_ev, l->units_loss, list);
     list = wc_print_add_double("Odd mode loss", l->loss_odd, l->units_loss, list);
@@ -1532,6 +1534,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Odd mode incremental Conductance", l->Godd, l->units_G, list);
     
   }
+#endif
 
   return list;
 }

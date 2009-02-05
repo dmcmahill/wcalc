@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.11 2009/02/04 01:37:32 dan Exp $ */
+/* $Id: bars_gui.c,v 1.12 2009/02/05 05:42:48 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009 Dan McMahill
@@ -42,8 +42,10 @@
 #include "misc.h"
 #include "units.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_bars_fig.h"
+#endif
 #include "bars.h"
-#include "bars_fig.h"
 #include "bars_gui.h"
 #include "bars_loadsave.h"
 #include "newprint.h"
@@ -568,6 +570,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   bars_gui *gui;
   bars * b;
 
@@ -576,11 +579,12 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    bars_fig_init();
-  } else {
+    figure_bars_fig_init();
+  }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    list = wc_print_add_cairo(bars_fig_render[0], bars_fig_width[0], bars_fig_height[0], list);
+    list = wc_print_add_cairo(figure_bars_fig_render[0], figure_bars_fig_width[0], 
+			      figure_bars_fig_height[0], list);
     
     list = wc_print_add_double("Width of bar #1 (a)", b->a, b->units_xy, list);
     list = wc_print_add_double("Thickness of bar #1 (b)", b->b, b->units_xy, list);
@@ -601,6 +605,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
 
   }
+#endif
 
   return list;
 }

@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.20 2009/01/15 15:52:41 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.21 2009/02/05 05:42:47 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -38,6 +38,9 @@
 #include "misc.h"
 #include "units.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_air_coil.h"
+#endif
 #include "air_coil.h"
 #include "air_coil_gui.h"
 #include "air_coil_loadsave.h"
@@ -865,6 +868,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   air_coil_gui *gui;
   air_coil_coil * c;
 
@@ -873,20 +877,21 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    //air_coil_fig_init();
-  } else {
+    figure_air_coil_init();
+  }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    //list = wc_print_add_cairo(air_coil_fig_render[0], air_coil_fig_width[0], air_coil_fig_height[0], list);
+    list = wc_print_add_cairo(figure_air_coil_render[0], 
+			      figure_air_coil_width[0], figure_air_coil_height[0], list);
     
     list = wc_print_add_double("Number of turns (N)", c->Nf, NULL, list);
-    list = wc_print_add_double("Length of coil (len)", c->len, c->units_len, list);
+    list = wc_print_add_double("Length of coil (Len)", c->len, c->units_len, list);
     list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
     list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
 
     list = wc_print_add_double("Wire resistivity (rho)", c->rho, c->units_rho, list);
 
-    list = wc_print_add_double("Inside diameter of coil (dia)", c->rho, c->units_dia, list);
+    list = wc_print_add_double("Inside diameter of coil (I.D.)", c->dia, c->units_dia, list);
 
 
     list = wc_print_add_double("Coil inductance (L)", c->L, c->units_L, list);
@@ -899,7 +904,7 @@ static GList * dump_values(Wcalc *wcalc)
 
 
   }
-
+#endif
   return list;
 }
 

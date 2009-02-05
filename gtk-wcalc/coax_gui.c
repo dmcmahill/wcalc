@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.34 2009/01/15 15:52:43 dan Exp $ */
+/* $Id: coax_gui.c,v 1.35 2009/02/05 05:42:49 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -40,6 +40,9 @@
 #include "misc.h"
 #include "units.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_coax.h"
+#endif
 #include "coax.h"
 #include "coax_gui.h"
 #include "coax_loadsave.h"
@@ -1184,6 +1187,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   coax_gui *gui;
   coax_line *l;
 
@@ -1192,37 +1196,39 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    //coax_fig_init();
-  } else {
+    figure_coax_init();
+  }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    /*
-    list = wc_print_add_cairo(coax_fig_render[0], coax_fig_width[0], 
-			      coax_fig_height[0], list);
-    */
+    list = wc_print_add_cairo(figure_coax_render[0], figure_coax_width[0], 
+			      figure_coax_height[0], list);
 
-    list = wc_print_add_double("Diameter of inner conductor (a)", l->a, l->units_abct, list);
-    list = wc_print_add_double("Inside diameter of outer conductor (b)", l->b, l->units_abct, list);
+    list = wc_print_add_double("Radius of inner conductor (a)", l->a, l->units_abct, list);
+    list = wc_print_add_double("Diameter of inner conductor (2a)", 2.0*l->a, l->units_abct, list);
+    list = wc_print_add_double("Inside radius of outer conductor (b)", l->b, l->units_abct, list);
+    list = wc_print_add_double("Inside diameter of outer conductor (2b)", 2.0*l->b, l->units_abct, list);
     list = wc_print_add_double("Center conductor offset (c)", l->c, l->units_abct, list);
+    list = wc_print_add_double("Shield thickness (t)", l->tshield, l->units_abct, list);
     list = wc_print_add_double("Line physical length (len)", l->len, l->units_abct, list);
 
-    list = wc_print_add_double("Center conductor resistivity (rho_a)", 
+    list = wc_print_add_double("Center conductor resistivity (rho<sub>a</sub>)", 
 			       l->rho_a, l->units_rho, list);
-    list = wc_print_add_double("Shield conductor resistivity (rho_b)", 
+
+    list = wc_print_add_double("Shield conductor resistivity (rho<sub>b</sub>)", 
 			       l->rho_b, l->units_rho, list);
-    list = wc_print_add_double("Relative dielectric contant (er)", l->er, NULL, list);
+    list = wc_print_add_double("Relative dielectric contant (e<sub>r</sub>)", l->er, NULL, list);
     list = wc_print_add_double("Dielectric loss tangent (tand)", l->tand, NULL, list);
 
     list = wc_print_add_double("Dielectric breakdown field strength (Emax)", 
 			       l->emax, l->units_emax, list);
 
-    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+    list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
 
     list = wc_print_add_double("Characteristic Impedance", l->z0, NULL, list);
     list = wc_print_add_double("Electrical length", l->elen, l->units_len, list);
     list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
 
-    list = wc_print_add_double("TE11 mode cutoff frequency", l->fc, l->units_fc, list);
+    list = wc_print_add_double("TE<sub>11</sub> mode cutoff frequency", l->fc, l->units_fc, list);
 
     list = wc_print_add_double("Conductor loss", l->alpha_c, l->units_loss, list);
     list = wc_print_add_double("Dielectric loss", l->alpha_d, l->units_loss, list);
@@ -1235,6 +1241,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->G, l->units_G, list);
     
   }
+#endif
 
   return list;
 }

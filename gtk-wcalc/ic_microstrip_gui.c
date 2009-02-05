@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.16 2009/01/15 15:52:46 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.17 2009/02/05 05:42:53 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -38,6 +38,9 @@
 #include "misc.h"
 #include "units.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_ic_microstrip.h"
+#endif
 #include "ic_microstrip.h"
 #include "ic_microstrip_gui.h"
 #include "ic_microstrip_loadsave.h"
@@ -1105,6 +1108,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   ic_microstrip_gui *gui;
   ic_microstrip_line *l;
 
@@ -1113,14 +1117,12 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    //ic_microstrip_fig_init();
-  } else {
+    figure_ic_microstrip_init();
+  } {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    /*
-    list = wc_print_add_cairo(ic_microstrip_fig_render[0], ic_microstrip_fig_width[0], 
-			      ic_microstrip_fig_height[0], list);
-    */
+    list = wc_print_add_cairo(figure_ic_microstrip_render[0], figure_ic_microstrip_width[0], 
+			      figure_ic_microstrip_height[0], list);
 
     list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
     list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
@@ -1132,7 +1134,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Substrate relative dielectric contant (es)", 
 			       l->subs->es, NULL, list);
     list = wc_print_add_double("Substrate conductivity (sigmas)", 
-			       l->subs->es, l->units_sigmas, list);
+			       l->subs->sigmas, l->units_sigmas, list);
 
     list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwht, list);
     list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
@@ -1143,7 +1145,7 @@ static GList * dump_values(Wcalc *wcalc)
 
     list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
     list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
-    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Electrical length", l->len, NULL, list);
     list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
 
 
@@ -1160,6 +1162,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->Gmis, l->units_G, list);
     
   }
+#endif
 
   return list;
 }

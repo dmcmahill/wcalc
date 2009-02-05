@@ -1,4 +1,4 @@
-/* $Id: coplanar_gui.c,v 1.8 2009/01/15 15:52:44 dan Exp $ */
+/* $Id: coplanar_gui.c,v 1.9 2009/02/05 05:42:50 dan Exp $ */
 
 /*
  * Copyright (C) 2006, 2007, 2009 Dan McMahill
@@ -37,6 +37,9 @@
 #include "menus.h"
 #include "misc.h"
 
+#if GTK_CHECK_VERSION(2,10,0)
+#include "pixmaps/figure_coplanar.h"
+#endif
 #include "coplanar.h"
 #include "coplanar_gui.h"
 #include "coplanar_loadsave.h"
@@ -1155,6 +1158,7 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
+#if GTK_CHECK_VERSION(2,10,0)
   coplanar_gui *gui;
   coplanar_line *l;
 
@@ -1163,21 +1167,18 @@ static GList * dump_values(Wcalc *wcalc)
 
   /* Initialize the graphics */
   if( list == NULL ) {
-    //coplanar_fig_init();
-  } else {
+    figure_coplanar_init();
+  }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    /*
-    list = wc_print_add_cairo(coplanar_fig_render[0], coplanar_fig_width[0], 
-			      coplanar_fig_height[0], list);
-    */
+    list = wc_print_add_cairo(figure_coplanar_render[0], figure_coplanar_width[0], 
+			      figure_coplanar_height[0], list);
 
     list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
     list = wc_print_add_double("Space to the coplanar ground lines (s)", l->s, l->units_lwht, list);
     list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
 
-    list = wc_print_add_string(l->with_ground ? "With bottom side ground" :
-			       "Without bottom side ground", "", NULL, list);
+    list = wc_print_add_string( "With bottom side ground?", l->with_ground ? "Yes" : "No", NULL, list);
 
     list = wc_print_add_double("Dielectric thickness (h)", l->subs->h, l->units_lwht, list);
     list = wc_print_add_double("Relative dielectric contant (er)", l->subs->er, NULL, list);
@@ -1192,7 +1193,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Characteristic Impedance", l->z0, NULL, list);
     list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
     list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
-    list = wc_print_add_double("Electrical length", l->len, l->units_len, list);
+    list = wc_print_add_double("Electrical length", l->len, NULL, list);
     list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
 
     list = wc_print_add_double("Conductor loss", l->lc, l->units_loss, list);
@@ -1201,12 +1202,13 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Total loss per length", l->losslen, l->units_losslen, list);
     list = wc_print_add_double("Open end length correction", l->deltal, l->units_deltal, list);
      
-    list = wc_print_add_double("Incremental Inductance", l->Ls, l->units_L, list);
-    list = wc_print_add_double("Incremental Capacitance", l->Cs, l->units_C, list);
-    list = wc_print_add_double("Incremental Resistance", l->Rs, l->units_R, list);
-    list = wc_print_add_double("Incremental Conductance", l->Gs, l->units_G, list);
+    list = wc_print_add_double("Incremental Inductance (L)", l->Ls, l->units_L, list);
+    list = wc_print_add_double("Incremental Capacitance (C)", l->Cs, l->units_C, list);
+    list = wc_print_add_double("Incremental Resistance (R)", l->Rs, l->units_R, list);
+    list = wc_print_add_double("Incremental Conductance (G)", l->Gs, l->units_G, list);
     
   }
+#endif
 
   return list;
 }

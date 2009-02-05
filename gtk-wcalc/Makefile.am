@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.41 2009/01/11 15:57:19 dan Exp $
+## $Id: Makefile.am,v 1.42 2009/01/13 14:36:08 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -63,7 +63,8 @@ wcalc_SOURCES = \
 	utils.h \
 	wcalc.c \
 	wcalc.h \
-	${GTKTABS}
+	${GTKTABS} \
+	${FIGSRCS}
 
 man_MANS=	wcalc.1
 
@@ -155,3 +156,32 @@ SUFFIXES= .asciitab
 %.c : %.asciitab $(top_srcdir)/utils/format_tab
 	$(FORMAT_TAB) gtk_fname=`basename $*_table` $< > $@
 
+FIGSRCS=	\
+	${top_srcdir}/pixmaps/figure_air_coil.c \
+	${top_srcdir}/pixmaps/figure_air_coil.h \
+	${top_srcdir}/pixmaps/figure_bars_fig.c \
+	${top_srcdir}/pixmaps/figure_bars_fig.h \
+	${top_srcdir}/pixmaps/figure_coax.c \
+	${top_srcdir}/pixmaps/figure_coax.h \
+	${top_srcdir}/pixmaps/figure_coax_model.c \
+	${top_srcdir}/pixmaps/figure_coax_model.h \
+	${top_srcdir}/pixmaps/figure_coplanar.c \
+	${top_srcdir}/pixmaps/figure_coplanar.h \
+	${top_srcdir}/pixmaps/figure_coplanar_model.c \
+	${top_srcdir}/pixmaps/figure_coplanar_model.h \
+	${top_srcdir}/pixmaps/figure_coupled_microstrip.c \
+	${top_srcdir}/pixmaps/figure_coupled_microstrip.h \
+	${top_srcdir}/pixmaps/figure_coupled_stripline.c \
+	${top_srcdir}/pixmaps/figure_coupled_stripline.h \
+	${top_srcdir}/pixmaps/figure_ic_microstrip.c \
+	${top_srcdir}/pixmaps/figure_ic_microstrip.h \
+	${top_srcdir}/pixmaps/figure_ic_microstrip_model.c \
+	${top_srcdir}/pixmaps/figure_ic_microstrip_model.h \
+	${top_srcdir}/pixmaps/figure_microstrip.c \
+	${top_srcdir}/pixmaps/figure_microstrip.h \
+	${top_srcdir}/pixmaps/figure_microstrip_model.c \
+	${top_srcdir}/pixmaps/figure_microstrip_model.h \
+	${top_srcdir}/pixmaps/figure_stripline.c \
+	${top_srcdir}/pixmaps/figure_stripline.h \
+	${top_srcdir}/pixmaps/figure_stripline_model.c \
+	${top_srcdir}/pixmaps/figure_stripline_model.h

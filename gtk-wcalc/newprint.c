@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.8 2009/02/04 01:55:23 dan Exp $ */
+/* $Id: newprint.c,v 1.9 2009/02/04 23:34:58 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -46,7 +46,8 @@
 #include <dmalloc.h>
 #endif
 
- 	
+#if GTK_CHECK_VERSION(2,10,0)
+
 /* In points */
 #define HEADER_BORDER 8
 #define HEADER_GAP (3*72/25.4)
@@ -62,6 +63,8 @@ typedef struct
   GList * print_list;
   GList * paginations;
 
+  gchar *date_string;
+
 } PrintData;
 
 
@@ -75,7 +78,16 @@ begin_print (GtkPrintOperation *operation,
   PrintData *data = (PrintData *)user_data;
   gdouble height;
   Wcalc *w;
+  GTimeVal now;
+  GDate date;
+  gchar date_string[128];
 
+  g_get_current_time (&now);
+  g_date_set_time_val (&date, &now);
+  g_date_strftime (date_string, sizeof(date_string) / sizeof(date_string[0]),
+		   "%c", &date);
+
+  data->date_string = g_strdup (date_string);
   /* 
    * get the height in points (we set the units to points in
    * do_print())
@@ -229,9 +241,10 @@ draw_page (GtkPrintOperation *operation,
  	
 
   /* create the string and put it in our layout */
-  page_str = g_strdup_printf ("<markup><i>http://wcalc.sf.net</i>\n%s</markup>",
+  page_str = g_strdup_printf ("<markup><b>%s</b>\n%s\n<i>http://wcalc.sf.net</i></markup>",
 			      data->wcalc->file_name != NULL ?
-			      data->wcalc->file_name : "untitled");
+			      data->wcalc->file_name : "untitled",
+			      data->date_string);
 
   pango_layout_set_markup(layout, page_str, -1);
   g_free(page_str);
@@ -265,29 +278,12 @@ draw_page (GtkPrintOperation *operation,
    * *********************************************************************
    */
 
-  /* Now set up the pango layout for the text portion of the output */
-  layout = gtk_print_context_create_pango_layout (context);
-
   /* pick the font and font size */
   /* monospace, sans-serif, serif */
   desc = pango_font_description_from_string ("serif");
 
   /* A size value of 10 * PANGO_SCALE is a 10 point font. */
   pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
-  pango_layout_set_font_description (layout, desc);
-  pango_font_description_free (desc);
- 	
-  pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
-
-  /* FIXME -- smarter scaling here */
-#define TEXT_COLUMN_WIDTH 5.0
-#define TEXT_COLUMN_INDENT -0.5
-
-  pango_layout_set_width (layout, pango_units_from_double(TEXT_COLUMN_WIDTH*72.0));
-  pango_layout_set_indent (layout, pango_units_from_double(TEXT_COLUMN_INDENT*72.0));
-
-  /* turn on wrapping of long lines */
-  pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
   /* Position ourselves below the header */
   cairo_move_to (cr, 0, header_height + HEADER_GAP);
@@ -314,22 +310,22 @@ draw_page (GtkPrintOperation *operation,
      */
     switch(pv->type) {
     case FLOAT:
-      text = g_strdup (pv->name);
+      text = g_strdup_printf ("<markup>%s</markup>", pv->name);
       text2 = g_strdup_printf("= %g %s", pv->val.fval/sf, units_name);
       break;
 
     case INT:
-      text = g_strdup (pv->name);
+      text = g_strdup_printf ("<markup>%s</markup>", pv->name);
       text2 = g_strdup_printf("= %d %s", (int) (pv->val.ival/sf), units_name);
       break;
 
     case STRING:
-      text = g_strdup (pv->name);
+      text = g_strdup_printf ("<markup>%s</markup>", pv->name);
       text2 = g_strdup_printf("= %s %s", pv->val.sval, units_name);
       break;
 
     case CAIRO:
-      text = g_strdup_printf("[CAIRO FIGURE HERE]");
+      text = g_strdup_printf("<markup>[CAIRO FIGURE HERE]</markup>");
       break;
 
     }
@@ -360,14 +356,34 @@ draw_page (GtkPrintOperation *operation,
 
     } else {
       cairo_get_current_point (cr, &x, &y);
+      layout = gtk_print_context_create_pango_layout (context);
+      pango_layout_set_font_description (layout, desc);
+      pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+  
+      /* FIXME -- smarter scaling here */
+#define TEXT_COLUMN_WIDTH 5.0
+#define TEXT_COLUMN_INDENT -0.5
+      
+      pango_layout_set_width (layout, 
+			      pango_units_from_double(TEXT_COLUMN_WIDTH*72.0));
+      pango_layout_set_indent (layout, 
+			       pango_units_from_double(TEXT_COLUMN_INDENT*72.0));
+      
+      pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
-      pango_layout_set_text (layout, text, -1);
-      pango_cairo_show_layout (cr, layout);
+
+      pango_layout_set_markup (layout, text, -1);
       pango_layout_get_pixel_size (layout, &text_width, &text_height);
+      pango_cairo_show_layout (cr, layout);
+      g_object_unref (layout);
 
       cairo_rel_move_to (cr, (TEXT_COLUMN_WIDTH+0.25)*72.0, 0);
+      layout = gtk_print_context_create_pango_layout (context);
+      pango_layout_set_font_description (layout, desc);
+      pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
       pango_layout_set_text (layout, text2, -1);
       pango_cairo_show_layout (cr, layout);
+      g_object_unref (layout);
       cairo_move_to (cr, x, y);
 
       /* moves back to x=y and move down by one line */
@@ -379,7 +395,8 @@ draw_page (GtkPrintOperation *operation,
       
   }
 
-  g_object_unref (layout);
+  pango_font_description_free (desc);
+
 }
  	
 static void
@@ -388,7 +405,8 @@ end_print (GtkPrintOperation *operation,
 	   gpointer user_data)
 {
   PrintData *data = (PrintData *)user_data;
- 	
+  
+  g_free (data->date_string);
   g_free (data);
 }
  	
@@ -418,7 +436,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
    */
   data = g_new0 (PrintData, 1);
   data->wcalc = wcalc;
-  data->font_size = 12.0;
+  data->font_size = 10.0;
  	
   /* Hook up the callbacks */
 
@@ -621,4 +639,6 @@ void wc_print_value_free(PrintValue * val)
 
   free( val );
 }
+
+#endif
 
