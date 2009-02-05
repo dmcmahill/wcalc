@@ -1,6 +1,24 @@
-# $Id$
+# $Id: Xdefaults.tgif,v 1.1 2001/10/12 03:47:55 dan Exp $
 
 # Needed to ensure the correct XPM version
 Tgif.XPmOutputVersion: 3
 
+Tgif.MaxColors: 25
 
+# ok, so this is ugly but it worked...
+# awk 'END{for(i=1;i<15;i++){c=48 + i; if(i>9){c=87+i} printf("Tgif.Color%d: #%c%c%c%c%c%c\n", i+10, c, c, c, c, c, c)}}' /dev/null >> Xdefaults.tgif
+
+Tgif.Color11: #111111
+Tgif.Color12: #222222
+Tgif.Color13: #333333
+Tgif.Color14: #444444
+Tgif.Color15: #555555
+Tgif.Color16: #666666
+Tgif.Color17: #777777
+Tgif.Color18: #888888
+Tgif.Color19: #999999
+Tgif.Color20: #aaaaaa
+Tgif.Color21: #bbbbbb
+Tgif.Color22: #cccccc
+Tgif.Color23: #dddddd
+Tgif.Color24: #eeeeee
