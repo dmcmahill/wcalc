@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.9 2009/02/04 23:34:58 dan Exp $ */
+/* $Id: newprint.c,v 1.10 2009/02/05 22:15:25 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -38,7 +38,6 @@
 #include <gtk/gtk.h>
 
 #include "newprint.h"
-#include "render_figures.h"
 #include "units.h"
 #include "wcalc.h"
 
