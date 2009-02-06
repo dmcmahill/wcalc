@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.43 2009/02/05 22:15:13 dan Exp $
+## $Id: Makefile.am,v 1.44 2009/02/06 01:36:30 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -111,8 +111,10 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS}
 
 if WC_LOCAL_LIBWCALC
 wcalc_LDADD = ../libwcalc/libwcalc.la
+wcalc_DEPENDENCIES = ../libwcalc/libwcalc.la
 else
 wcalc_LDADD =
+wcalc_DEPENDENCIES = 
 endif
 
 wcalc_LDFLAGS = @GTK_LIBS@ @WCALC_LIBS@
@@ -126,13 +128,14 @@ distclean-local:
 	-rm AWG.asciitab AWG.c
 
 if WIN32
-wcalc_icon.o : wcalc_icon.ico $(srcdir)/wcalc.rc
+wcalc_icon.${OBJEXT} : wcalc_icon.ico $(srcdir)/wcalc.rc
 	$(WINDRES) $(srcdir)/wcalc.rc $@
 
 wcalc_icon.ico: $(top_srcdir)/win32/wcalc_icon.ico
 	cp $(top_srcdir)/win32/wcalc_icon.ico $@
 
-wcalc_LDADD+=	wcalc_icon.o
+wcalc_LDADD+=	wcalc_icon.${OBJEXT}
+wcalc_DEPENDENCIES+=  wcalc_icon.${OBJEXT}
 
 endif
 
