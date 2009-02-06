@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.35 2009/02/05 05:42:49 dan Exp $ */
+/* $Id: coax_gui.c,v 1.36 2009/02/05 22:15:17 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -38,6 +38,7 @@
 #include "gtk-units.h"
 
 #include "misc.h"
+#include "symbols.h"
 #include "units.h"
 
 #if GTK_CHECK_VERSION(2,10,0)
@@ -1211,12 +1212,13 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Shield thickness (t)", l->tshield, l->units_abct, list);
     list = wc_print_add_double("Line physical length (len)", l->len, l->units_abct, list);
 
-    list = wc_print_add_double("Center conductor resistivity (rho<sub>a</sub>)", 
+    list = wc_print_add_double("Center conductor resistivity ("
+			       WC_SYM_RHO_LC WC_SYM_RHO_UC WC_SYM_DELTA_LC WC_SYM_DELTA_UC "<sub>a</sub>)", 
 			       l->rho_a, l->units_rho, list);
 
     list = wc_print_add_double("Shield conductor resistivity (rho<sub>b</sub>)", 
 			       l->rho_b, l->units_rho, list);
-    list = wc_print_add_double("Relative dielectric contant (e<sub>r</sub>)", l->er, NULL, list);
+    list = wc_print_add_double("Relative dielectric contant (" WC_SYM_EPSILON_LC WC_SYM_EPSILON_UC "<sub>r</sub>)", l->er, NULL, list);
     list = wc_print_add_double("Dielectric loss tangent (tand)", l->tand, NULL, list);
 
     list = wc_print_add_double("Dielectric breakdown field strength (Emax)", 
