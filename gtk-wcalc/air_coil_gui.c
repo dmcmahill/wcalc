@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.21 2009/02/05 05:42:47 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.22 2009/02/05 22:15:14 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -47,6 +47,7 @@
 #include "newprint.h"
 #include "physconst.h"
 
+#include "symbols.h"
 #include "gtk-units.h"
 #include "wcalc.h"
 
@@ -889,7 +890,8 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
     list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
 
-    list = wc_print_add_double("Wire resistivity (rho)", c->rho, c->units_rho, list);
+    list = wc_print_add_double("Wire resistivity ("
+			       WC_SYM_RHO_LC ")", c->rho, c->units_rho, list);
 
     list = wc_print_add_double("Inside diameter of coil (I.D.)", c->dia, c->units_dia, list);
 

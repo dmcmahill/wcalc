@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.10 2009/02/05 22:15:25 dan Exp $ */
+/* $Id: newprint.c,v 1.11 2009/02/06 02:24:33 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -34,9 +34,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-
+#include <glib.h>
 #include <gtk/gtk.h>
 
+#include "alert.h"
 #include "newprint.h"
 #include "units.h"
 #include "wcalc.h"
@@ -113,8 +114,8 @@ begin_print (GtkPrintOperation *operation,
   }
 
   data->paginations = NULL;
-  data->paginations = g_list_append(data->paginations, 0);
-  data->paginations = g_list_append(data->paginations, g_list_length(data->print_list) );
+  data->paginations = g_list_append(data->paginations, GINT_TO_POINTER(0));
+  data->paginations = g_list_append(data->paginations, GINT_TO_POINTER(g_list_length(data->print_list)) );
 
 
   /*
@@ -288,8 +289,8 @@ draw_page (GtkPrintOperation *operation,
   cairo_move_to (cr, 0, header_height + HEADER_GAP);
 
   /* now print out each line for this page */
-  for(i = g_list_nth_data(data->paginations, page_nr) ;
-      i < g_list_nth_data(data->paginations, page_nr + 1) ;
+  for(i = GPOINTER_TO_INT(g_list_nth_data(data->paginations, page_nr)) ;
+      i < GPOINTER_TO_INT(g_list_nth_data(data->paginations, page_nr + 1)) ;
       i++) {
 
     /* Get the next bit of data to print */

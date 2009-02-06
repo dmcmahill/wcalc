@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.36 2009/02/05 22:15:17 dan Exp $ */
+/* $Id: coax_gui.c,v 1.37 2009/02/06 01:36:31 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -1212,16 +1212,15 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Shield thickness (t)", l->tshield, l->units_abct, list);
     list = wc_print_add_double("Line physical length (len)", l->len, l->units_abct, list);
 
-    list = wc_print_add_double("Center conductor resistivity ("
-			       WC_SYM_RHO_LC WC_SYM_RHO_UC WC_SYM_DELTA_LC WC_SYM_DELTA_UC "<sub>a</sub>)", 
+    list = wc_print_add_double("Center conductor resistivity (" WC_SYM_RHO_LC "<sub>a</sub>)", 
 			       l->rho_a, l->units_rho, list);
 
-    list = wc_print_add_double("Shield conductor resistivity (rho<sub>b</sub>)", 
+    list = wc_print_add_double("Shield conductor resistivity (" WC_SYM_RHO_LC "<sub>b</sub>)", 
 			       l->rho_b, l->units_rho, list);
-    list = wc_print_add_double("Relative dielectric contant (" WC_SYM_EPSILON_LC WC_SYM_EPSILON_UC "<sub>r</sub>)", l->er, NULL, list);
-    list = wc_print_add_double("Dielectric loss tangent (tand)", l->tand, NULL, list);
+    list = wc_print_add_double("Relative dielectric contant (" WC_SYM_EPSILON_LC "<sub>r</sub>)", l->er, NULL, list);
+    list = wc_print_add_double("Dielectric loss tangent (tan" WC_SYM_DELTA_UC ")", l->tand, NULL, list);
 
-    list = wc_print_add_double("Dielectric breakdown field strength (Emax)", 
+    list = wc_print_add_double("Dielectric breakdown field strength (E<sub>max</sub>)", 
 			       l->emax, l->units_emax, list);
 
     list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
@@ -1296,7 +1295,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->er);
   fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->line->tand);
-  fprintf(fp,"(r) symbolshow (a) subshow tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+  fprintf(fp,"(p) symbolshow (a) subshow tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->rho_a/gui->line->units_rho->sf, gui->line->units_rho->name);
   fprintf(fp,"(r) symbolshow (b) subshow tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->line->rho_b/gui->line->units_rho->sf, gui->line->units_rho->name);

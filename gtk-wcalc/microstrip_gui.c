@@ -1,4 +1,4 @@
-/* $Id: microstrip_gui.c,v 1.23 2009/02/05 05:42:54 dan Exp $ */
+/* $Id: microstrip_gui.c,v 1.24 2009/02/05 22:15:24 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
@@ -47,6 +47,7 @@
 #include "physconst.h"
 #include "units.h"
 
+#include "symbols.h"
 #include "gtk-units.h"
 #include "wcalc.h"
 
@@ -1091,10 +1092,13 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Length of line (L)", l->l, l->units_lwht, list);
 
     list = wc_print_add_double("Dielectric thickness (H)", l->subs->h, l->units_lwht, list);
-    list = wc_print_add_double("Relative dielectric contant (er)", l->subs->er, NULL, list);
-    list = wc_print_add_double("Dielectric loss tangent (tand)", l->subs->tand, NULL, list);
-    list = wc_print_add_double("Metal thickness (Tmet)", l->subs->tmet, l->units_lwht, list);
-    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Relative dielectric contant ("
+			       WC_SYM_EPSILON_LC "<sub>r</sub>)", l->subs->er, NULL, list);
+    list = wc_print_add_double("Dielectric loss tangent (tan"
+			       WC_SYM_DELTA_LC ")", l->subs->tand, NULL, list);
+    list = wc_print_add_double("Metal thickness (T<sub>met</sub>)", l->subs->tmet, l->units_lwht, list);
+    list = wc_print_add_double("Metal resistivity ("
+			       WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
     list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
 			       l->units_rough, list);
 

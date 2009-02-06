@@ -1,4 +1,4 @@
-/* $Id: ic_microstrip_gui.c,v 1.17 2009/02/05 05:42:53 dan Exp $ */
+/* $Id: ic_microstrip_gui.c,v 1.18 2009/02/05 22:15:22 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005 Dan McMahill
@@ -47,6 +47,7 @@
 #include "newprint.h"
 #include "physconst.h"
 
+#include "symbols.h"
 #include "gtk-units.h"
 #include "wcalc.h"
 
@@ -1127,21 +1128,25 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
     list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
 
-    list = wc_print_add_double("Oxide thickness (tox)", l->subs->tox, l->units_lwht, list);
-    list = wc_print_add_double("Oxide relative dielectric contant (eox)", l->subs->eox, NULL, list);
+    list = wc_print_add_double("Oxide thickness (t<sub>ox</sub>)", l->subs->tox, l->units_lwht, list);
+    list = wc_print_add_double("Oxide relative dielectric contant ("
+			       WC_SYM_EPSILON_LC "<sub>ox</sub>)", l->subs->eox, NULL, list);
 
     list = wc_print_add_double("Substrate thickness (h)", l->subs->h, l->units_lwht, list);
-    list = wc_print_add_double("Substrate relative dielectric contant (es)", 
+    list = wc_print_add_double("Substrate relative dielectric contant ("
+			       WC_SYM_EPSILON_LC "<sub>s</sub>)", 
 			       l->subs->es, NULL, list);
-    list = wc_print_add_double("Substrate conductivity (sigmas)", 
+    list = wc_print_add_double("Substrate conductivity ("
+			       WC_SYM_SIGMA_LC "<sub>s</sub>)", 
 			       l->subs->sigmas, l->units_sigmas, list);
 
-    list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwht, list);
-    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Metal thickness (t<sub>met</sub>)", l->subs->tmet, l->units_lwht, list);
+    list = wc_print_add_double("Metal resistivity ("
+			       WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
     list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
 			       l->units_rough, list);
 
-    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+    list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
 
     list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
     list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);

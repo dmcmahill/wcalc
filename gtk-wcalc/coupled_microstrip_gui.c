@@ -1,4 +1,4 @@
-/* $Id: coupled_microstrip_gui.c,v 1.15 2009/02/05 05:42:51 dan Exp $ */
+/* $Id: coupled_microstrip_gui.c,v 1.16 2009/02/05 22:15:20 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
@@ -47,6 +47,7 @@
 #include "physconst.h"
 #include "units.h"
 
+#include "symbols.h"
 #include "gtk-units.h"
 #include "wcalc.h"
 
@@ -1492,19 +1493,22 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_cairo(figure_coupled_microstrip_render[0], figure_coupled_microstrip_width[0], 
 			      figure_coupled_microstrip_height[0], list);
 
-    list = wc_print_add_double("Width of lines (w)", l->w, l->units_lwst, list);
-    list = wc_print_add_double("Length of lines (l)", l->l, l->units_lwst, list);
-    list = wc_print_add_double("Gap between lines (s)", l->s, l->units_lwst, list);
+    list = wc_print_add_double("Width of lines (W)", l->w, l->units_lwst, list);
+    list = wc_print_add_double("Length of lines (L)", l->l, l->units_lwst, list);
+    list = wc_print_add_double("Gap between lines (S)", l->s, l->units_lwst, list);
 
-    list = wc_print_add_double("Dielectric thickness (h)", l->subs->h, l->units_lwst, list);
-    list = wc_print_add_double("Relative dielectric contant (er)", l->subs->er, NULL, list);
-    list = wc_print_add_double("Dielectric loss tangent (tand)", l->subs->tand, NULL, list);
-    list = wc_print_add_double("Metal thickness (tmet)", l->subs->tmet, l->units_lwst, list);
-    list = wc_print_add_double("Metal resistivity (rho)", l->subs->rho, l->units_rho, list);
+    list = wc_print_add_double("Dielectric thickness (H)", l->subs->h, l->units_lwst, list);
+    list = wc_print_add_double("Relative dielectric contant ("
+			       WC_SYM_EPSILON_LC "<sub>r</sub>)", l->subs->er, NULL, list);
+    list = wc_print_add_double("Dielectric loss tangent (tan"
+			       WC_SYM_DELTA_LC ")", l->subs->tand, NULL, list);
+    list = wc_print_add_double("Metal thickness (t<sub>met</sub>)", l->subs->tmet, l->units_lwst, list);
+    list = wc_print_add_double("Metal resistivity ("
+			       WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
     list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
 			       l->units_rough, list);
 
-    list = wc_print_add_double("Aanalysis Frequency", l->freq, l->units_freq, list);
+    list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
 
     list = wc_print_add_double("Characteristic Impedance", l->z0, NULL, list);
     list = wc_print_add_double("Coupling coefficient", l->k, NULL, list);

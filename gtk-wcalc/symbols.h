@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.36 2009/02/05 22:15:17 dan Exp $ */
+/* $Id: symbols.h,v 1.1 2009/02/06 01:36:32 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -21,7 +21,10 @@
  */
 
 /*
- * Run away now.  Don't even look.  I mean it.  Big hack.
+ * Run away now.  Don't even look.  I mean it.  Big hack.  Maybe its not that bad
+ * I'm just defining UTF-8 strings for the unicode characters for a small handful
+ * of Greek letters that are used in engineering.  These are used (currently)
+ * in the hardcopy routines.  "_LC" means "lower case", "_UC" means "upper case".
  */
 
 #ifndef __SYMBOLS_H__
@@ -33,5 +36,7 @@
 #define WC_SYM_EPSILON_UC "\316\225"
 #define WC_SYM_RHO_LC "\317\201"
 #define WC_SYM_RHO_UC "\316\241"
+#define WC_SYM_SIGMA_LC "\317\203"
+#define WC_SYM_SIGMA_UC "\316\243"
 
 #endif /* __SYMBOLS_H__ */
