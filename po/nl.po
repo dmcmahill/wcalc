@@ -1,0 +1,151 @@
+# Dutch translation of wcalc.
+# Copyright (C) 2009 Bert Timmerman
+# This file is distributed under the same license as the wcalc package.
+# Bert Timmerman <bert.timmerman@xs4all.nl>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-10-27 13:35-0400\n"
+"PO-Revision-Date: 2009-01-20 14:16+0100\n"
+"Last-Translator: Bert Timmerman <bert.timmerman@xs4all.nl>\n"
+"Language-Team: Bert Timmerman <bert.timmerman@xs4all.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+
+#: gtk-wcalc/menus.c:89
+msgid "/_File"
+msgstr "/_Bestand"
+
+#: gtk-wcalc/menus.c:90
+msgid "/File/_New"
+msgstr "/Bestand/_Nieuw"
+
+#: gtk-wcalc/menus.c:91
+msgid "/File/sep1"
+msgstr "/Bestand/sep1"
+
+#: gtk-wcalc/menus.c:92
+msgid "/File/_Open"
+msgstr "/Bestand/_Open"
+
+#: gtk-wcalc/menus.c:93
+msgid "/File/_Save"
+msgstr "/Bestand/_Opslaan"
+
+#: gtk-wcalc/menus.c:94
+msgid "/File/Save _As"
+msgstr "/Bestand/Opslaan _Als"
+
+#: gtk-wcalc/menus.c:95
+msgid "/File/sep2"
+msgstr "/Bestand/sep2"
+
+#: gtk-wcalc/menus.c:96
+msgid "/File/_Print"
+msgstr "/Bestand/_Afdrukken"
+
+#: gtk-wcalc/menus.c:97
+msgid "/File/sep3"
+msgstr "/Bestand/sep3"
+
+#: gtk-wcalc/menus.c:98
+msgid "/File/Close"
+msgstr "/Bestand/Sluiten"
+
+#: gtk-wcalc/menus.c:99
+msgid "/File/Quit"
+msgstr "/Bestand/Stoppen"
+
+#: gtk-wcalc/menus.c:100
+msgid "/_Options"
+msgstr "/_Opties"
+
+#: gtk-wcalc/menus.c:101
+msgid "/Options/tearoff"
+msgstr "/Opties/aftrekken"
+
+#: gtk-wcalc/menus.c:102
+msgid "/_Window"
+msgstr "/_Venster"
+
+#: gtk-wcalc/menus.c:103
+msgid "/Window/tearoff"
+msgstr "/Venster/trek af"
+
+#: gtk-wcalc/menus.c:104
+msgid "/_Help"
+msgstr "/_Help"
+
+#: gtk-wcalc/menus.c:105
+msgid "/_Help/About"
+msgstr "/_Help/Over"
+
+#: gtk-wcalc/menus.c:106
+msgid "/_Help/Copyright"
+msgstr "/_Help/Copyright"
+
+#: gtk-wcalc/menus.c:107
+msgid "/_Help/_Material Properties"
+msgstr "/_Help/_Materiaal Eigenschappen"
+
+#: gtk-wcalc/menus.c:108
+msgid "/_Help/_Material Properties/_Permeabilities"
+msgstr "/_Help/_Materiaal Eigenschappen/_Permeabiliteiten"
+
+#: gtk-wcalc/menus.c:110
+msgid "/_Help/_Material Properties/_Permitivities"
+msgstr "/_Help/_Materiaal Eigenschappen/_Permitiviteiten"
+
+#: gtk-wcalc/menus.c:112
+msgid "/_Help/_Material Properties/_Resistivities"
+msgstr "/_Help/_Materiaal Eigenschappen/_Weerstanden"
+
+#: gtk-wcalc/menus.c:114
+msgid "/_Help/_Material Properties/_Units"
+msgstr "/_Help/_Materiaal Eigenschappen/_Eenheden"
+
+#: gtk-wcalc/menus.c:116
+msgid "/_Help/_Material Properties/_Wire Sizes"
+msgstr "/_Help/_Materiaal Eigenschappen/_Draad Afmetingen"
+
+#: gtk-wcalc/menus.c:206
+#, c-format
+msgid "window_close():  Called with input pointer %p\n"
+msgstr "window_close(): Aangeroepen met invoer pointer %p\n"
+
+#: gtk-wcalc/menus.c:207
+#, c-format
+msgid "window_close():  I will destroy window %p\n"
+msgstr "window_close(): Ik zal venster %p vernietigen\n"
+
+#: gtk-wcalc/start.c:243
+msgid "Open..."
+msgstr "Open..."
+
+#: gtk-wcalc/start.c:253
+msgid "New"
+msgstr "Nieuw"
+
+#: gtk-wcalc/start.c:272
+msgid "Quit"
+msgstr "Stoppen"
+
+#: gtk-wcalc/start.c:291
+msgid ""
+"**** WARNING ****\n"
+"This is a development snapshot\n"
+"and it may crash and/or give totally wrong results.\n"
+"Unless you're a developer you should not be using\n"
+"this."
+msgstr ""
+"**** WAARSCHUWING ****\n"
+"Dit is een ontwikkel uitgave\n"
+"en het kan staken en/of verkeerde resultaten geven.\n"
+"Tenzij jij een ontwikkelaar bent, zou jij dit programma niet moeten\n"
+"gebruiken."
+
