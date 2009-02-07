@@ -1,7 +1,8 @@
-## $Id: Makefile.am,v 1.18 2008/11/29 20:42:27 dan Exp $
+## -*- makefile -*-
+## $Id: Makefile.am,v 1.19 2009/02/05 22:14:40 dan Exp $
 ##
 
-## Copyright (C) 2001, 2002, 2005, 2006, 2008 Dan McMahill
+## Copyright (C) 2001, 2002, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -60,11 +61,44 @@ PNGS=	${TGIF_SRCS:.obj=.png}
 EPSS=	${TGIF_SRCS:.obj=.eps}
 EPSC=	${TGIF_SRCS:.obj=.c}
 OFILES=	${TGIF_SRCS:.obj=.o}
+TGIF_NAMES=	${TGIF_SRCS:.obj=}
+
+CAIRO_C=	$(patsubst %.obj, figure_%.c, ${TGIF_SRCS})
+CAIRO_H=	$(patsubst %.obj, figure_%.h, ${TGIF_SRCS})
+CAIRO_SRC=	${CAIRO_C} ${CAIRO_H}
+
+define cairo_template
+figure_$(1).h: $(1).eps
+if MISSING_PSTOEDIT
+	@echo "WARNING:  A suitable pstoedit was not found on your system but"
+	@echo "          figure_$(1).c and figure_$(1).h are out of date and needs to be"
+	@echo "          rebuilt from $*.eps.  Changes to $*.eps"
+	@echo "          will be ignored."
+else
+	${PSTOEDIT} -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
+endif
+# This rule forces a serialization of the jobs during a parallel make.  Note, the cairo driver creates
+# the header before the .c file.
+figure_$(1).c: $(1).eps figure_$(1).h
+if MISSING_PSTOEDIT
+	@echo "WARNING:  A suitable pstoedit was not found on your system but"
+	@echo "          figure_$(1).c and figure_$(1).h are out of date and needs to be"
+	@echo "          rebuilt from $*.eps.  Changes to $*.eps"
+	@echo "          will be ignored."
+else
+	${PSTOEDIT} -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
+endif
+endef
+$(foreach __tmp__,$(TGIF_NAMES),$(eval $(call cairo_template,$(__tmp__))))
+
+.PHONY: show-var
+show-var:
+	@${ECHO} ${${VARNAME}}
 
 TGIF=		XENVIRONMENT=$(srcdir)/Xdefaults.tgif @TGIF@
 TGIF_FLAGS=	-print -color
 
-BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${EPSC}
+BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${EPSC} ${CAIRO_SRC}
 EXTRA_DIST=	Xdefaults.tgif ${TGIF_SRCS} ${BUILT_SOURCES}
 
 # All the new suffix rules
@@ -73,7 +107,6 @@ SUFFIXES = .obj .xpm .xbm .gif .png .eps .c
 
 .eps.c :
 	$(EPS2C) fname=$*_eps $*.eps > $*.c
-	${HOME}/src/pstoedit-3.41/src/pstoedit -dt -f "cairo: -header figure_$*.h -funcname figure_$*" $*.eps figure_$*.c
 
 .obj.eps :
 if MISSING_TGIF

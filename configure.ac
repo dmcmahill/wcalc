@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.10 2009/01/12 19:31:58 dan Exp $
+te dnl $Id: configure.ac,v 1.11 2009/01/21 05:05:15 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -76,6 +76,19 @@ fi
 #
 AC_PATH_PROG(TGIF, tgif, notfound)
 AM_CONDITIONAL(MISSING_TGIF, test x$TGIF = xnotfound)
+
+#
+# Processes the tgif generated .eps files to produce cairo code that
+# in turn is used by gtk-wcalc/newprint.c to print out graphics when
+# we produce hardcopy.
+#
+AC_PATH_PROG(PSTOEDIT, pstoedit, notfound)
+AM_CONDITIONAL(MISSING_PSTOEDIT, test x$PSTOEDIT = xnotfound)
+
+# We also need to make sure that pstoedit contains my (Dan's) cairo driver
+# which allows it to produce cairo code.
+#
+# FIXME -- insert test here for the cairo driver
 
 #
 # For building the documentation
