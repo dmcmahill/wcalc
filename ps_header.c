@@ -1,7 +1,7 @@
-/* $Id: ps_header.c,v 1.4 2001/09/22 03:50:17 dan Exp $ */
+/* $Id: ps_header.c,v 1.5 2002/01/03 03:54:43 dan Exp $ */
 
 fprintf(fp,"%%!PS-Adobe-3.0\n");
-fprintf(fp,"%%%%Creator: WaveCalc\n");
+fprintf(fp,"%%%%Creator: Wcalc\n");
 fprintf(fp,"%%%%BoundingBox: 0 0 %g %g\n",
 	rint(72*global_print_config->paperwidth),
 	rint(72*global_print_config->paperheight));
@@ -180,7 +180,7 @@ fprintf(fp,"%g 2 div inch %g %g sub inch moveto\n",
 fprintf(fp,"%%\n");
 fprintf(fp,"%% larger font\n");
 fprintf(fp,"currfont fsize 2.0 mul scalefont setfont\n");
-fprintf(fp,"(WaveCalc:  Version-%s) centertopshow newlinecenter\n",VER);
+fprintf(fp,"(Wcalc:  Version-%s) centertopshow newlinecenter\n",VER);
 fprintf(fp,"currfont fsize 1.2 mul scalefont setfont\n");
 fprintf(fp,"(%s, %s) centertopshow newlinecenter\n",wcalc->model_name,wcalc->model_version);
 fprintf(fp,"newlinecenter\n");
