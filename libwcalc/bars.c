@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.5 2008/11/29 20:42:02 dan Exp $ */
+/* $Id: bars.c,v 1.6 2009/01/10 20:56:48 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill
@@ -26,6 +26,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define _(String) String
 
 #include "bars.h"
 #include "bars_loadsave.h"
@@ -248,18 +250,18 @@ int bars_calc(bars *b, double freq)
     int touching = 1;
 
     if(freq < 0.0) {
-	alert("Frequency must be >= 0");
+	alert(_("Frequency must be >= 0"));
 	return -1;
     }
 
     /* check that none of our individual bar dimensions are negative */
     if( b->b < 0 || b->a < 0 || b->c < 0 || b->d < 0) {
-	alert("a, b, d, c must all be >= 0");
+	alert(_("a, b, d, c must all be >= 0"));
 	return -1;
     }
 
     if(b->l1 <= 0 || b->l2 <= 0) {
-	alert("l1 and l2 must be > 0");
+	alert(_("l1 and l2 must be > 0"));
     }
 
     /* now see if the bars are touching. */
@@ -282,7 +284,7 @@ int bars_calc(bars *b, double freq)
     /* for the bars to touch, we have to have overlap in all 3 dimensions */
 
     if(touching) {
-	alert("The bars are touching.  This is not allowed");
+	alert(_("The bars are touching.  This is not allowed."));
 	return -1;
     }
 
@@ -339,7 +341,7 @@ int bars_calc(bars *b, double freq)
 
 int bars_syn(bars *b, double f, int flag)
 {
-  alert ("bars_syn() -- not yet implemented\n");
+  alert (_("bars_syn() -- not yet implemented\n"));
   return -1;
 
 #ifdef DEBUG_SYN

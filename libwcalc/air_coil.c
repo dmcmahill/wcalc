@@ -1,7 +1,7 @@
-/* $Id: air_coil.c,v 1.14 2006/04/06 04:20:03 dan Exp $ */
+/* $Id: air_coil.c,v 1.15 2008/11/29 20:42:01 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004, 2006 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -26,6 +26,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define _(String) String
 
 #include "air_coil.h"
 #include "air_coil_loadsave.h"
@@ -134,9 +136,9 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   air_coil_coil tmp_coil;
 
   if(coil->Nf < 1.0){
-    alert("You have specified < 1 turn.  This\n"
+    alert(_("You have specified < 1 turn.  This\n"
 	  "is not accurately modeled by this\n"
-	  "model.\n");
+	  "model.\n"));
     return -1;
   }
   /* 
@@ -151,11 +153,11 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   lmin = coil->Nf*(M2INCH(awg2dia(coil->AWGf)) + TINSUL);
   if (coil->use_fill){
     if(coil->fill < 1.0){
-      alert("You have specified a fill < 1.  This\n"
+      alert(_("You have specified a fill < 1.  This\n"
 	    "is not allowed as fill is the ratio of\n"
 	    "coil length to minimum possible length\n"
 	    "consistent with the number of turns\n"
-	    "specified.\n");
+	    "specified.\n"));
       return -1;
     }
     coil->len = INCH2M(lmin)*coil->fill;
