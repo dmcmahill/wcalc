@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.11 2009/01/21 05:05:15 dan Exp $
+te dnl $Id: configure.ac,v 1.12 2009/02/07 04:09:15 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -84,6 +84,8 @@ AM_CONDITIONAL(MISSING_TGIF, test x$TGIF = xnotfound)
 #
 AC_PATH_PROG(PSTOEDIT, pstoedit, notfound)
 AM_CONDITIONAL(MISSING_PSTOEDIT, test x$PSTOEDIT = xnotfound)
+#AC_MSG_CHECKING([if ${PSTOEDIT} includes the cairo driver])
+
 
 # We also need to make sure that pstoedit contains my (Dan's) cairo driver
 # which allows it to produce cairo code.
