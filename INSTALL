@@ -1,9 +1,14 @@
-$Id: INSTALL,v 1.6 2005/10/24 16:15:57 dan Exp $
+$Id: INSTALL,v 1.7 2005/11/01 00:09:33 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
 system which should make compilation go smoothly on most unix-like
 systems.  Please do read this first section however.
+
+NOTE:  You must use GNU make to build wcalc.  Sorry, but there
+were some things I didn't see a good way of doing portably and
+once I went down that path I later used a few more GNU make
+extensions.  Other make implementations will *not* work.
 
 Wcalc includes several different frontends.  Because all users
 may not want to install all frontends (and the requesite dependencies)
