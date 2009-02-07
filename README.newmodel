@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.12 2006/02/13 16:55:34 dan Exp $
+$Id: README.newmodel,v 1.13 2006/02/23 14:25:19 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -52,13 +52,16 @@ Create microstrip.wc which is the defaults file for this model
 
 microstrip_gui.c =  file which contains the methods to interface the
 		    main program to the microstrip calculations.
-                    NOTE:  Use coupled_microstrip_gui.c as the example.
+                    NOTE:  Use bars_gui.c as the example.
                     They widget layout is done in an easier way where
                     the code is organized in the same order as the form
                     is done visually.  Variables are used to keep
                     track of row/column in the table instead of hard
                     coding them.  It makes it _much_ easier to rearrange
-                    the forms.
+                    the forms.  A number of convenience functions are
+		    used to take out a huge amount of redundant code
+		    that the other gui's are stuck with (since they 
+		    were written earlier).
 
 The microstrip_gui.{c,h} should define an object of type
 'microstrip_gui' that provides the following methods:
