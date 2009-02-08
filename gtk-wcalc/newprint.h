@@ -1,4 +1,4 @@
-/* $Id: newprint.h,v 1.4 2009/01/27 04:08:04 dan Exp $ */
+/* $Id: newprint.h,v 1.5 2009/02/03 22:37:24 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -22,6 +22,8 @@
 
 #ifndef __NEWPRINT_H__
 #define __NEWPRINT_H__
+
+#if GTK_CHECK_VERSION(2,10,0)
 
 #include <cairo.h>
 #include "units.h"
@@ -55,6 +57,7 @@ void newprint_popup(gpointer data,
 		    GtkWidget *widget);
 
 
+#endif /* GTK_CHECK_VERSION(2,10,0) */
 #endif /*__NEWPRINT_H__*/
 
 

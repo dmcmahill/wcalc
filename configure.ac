@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.12 2009/02/07 04:09:15 dan Exp $
+te dnl $Id: configure.ac,v 1.13 2009/02/07 21:22:32 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -103,6 +103,8 @@ AM_CONDITIONAL(MISSING_NROFF, test x$GROFF = xnotfound -o x$NEQN = xnotfound -o 
 # w3m, lynx, and links all seem to support -dump to create an ascii file from
 # html
 AC_PATH_PROG(W3M, w3m links lynx, notfound)
+AM_CONDITIONAL(MISSING_W3M, test x$W3M = xnotfound)
+
 AC_PATH_PROG(XSLTPROC, xsltproc, notfound)
 AM_CONDITIONAL(MISSING_XSLT, test x$W3M = xnotfound -o x$XSLTPROC = xnotfound)
 
@@ -810,6 +812,7 @@ else
 fi
 AC_SUBST(GTK_WCALC)
 
+
 # ------------- done with --enable-gtk -------------------
 
 # ------------- pathnames  -------------------
@@ -1169,6 +1172,8 @@ dnl GTK checks
 GTK_CFLAGS=""
 GTK_LIBS=""
 
+
+GTK2_10=no
 if test "X$GTK2" = "Xyes" ; then
    PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0, 
 			  GTK22="yes"
@@ -1178,7 +1183,16 @@ if test "X$GTK2" = "Xyes" ; then
    if test "X$GTK22" = "Xno" ; then
       AC_ERROR([Did not find gtk-2.2.0 or higher])
    fi
+
+	# we now check for gtk-2.10 or newer since that is when gtk print
+	# showed up.  If we don't have gtk print then don't bother trying
+	# to compile in lots of cairo rendering of figures that we won't
+	# use anyway
+   PKG_CHECK_MODULES(GTK2_10, gtk+-2.0 >= 2.10.0, 
+			  GTK2_10="yes", GTK2_10="no")
 fi
+
+AM_CONDITIONAL(HAVE_GTK2_10, test x${GTK2_10} = xyes)
 
 if test "X$GTK1" = "Xyes" ; then
 	AC_PATH_PROG(GTK_CONFIG,gtk-config,none)

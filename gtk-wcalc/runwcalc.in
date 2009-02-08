@@ -1,8 +1,8 @@
 #! /bin/sh
 #
-# $Id: runwcalc.in,v 1.5 2008/07/12 04:27:45 dan Exp $
+# $Id: runwcalc.in,v 1.6 2009/01/08 03:38:27 dan Exp $
 #
-# Copyright (c) 2001, 2004, 2005, 2008 Dan McMahill
+# Copyright (c) 2001, 2004, 2005, 2008, 2009 Dan McMahill
 # All rights reserved.
 #
 # This code is derived from software written by Dan McMahill
@@ -75,9 +75,10 @@ fi
 export LD_PRELOAD
 echo "Set LD_PRELOAD to ${LD_PRELOAD}"
 
-mv -f wcalc wcalc.orig
-sed -e 's;LD_LIBRARY_PATH="/;LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/;g' wcalc.orig > wcalc
-chmod 755 wcalc
+WCALC="@BUILDDIR@/wcalc"
+mv -f "${WCALC}" "${WCALC}.orig"
+sed -e 's;LD_LIBRARY_PATH="/;LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/;g' "${WCALC}.orig" > "${WCALC}"
+chmod 755 "${WCALC}"
 
 if [ "X$1" = "X-gdb" ]; then
 	shift
@@ -90,10 +91,10 @@ if [ "X$1" = "X-gdb" ]; then
 	fi
 	echo set args "$@"  > $tmpf
 	echo set env LD_LIBRARY_PATH = ${LD_LIBRARY_PATH} >> $tmpf
-	exec @BUILDDIR@/../libtool --mode=execute gdb -x $tmpf @BUILDDIR@/wcalc 
+	exec @BUILDDIR@/../libtool --mode=execute gdb -x $tmpf "${WCALC}"
 	rm -fr $tmpd
 else
-        exec @BUILDDIR@/wcalc $*
+        exec "${WCALC}" $*
 fi
 
 

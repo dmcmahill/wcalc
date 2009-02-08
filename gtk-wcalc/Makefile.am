@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.44 2009/02/06 01:36:30 dan Exp $
+## $Id: Makefile.am,v 1.45 2009/02/06 01:56:05 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -64,8 +64,7 @@ wcalc_SOURCES = \
 	utils.h \
 	wcalc.c \
 	wcalc.h \
-	${GTKTABS} \
-	${FIGSRCS}
+	${GTKTABS}
 
 man_MANS=	wcalc.1
 
@@ -189,3 +188,11 @@ FIGSRCS=	\
 	${top_srcdir}/pixmaps/figure_stripline.h \
 	${top_srcdir}/pixmaps/figure_stripline_model.c \
 	${top_srcdir}/pixmaps/figure_stripline_model.h
+
+if HAVE_GTK2_10
+wcalc_SOURCES+=		${FIGSRCS}
+#wcalc_DEPENDENCIES+=	${FIGSRCS}
+else
+EXTRA_DIST+=	${FIGSRCS}
+endif
+

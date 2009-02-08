@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.11 2009/01/11 04:10:18 dan Exp $
+## $Id: sciman.mk,v 1.12 2009/01/11 04:22:24 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005, 2009 Dan McMahill
@@ -82,7 +82,7 @@ else
 endif
 
 .htm.txt :
-if MISSING_XSLT
+if MISSING_W3M
 	@echo "****************************************************"
 	@echo "WARNING:  xsltproc and/or w3m were not found on your"
 	@echo "          system but $@ is out of date and needs"
