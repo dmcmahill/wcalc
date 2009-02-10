@@ -1,4 +1,4 @@
-/* $Id: bars_loadsave.c,v 1.3 2009/01/10 20:56:49 dan Exp $ */
+/* $Id: parallel_rc_loadsave.c,v 1.1 2009/02/10 05:00:21 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -88,8 +88,10 @@ static fspec * get_fspec(void)
     fspec_add_comment(myspec, "Desired user units and associated scale factors");
     fspec_add_key(myspec, "units_C", "Capacitance units",  
 		  'u', &b->units_C);
-    fspec_add_key(myspec, "units_R", "Resistance units",  
-		  'u', &b->units_R);
+    fspec_add_key(myspec, "units_Rs", "Series resistance units",  
+		  'u', &b->units_Rs);
+    fspec_add_key(myspec, "units_Rp", "Parallel resistance units",  
+		  'u', &b->units_Rp);
     fspec_add_key(myspec, "units_freq", "Frequency units",  
 		  'u', &b->units_freq);
 

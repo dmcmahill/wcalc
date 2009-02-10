@@ -1,4 +1,4 @@
-/* $Id: bars.h,v 1.4 2009/01/10 20:56:49 dan Exp $ */
+/* $Id: parallel_rc.h,v 1.1 2009/02/10 05:00:20 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -44,7 +44,8 @@ typedef struct PARALLEL_RC
   int series_to_parallel;
 
   /* user units */
-  wc_units *units_R;
+  wc_units *units_Rs;
+  wc_units *units_Rp;
   wc_units *units_C;
   wc_units *units_freq;
 

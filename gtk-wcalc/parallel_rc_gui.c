@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.13 2009/02/05 22:15:16 dan Exp $ */
+/* $Id: parallel_rc_gui.c,v 1.1 2009/02/10 05:00:15 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -227,7 +227,7 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 			       &(gui->b->Cs), &x, &y);
 
   wc_table_add_entry_new_units(table, gui, "Series resistance (Rs)", 
-			       &(gui->text_Rs), gui->b->units_R, &R_ug, 
+			       &(gui->text_Rs), gui->b->units_Rs, &R_ug, 
 			       &(gui->b->Rs), &x, &y);
 
   wc_table_add_entry_no_units(table, gui, "Series quality factor (Qs)", 
@@ -267,10 +267,9 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 				  &(gui->b->Cp), &x, &y);
 
 
-  wc_table_add_entry_attach_units(table, gui, "Parallel resistance (Rp)", 
-				  &(gui->text_Rp), gui->b->units_R, &R_ug, 
-				  &(gui->b->Rp), &x, &y);
-
+  wc_table_add_entry_new_units(table, gui, "Parallel resistance (Rp)", 
+			       &(gui->text_Rp), gui->b->units_Rp, &R_ug, 
+			       &(gui->b->Rp), &x, &y);
 
   wc_table_add_entry_no_units(table, gui, "Parallel quality factor (Qs)", 
 			      &(gui->text_Qp),
@@ -344,7 +343,7 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
   gui->b->Cs=atof(vstr)*wc_units_to_sf(gui->b->units_C);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rs) ); 
-  gui->b->Rs=atof(vstr)*wc_units_to_sf(gui->b->units_R);
+  gui->b->Rs=atof(vstr)*wc_units_to_sf(gui->b->units_Rs);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qs) ); 
   gui->b->Qs=atof(vstr);
@@ -355,7 +354,7 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
   gui->b->Cp=atof(vstr)*wc_units_to_sf(gui->b->units_C);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rp) ); 
-  gui->b->Rp=atof(vstr)*wc_units_to_sf(gui->b->units_R);
+  gui->b->Rp=atof(vstr)*wc_units_to_sf(gui->b->units_Rp);
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qp) ); 
   gui->b->Qp=atof(vstr);
@@ -400,7 +399,7 @@ static void update_display(parallel_rc_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->Cs/wc_units_to_sf(gui->b->units_C));
   gtk_entry_set_text( GTK_ENTRY(gui->text_Cs), str );
 
-  sprintf(str,WC_FMT_G,gui->b->Rs/wc_units_to_sf(gui->b->units_R));
+  sprintf(str,WC_FMT_G,gui->b->Rs/wc_units_to_sf(gui->b->units_Rs));
   gtk_entry_set_text( GTK_ENTRY(gui->text_Rs), str );
 
   sprintf(str,WC_FMT_G,gui->b->Qs);
@@ -411,7 +410,7 @@ static void update_display(parallel_rc_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->Cp/wc_units_to_sf(gui->b->units_C));
   gtk_entry_set_text( GTK_ENTRY(gui->text_Cp), str );
 
-  sprintf(str,WC_FMT_G,gui->b->Rp/wc_units_to_sf(gui->b->units_R));
+  sprintf(str,WC_FMT_G,gui->b->Rp/wc_units_to_sf(gui->b->units_Rp));
   gtk_entry_set_text( GTK_ENTRY(gui->text_Rp), str );
 
   sprintf(str,WC_FMT_G,gui->b->Qp);
@@ -468,11 +467,11 @@ static GList * dump_values(Wcalc *wcalc)
 			      figure_rc_height[0], list);
     
     list = wc_print_add_double("Series capacitance (Cs)", b->Cs, b->units_C, list);
-    list = wc_print_add_double("Series resistance (Rs)", b->Rs, b->units_R, list);
+    list = wc_print_add_double("Series resistance (Rs)", b->Rs, b->units_Rs, list);
     list = wc_print_add_double("Series quality factor (Qs)", b->Qs, NULL, list);
     
     list = wc_print_add_double("Parallel capacitance (Cp)", b->Cp, b->units_C, list);
-    list = wc_print_add_double("Parallel resistance (Rp)", b->Rp, b->units_R, list);
+    list = wc_print_add_double("Parallel resistance (Rp)", b->Rp, b->units_Rp, list);
     list = wc_print_add_double("Parallel quality factor (Qp)", b->Qp, NULL, list);
     
     list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
@@ -516,7 +515,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Cs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->b->Cs/gui->b->units_C->sf, gui->b->units_C->name);
   fprintf(fp,"(Rs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Rs/gui->b->units_R->sf, gui->b->units_R->name);
+	  gui->b->Rs/gui->b->units_Rs->sf, gui->b->units_Rs->name);
   fprintf(fp,"(Qs) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->b->Qs);
 
@@ -533,7 +532,7 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"(Cp) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->b->Cp/gui->b->units_C->sf, gui->b->units_C->name);
   fprintf(fp,"(Rp) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Rp/gui->b->units_R->sf, gui->b->units_R->name);
+	  gui->b->Rp/gui->b->units_Rp->sf, gui->b->units_Rp->name);
   fprintf(fp,"(Qp) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
 	  gui->b->Qp);
 

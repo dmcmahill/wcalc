@@ -1,35 +1,58 @@
 #
-# File:      /home/dan/src/wcalc/gtk-wcalc/bars.wc
-# Modified:  Sun Jan 11 10:55:38 2009
+# File:      /export/disk2/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/parallel_rc.wc
+# Modified:  Tue Feb 10 00:31:30 2009
 # Wcalc Version 1.0A
 
 [wcalc]
 wcalc_file_version = 0.1
-model_name = parallel_Rc
+model_name = parallel_rc
 
 
 [parallel_rc]
 
-# Bars file version
+# Parallel_Rc file version
 file_version = 0.1
 
-# Bar #1 width (x-dimension, meters)
-Rs = 0.2
-Rp = 100e3
-Cs = 1e-12
-Cp = 1e-12
+# Series capacitance (Farads)
+Cs = 1e-11
+
+# Series resistance (Ohms)
+Rs = 1.59154943091895
+
+# Series quality factor
 Qs = 100
+
+# Parallel capacitance (Farads)
+Cp = 9.99900009999e-12
+
+# Parallel resistance (Ohms)
+Rp = 15917.0858586205
+
+# Parallel quality factor
 Qp = 100
 
-use_Q = 1
+# Convert from series to parallel?
 series_to_parallel = 1
 
-freq=100.0e6
+# Use Q to calculate resistance?
+use_Q = 1
 
-# Width/Height units
-units_R = 1
+# Frequency of operation (Hz)
+freq = 100000000
+
+# Desired user units and associated scale factors
+
+# Capacitance units
 units_C = 1
-# [um]
+# [pF]
+
+# Series resistance units
+units_Rs = 2
+# [Ohm]
+
+# Parallel resistance units
+units_Rp = 3
+# [kOhm]
 
 # Frequency units
 units_freq = 3

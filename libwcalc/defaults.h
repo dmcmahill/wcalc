@@ -1,4 +1,4 @@
-/* $Id: defaults.h,v 1.4 2008/07/04 16:23:42 dan Exp $ */
+/* $Id: defaults.h,v 1.5 2008/11/29 20:42:12 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2006 Dan McMahill
@@ -31,6 +31,7 @@ extern const char *default_coupled_microstrip;
 extern const char *default_coupled_stripline;
 extern const char *default_ic_microstrip;
 extern const char *default_microstrip;
+extern const char *default_parallel_rc;
 extern const char *default_stripline;
 
 #endif /* __DEFAULTS_H__ */

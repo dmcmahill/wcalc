@@ -1,4 +1,4 @@
-/* $Id: bars.c,v 1.7 2009/02/07 15:10:09 dan Exp $ */
+/* $Id: parallel_rc.c,v 1.1 2009/02/10 05:00:20 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -90,7 +90,8 @@ int parallel_rc_calc(parallel_rc *b, double freq)
 void parallel_rc_free(parallel_rc *b)
 {
 
-  wc_units_free(b->units_R);
+  wc_units_free(b->units_Rs);
+  wc_units_free(b->units_Rp);
   wc_units_free(b->units_C);
   wc_units_free(b->units_freq);
 
@@ -110,12 +111,15 @@ parallel_rc *parallel_rc_new()
     }
 
   /* Create the units */
-  newb->units_R = wc_units_new(WC_UNITS_RESISTANCE);
+  newb->units_Rs = wc_units_new(WC_UNITS_RESISTANCE);
+  newb->units_Rp = wc_units_new(WC_UNITS_RESISTANCE);
   newb->units_C = wc_units_new(WC_UNITS_CAPACITANCE);
   newb->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
 
+  newb->freq = 100e6;
+
   /* load in the defaults */
-  //parallel_rc_load_string(newb, default_parallel_rc);
+  parallel_rc_load_string(newb, default_parallel_rc);
 
   /* get the rest of the entries in sync */
   parallel_rc_calc(newb, newb->freq);
