@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.5 2006/01/03 16:37:30 dan Exp $
+# $Id: README-to-release,v 1.6 2006/02/09 13:47:25 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -25,6 +25,9 @@ gtk-wcalc/start.c
 ============================================================================
 To make a wcalc release do the following:
 
+
+=)      Make sure the version of the shared library in libwcalc/Makefile.am
+        is taken care of correctly.
 
 =)	# make sure it makes distfiles ok:
 	gmake distclean ; ./autogen.sh  && ./configure && gmake distcheck
