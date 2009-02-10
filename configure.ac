@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.13 2009/02/07 21:22:32 dan Exp $
+te dnl $Id: configure.ac,v 1.14 2009/02/08 14:42:53 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -83,8 +83,15 @@ AM_CONDITIONAL(MISSING_TGIF, test x$TGIF = xnotfound)
 # we produce hardcopy.
 #
 AC_PATH_PROG(PSTOEDIT, pstoedit, notfound)
+AC_MSG_CHECKING([if ${PSTOEDIT} includes the cairo driver])
+
+if ${PSTOEDIT} -help 2>&1 | grep "cairo driver" > /dev/null ; then
+	AC_MSG_RESULT([yes])
+else
+	AC_MSG_RESULT([no])
+	PSTOEDIT=notfound
+fi
 AM_CONDITIONAL(MISSING_PSTOEDIT, test x$PSTOEDIT = xnotfound)
-#AC_MSG_CHECKING([if ${PSTOEDIT} includes the cairo driver])
 
 
 # We also need to make sure that pstoedit contains my (Dan's) cairo driver
