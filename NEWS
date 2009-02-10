@@ -1,9 +1,9 @@
-$Id: NEWS,v 1.5 2006/02/13 16:57:50 dan Exp $
+$Id: NEWS,v 1.6 2008/11/30 00:21:16 dan Exp $
 
 Wcalc -- history of user-visible changes. 
 
 Copyright (c) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
-2006, 2007, 2008 Dan McMahill
+2006, 2007, 2008, 2009 Dan McMahill
 
 Please report bugs on the sourceforge project page.
 
@@ -16,9 +16,42 @@ Added coplanar waveguide model.
 
 Added coupled stripline model.
 
-Corrected the Q calculations for low frequency (not skindepth)
-region in air core inductors.  Also corrected Q calculation for
-conductors other than copper.
+Corrected the Q calculations for low frequency (not skindepth) region
+in air core inductors.  Also corrected Q calculation for conductors
+other than copper.
+
+When compiling with gtk-2.10 or newer, use gtkPrint for printing.
+This gives a more professional/standard print dialog and also enables
+printing under windows.
+
+Added a preliminary Dutch translation.
+
+Converted the figures to all use solid grayscale fills instead of
+pattern fills as the former prints better.
+
+Several updates to the build system to moderize it a bit.  Uses
+AM_CONDITIONALS more appropriately, uses AC_PROG_LIBTOOL instead of
+AM_PROG_LIBTOOL, etc.
+
+Update the win32 build script to generate an installer that works
+correctly under vista.
+
+Add .wc file associations under vista.
+
+Update the octave build infrastructure to work with octave-3.0 and
+newer where mex support is built into mkoctfile instead of a
+standalone mex shell script.
+
+Switch to GPL licensing.
+
+Create several utility functions to make it faster to build new gtk
+forms.
+
+Improved autogen.sh to check versions of several of the auto* tools to
+help make it easier to diagnose any issues which may come up.
+
+Repair compilation with the SunPRO compilers.
+
 
 ===============
 Version 1.0
