@@ -1,7 +1,1309 @@
-2007-11-27  gettextize  <bug-gnu-gettext@gnu.org>
+2009-02-08 09:42  dan
 
-	* Makefile.am (SUBDIRS): Remove intl.
-	(DIST_SUBDIRS): Remove intl.
+	* configure.ac, gtk-wcalc/Makefile.am, gtk-wcalc/newprint.h,
+	  gtk-wcalc/runwcalc.in, sci-wcalc/sciman.mk: Several minor build
+	  fixes.
+
+	  - repair building on gtk1 (for that matter, any gtk prior to
+	  gtk-2.10 which is   when gtkprint showed up).
+
+	  - add a missing AM_CONDITIONAL on no w3m (or links or lynx)
+	  available. Avoids   trying to execute "notfound"
+
+2009-02-07 16:22  dan
+
+	* configure.ac: start the test for pstoedit having cairo
+
+2009-02-07 10:10  dan
+
+	* libwcalc/: bars.c, air_coil.c: mark a few strings for translation
+
+2009-02-07 10:03  dan
+
+	* po/nl.po: fill in missing Project-Id-Version field and get rid of
+	  a few ^M
+
+2009-02-07 00:34  dan
+
+	* README.newmodel: note that bars is the latest gui
+
+2009-02-06 23:10  dan
+
+	* ps_header.c: fix a few more WaveCalc->Wcalc
+
+2009-02-06 23:10  dan
+
+	* INSTALL: note the need for GNU make
+
+2009-02-06 23:09  dan
+
+	* configure.ac, pixmaps/Makefile.am: clean up build system stuff
+	  for pstoedit
+
+2009-02-06 18:02  dan
+
+	* po/: LINGUAS, es.po, nl.po, wcalc.pot: add dutch translation from
+	  Bert Timmerman
+
+2009-02-06 18:02  dan
+
+	* gtk-wcalc/: air_coil_gui.c, coax_gui.c, coplanar_gui.c,
+	  coupled_microstrip_gui.c, coupled_stripline_gui.c,
+	  ic_microstrip_gui.c, microstrip_gui.c, newprint.c,
+	  stripline_gui.c, symbols.h: use greek letters as appropriate in
+	  the hardcopy output
+
+2009-02-05 21:24  dan
+
+	* gtk-wcalc/newprint.c: remove obsolete header
+
+2009-02-05 20:56  dan
+
+	* gtk-wcalc/Makefile.am: add some dependencies and replace a .o
+	  with .$(OBJEXXT)
+
+2009-02-05 20:36  dan
+
+	* gtk-wcalc/: Makefile.am, coax_gui.c, symbols.h: add some greek
+	  symbols
+
+2009-02-05 17:15  dan
+
+	* gtk-wcalc/: Makefile.am, air_coil_gui.c, bars_gui.c, coax_gui.c,
+	  coplanar_gui.c, coupled_microstrip_gui.c,
+	  coupled_stripline_gui.c, ic_microstrip_gui.c, menus.c,
+	  microstrip_gui.c, newprint.c, stripline_gui.c: fix a handful of
+	  minor bugs in the new print output
+
+2009-02-05 17:14  dan
+
+	* pixmaps/: Makefile.am, air_coil.obj, coplanar.obj,
+	  ic_microstrip.obj, stripline.obj: bring some text back to the
+	  front after the pattern fill removal
+
+2009-02-05 07:13  dan
+
+	* pixmaps/: bars_fig.obj, coax.obj, coplanar.obj,
+	  coupled_microstrip.obj, coupled_stripline.obj, ic_microstrip.obj,
+	  microstrip.obj, stripline.obj: move to solid colors instead of
+	  pattern fills as the latter doesn't play so well with pstoedit
+	  because they use the postscript 'imagemask' function.
+
+2009-02-05 07:12  dan
+
+	* pixmaps/Xdefaults.tgif: add some shades of gray
+
+2009-02-05 00:42  dan
+
+	* gtk-wcalc/: air_coil_gui.c, bars_gui.c, coax_gui.c,
+	  coplanar_gui.c, coupled_microstrip_gui.c,
+	  coupled_stripline_gui.c, ic_microstrip_gui.c, microstrip_gui.c,
+	  stripline_gui.c: teach all the guis how to use newprintgmake!
+
+2009-02-04 18:34  dan
+
+	* gtk-wcalc/newprint.c: even more print progress
+
+2009-02-03 20:55  dan
+
+	* gtk-wcalc/newprint.c: more print clean up.  still need to deal
+	  with pagination
+
+2009-02-03 20:37  dan
+
+	* gtk-wcalc/: bars_gui.c, newprint.c: teach the print system how to
+	  deal with figures.
+
+2009-02-03 17:37  dan
+
+	* gtk-wcalc/: bars_gui.c, newprint.c, newprint.h: more printing
+	  progress
+
+2009-01-26 23:08  dan
+
+	* gtk-wcalc/: bars_gui.c, newprint.c, newprint.h: change function
+	  names like wc_add_double_print to wc_print_add_double as the
+	  latter makes more logical sense.  Start to pave the way for
+	  adding graphics to the printing.
+
+2009-01-21 00:05  dan
+
+	* configure.ac: switch to the newer AC_PROG_LIBTOOL from
+	  AM_PROG_LIBTOOL
+
+2009-01-21 00:01  dan
+
+	* win32/build_wcalc: do not build stdio-wcalc under windows
+
+2009-01-15 10:54  dan
+
+	* gtk-wcalc/newprint.c: fix up the printing of values in the
+	  requested units and print out the units as well.  Also add a ton
+	  of coomments and show some of how to get graphics into the print
+	  output.
+
+2009-01-15 10:52  dan
+
+	* gtk-wcalc/: wcalc.c, air_coil_gui.c, bars_gui.c, coax_gui.c,
+	  coplanar_gui.c, coupled_microstrip_gui.c,
+	  coupled_stripline_gui.c, ic_microstrip_gui.c, microstrip_gui.c,
+	  stripline_gui.c: properly control the state of
+	  wcalc->values_in_sync so I can use it to gate if printing is
+	  allowed.
+
+2009-01-13 21:46  dan
+
+	* gtk-wcalc/: bars_gui.c, newprint.c, newprint.h: progress towards
+	  getting real output from newprint!
+
+2009-01-13 15:35  dan
+
+	* gtk-wcalc/: bars_gui.c, newprint.c, newprint.h, wcalc.c, wcalc.h:
+	  a little more progress towards the new printing world order
+
+2009-01-13 09:36  dan
+
+	* gtk-wcalc/: Makefile.am, menus.c, newprint.c, newprint.h,
+	  wcalc.c: start work on using gtkprint!
+
+2009-01-13 08:46  dan
+
+	* cgi-wcalc/bars_id.h: this is a build time created file
+
+2009-01-12 23:44  dan
+
+	* cgi-wcalc/bars.html: rearrange the form a little to clean it up
+
+2009-01-12 21:20  dan
+
+	* gtk-wcalc/bars.wc: clean up the defaults
+
+2009-01-12 21:20  dan
+
+	* libwcalc/defaults.c: regen
+
+2009-01-12 21:10  dan
+
+	* cgi-wcalc/bars.html: fix a html ordering problem
+
+2009-01-12 21:02  dan
+
+	* htdocs/faq.shtml: update the section on binaries and also bug
+	  reports
+
+2009-01-12 18:32  dan
+
+	* win32/: Makefile.am, build_wcalc, wcalc.nsi.in: make sure we
+	  properly install COPYING.txt and Readme.txt and get the startmenu
+	  links pointing to the right places.
+
+	  Also create a DOS batch file for launching the installer under
+	  vista to make it quicker to run when testing via cygwin.
+
+2009-01-12 14:31  dan
+
+	* configure.ac: restore lost changes (initialization update)
+
+2009-01-12 11:27  dan
+
+	* mex-wcalc/Makefile.am: prevent parallel builds in this directory.
+	  matlab mex is not parallel safe
+
+2009-01-11 22:53  dan
+
+	* pixmaps/: regen.mk, regen_files: add a script to rebuild some
+	  generated files.  This will let me check those generated files
+	  into cvs which will make it easier to build on systems without
+	  all the tools.
+
+2009-01-11 22:47  dan
+
+	* configure.ac, octave-wcalc/Makefile.am: Newer versions (late
+	  2.9something and with the 3.0 release) of octave added a --mex
+	  argument to mkoctfile and that replaces the mex script that was
+	  part of octave-forge.  Expand the configure tests to look for
+	  that.  This appears to get octave support working again.
+
+2009-01-11 13:30  dan
+
+	* htdocs/octave-wcalc.shtml: note octave versions and mex
+
+2009-01-11 13:05  dan
+
+	* libwcalc/Makefile.am: Get rid of the -no-undefine.  libwcalc
+	  expects that each frontend will provide an alert() function.
+	  This may be a log window for gtk, popup for cgi, printf to stderr
+	  for stdio, etc.
+
+2009-01-11 11:35  dan
+
+	* configure.ac: modernize the initialization a bit
+
+2009-01-11 11:27  dan
+
+	* mex-wcalc/copyright.m, octave-wcalc/copyright.m: more copyright
+	  updates
+
+2009-01-11 11:09  dan
+
+	* COPYING: switch to GPLv2
+
+2009-01-11 11:07  dan
+
+	* htdocs/: Makefile.am, common-man.mk: add some extra dependencies
+	  to try and make sure we rebuild some files if the .incl files
+	  change.  Also correct some logic in the MISSING_XSLT conditional.
+
+2009-01-11 10:57  dan
+
+	* gtk-wcalc/: Makefile.am, bars_gui.c, utils.c, utils.h: pull out
+	  the code for helping to build the forms into utils so other
+	  models can use it too.
+
+2009-01-11 10:56  dan
+
+	* gtk-wcalc/bars.wc: use some nicer defaults
+
+2009-01-11 10:26  dan
+
+	* po/: es.po, wcalc.pot: update to latest
+
+2009-01-11 10:23  dan
+
+	* htdocs/tech.shtml: fix a typo
+
+2009-01-11 10:22  dan
+
+	* configure.ac, cgi-wcalc/Makefile.am, htdocs/Makefile.am,
+	  htdocs/common-man.mk, htdocs/shtml.mk: convert some homegrown
+	  condidionals to use AM_CONDITIONAL.
+
+2009-01-11 02:56  dan
+
+	* sci-wcalc/: bars_calc.c, bars_calc.dia.ref: fix the calculation
+	  and update the ref file
+
+2009-01-11 02:28  dan
+
+	* sci-wcalc/Makefile.am: update copyright date
+
+2009-01-11 02:26  dan
+
+	* sci-wcalc/bars_calc.dia.ref: L1 and L2 should be identical so for
+	  now put it that way in the reference file.  k and M aren't right
+	  yet.
+
+2009-01-11 02:23  dan
+
+	* sci-wcalc/: bars_calc.dia.ref, bars_calc.tst: update the tests
+	  for bars and make sure it is working
+
+2009-01-11 02:21  dan
+
+	* sci-wcalc/wcalc_test.sci.in: add bars to the test suite
+
+2009-01-11 02:15  dan
+
+	* sci-wcalc/bars_calc.c: get this to compile
+
+2009-01-11 01:58  dan
+
+	* stdio-wcalc/: bars.dat, bars.ref: regen
+
+2009-01-11 01:56  dan
+
+	* cgi-wcalc/bars.cgi.c: fill in some missing code
+
+2009-01-11 01:42  dan
+
+	* cgi-wcalc/bars.cgi.c: get this to compile
+
+2009-01-11 01:16  dan
+
+	* stdio-wcalc/main.c: fix typo that prevented compiling
+
+2009-01-11 00:49  dan
+
+	* stdio-wcalc/: Makefile.am, bars.dat, bars.ref, main.c,
+	  stdio-wcalc.1, tests.list: first pass at adding bars_calc
+
+2009-01-11 00:40  dan
+
+	* COPYING: update copyright date
+
+2009-01-11 00:39  dan
+
+	* cgi-wcalc/index.html: remove obsolete file
+
+2009-01-11 00:37  dan
+
+	* cgi-wcalc/: air_coil.html, coax.html, coplanar.html,
+	  copying.html, coupled_microstrip.html, coupled_stripline.html,
+	  footer.html, ic_microstrip.html, microstrip.html, stripline.html:
+	  switch a bunch of other files from BSD to GPL
+
+2009-01-11 00:30  dan
+
+	* cgi-wcalc/: Makefile.am, bars.cgi.c, bars.html, bars_id.h: first
+	  pass at bars cgi
+
+2009-01-10 23:22  dan
+
+	* sci-wcalc/: air_coil_calc.dem, air_coil_syn.dem, demo.sce,
+	  mex.mk, sciman.mk, wcalc-demo.dem: switch to GPLv2 on a bunch of
+	  files I missed before
+
+2009-01-10 23:10  dan
+
+	* sci-wcalc/: Makefile.am, bars_calc.c, bars_calc.dem,
+	  bars_calc.dia.ref, bars_calc.tst, bars_calc.xml, demo.sce,
+	  mex.mk, sciman.mk, see_also.xml, wcalc-demo.dem: first pass at
+	  adding the bars_calc function
+
+2009-01-10 16:11  dan
+
+	* htdocs/: Makefile.am, bars.shtml, cgi-wcalc.shtml,
+	  left_column.incl, tech.shtml: add bars
+
+2009-01-10 16:05  dan
+
+	* htdocs/coax.shtml: fix typo
+
+2009-01-10 15:56  dan
+
+	* libwcalc/: bars.c, bars.h, bars_loadsave.c, defaults.c: add some
+	  error checking and also use just one unit for dimensions
+
+2009-01-10 15:56  dan
+
+	* gtk-wcalc/: bars.wc, bars_gui.c: get the bars gui working
+
+2009-01-10 15:27  dan
+
+	* pixmaps/bars_fig.obj: fix labeling of the E dimension
+
+2009-01-07 23:14  dan
+
+	* gtk-wcalc/: start.c: fix copyright date
+
+2009-01-07 22:43  dan
+
+	* libwcalc/Makefile.am: fix a typo
+
+2009-01-07 22:38  dan
+
+	* gtk-wcalc/: alert.c, print.c, wcwindow.c: bump copyright date and
+	  s/WaveCalc/Wcalc in a few spots
+
+2009-01-07 22:38  dan
+
+	* gtk-wcalc/runwcalc.in: add some LD_PRELOAD hacks in case there is
+	  an already-installed libwcalc in the way
+
+2009-01-07 22:38  dan
+
+	* gtk-wcalc/wcalc.c: remove debug define
+
+2008-12-04 23:27  dan
+
+	* libwcalc/Makefile.am: clean up usage of the maintainer mode
+	  conditional
+
+2008-12-04 23:26  dan
+
+	* libwcalc/Makefile.am: add -no-undefined to the libtool link line
+
+2008-12-03 18:46  dan
+
+	* configure.ac, gtk-wcalc/Makefile.am: check for windres as a build
+	  tool to better support cross compiling
+
+2008-11-30 09:42  dan
+
+	* gtk-wcalc/wcalc.c: add a FIXME about some env variables
+
+2008-11-30 08:57  dan
+
+	* win32/build_wcalc: add --nsis-only option
+
+2008-11-29 20:55  dan
+
+	* acinclude.m4: add a few more awk function tests
+
+2008-11-29 20:14  dan
+
+	* win32/: Makefile.am, extract_gtk_win32: add extract gtk_win32
+	  script from pcb/gerbv
+
+2008-11-29 19:21  dan
+
+	* COPYING.win32, Makefile.am: remove obsolete file.
+
+2008-11-29 19:21  dan
+
+	* NEWS: added bars
+
+2008-11-29 17:15  dan
+
+	* cgi-wcalc/cgic.c: remove some gcc-4.1.2 warnings
+
+2008-11-29 17:10  dan
+
+	* win32/: Makefile.am, registerExtension.nsh, wcalc.nsi.in: update
+	  the installer to register file extensions and have all the latest
+	  gtk for windows license notices
+
+2008-11-29 16:30  dan
+
+	* win32/build_wcalc: update from the latest that gerbv uses
+
+2008-11-29 15:41  dan
+
+	* Makefile.am, acinclude.m4, configure.ac, cgi-wcalc/Makefile.am,
+	  cgi-wcalc/air_coil.cgi.c, cgi-wcalc/alert.c,
+	  cgi-wcalc/cgi-common.c, cgi-wcalc/cgi-common.h,
+	  cgi-wcalc/cgi-units.c, cgi-wcalc/cgi-units.h,
+	  cgi-wcalc/coax.cgi.c, cgi-wcalc/cookie.cgi.c,
+	  cgi-wcalc/coplanar.cgi.c, cgi-wcalc/coupled_microstrip.cgi.c,
+	  cgi-wcalc/coupled_stripline.cgi.c, cgi-wcalc/ic_microstrip.cgi.c,
+	  cgi-wcalc/microstrip.cgi.c, cgi-wcalc/stripline.cgi.c,
+	  doc/Makefile.am, gtk-wcalc/Makefile.am, gtk-wcalc/about.c,
+	  gtk-wcalc/about.h, gtk-wcalc/air_coil_gui.c,
+	  gtk-wcalc/air_coil_gui.h, gtk-wcalc/alert.c,
+	  gtk-wcalc/bars_gui.c, gtk-wcalc/bars_gui.h, gtk-wcalc/coax_gui.c,
+	  gtk-wcalc/coax_gui.h, gtk-wcalc/coplanar_gui.c,
+	  gtk-wcalc/coplanar_gui.h, gtk-wcalc/coupled_microstrip_gui.c,
+	  gtk-wcalc/coupled_microstrip_gui.h,
+	  gtk-wcalc/coupled_stripline_gui.c,
+	  gtk-wcalc/coupled_stripline_gui.h, gtk-wcalc/epscat.c,
+	  gtk-wcalc/epscat.h, gtk-wcalc/files.c, gtk-wcalc/files.h,
+	  gtk-wcalc/gtk-units.c, gtk-wcalc/gtk-units.h,
+	  gtk-wcalc/ic_microstrip_gui.c, gtk-wcalc/ic_microstrip_gui.h,
+	  gtk-wcalc/menus.c, gtk-wcalc/menus.h, gtk-wcalc/microstrip_gui.c,
+	  gtk-wcalc/microstrip_gui.h, gtk-wcalc/print.c, gtk-wcalc/print.h,
+	  gtk-wcalc/start.c, gtk-wcalc/start.h, gtk-wcalc/stripline_gui.c,
+	  gtk-wcalc/stripline_gui.h, gtk-wcalc/version.c,
+	  gtk-wcalc/wcalc.c, gtk-wcalc/wcalc.h, gtk-wcalc/wcwindow.c,
+	  gtk-wcalc/wcwindow.h, htdocs/Makefile.am,
+	  htdocs/mex-man/Makefile.am, htdocs/octave-man/Makefile.am,
+	  htdocs/sci-man/Makefile.am, htdocs/stdio-man/Makefile.am,
+	  include/Makefile.am, include/alert.h, libwcalc/Makefile.am,
+	  libwcalc/air_coil.c, libwcalc/air_coil.h,
+	  libwcalc/air_coil_loadsave.c, libwcalc/air_coil_loadsave.h,
+	  libwcalc/alert.c, libwcalc/bars.c, libwcalc/bars.h,
+	  libwcalc/bars_loadsave.c, libwcalc/bars_loadsave.h,
+	  libwcalc/bars_test.c, libwcalc/coax.c, libwcalc/coax.h,
+	  libwcalc/coax_loadsave.c, libwcalc/coax_loadsave.h,
+	  libwcalc/coax_test.c, libwcalc/coplanar.c, libwcalc/coplanar.h,
+	  libwcalc/coplanar_loadsave.c, libwcalc/coplanar_loadsave.h,
+	  libwcalc/coplanar_test.c, libwcalc/coupled_microstrip.c,
+	  libwcalc/coupled_microstrip.h,
+	  libwcalc/coupled_microstrip_loadsave.c,
+	  libwcalc/coupled_microstrip_loadsave.h,
+	  libwcalc/coupled_microstrip_test.c, libwcalc/coupled_stripline.c,
+	  libwcalc/coupled_stripline.h,
+	  libwcalc/coupled_stripline_loadsave.c,
+	  libwcalc/coupled_stripline_loadsave.h, libwcalc/defaults.h,
+	  libwcalc/ic_microstrip.c, libwcalc/ic_microstrip.h,
+	  libwcalc/ic_microstrip_loadsave.c,
+	  libwcalc/ic_microstrip_loadsave.h, libwcalc/ic_microstrip_test.c,
+	  libwcalc/libwcalc.h, libwcalc/make_defaults.c,
+	  libwcalc/mathutil.c, libwcalc/mathutil.h,
+	  libwcalc/mathutil_test.c, libwcalc/microstrip.c,
+	  libwcalc/microstrip.h, libwcalc/microstrip_loadsave.c,
+	  libwcalc/microstrip_loadsave.h, libwcalc/microstrip_test.c,
+	  libwcalc/misc.c, libwcalc/misc.h, libwcalc/physconst.h,
+	  libwcalc/stripline.c, libwcalc/stripline.h,
+	  libwcalc/stripline_loadsave.c, libwcalc/stripline_loadsave.h,
+	  libwcalc/units.c, libwcalc/units.h, libwcalc/units_test.c,
+	  libwcalc/wcalc_loadsave.c, libwcalc/wcalc_loadsave.h,
+	  mex-wcalc/Makefile.am, mex-wcalc/alert.c,
+	  octave-wcalc/Makefile.am, octave-wcalc/alert.c,
+	  pixmaps/Makefile.am, sci-wcalc/Makefile.am,
+	  sci-wcalc/air_coil_calc.c, sci-wcalc/air_coil_calc.xml,
+	  sci-wcalc/air_coil_syn.c, sci-wcalc/air_coil_syn.xml,
+	  sci-wcalc/alert.c, sci-wcalc/coax_calc.c,
+	  sci-wcalc/coax_calc.xml, sci-wcalc/coax_syn.c,
+	  sci-wcalc/coax_syn.xml, sci-wcalc/coplanar_calc.c,
+	  sci-wcalc/coplanar_calc.xml, sci-wcalc/coplanar_syn.c,
+	  sci-wcalc/coplanar_syn.xml, sci-wcalc/coupled_microstrip_calc.c,
+	  sci-wcalc/coupled_microstrip_calc.xml,
+	  sci-wcalc/coupled_microstrip_syn.c,
+	  sci-wcalc/coupled_microstrip_syn.xml,
+	  sci-wcalc/coupled_stripline_calc.c,
+	  sci-wcalc/coupled_stripline_calc.xml,
+	  sci-wcalc/coupled_stripline_syn.c,
+	  sci-wcalc/coupled_stripline_syn.xml,
+	  sci-wcalc/ic_microstrip_calc.c, sci-wcalc/ic_microstrip_calc.xml,
+	  sci-wcalc/ic_microstrip_syn.c, sci-wcalc/ic_microstrip_syn.xml,
+	  sci-wcalc/mex-alert.c, sci-wcalc/microstrip_calc.c,
+	  sci-wcalc/microstrip_calc.xml, sci-wcalc/microstrip_syn.c,
+	  sci-wcalc/microstrip_syn.xml, sci-wcalc/see_also.xml,
+	  sci-wcalc/stripline_calc.c, sci-wcalc/stripline_calc.xml,
+	  sci-wcalc/stripline_syn.c, sci-wcalc/stripline_syn.xml,
+	  stdio-wcalc/Makefile.am, stdio-wcalc/alert.c, stdio-wcalc/main.c,
+	  utils/Makefile.am, utils/eps2c, utils/epslint, utils/format_tab,
+	  utils/html2c, utils/shtml2html, win32/Makefile.am: Switch to
+	  GPLv2 from BSD + advertising license.  This is done because I
+	  have decided I don't really want to promote the use of this code
+	  in non-free software.  However, I am not yet comfortable with the
+	  "any later" language typically used in GPL code, so this is
+	  expressly GPLv2.
+
+2008-11-29 13:58  dan
+
+	* gtk-wcalc/bars_gui.c, libwcalc/bars.c, libwcalc/bars_test.c,
+	  libwcalc/defaults.c: work a little more on the bars gui
+
+2008-11-11 14:29  dan
+
+	* references/Morgan_JAP_1949.pdf: add paper on surface roughness
+	  losses
+
+2008-11-11 14:27  dan
+
+	* references/Rautio_and_Demir_MTT_2003.pdf: add paper on microstrip
+	  conductor losses
+
+2008-11-11 14:23  dan
+
+	* references/mentorpaper_6646.pdf: add paper on some numerical
+	  methods
+
+2008-09-05 07:50  dan
+
+	* configure.ac, cgi-wcalc/Makefile.am, gtk-wcalc/Makefile.am,
+	  libwcalc/Makefile.am, sci-wcalc/Makefile.am,
+	  stdio-wcalc/Makefile.am: use automake conditionals instead of
+	  autoconf substitutions for local vs installed libwcalc.  This
+	  lets the dependencies be properly captured.  Suggested by Ralf
+	  Wildenhues on the libtool mailing list.
+
+2008-09-05 07:41  dan
+
+	* autogen.sh, config.guess, config.sub, depcomp, install-sh,
+	  ltmain.sh, mkinstalldirs: Remove several generated and/or
+	  automatically copied files from cvs.	They never really belonged
+	  here.
+
+	  Update autogen.sh to run libtoolize and also check versions of
+	  lots of the tools.
+
+2008-07-12 00:28  dan
+
+	* pixmaps/: Makefile.am, bars_fig.obj: add a bars drawing
+
+2008-07-12 00:28  dan
+
+	* gtk-wcalc/: Makefile.am, bars.wc, bars_gui.c, bars_gui.h,
+	  coupled_microstrip_gui.c, wcalc.c: start on a bars (parallel
+	  rectangular bars) gui.
+
+2008-07-12 00:27  dan
+
+	* gtk-wcalc/runwcalc.in: add some hacks to avoid picking up an
+	  installed libwcalc which leads to all sorts of debug confusion!
+
+2008-07-04 23:03  dan
+
+	* libwcalc/: bars.c, bars_test.c: fix the calculation.	The broken
+	  version used x>0 in several places that should have been x != 0
+
+2008-07-04 12:26  dan
+
+	* libwcalc/Makefile.am: add missing alert.c to bars_test_SOURCES
+
+2008-07-04 12:23  dan
+
+	* libwcalc/: defaults.c, defaults.h, make_defaults.c: add bars and
+	  a place holder set of defaults
+
+2008-07-04 12:10  dan
+
+	* libwcalc/: bars.c, bars_test.c, bars.h: lots more progress.  Self
+	  inductances seem to work, mutual inductance is horribly broken.
+
+2008-07-03 17:27  dan
+
+	* references/: Hoer_and_Love_JRNBS-C_1965.pdf, README: add
+	  reference for inductance of rectangular bars
+
+2008-07-02 11:03  dan
+
+	* libwcalc/: bars.c, bars.h, bars_loadsave.c, bars_test.c,
+	  bars_loadsave.h, wcalc_loadsave.c, Makefile.am, wcalc_loadsave.h:
+	  add first cut (untested) of self and mutual inductance of
+	  parallel rectangular bars
+
+2007-11-29 20:10  dan
+
+	* TODO: add more grand schemes for the future
+
+2007-11-29 18:05  dan
+
+	* configure.ac: make gtk2 be the default
+
+2007-11-29 17:57  dan
+
+	* sci-wcalc/: coplanar_calc.dia.ref, coplanar_syn.dia.ref,
+	  coupled_stripline_calc.dia.ref, coupled_stripline_syn.dia.ref:
+	  add reference files for coplanar and coupled stripline
+
+2007-11-29 16:04  dan
+
+	* libwcalc/: coupled_microstrip.c, coupled_stripline.c, misc.h:
+	  make sure __FUNCTION__ is defined so we can build with SunPRO
+
+2007-11-29 15:01  dan
+
+	* autogen.sh: do not run configure automatically.  It is a bit
+	  annoying
+
+2007-11-29 14:57  dan
+
+	* config.h.in: this file is autogenerated, do not put in cvs
+
+2007-11-29 14:14  dan
+
+	* sci-wcalc/: coupled_microstrip_syn.xml,
+	  coupled_stripline_syn.xml: fix usage of the flag for z0/k vs
+	  z0e/z0o
+
+2007-11-29 14:13  dan
+
+	* sci-wcalc/: coupled_microstrip_syn.c,
+	  coupled_microstrip_syn.dia.ref, coupled_microstrip_syn.tst,
+	  coupled_stripline_syn.c, coupled_stripline_syn.tst: correctly
+	  pass in the use_z0k flag in the testsuite and correctly use it in
+	  the code.
+
+2007-11-29 13:44  dan
+
+	* stdio-wcalc/coplanar.ref: regen after fixing some loss
+	  calculations
+
+2007-11-29 12:30  dan
+
+	* gtk-wcalc/: about.c, coplanar_gui.c: bump copyright date for this
+	  year
+
+2007-11-29 12:29  dan
+
+	* libwcalc/coplanar.c: - add missing conductance calculation.  -
+	  make sure to use z0 and not line->z0 if the former has not been
+	  stored   yet.
+
+	  This module works better now!
+
+2007-11-29 12:27  dan
+
+	* sci-wcalc/: coplanar_calc.c, coplanar_calc.tst,
+	  coplanar_calc.xml: add some missing input parameter (space, and
+	  the ground plane flag), correct the picture in the documentation,
+	  and fill in the reference file.
+
+2007-11-28 19:17  dan
+
+	* sci-wcalc/coax_calc.dia.ref: fix after loss calculation repair
+
+2007-11-28 19:06  dan
+
+	* sci-wcalc/stripline_calc.dia.ref: update to reflect repaired loss
+	  calculations
+
+2007-11-28 09:47  dan
+
+	* ABOUT-NLS, ChangeLog, Makefile.am, config.h.in, configure.ac,
+	  po/ChangeLog, po/Makefile.in.in: update to gettext-0.14.6
+
+2007-11-27 11:55  dan
+
+	* libwcalc/coplanar_test.c: fix some compiler warnings
+
+2007-11-26 17:14  dan
+
+	* win32/build_wcalc: pull in some changes from the version I
+	  created for pcb
+
+2007-11-26 17:08  dan
+
+	* configure.ac, configure.in: copy rev 1.99 of configure.in to
+	  configure.ac
+
+2007-11-26 15:20  dan
+
+	* stdio-wcalc/coplanar.dat: add some white space for clarity, add
+	  some comments, add some synthesis checks
+
+2007-11-26 15:18  dan
+
+	* stdio-wcalc/coplanar.ref: fill in data
+
+2007-11-26 15:17  dan
+
+	* stdio-wcalc/main.c: fix the coplanar_syn command
+
+2006-04-06 16:10  dan
+
+	* libwcalc/coplanar.c: note the lack of a metal thickness term in
+	  z0 with ground plane
+
+2006-04-06 14:19  dan
+
+	* libwcalc/coplanar.c: deal with a bunch of corner cases
+	  (resistivity = 0, metal thickness = 0, etc)
+
+2006-04-06 14:19  dan
+
+	* stdio-wcalc/coplanar.dat: add a bunch of test points from appcad
+
+2006-04-06 14:19  dan
+
+	* stdio-wcalc/main.c: get coplanar_calc working
+
+2006-04-06 09:36  dan
+
+	* stdio-wcalc/tests.list: add coplanar
+
+2006-04-06 09:30  dan
+
+	* stdio-wcalc/: Makefile.am, coplanar.ref, coplanar.dat: add files
+	  (not filled in yet) for coplanar tests
+
+2006-04-06 09:28  dan
+
+	* stdio-wcalc/coupled_stripline.ref: put in the real output file --
+	  no verification of loss results yet
+
+2006-04-06 09:27  dan
+
+	* stdio-wcalc/main.c: do not output kev,kodd for coupled stripline
+	  since they are just er of the substrate
+
+2006-04-06 09:22  dan
+
+	* stdio-wcalc/stripline.ref: update to reflect repaired loss
+	  calculations
+
+2006-04-06 00:20  dan
+
+	* libwcalc/air_coil.c: remove some debug printfs
+
+2006-03-09 11:07  dan
+
+	* libwcalc/coupled_stripline.c: properly deal with the zero
+	  thickness case by only using the exact impedance solution and
+	  setting conductor loss to zero.
+
+2006-03-09 11:05  dan
+
+	* stdio-wcalc/coupled_stripline.dat: Add check data from Rosloniec.
+	  Note that the finite thickness equations are a little different
+	  than the Cohn reference used by wcalc.
+
+2006-03-09 10:05  dan
+
+	* cgi-wcalc/: coplanar.cgi.c, coplanar.html: remove synthesize
+	  length
+
+2006-03-04 12:06  dan
+
+	* libwcalc/: coplanar.c, coplanar.h: remove synth L, L does not
+	  affect Z0
+
+2006-03-04 11:06  dan
+
+	* libwcalc/coplanar.c: #ifdef out some debug code
+
+2006-03-04 11:03  dan
+
+	* libwcalc/coplanar.c: add a check for an out of range condition in
+	  the finite thickness case
+
+2006-03-01 17:40  dan
+
+	* libwcalc/coplanar.c: add a bunch of debug code.
+
+2006-03-01 16:23  dan
+
+	* cgi-wcalc/: coplanar.cgi.c, coplanar.html: add and enable the
+	  with/without bottom side ground checkbox
+
+2006-03-01 15:40  dan
+
+	* libwcalc/defaults.c: change default delay units to ns for
+	  coupled_stripline (last time was coupled_microstrip)
+
+2006-03-01 15:40  dan
+
+	* gtk-wcalc/coupled_microstrip.wc: change default delay units to ns
+
+2006-03-01 15:35  dan
+
+	* libwcalc/stripline.c: fix some more unitialized variables
+
+2006-03-01 14:53  dan
+
+	* libwcalc/stripline.c: use the local z0 instead of line->z0 as the
+	  latter has not been calculated yet!
+
+2006-03-01 13:52  dan
+
+	* gtk-wcalc/coupled_stripline_gui.c: add delay output and garbage
+	  collect some unused code
+
+2006-03-01 13:47  dan
+
+	* libwcalc/defaults.c, gtk-wcalc/coupled_stripline.wc: defaults to
+	  ns for coupled_stripline delay
+
+2006-03-01 13:09  dan
+
+	* libwcalc/: coupled_stripline.c, coupled_stripline.h: add delay
+	  calculation
+
+2006-03-01 10:31  dan
+
+	* cgi-wcalc/: coplanar.cgi.c, coupled_microstrip.cgi.c,
+	  ic_microstrip.cgi.c, microstrip.cgi.c: add some commented out
+	  code which can be uncommented to run the cgi program in the
+	  debugger.
+
+2006-03-01 10:27  dan
+
+	* cgi-wcalc/: coupled_stripline.cgi.c, coupled_stripline.html:
+	  clean up the delay output and also insert some debug support code
+
+2006-02-27 21:33  dan
+
+	* stdio-wcalc/main.c: get the coplanar stuff to compile.  Not
+	  tested yet
+
+2006-02-24 05:51  dan
+
+	* stdio-wcalc/main.c: fix typo in function name.  coplanar_* still
+	  does not build
+
+2006-02-23 15:57  dan
+
+	* sci-wcalc/coplanar_calc.c: alpha_c -> lc, alpha_d -> ld
+
+2006-02-23 09:25  dan
+
+	* README.newmodel: note see_also.xml in the sci-wcalc directory
+
+2006-02-23 09:25  dan
+
+	* sci-wcalc/: Makefile.am, air_coil_calc.xml, air_coil_syn.xml,
+	  coax_calc.xml, coax_syn.xml, coplanar_calc.xml, coplanar_syn.xml,
+	  coupled_microstrip_calc.xml, coupled_microstrip_syn.xml,
+	  coupled_stripline_calc.xml, coupled_stripline_syn.xml,
+	  ic_microstrip_calc.xml, ic_microstrip_syn.xml,
+	  microstrip_calc.xml, microstrip_syn.xml, see_also.xml,
+	  stripline_calc.xml, stripline_syn.xml: put all of the "SEE ALSO"
+	  stuff into a single file which is included in each of the
+	  individual .xml files.  Makes it reasonable to maintain the SEE
+	  ALSO section.
+
+2006-02-23 09:08  dan
+
+	* sci-wcalc/: Makefile.am, coplanar_calc.c, coplanar_calc.tst,
+	  coplanar_calc.xml, coplanar_syn.c, coplanar_syn.tst,
+	  coplanar_syn.xml, mex.mk, wcalc_test.sci.in: add totally untested
+	  coplanar waveguide
+
+2006-02-23 09:03  dan
+
+	* sci-wcalc/: coupled_stripline_calc.xml,
+	  coupled_stripline_syn.xml: repair the see also section which got
+	  messed when this file was created
+
+2006-02-23 08:45  dan
+
+	* libwcalc/stripline.c: repair dielectric loss calculation
+
+2006-02-22 11:32  dan
+
+	* gtk-wcalc/wcalc.h: update entry width to deal with the entry
+	  length increase
+
+2006-02-22 11:14  dan
+
+	* gtk-wcalc/wcalc.h: increase WC_ENTRYLENGTH to make sure the gtk
+	  entries are large enough to hold the values they may be asked to
+	  hold.
+
+2006-02-22 11:03  dan
+
+	* pixmaps/: rc.obj, rl.obj, Makefile.am: add series <-> parallel
+	  conversions for RC and RL circuits
+
+2006-02-22 08:52  dan
+
+	* libwcalc/stripline.c, htdocs/stripline.shtml: add Cohn reference
+
+2006-02-16 10:04  dan
+
+	* references/: Cohn_MTT-2.pdf, Cohn_MTT-3.pdf, README: add a
+	  stripline and coupled stripline reference.
+
+2006-02-16 08:59  dan
+
+	* mmtl/: microstrip.xsctn.in, sweep_microstrip.sh.in: allow for
+	  sweeping the number of segments
+
+2006-02-15 14:11  dan
+
+	* libwcalc/coplanar.c: fix the velocity on the line
+
+2006-02-15 12:53  dan
+
+	* mmtl/: coupled_microstrip.xsctn, microstrip.xsctn.in,
+	  sweep_microstrip.sh.in: add some mmtl files
+
+2006-02-15 10:15  dan
+
+	* libwcalc/coupled_stripline.c: fix up the non-zero metal thickness
+	  impedance calculations
+
+2006-02-15 10:14  dan
+
+	* libwcalc/physconst.h: add some more physical constants
+
+2006-02-15 08:53  dan
+
+	* libwcalc/coupled_stripline.c: add finite thickness correction
+	  code
+
+2006-02-13 17:51  dan
+
+	* libwcalc/coupled_stripline.c: fix up the copper loss equations
+	  for DC and skin effect regions and for the region in between!
+
+2006-02-13 14:54  dan
+
+	* gtk-wcalc/coupled_stripline_gui.c: remove obsolete keff even/odd
+	  output
+
+2006-02-13 14:20  dan
+
+	* cgi-wcalc/coupled_stripline.html,
+	  gtk-wcalc/coupled_stripline_gui.c,
+	  gtk-wcalc/coupled_stripline_gui.h,
+	  sci-wcalc/coupled_stripline_calc.c, stdio-wcalc/main.c: remove
+	  the use of seperate effective dielectric constants for even and
+	  odd mode.
+
+2006-02-13 14:19  dan
+
+	* libwcalc/: coupled_stripline.c, coupled_stripline.h: - add
+	  missing electrical length calculation.  - remove seperate
+	  even/odd mode effective relative permitivitty because   they are
+	  the same and equal to the substrate relative permitivitty.  - in
+	  the synthesis routine, limit the step size in width and spacing
+	  to   be no more than 10% of their values.  Helps prevent
+	  non-convergence when	 the initial guess is bad.
+
+2006-02-13 13:21  dan
+
+	* config.guess, config.sub: update to much more recent versions
+
+2006-02-13 12:30  dan
+
+	* htdocs/coupled_stripline.shtml: add the correct reference and a
+	  few comments
+
+2006-02-13 12:01  dan
+
+	* htdocs/news.shtml: add the start of version 1.1 news
+
+2006-02-13 11:57  dan
+
+	* NEWS: add the start of version 1.1 news
+
+2006-02-13 11:55  dan
+
+	* sci-wcalc/Makefile.am, sci-wcalc/coupled_stripline_calc.c,
+	  sci-wcalc/coupled_stripline_calc.tst,
+	  sci-wcalc/coupled_stripline_calc.xml,
+	  sci-wcalc/coupled_stripline_syn.c,
+	  sci-wcalc/coupled_stripline_syn.tst,
+	  sci-wcalc/coupled_stripline_syn.xml, sci-wcalc/mex.mk,
+	  sci-wcalc/wcalc_test.sci.in, stdio-wcalc/Makefile.am,
+	  stdio-wcalc/coupled_stripline.dat,
+	  stdio-wcalc/coupled_stripline.ref, stdio-wcalc/main.c,
+	  stdio-wcalc/tests.list: add (untested) coupled stripline
+
+2006-02-13 11:55  dan
+
+	* README.newmodel: add sci-wcalc and stdio-wcalc notes
+
+2006-02-13 11:33  dan
+
+	* libwcalc/coupled_stripline.c: add dielectric losses
+
+2006-02-13 07:11  dan
+
+	* libwcalc/coupled_stripline.c: add a few more resistance
+	  approximations
+
+2006-02-12 23:01  dan
+
+	* libwcalc/coupled_stripline.c: get some more of the loss stuff
+	  working
+
+2006-02-12 20:10  dan
+
+	* libwcalc/coupled_stripline.c: start on incremental inductance
+	  calculations (not done yet)
+
+2006-02-12 18:03  dan
+
+	* libwcalc/coupled_stripline.c: For the calculation routine,
+	  actually use the frequency argument.
+
+	  Also, set all losses to zero instead of leaving them undefined
+	  until I get a chance to implement the loss equations.
+
+2006-02-12 16:03  dan
+
+	* htdocs/: Makefile.am, cgi-wcalc.shtml, coupled_stripline.shtml,
+	  left_column.incl: add coupled stripline
+
+2006-02-12 16:00  dan
+
+	* cgi-wcalc/: coupled_stripline.cgi.c, coupled_stripline.html,
+	  Makefile.am: add coupled stripline
+
+2006-02-12 08:57  dan
+
+	* libwcalc/coupled_stripline.c: remove the coupled microstrip
+	  analysis equations and put in the start of the coupled stripline
+	  equations.  Right now there is no loss and I only deal with the
+	  infinitely thin strip case.
+
+2006-02-12 08:26  dan
+
+	* cgi-wcalc/coplanar.cgi.c: fix a bug reading "s"
+
+2006-02-12 01:27  dan
+
+	* gtk-wcalc/: Makefile.am, coupled_stripline.wc,
+	  coupled_stripline_gui.c, coupled_stripline_gui.h, wcalc.c: add
+	  coupled stripline.
+
+2006-02-12 01:21  dan
+
+	* pixmaps/: Makefile.am, coupled_stripline.obj: add coupled
+	  stripline drawing
+
+2006-02-12 01:16  dan
+
+	* libwcalc/: Makefile.am, coupled_stripline.c, coupled_stripline.h,
+	  coupled_stripline_loadsave.c, coupled_stripline_loadsave.h,
+	  defaults.c, defaults.h, make_defaults.c, wcalc_loadsave.c,
+	  wcalc_loadsave.h: create coupled stripline from the coupled
+	  microstrip code.  For now it is exactly the same so the
+	  calculation code needs to be updated still.
+
+2006-02-10 21:50  dan
+
+	* libwcalc/coplanar.c: add a few more bits of loss equations from
+	  wadell
+
+2006-02-09 12:03  dan
+
+	* libwcalc/coplanar.c: clean up some unused variables and clean up
+	  some of the conductor loss stuff.
+
+2006-02-09 08:47  dan
+
+	* README-to-release: do not forget the "development snapshot"
+	  autoconf define
+
+2006-02-08 10:03  dan
+
+	* gtk-wcalc/coplanar_gui.c: include with/without bottom side ground
+	  in the postscript output
+
+2006-02-08 09:58  dan
+
+	* libwcalc/coplanar.c, libwcalc/coplanar_loadsave.c,
+	  libwcalc/defaults.c, gtk-wcalc/coplanar.wc,
+	  gtk-wcalc/coplanar_gui.c, gtk-wcalc/coplanar_gui.h: - add the
+	  ability to have the user switch between with or without the
+	  bottom side ground plane.
+
+2006-02-07 22:34  dan
+
+	* libwcalc/microstrip.c: add some extra debug output (intermediate
+	  values for conductor loss calculations) which can be turned on
+	  with DEBUG_CALC.
+
+2006-01-31 19:23  dan
+
+	* libwcalc/: coplanar.c, coplanar.h: add equations from Wadell for
+	  coplanar without ground plane
+
+2006-01-31 08:52  dan
+
+	* libwcalc/coplanar.h: fix a multiply defined CPWSYN_S
+
+2006-01-31 08:38  dan
+
+	* cgi-wcalc/coplanar.html: fix image size
+
+2006-01-31 08:37  dan
+
+	* README.newmodel, cgi-wcalc/Makefile.am, cgi-wcalc/coplanar.cgi.c,
+	  cgi-wcalc/coplanar.html: first cut at the coplanar waveguide CGI
+	  frontend.  Not tested yet.
+
+2006-01-31 08:25  dan
+
+	* cgi-wcalc/footer.html: update copyright date
+
+2006-01-24 14:49  dan
+
+	* libwcalc/: coplanar.c, coplanar.h: - add equations for CPW with
+	  the bottom side ground in place.  - indent code while here - add
+	  synthesis of the gap
+
+2006-01-24 13:00  dan
+
+	* gtk-wcalc/: coplanar_gui.c, coplanar_gui.h: add the spacing and
+	  also allow synthesizing the spacing
+
+2006-01-24 11:12  dan
+
+	* README.newmodel, htdocs/Makefile.am, htdocs/cgi-wcalc.shtml,
+	  htdocs/coplanar.shtml, htdocs/left_column.incl: update htdocs for
+	  coplanar waveguide
+
+2006-01-11 18:04  dan
+
+	* libwcalc/air_coil.c: start fixing up the Q calculations for
+	  non-copper and for low frequencies
+
+2006-01-10 12:06  dan
+
+	* TODO: add the table rework code for the gtk frontend
+
+2006-01-10 11:35  dan
+
+	* gtk-wcalc/stripline_gui.c: code reorg to use variables to keep
+	  track of position in the table
+
+2006-01-10 10:17  dan
+
+	* gtk-wcalc/microstrip_gui.c: this is Microstrip not Coplanar
+	  (window title)
+
+2006-01-10 10:15  dan
+
+	* gtk-wcalc/microstrip_gui.c: code reorg to use variables to keep
+	  track of position in the table
+
+2006-01-10 10:15  dan
+
+	* gtk-wcalc/coplanar_gui.c: complete code reorg to use variables to
+	  keep track of position in the table
+
+2006-01-09 16:09  dan
+
+	* README.newmodel: improve notes on adding new models
+
+2006-01-09 16:09  dan
+
+	* libwcalc/: wcalc_loadsave.c, wcalc_loadsave.h: add coplanar
+
+2006-01-09 15:31  dan
+
+	* pixmaps/: Makefile.am, coplanar.obj, coplanar_model.obj: add
+	  coplanar waveguide
+
+2006-01-09 15:30  dan
+
+	* gtk-wcalc/: Makefile.am, coplanar_gui.c, coplanar_gui.h, wcalc.c:
+	  Add coplanar waveguide.  Still need to add the space input and
+	  reformat the code in the outputs_init() section to use variables
+	  to track table row and columns for easier code changes.
+
+2006-01-09 15:29  dan
+
+	* libwcalc/coplanar_loadsave.c: fix a bug where the model was
+	  identified as stripline
+
+2006-01-08 01:35  dan
+
+	* libwcalc/: coplanar.c, coplanar.h, coplanar_loadsave.c,
+	  coplanar_loadsave.h, coplanar_test.c: more progress on coplanar
+	  waveguide.  Header and loadsave are probably "done", the
+	  calculations are not finished.
+
+2006-01-08 01:34  dan
+
+	* libwcalc/: make_defaults.c, defaults.c, defaults.h: add coplanar
+
+2006-01-06 20:59  dan
+
+	* README.newmodel: add some more notes about adding new models
+
+2006-01-06 19:59  dan
+
+	* gtk-wcalc/coplanar.wc: create a defaults file for coplanar
+	  waveguide
+
+2006-01-06 19:02  dan
+
+	* libwcalc/: mathutil.c, mathutil.h: add k_over_kp to compute
+	  K(k)/K'(k) where K is the complete elliptic integral of the first
+	  kind, K' is the complementary complete elliptic integral of the
+	  first kind.
+
+2006-01-06 10:08  dan
+
+	* libwcalc/: Makefile.am, coplanar.c, coplanar.h,
+	  coplanar_loadsave.c, coplanar_loadsave.h, libwcalc.h: Put files
+	  in place for coplanar waveguide.  Currently still has stripline
+	  equations in it, need to fix that!
+
+2006-01-03 11:37  dan
+
+	* README-to-release: add some notes on the sourceforge release
+
+2006-01-03 08:17  dan
+
+	* README-to-release: note cygwin build and checksum calculations
+
+2006-01-03 08:14  dan
+
+	* README-to-release: note some files to update for the new year
+
+2006-01-03 08:11  dan
+
+	* gtk-wcalc/: about.c, start.c: s/WaveCalc/Wcalc
+
+2006-01-03 08:09  dan
+
+	* COPYING.win32: fix minor typo
+
+2006-01-03 00:31  dan
+
+	* configure.in, win32/build_wcalc: set rev for 1.0 release
+
+2006-01-03 00:30  dan
+
+	* mex-wcalc/: mexlink: another try at quoting to get an empty
+	  argument to libtool -shrext
+
+2006-01-03 00:27  dan
+
+	* configure.in, win32/build_wcalc: bump version to 1.0A
+
+2006-01-02 23:18  dan
+
+	* ChangeLog: update for pending 1.0 release
 
 2006-01-02 23:08  dan
 
@@ -947,26 +2249,9 @@
 
 	* ABOUT-NLS: update to gettext-0.14.5
 
-2005-10-12 12:30  dan
+2005-10-12 12:31  dan
 
-	* intl/ChangeLog, intl/Makefile.in, intl/VERSION,
-	  intl/bindtextdom.c, intl/config.charset, intl/dcgettext.c,
-	  intl/dcigettext.c, intl/dcngettext.c, intl/dgettext.c,
-	  intl/dngettext.c, intl/eval-plural.h, intl/explodename.c,
-	  intl/finddomain.c, intl/gettext.c, intl/gettextP.h, intl/gmo.h,
-	  intl/hash-string.h, intl/intl-compat.c, intl/l10nflist.c,
-	  intl/langprefs.c, intl/libgnuintl.h, intl/libgnuintl.h.in,
-	  intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
-	  intl/localcharset.h, intl/locale.alias, intl/localealias.c,
-	  intl/localename.c, intl/log.c, intl/ngettext.c, intl/os2compat.c,
-	  intl/os2compat.h, intl/osdep.c, intl/plural-exp.c,
-	  intl/plural-exp.h, intl/plural.c, intl/plural.y,
-	  intl/printf-args.c, intl/printf-args.h, intl/printf-parse.c,
-	  intl/printf-parse.h, intl/printf.c, intl/ref-add.sin,
-	  intl/ref-del.sin, intl/relocatable.c, intl/relocatable.h,
-	  intl/textdomain.c, intl/vasnprintf.c, intl/vasnprintf.h,
-	  intl/vasnwprintf.h, intl/wprintf-parse.h, intl/xsize.h,
-	  m4/ChangeLog, m4/codeset.m4, m4/gettext.m4, m4/glibc2.m4,
+	* m4/ChangeLog, m4/codeset.m4, m4/gettext.m4, m4/glibc2.m4,
 	  m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4, m4/intmax.m4,
 	  m4/inttypes-pri.m4, m4/inttypes.m4, m4/inttypes_h.m4,
 	  m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4,
@@ -2610,10 +3895,6 @@
 
 	* config.rpath: add config.rpath
 
-2003-10-01 23:25  dan
-
-	* intl/Makefile.am: no makefile.am needed here
-
 2003-10-01 23:05  dan
 
 	* libwcalc/ic_microstrip.c: revert to rev 1.10 (fix botched cvs
@@ -2801,19 +4082,7 @@
 	* ABOUT-NLS, ChangeLog, Makefile.am, config.h.in, configure.in,
 	  gettext.h, mkinstalldirs, gtk-wcalc/Makefile.am,
 	  gtk-wcalc/menus.c, gtk-wcalc/start.c, gtk-wcalc/wcalc.c,
-	  gtk-wcalc/wcalc.h, intl/ChangeLog, intl/Makefile.in,
-	  intl/VERSION, intl/bindtextdom.c, intl/config.charset,
-	  intl/dcgettext.c, intl/dcigettext.c, intl/dcngettext.c,
-	  intl/dgettext.c, intl/dngettext.c, intl/eval-plural.h,
-	  intl/explodename.c, intl/finddomain.c, intl/gettext.c,
-	  intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
-	  intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
-	  intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
-	  intl/locale.alias, intl/localealias.c, intl/localename.c,
-	  intl/ngettext.c, intl/os2compat.c, intl/os2compat.h,
-	  intl/osdep.c, intl/plural-exp.c, intl/plural-exp.h,
-	  intl/plural.c, intl/plural.y, intl/ref-add.sin, intl/ref-del.sin,
-	  intl/textdomain.c, m4/ChangeLog, m4/Makefile.am, m4/codeset.m4,
+	  gtk-wcalc/wcalc.h, m4/ChangeLog, m4/Makefile.am, m4/codeset.m4,
 	  m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4,
 	  m4/inttypes-pri.m4, m4/inttypes.m4, m4/inttypes_h.m4,
 	  m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4,
@@ -2836,8 +4105,7 @@
 
 2002-12-10 22:05  dan
 
-	* intl/Makefile.am, po/Makefile.am: add placeholder Makefile.am
-	  files
+	* po/Makefile.am: add placeholder Makefile.am files
 
 2002-12-10 05:42  dan
 
