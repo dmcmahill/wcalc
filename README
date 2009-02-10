@@ -1,4 +1,4 @@
-$Id: README,v 1.1 2001/02/11 19:26:17 dan Exp $
+$Id: README,v 1.2 2005/10/24 21:12:42 dan Exp $
 
 Wcalc is a tool for the analysis and synthesis of transmission line structures and 
 related components.  Wcalc provides the ability to analyze the electrical parameters
@@ -11,9 +11,11 @@ Models include:
 
  - single layer solenoid inductor
  - single microstrip and stripline
- - coupled microstrip
+ - coupled microstrip and stripline
+ - coplanar waveguide
  - metal-insulator-semiconductor microstrip
  - coaxial cable
+ - self and mutual inductance of two parallel rectangular bars
 
 Frontends include:
 
