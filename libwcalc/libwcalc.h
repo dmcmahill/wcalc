@@ -1,7 +1,7 @@
-/* $Id: libwcalc.h,v 1.2 2006/01/06 15:08:52 dan Exp $ */
+/* $Id: libwcalc.h,v 1.3 2008/11/29 20:42:15 dan Exp $ */
 
 /*
- * Copyright (C) 2004, 2006 Dan McMahill
+ * Copyright (C) 2004, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -38,6 +38,7 @@
 #include <wcalc/microstrip.h>
 #include <wcalc/microstrip_loadsave.h>
 #include <wcalc/misc.h>
+#include <wcalc/parallel_rc.h>
 #include <wcalc/physconst.h>
 #include <wcalc/stripline.h>
 #include <wcalc/stripline_loadsave.h>

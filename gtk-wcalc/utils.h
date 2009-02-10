@@ -1,4 +1,4 @@
-/* $Id: bars_gui.c,v 1.4 2009/01/10 20:56:16 dan Exp $ */
+/* $Id: utils.h,v 1.1 2009/01/11 15:57:21 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -57,8 +57,8 @@ typedef  enum {
     WC_LABEL_NO_UG, WC_LABEL_NEW_UG, WC_LABEL_USE_UG
 } wc_table_row_type;
 
-#define wc_table_add_entry_no_units(table, gui, text, entry, x, y) \
-    (wc_table_add( (table), (gui), (text), (entry), NULL, NULL, NULL, \
+#define wc_table_add_entry_no_units(table, gui, text, entry, mks, x, y) \
+    (wc_table_add( (table), (gui), (text), (entry), NULL, NULL, (mks), \
 		   (x), (y), WC_ENTRY_NO_UG))
 
 #define wc_table_add_entry_new_units(table, gui, text, entry, units, ug, mks, x, y) \

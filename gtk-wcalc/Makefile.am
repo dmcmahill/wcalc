@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.45 2009/02/06 01:56:05 dan Exp $
+## $Id: Makefile.am,v 1.46 2009/02/08 14:42:54 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -52,6 +52,8 @@ wcalc_SOURCES = \
 	microstrip_gui.h \
 	newprint.c \
 	newprint.h \
+	parallel_rc_gui.c \
+	parallel_rc_gui.h \
 	print.c \
 	print.h \
 	start.c \
@@ -80,6 +82,7 @@ pkgdata_DATA= \
 	coupled_stripline.wc \
 	ic_microstrip.wc \
 	microstrip.wc \
+	parallel_rc.wc \
 	stripline.wc
 
 ASCIITABS=\
@@ -184,6 +187,8 @@ FIGSRCS=	\
 	${top_srcdir}/pixmaps/figure_microstrip.h \
 	${top_srcdir}/pixmaps/figure_microstrip_model.c \
 	${top_srcdir}/pixmaps/figure_microstrip_model.h \
+	${top_srcdir}/pixmaps/figure_rc.c \
+	${top_srcdir}/pixmaps/figure_rc.h \
 	${top_srcdir}/pixmaps/figure_stripline.c \
 	${top_srcdir}/pixmaps/figure_stripline.h \
 	${top_srcdir}/pixmaps/figure_stripline_model.c \

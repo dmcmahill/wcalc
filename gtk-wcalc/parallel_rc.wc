@@ -1,0 +1,37 @@
+#
+# File:      /home/dan/src/wcalc/gtk-wcalc/bars.wc
+# Modified:  Sun Jan 11 10:55:38 2009
+# Wcalc Version 1.0A
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = parallel_Rc
+
+
+[parallel_rc]
+
+# Bars file version
+file_version = 0.1
+
+# Bar #1 width (x-dimension, meters)
+Rs = 0.2
+Rp = 100e3
+Cs = 1e-12
+Cp = 1e-12
+Qs = 100
+Qp = 100
+
+use_Q = 1
+series_to_parallel = 1
+
+freq=100.0e6
+
+# Width/Height units
+units_R = 1
+units_C = 1
+# [um]
+
+# Frequency units
+units_freq = 3
+# [MHz]
+

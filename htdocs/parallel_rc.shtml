@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- $Id: bars.shtml,v 1.1 2009/01/10 21:11:25 dan Exp $ -->
+<!-- Copyright (c) 2009
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Coaxial Transmission Line Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+bars,
+mutual inductance,
+coax,
+coaxial,
+coaxial transmission line,
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+series/parallel equivalent,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Series/Parallel RC Equivalent Networks
+    </font>
+    <br>
+    <br>
+    <img src="rc.png"
+    alt="Series/Parallel RC Network Image" width="551" height="183" hspace="10" vspace="5">
+    </center>
+
+    <font face="helvetica, arial">
+    <HR>  
+    <P>
+    At a single operating frequency any impedance with a negative
+    (capacitive) reactance may be exactly represented by either a
+    parallel RC network or series RC network.  The math is quite
+    simple.  The results are even summarized in the figure.  The book
+    by Krauss et. al. referenced below provides some additional 
+    narrowband (exact at one frequency, close over a narrow frequency
+    range) transformations.
+    </P>
+
+    <HR> 
+    <H2><A NAME="References">Selected References</A></H2>
+    <OL>
+      <LI>
+      	Herbert L. Krauss, Charles W. Bostain and Frederick H. Raab, 
+	"Solid State Radio Engineering", John Wiley and Sons, New
+	York, 1980.
+      </LI>
+      
+    </OL>
+
+    <HR> 
+    <H2><A NAME="bugs">Known Issues</A></H2>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

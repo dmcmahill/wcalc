@@ -1,4 +1,4 @@
-/* $Id: wcalc.c,v 1.37 2009/01/13 20:35:18 dan Exp $ */
+/* $Id: wcalc.c,v 1.38 2009/01/15 15:52:40 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
@@ -50,6 +50,7 @@
 #include "coupled_stripline_gui.h"
 #include "ic_microstrip_gui.h"
 #include "microstrip_gui.h"
+#include "parallel_rc_gui.h"
 #include "stripline_gui.h"
 
 /* libwcalc related */
@@ -317,6 +318,14 @@ static void global_model_init()
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_MICROSTRIP);
 
+  /* ************************  Bars ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Series/Parallel RC");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_RC");
+  global_model_new = g_list_append(global_model_new, (gpointer) parallel_rc_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_PARALLEL_RC);
+
+
   /* ************************ Stripline ******************** */
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
@@ -510,6 +519,10 @@ void wcalc_setup (gpointer data,
       new_cmd = (void *) microstrip_gui_new;
       break;
 
+    case MODEL_PARALLEL_RC:
+      new_cmd = (void *) parallel_rc_gui_new;
+      break;
+      
     case MODEL_STRIPLINE:
       new_cmd = (void *) stripline_gui_new;
       break;

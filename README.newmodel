@@ -1,4 +1,4 @@
-$Id: README.newmodel,v 1.13 2006/02/23 14:25:19 dan Exp $
+$Id: README.newmodel,v 1.14 2009/02/07 05:34:25 dan Exp $
 
 
 WARNING:  This is not finished yet....  But it needs to be so I can
@@ -40,7 +40,7 @@ Create microstrip_model.obj and add it to Makefile.am
 gtk-wcalc
 ---------------------
 
-add microstrip_gui.{c,h} to Makefile.am
+add microstrip_gui.{c,h}, and ${top_srcdir}/pixmaps/figure_microstrip.{ch} to Makefile.am
 
 edit wcalc.c
   - add microstrip_gui.h
@@ -72,7 +72,7 @@ The microstrip_gui.{c,h} should define an object of type
 ->synthesize(void)	performs a synthesis
 ->display(void)		updates the display
 ->print(void)		generates postscript for the printout
-
+->dump(void)            returns a GList of hardcopy data
 
 Window Creation
 ---------------

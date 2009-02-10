@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.35 2009/01/08 03:43:33 dan Exp $
+## $Id: Makefile.am,v 1.36 2009/01/11 18:05:42 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -44,6 +44,8 @@ pkginclude_DATA =  \
 	microstrip.h \
 	microstrip_loadsave.h \
 	misc.h \
+	parallel_rc.h \
+	parallel_rc_loadsave.h \
 	physconst.h \
 	stripline.h \
 	stripline_loadsave.h \
@@ -145,6 +147,10 @@ libwcalc_la_SOURCES = \
 	microstrip_loadsave.h \
 	misc.c \
 	misc.h \
+	parallel_rc.c \
+	parallel_rc.h \
+	parallel_rc_loadsave.c \
+	parallel_rc_loadsave.h \
 	physconst.h \
 	stripline.c \
 	stripline.h \
