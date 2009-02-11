@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.56 2009/01/11 04:10:16 dan Exp $
+## $Id: Makefile.am,v 1.57 2009/01/11 07:28:46 dan Exp $
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
@@ -30,7 +30,8 @@ demo_DATA=	${SCIDEMOS}
 SCIDEMOS=	wcalc-demo.dem \
 	air_coil_calc.dem \
 	air_coil_syn.dem \
-	bars_calc.dem
+	bars_calc.dem \
+	parallel_rc.dem
 
 SCI_VER=		@SCI_VER@
 scilibdir=	${libdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}
@@ -97,6 +98,8 @@ TEST_FILES=	\
 	ic_microstrip_syn.tst \
 	microstrip_calc.tst \
 	microstrip_syn.tst \
+	parallel_rc_p2s.tst \
+	parallel_rc_s2p.tst \
 	stripline_calc.tst \
 	stripline_syn.tst
 

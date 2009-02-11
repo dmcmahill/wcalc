@@ -1,0 +1,53 @@
+// $Id: bars_calc.dem,v 1.1 2009/01/11 04:10:17 dan Exp $
+//
+// Copyright (c) 2009 Dan McMahill
+// All rights reserved.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; version 2 of the License.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+// --------------------------------------------------------
+// Series/Parallel Equivalent RC Networks
+// --------------------------------------------------------
+
+// 10 pF
+Cs = 10e-12;
+
+// 1.2 Ohms
+Rs = 1.2;
+
+// This value will be replaced
+Qs = 100;
+
+// 100 MHz operation
+f = 100e6;
+
+// Use Rs (and calculate Qs)
+flag=0;
+[Cs, Rs, Qs, Cp, Rp, Qp] = parallel_rc_p2s(Cp, Rp, Qp, f, flag);
+
+disp(sprintf('Equivalent series C = %g pF', Cs/1e-12));
+disp(sprintf('Equivalent series R = %g Ohm', Rs));
+disp(sprintf('Quality factor      =%g',Qs));
+	      
+f = logspace(7, 10, 100);
+[Cs, Rs, Qs, Cp, Rp, Qp] = parallel_rc_p2s(Cp, Rp, Qp, f, flag);
+
+xbasc(); xselect();
+plot2d(gap/1e-6, k);
+plot2d(f, Rs, logflag="ln");
+
+xgrid(3);
+xtitle('Quality factor versus frequency','Frequency [Hz]','Qp');
+

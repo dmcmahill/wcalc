@@ -1,4 +1,4 @@
-## $Id: mex.mk,v 1.14 2009/01/11 04:10:18 dan Exp $
+## $Id: mex.mk,v 1.15 2009/01/11 04:22:23 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2006, 2009 Dan McMahill
@@ -33,6 +33,8 @@ MEX_SRCS=	\
 	ic_microstrip_syn.c \
 	microstrip_calc.c \
 	microstrip_syn.c \
+	parallel_rc_p2s.c \
+	parallel_rc_s2p.c \
 	stripline_calc.c \
 	stripline_syn.c
 
