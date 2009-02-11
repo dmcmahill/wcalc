@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.46 2009/02/08 14:42:54 dan Exp $
+## $Id: Makefile.am,v 1.47 2009/02/10 05:00:14 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
@@ -54,6 +54,8 @@ wcalc_SOURCES = \
 	newprint.h \
 	parallel_rc_gui.c \
 	parallel_rc_gui.h \
+	parallel_rl_gui.c \
+	parallel_rl_gui.h \
 	print.c \
 	print.h \
 	start.c \
@@ -189,6 +191,8 @@ FIGSRCS=	\
 	${top_srcdir}/pixmaps/figure_microstrip_model.h \
 	${top_srcdir}/pixmaps/figure_rc.c \
 	${top_srcdir}/pixmaps/figure_rc.h \
+	${top_srcdir}/pixmaps/figure_rl.c \
+	${top_srcdir}/pixmaps/figure_rl.h \
 	${top_srcdir}/pixmaps/figure_stripline.c \
 	${top_srcdir}/pixmaps/figure_stripline.h \
 	${top_srcdir}/pixmaps/figure_stripline_model.c \

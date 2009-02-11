@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.h,v 1.14 2008/11/29 20:42:24 dan Exp $ */
+/* $Id: wcalc_loadsave.h,v 1.15 2009/02/10 05:00:21 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
@@ -111,8 +111,9 @@ int fspec_read_string(fspec *list, const char *str,unsigned long base);
 #define FILE_COUPLED_STRIPLINE   "coupled_stripline"
 #define FILE_IC_MICROSTRIP       "ic_microstrip"
 #define FILE_MICROSTRIP          "microstrip"
-#define FILE_STRIPLINE           "stripline"
 #define FILE_PARALLEL_RC         "parallel_rc"
+#define FILE_PARALLEL_RL         "parallel_rl"
+#define FILE_STRIPLINE           "stripline"
 
 
 enum {
@@ -125,6 +126,7 @@ enum {
   MODEL_IC_MICROSTRIP,
   MODEL_MICROSTRIP,
   MODEL_PARALLEL_RC,
+  MODEL_PARALLEL_RL,
   MODEL_STRIPLINE
 };
 

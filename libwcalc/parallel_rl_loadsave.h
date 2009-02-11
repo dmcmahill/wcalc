@@ -1,7 +1,7 @@
-/* $Id: defaults.h,v 1.6 2009/02/10 12:10:09 dan Exp $ */
+/* $Id: parallel_lr_loadsave.h,v 1.1 2009/02/10 05:00:21 dan Exp $ */
 
 /*
- * Copyright (C) 2004, 2006 Dan McMahill
+ * Copyright (C) 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -20,19 +20,18 @@
  * 
  */
 
-#ifndef __DEFAULTS_H__
-#define __DEFAULTS_H__
+#ifndef __PARALLEL_RL_LOADSAVE_H__
+#define __PARALLEL_RL_LOADSAVE_H__
 
-extern const char *default_air_coil;
-extern const char *default_bars;
-extern const char *default_coax;
-extern const char *default_coplanar;
-extern const char *default_coupled_microstrip;
-extern const char *default_coupled_stripline;
-extern const char *default_ic_microstrip;
-extern const char *default_microstrip;
-extern const char *default_parallel_rc;
-extern const char *default_parallel_rl;
-extern const char *default_stripline;
+/* writes the data from 'b' to fp */
+void parallel_rl_save(parallel_rl *b, FILE *fp, char *fname);
 
-#endif /* __DEFAULTS_H__ */
+/*
+ * returns 0 on success
+ */
+int parallel_rl_load(parallel_rl *bb, FILE *fp);
+
+int parallel_rl_load_string(parallel_rl *b, const char *str);
+char * parallel_rl_save_string(parallel_rl *b);
+
+#endif /*__PARALLEL_RL_LOADSAVE_H__*/

@@ -1,38 +1,38 @@
 #
-# File:      parallel_rc.wc
-# Modified:  Tue Feb 10 19:51:05 2009
+# File:      parallel_rl.wc
+# Modified:  Wed Feb 11 13:26:26 2009
 # Wcalc Version 1.0A
 
 [wcalc]
 wcalc_file_version = 0.1
-model_name = parallel_rc
+model_name = parallel_rl
 
 
-[parallel_rc]
+[parallel_rl]
 
-# Parallel_Rc file version
+# Parallel_Rl file version
 file_version = 0.1
 
-# Series capacitance (Farads)
-Cs = 8.25474557615585e-11
+# Series inductance (Henries)
+Ls = 3.3e-08
 
 # Series resistance (Ohms)
-Rs = 40.914317187844
+Rs = 50
 
 # Series quality factor
-Qs = 0.471238898038469
+Qs = 0.414690230273853
 
-# Parallel capacitance (Farads)
-Cp = 1.5e-11
+# Parallel inductance (Henries)
+Lp = 2.24896181140791e-07
 
 # Parallel resistance (Ohms)
-Rp = 50
+Rp = 58.598399354229
 
 # Parallel quality factor
-Qp = 0.471238898038469
+Qp = 0.414690230273853
 
 # Convert from series to parallel?
-series_to_parallel = 0
+series_to_parallel = 1
 
 # Use Q to calculate resistance?
 use_Q = 0
@@ -42,9 +42,9 @@ freq = 100000000
 
 # Desired user units and associated scale factors
 
-# Capacitance units
-units_C = 1
-# [pF]
+# Inductance units
+units_L = 1
+# [nH]
 
 # Series resistance units
 units_Rs = 2

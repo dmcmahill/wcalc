@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: cgi-wcalc.shtml,v 1.14 2009/01/10 21:11:25 dan Exp $ -->
+<!-- $Id: cgi-wcalc.shtml,v 1.15 2009/02/10 05:00:17 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -64,6 +64,7 @@ stripline synthesis,
     <LI><A HREF="/cgi-bin/coupled_stripline.cgi">Coupled Stripline</A></LI>
     <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
     <LI><A HREF="/cgi-bin/parallel_rc.cgi">Series/Parallel RC Network</A></LI>
+    <LI><A HREF="/cgi-bin/parallel_rl.cgi">Series/Parallel RL Network</A></LI>
     <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
     </ul>
     </font>

@@ -1,0 +1,34 @@
+# $Id: parallel_rl.dat,v 1.1 2009/02/11 00:00:50 dan Exp $
+#
+# parallel_rl test data
+#
+
+*
+*  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_p2s(Lp, Rp, Qp, freq, flag)
+*  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_s2p(Ls, Rs, Qs, freq, flag)
+*
+
+*
+* Series to parallel using Q
+*
+parallel_rl_s2p 10.0e-9 0.1 0.5 100e6 1
+
+
+*
+* Series to parallel using R
+*
+parallel_rl_s2p 10.0e-9 50.0 100.0 100e6 0
+
+
+*
+* Parallel to series using Q
+*
+parallel_rl_p2s 200.0e-9 10e3 0.5 100e6 1
+
+
+*
+* Parallel to series using R
+*
+parallel_rl_p2s 200.0e-9 50.0 100.0 100e6 0
+
+

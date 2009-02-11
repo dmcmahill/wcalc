@@ -1,0 +1,156 @@
+<!-- $Id: parallel_rl.html,v 1.1 2009/02/11 00:00:31 dan Exp $ -->
+<!--
+ * Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Dan McMahill
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Series/Parallel RL Network Conversion</TITLE>
+<!-- Created by: Dan McMahill, 2001/09/12 -->
+<LINK REV="made" HREF="mailto:nospam_to_mcmahill@alum.mit.make_edu">
+<link rel="shortcut icon" href="<@s@HTMLPATH@>/favicon.ico" type="image/x-icon">    
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="description" content="Series/Parallel RL Network Conversion">
+<meta name="keywords" content="
+equivalent parallel network,
+equivalent series network,
+">
+<@s@cgi_units_menu_init()@>
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" onLoad="units_init()">
+
+<H1 ALIGN="CENTER">Series/Parallel RL Network Conversion Calculator</H1>
+
+<P>
+
+
+<FORM NAME="wcalc" METHOD=GET ACTION="parallel_rl.cgi">
+<TABLE>
+<TR>
+<TD>
+
+<TABLE>
+<TR ALIGN="CENTER">
+<TD><IMG SRL="<@s@HTMLPATH@>rl.png" WIDTH=551 HEIGHT=168
+     ALT="[Series/Parallel RL Network Schematic]"></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD><INPUT TYPE="TEXT" DISABLED NAME="status" VALUE=" "></TD>
+</TR>
+
+<TR ALIGN="CENTER">
+<TD>
+
+<TABLE>
+
+<TR>
+<TD>Ls</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Ls" VALUE="<@g@line->Ls/line->units_L->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_L)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Rs</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Rs" VALUE="<@g@line->Rs/line->units_Rs->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_Rs)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Qs</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Qs" VALUE="<@g@line->Qs@>"
+           onChange="valsChanged()"></TD>
+<TD>[-]</TD>
+</TR>
+
+
+</TABLE>  <!-- end of model parameter table -->
+</TD>
+</TR>
+
+</TABLE>  <!-- end left hand 1/2 of main table -->
+
+<TD>
+<TABLE>
+
+<TR>
+<TD>Lp</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Lp" VALUE="<@g@line->Lp/line->units_L->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>	   
+<INPUT TYPE="TEXT" DISABLED VALUE=" " NAME="entry_L">
+</TD>
+</TR>
+
+<TR>
+<TD>Rp</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Rp" VALUE="<@g@line->Rp/line->units_Rp->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<@s@cgi_units_menu_display(menu_Rp)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Qp</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="Qp" VALUE="<@g@line->Qp@>"
+           onChange="valsChanged()"></TD>
+<TD>[-]</TD>
+</TR>
+
+<TR>
+<TD>Frequency</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="freq" VALUE="<@g@line->freq/line->units_freq->sf@>"
+           onChange="valsChanged()"></TD>
+<TD>
+<!-- frequency units menu -->
+<@s@cgi_units_menu_display(menu_freq)@>
+</TD>
+</TR>
+
+<TR>
+<TD>Entry mode</TD>
+<TD>Q/L<INPUT TYPE="RADIO" NAME="stype" VALUE="use_Q" <@s@use_Q_checked@>
+           onChange="valsChanged()"></TD>
+<TD>R/L<INPUT TYPE="RADIO" NAME="stype" VALUE="use_R" <@s@use_R_checked@>
+           onChange="valsChanged()"></TD>
+</TR>
+
+<TR>
+<TD><INPUT TYPE="SUBMIT" NAME="s2p" VALUE="Series To Parallel"></TD>
+<TD><INPUT TYPE="SUBMIT" NAME="p2s" VALUE="Parallel to Series"></TD>
+<TD><INPUT TYPE="SUBMIT" NAME="reset" VALUE="Reset"></TD>
+</TR>
+
+
+</TABLE>
+
+</TR>
+</TABLE>
+
+</FORM>
+

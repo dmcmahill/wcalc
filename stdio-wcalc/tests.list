@@ -1,4 +1,4 @@
-# $Id: tests.list,v 1.4 2009/01/11 05:49:33 dan Exp $
+# $Id: tests.list,v 1.5 2009/02/11 00:00:50 dan Exp $
 #
 # Copyright (c) 2004, 2006, 2009 Dan McMahill
 # All rights reserved.
@@ -25,5 +25,6 @@ coupled_stripline
 ic_microstrip
 microstrip
 parallel_rc
+parallel_rl
 stripline
 

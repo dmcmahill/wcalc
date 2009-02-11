@@ -1,4 +1,4 @@
-// $Id: parallel_rc.dem,v 1.1 2009/02/11 00:00:46 dan Exp $
+// $Id: parallel_rl.dem,v 1.1 2009/02/11 00:00:46 dan Exp $
 //
 // Copyright (c) 2009 Dan McMahill
 // All rights reserved.
@@ -18,11 +18,11 @@
 
 
 // --------------------------------------------------------
-// Series/Parallel Equivalent RC Networks
+// Series/Parallel Equivalent RL Networks
 // --------------------------------------------------------
 
-// 10 pF
-Cs = 10e-12;
+// 10 nF
+Ls = 10e-9;
 
 // 1.2 Ohms
 Rs = 1.2;
@@ -35,14 +35,14 @@ f = 100e6;
 
 // Use Rs (and calculate Qs)
 flag=0;
-[Cs, Rs, Qs, Cp, Rp, Qp] = parallel_rc_p2s(Cp, Rp, Qp, f, flag);
+[Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_p2s(Lp, Rp, Qp, f, flag);
 
-disp(sprintf('Equivalent series C = %g pF', Cs/1e-12));
+disp(sprintf('Equivalent series L = %g nH', Ls/1e-9));
 disp(sprintf('Equivalent series R = %g Ohm', Rs));
 disp(sprintf('Quality factor      =%g',Qs));
 	      
 f = logspace(7, 10, 100);
-[Cs, Rs, Qs, Cp, Rp, Qp] = parallel_rc_p2s(Cp, Rp, Qp, f, flag);
+[Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_p2s(Lp, Rp, Qp, f, flag);
 
 xbasc(); xselect();
 plot2d(f, Rs, logflag="ln");

@@ -1,0 +1,57 @@
+ 
+ 
+exec test_wcalc.sce;
+shared archive loaded
+ 
+ 
+disp('**** parallel_rl_s2p ****');
+ 
+ **** parallel_rl_s2p ****   
+ 
+// --------------------------------------------------------
+ 
+// Calculate parallel equivalent RL network from series network
+ 
+// --------------------------------------------------------
+ 
+ 
+// 10 nH
+ 
+Ls=10e-9;
+ 
+ 
+// 0.5 Ohms
+ 
+Rs=0.5;
+ 
+ 
+// This value will be replaced
+ 
+Qs=100;
+ 
+ 
+// 100 MHz operation
+ 
+f=100e6;
+ 
+ 
+// Use Rs (and calculate Qs)
+ 
+flag=0;
+ 
+ 
+[Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_s2p(Ls, Rs, Qs, f, flag);
+ 
+ 
+disp(sprintf('Equivalent parallel L = %g nH', Lp/1e-9));
+ 
+ Equivalent parallel L = 10.0633 nH   
+ 
+disp(sprintf('Equivalent parallel R = %g kOhm', Rp/1e3));
+ 
+ Equivalent parallel R = 0.0794568 kOhm   
+ 
+disp(sprintf('Quality factor         =%g',Qp));
+ 
+ Quality factor         =12.5664   
+ 

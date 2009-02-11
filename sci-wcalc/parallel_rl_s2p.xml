@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
+<TOP>
+<MAN>
+<!-- $Id: parallel_rl_s2p.xml,v 1.1 2009/02/11 00:00:48 dan Exp $ -->
+<!--
+    Copyright (C) 2009 Dan McMahill
+    All rights reserved.
+   
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; version 2 of the License.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    
+-->
+
+<NAME>parallel_rl_s2p</NAME>
+
+<SHORTDESCR>Convert Series RL Network into Equivalent Parallel RL Network
+</SHORTDESCR>
+
+<SYNOPSIS>
+[Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_s2p(Ls, Rs, Qs, freq, flag)
+</SYNOPSIS>
+
+<PARAMETERS>
+  <RHS name="Ls">Series inductance (Farads)</RHS>
+  <RHS name="Rs">Series resistance (Ohms)</RHS>
+  <RHS name="Qs">Series quality factor</RHS>
+  <RHS name="freq">Analysis frequency (Hertz)</RHS>
+  <RHS name="flag">indicates if Qs or Rs should be used for the loss input
+    <ENUM>
+      <ITEM name="flag=0">Qs will be calculated from Rs.</ITEM>
+      <ITEM name="flag=1">Rs will be calculated from Qs.</ITEM>
+    </ENUM>
+  </RHS>	
+
+  <RHS name="Ls">Series inductance (Farads)</RHS>
+  <RHS name="Rs">Series resistance (Ohms)</RHS>
+  <RHS name="Qs">Series quality factor</RHS>
+  <RHS name="Lp">Parallel inductance (Farads)</RHS>
+  <RHS name="Rp">Parallel resistance (Ohms)</RHS>
+  <RHS name="Qp">Parallel quality factor</RHS>
+
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to calculate an equivalent parallel RL network from an input
+series RL network.
+</DESCRIPTION>
+
+<EXAMPLE>
+  <SCIEX><SCICMD>Ls=10e-9;</SCICMD>   <COMMENT>10 nH</COMMENT></SCIEX>
+  <SCIEX><SCICMD>Rs=0.5;</SCICMD>      <COMMENT>0.5 Ohms</COMMENT></SCIEX>
+  <SCIEX><SCICMD>Qs=100;</SCICMD>      <COMMENT>This value will be replaced</COMMENT></SCIEX>
+  <SCIEX><SCICMD>f=100e6;</SCICMD>     <COMMENT>100 MHz operation</COMMENT></SCIEX>
+  <SCIEX><SCICMD>flag=0;</SCICMD>      <COMMENT>Use Rs (and calculate Qs)</COMMENT></SCIEX>
+  <SCIEX><SCICMD>[Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_s2p(Ls, Rs,
+  Qs, f, flag);</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Equivalent parallel L = %g nH', Lp/1e-9));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Equivalent parallel R = %g kOhm', Rp/1e3));</SCICMD></SCIEX>
+  <SCIEX><SCICMD>disp(sprintf('Quality factor         =%g',Qp));</SCICMD></SCIEX>
+       <STDEX>
+*
+* Series to parallel using Q
+*
+parallel_rl_s2p 10.0e-9 0.1 100.0 100e6 1
+
+
+*
+* Series to parallel using R
+*
+parallel_rl_s2p 10.0e-9 0.1 100.0 100e6 0
+       </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+&see_also;
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+None known
+</BUGS>
+
+</MAN>
+</TOP>
+

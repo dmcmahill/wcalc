@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.38 2009/01/11 16:07:53 dan Exp $
+## $Id: Makefile.am,v 1.39 2009/02/10 05:00:17 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
@@ -58,6 +58,7 @@ SHTML_IN=	\
 	obtaining.shtml \
 	octave-wcalc.shtml \
 	parallel_rc.shtml \
+	parallel_rl.shtml \
 	permeability.shtml \
 	permitivity.shtml \
 	projects.shtml \

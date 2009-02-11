@@ -1,4 +1,4 @@
-<!-- $Id: see_also.xml,v 1.3 2009/01/11 04:10:19 dan Exp $ -->
+<!-- $Id: see_also.xml,v 1.4 2009/02/11 00:00:48 dan Exp $ -->
 <!--
     Copyright (C) 2006, 2009 Dan McMahill
     All rights reserved.
@@ -36,6 +36,8 @@
    <ALSO>microstrip_syn</ALSO>
    <ALSO>parallel_rc_p2s</ALSO>
    <ALSO>parallel_rc_s2p</ALSO>
+   <ALSO>parallel_rl_p2s</ALSO>
+   <ALSO>parallel_rl_s2p</ALSO>
    <ALSO>stripline_calc</ALSO>
    <ALSO>stripline_syn</ALSO>
 

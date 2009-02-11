@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.20 2009/01/11 05:49:31 dan Exp $
+## $Id: Makefile.am,v 1.21 2009/02/11 02:43:19 dan Exp $
 
 ##
 ## Copyright (C) 2004, 2005, 2006, 2008 Dan McMahill
@@ -73,6 +73,7 @@ TEST_INPUTS= \
 	ic_microstrip.dat \
 	microstrip.dat \
 	parallel_rc.dat \
+	parallel_rl.dat \
 	stripline.dat
 
 REF_FILES=	${TEST_INPUTS:.dat=.ref}

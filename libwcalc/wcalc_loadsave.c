@@ -1,4 +1,4 @@
-/* $Id: wcalc_loadsave.c,v 1.28 2008/11/29 20:42:23 dan Exp $ */
+/* $Id: wcalc_loadsave.c,v 1.29 2009/02/10 12:10:10 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008 Dan McMahill
@@ -140,6 +140,9 @@ int wcalc_load(FILE *fp)
   }
   else if (strcmp(val, FILE_PARALLEL_RC) == 0) {
     return MODEL_PARALLEL_RC;
+  }
+  else if (strcmp(val, FILE_PARALLEL_RL) == 0) {
+    return MODEL_PARALLEL_RL;
   }
   else if (strcmp(val, FILE_STRIPLINE) == 0) {
     return MODEL_STRIPLINE;

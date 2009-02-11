@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.36 2009/01/11 18:05:42 dan Exp $
+## $Id: Makefile.am,v 1.37 2009/02/10 05:00:19 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009 Dan McMahill
@@ -46,6 +46,8 @@ pkginclude_DATA =  \
 	misc.h \
 	parallel_rc.h \
 	parallel_rc_loadsave.h \
+	parallel_rl.h \
+	parallel_rl_loadsave.h \
 	physconst.h \
 	stripline.h \
 	stripline_loadsave.h \
@@ -151,6 +153,10 @@ libwcalc_la_SOURCES = \
 	parallel_rc.h \
 	parallel_rc_loadsave.c \
 	parallel_rc_loadsave.h \
+	parallel_rl.c \
+	parallel_rl.h \
+	parallel_rl_loadsave.c \
+	parallel_rl_loadsave.h \
 	physconst.h \
 	stripline.c \
 	stripline.h \

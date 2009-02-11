@@ -1,0 +1,24 @@
+*
+*  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_p2s(Lp, Rp, Qp, freq, flag)
+*  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_s2p(Ls, Rs, Qs, freq, flag)
+*
+*
+* Series to parallel using Q
+*
+--> parallel_rl_s2p 10.0e-9 0.1 0.5 100e6 1
+1e-08 12.5664 0.5 5e-08 15.708 0.5
+*
+* Series to parallel using R
+*
+--> parallel_rl_s2p 10.0e-9 50.0 100.0 100e6 0
+1e-08 50 0.125664 6.43257e-07 50.7896 0.125664
+*
+* Parallel to series using Q
+*
+--> parallel_rl_p2s 200.0e-9 10e3 0.5 100e6 1
+4e-08 50.2655 0.5 2e-07 62.8319 0.5
+*
+* Parallel to series using R
+*
+--> parallel_rl_p2s 200.0e-9 50.0 100.0 100e6 0
+2.73353e-08 43.1662 0.397887 2e-07 50 0.397887

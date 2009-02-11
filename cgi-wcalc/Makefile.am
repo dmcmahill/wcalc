@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.28 2009/01/11 15:22:43 dan Exp $
+## $Id: Makefile.am,v 1.29 2009/02/11 00:00:26 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
@@ -31,6 +31,7 @@ cgibinexec_PROGRAMS = \
 	ic_microstrip.cgi \
 	microstrip.cgi \
 	parallel_rc.cgi \
+	parallel_rl.cgi \
 	stripline.cgi
 
 noinst_PROGRAMS = \
@@ -62,6 +63,8 @@ microstrip_cgi_SOURCES = microstrip.cgi.c ${COMMON}
 
 parallel_rc_cgi_SOURCES = parallel_rc.cgi.c ${COMMON}
 
+parallel_rl_cgi_SOURCES = parallel_rl.cgi.c ${COMMON}
+
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
 INCLUDES =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
@@ -86,6 +89,7 @@ HTML_FILES= \
 	ic_microstrip.html \
 	microstrip.html \
 	parallel_rc.html \
+	parallel_rl.html \
 	stripline.html 
 
 ID_FILES=	${HTML_FILES:.html=_id.h}

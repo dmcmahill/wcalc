@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.29 2009/01/11 06:16:05 dan Exp $ */
+/* $Id: main.c,v 1.30 2009/02/11 00:00:48 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2005, 2006, 2007, 2009 Dan McMahill
@@ -64,6 +64,7 @@
 #include "ic_microstrip.h"
 #include "microstrip.h"
 #include "parallel_rc.h"
+#include "parallel_rl.h"
 #include "stripline.h"
 
 #ifdef DMALLOC
@@ -83,6 +84,8 @@ static void exec_ic_microstrip_calc(double *args);
 static void exec_microstrip_calc(double *args);
 static void exec_parallel_rc_p2s(double *args);
 static void exec_parallel_rc_s2p(double *args);
+static void exec_parallel_rl_p2s(double *args);
+static void exec_parallel_rl_s2p(double *args);
 static void exec_stripline_calc(double *args);
 
 static void exec_air_coil_syn(double *args);
@@ -265,6 +268,12 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "parallel_rc_s2p") == 0) {
       narg = 5;
       fn = &exec_parallel_rc_s2p;
+    } else if(strcmp(tok, "parallel_rl_p2s") == 0) {
+      narg = 5;
+      fn = &exec_parallel_rl_p2s;
+    } else if(strcmp(tok, "parallel_rl_s2p") == 0) {
+      narg = 5;
+      fn = &exec_parallel_rl_s2p;
     } else if(strcmp(tok, "stripline_calc") == 0) {
       narg = 9;
       fn = &exec_stripline_calc;
@@ -995,6 +1004,74 @@ static void exec_parallel_rc_s2p(double *args)
   return;
 }
 
+
+
+/*
+ *  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rl_p2s(Lp, Rp, Qp, freq, flag)
+ */
+static void exec_parallel_rl_p2s(double *args)
+{
+  parallel_rl *net;
+  int i = 0;
+
+  net = parallel_rl_new();
+  net->Lp = args[i++];
+  net->Rp = args[i++];
+  net->Qp = args[i++];
+  net->freq = args[i++];
+  net->use_Q = (int) rint(args[i++]);
+
+  net->series_to_parallel = 0;
+
+  /* run the calculation */
+  if(  parallel_rl_calc(net, net->freq) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   net->Ls, net->Rs, net->Qs,
+	   net->Lp, net->Rp, net->Qp);
+  }
+
+  /* clean up */
+  parallel_rl_free(net);
+  
+  return;
+}
+
+
+/*
+ *  [Ls, Rs, Qs, Lp, Rp, Qp] = parallel_rc_s2p(Ls, Rs, Qs, freq, flag)
+ */
+static void exec_parallel_rl_s2p(double *args)
+{
+  parallel_rl *net;
+  int i = 0;
+
+  net = parallel_rl_new();
+  net->Ls = args[i++];
+  net->Rs = args[i++];
+  net->Qs = args[i++];
+  net->freq = args[i++];
+  net->use_Q = (int) rint(args[i++]);
+
+  net->series_to_parallel = 1;
+
+  /* run the calculation */
+  if(  parallel_rl_calc(net, net->freq) ) {
+    printf("%s", ERRMSG);
+  } else {
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   net->Ls, net->Rs, net->Qs,
+	   net->Lp, net->Rp, net->Qp);
+  }
+
+  /* clean up */
+  parallel_rl_free(net);
+  
+  return;
+}
 
 
 

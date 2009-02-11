@@ -1,4 +1,4 @@
-/* $Id: make_defaults.c,v 1.5 2008/11/29 20:42:15 dan Exp $ */
+/* $Id: make_defaults.c,v 1.6 2009/02/10 05:00:20 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2006, 2008, 2009 Dan McMahill
@@ -56,6 +56,8 @@
 #include "microstrip_loadsave.h"
 #include "parallel_rc.h"
 #include "parallel_rc_loadsave.h"
+#include "parallel_rl.h"
+#include "parallel_rl_loadsave.h"
 #include "stripline.h"
 #include "stripline_loadsave.h"
 
@@ -82,9 +84,10 @@ int main(int argc, char **argv)
   ic_microstrip_line *ic_ms_line;
   microstrip_line *ms_line;
   parallel_rc *prc;
+  parallel_rl *prl;
   stripline_line *st_line;
 
-  printf("/* $Id: make_defaults.c,v 1.5 2008/11/29 20:42:15 dan Exp $ */\n\n");
+  printf("/* $Id: make_defaults.c,v 1.6 2009/02/10 05:00:20 dan Exp $ */\n\n");
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
   printf("/* use \"make_defaults\" to generate */\n\n");
 
@@ -185,6 +188,17 @@ int main(int argc, char **argv)
     printf("const char *default_parallel_rc=\"%s\";\n", str);
     free(str);
     parallel_rc_free(prc);
+    fclose(fp);
+  }
+
+  sprintf(fname, "%s/%s", dir, "parallel_rl.wc");
+  if( (fp = fopen(fname, "r")) != NULL ) {
+    prl = parallel_rl_new();
+    parallel_rl_load(prl, fp);
+    str = parallel_rl_save_string(prl);
+    printf("const char *default_parallel_rl=\"%s\";\n", str);
+    free(str);
+    parallel_rl_free(prl);
     fclose(fp);
   }
 

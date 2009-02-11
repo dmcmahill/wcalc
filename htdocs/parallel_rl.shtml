@@ -2,12 +2,12 @@
 
 <html>
 <head>
-<!-- $Id: parallel_rc.shtml,v 1.2 2009/02/11 00:00:25 dan Exp $ -->
+<!-- $Id: parallel_rl.shtml,v 1.2 2009/02/11 00:00:25 dan Exp $ -->
 <!-- Copyright (c) 2009
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<title>Wcalc Series/Parallel RC Networks</title>
+<title>Wcalc Series/Parallel RL Networks</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
 <meta name="KEYWORDS" content="
@@ -35,20 +35,20 @@ stripline synthesis,
 <!-- The main action area -->
     <center>
     <font face="helvetica, arial" size="+2">
-      Wcalc Series/Parallel RC Equivalent Networks
+      Wcalc Series/Parallel RL Equivalent Networks
     </font>
     <br>
     <br>
-    <img src="rc.png"
-    alt="Series/Parallel RC Network Image" width="551" height="168" hspace="10" vspace="5">
+    <img src="rl.png"
+    alt="Series/Parallel RL Network Image" width="551" height="168" hspace="10" vspace="5">
     </center>
 
     <font face="helvetica, arial">
     <HR>  
     <P>
-    At a single operating frequency any impedance with a negative
-    (capacitive) reactance may be exactly represented by either a
-    parallel RC network or series RC network.  The math is quite
+    At a single operating frequency any impedance with a positive
+    (inductive) reactance may be exactly represented by either a
+    parallel RL network or series RL network.  The math is quite
     simple.  The results are even summarized in the figure.  The book
     by Krauss et. al. referenced below provides some additional 
     narrowband (exact at one frequency, close over a narrow frequency

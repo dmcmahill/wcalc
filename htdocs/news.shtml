@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.5 2006/02/13 17:01:07 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.6 2009/02/11 00:00:25 dan Exp $ -->
 <!-- Copyright (c) 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -44,6 +44,7 @@ stripline synthesis,
     This release contains the following improvements:
     <UL>
     <LI>Added series/parallel RC network calculator.</LI>
+    <LI>Added series/parallel RL network calculator.</LI>
     <LI>Added coplanar waveguide models.</LI>
     <LI>Added coupled stripline model.</LI>
     <LI>Added self and mutual inductance of parallel rectangular bars.</LI>
