@@ -1,4 +1,4 @@
-/* $Id: parallel_rc.c,v 1.1 2009/02/10 05:00:20 dan Exp $ */
+/* $Id: parallel_rc.c,v 1.2 2009/02/10 12:10:09 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -78,7 +78,7 @@ int parallel_rc_calc(parallel_rc *b, double freq)
     }
     
     Q2 = pow(b->Qp, 2.0);
-    b->Cs = b->Cs * ( 1.0 + Q2) / Q2;
+    b->Cs = b->Cp * ( 1.0 + Q2) / Q2;
     b->Rs = b->Rp / ( 1.0 + Q2);
   }
 
