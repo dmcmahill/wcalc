@@ -1,6 +1,6 @@
 #
 # File:      /export/disk2/dan/cvs/localsrc/cad/wcalc/gtk-wcalc/parallel_rc.wc
-# Modified:  Tue Feb 10 00:31:30 2009
+# Modified:  Tue Feb 10 19:51:05 2009
 # Wcalc Version 1.0A
 
 [wcalc]
@@ -14,28 +14,28 @@ model_name = parallel_rc
 file_version = 0.1
 
 # Series capacitance (Farads)
-Cs = 1e-11
+Cs = 8.25474557615585e-11
 
 # Series resistance (Ohms)
-Rs = 1.59154943091895
+Rs = 40.914317187844
 
 # Series quality factor
-Qs = 100
+Qs = 0.471238898038469
 
 # Parallel capacitance (Farads)
-Cp = 9.99900009999e-12
+Cp = 1.5e-11
 
 # Parallel resistance (Ohms)
-Rp = 15917.0858586205
+Rp = 50
 
 # Parallel quality factor
-Qp = 100
+Qp = 0.471238898038469
 
 # Convert from series to parallel?
-series_to_parallel = 1
+series_to_parallel = 0
 
 # Use Q to calculate resistance?
-use_Q = 1
+use_Q = 0
 
 # Frequency of operation (Hz)
 freq = 100000000
@@ -51,8 +51,8 @@ units_Rs = 2
 # [Ohm]
 
 # Parallel resistance units
-units_Rp = 3
-# [kOhm]
+units_Rp = 2
+# [Ohm]
 
 # Frequency units
 units_freq = 3

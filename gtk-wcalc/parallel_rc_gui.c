@@ -1,4 +1,4 @@
-/* $Id: parallel_rc_gui.c,v 1.1 2009/02/10 05:00:15 dan Exp $ */
+/* $Id: parallel_rc_gui.c,v 1.2 2009/02/10 12:10:08 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -62,7 +62,8 @@
 static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
-static void analyze( GtkWidget *w, gpointer data );
+static void analyze_p2s( GtkWidget *w, gpointer data );
+static void analyze_s2p( GtkWidget *w, gpointer data );
 static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data );
 static void update_display( parallel_rc_gui *gui);
 
@@ -184,7 +185,12 @@ void parallel_rc_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 
   /* run the analysis once since we've changed input units */
   wc_units_menu_init( wcalc );
-  analyze(NULL, gui);
+  if( gui->b->series_to_parallel ) {
+    analyze_s2p(NULL, gui);
+  } else {
+    analyze_p2s(NULL, gui);
+  }
+
   wc_units_menu_init( wcalc );
 }
 
@@ -192,6 +198,29 @@ void parallel_rc_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
  * Private Functions
  */
 
+static void use_Q_pressed(GtkWidget *widget, gpointer data )
+{
+  parallel_rc_gui *gui;
+
+  gui = WC_PARALLEL_RC_GUI(data);
+  gtk_widget_set_sensitive (gui->text_Qs, TRUE);
+  gtk_widget_set_sensitive (gui->text_Qp, TRUE);
+  gtk_widget_set_sensitive (gui->text_Rs, FALSE);
+  gtk_widget_set_sensitive (gui->text_Rp, FALSE);
+  gui->b->use_Q = 1;
+}
+
+static void use_R_pressed(GtkWidget *widget, gpointer data )
+{
+  parallel_rc_gui *gui;
+
+  gui = WC_PARALLEL_RC_GUI(data);
+  gtk_widget_set_sensitive (gui->text_Qs, FALSE);
+  gtk_widget_set_sensitive (gui->text_Qp, FALSE);
+  gtk_widget_set_sensitive (gui->text_Rs, TRUE);
+  gtk_widget_set_sensitive (gui->text_Rp, TRUE);
+  gui->b->use_Q = 0;
+}
 
 static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 {
@@ -199,6 +228,9 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
   GtkWidget *frame;
   GtkWidget *table;
   GtkTooltips *tips;
+
+  /* the use_Q radio button group */
+  GSList *use_Q_group;
 
   wc_units_gui *C_ug = NULL, *R_ug, *freq_ug = NULL;
 
@@ -235,27 +267,28 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 			      &(gui->b->Qs), &x, &y);
 
 
+
+  /* Series to Parallel Analyze button */
+  button = gtk_button_new_with_label (_("Series to Parallel"));
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (analyze_s2p), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
+		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Calculate equivalent parallel circuit "
+		       "from given series circuit"),
+		       NULL);
   y++;
+
   /* ---------------- Frequency -------------- */
   wc_table_add_entry_new_units(table, gui, "Frequency", 
 			       &(gui->text_freq), gui->b->units_freq, &freq_ug, 
 			       &(gui->b->freq), &x, &y);
 
 
-  /* Analyze button */
-  button = gtk_button_new_with_label (_("Series to Parallel"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
-		       _("Calculate equivalent parallel circuit "
-		       "from series circuit"),
-		       NULL);
-  y++;
 
 
   /* Column #2 */
@@ -274,6 +307,61 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
   wc_table_add_entry_no_units(table, gui, "Parallel quality factor (Qs)", 
 			      &(gui->text_Qp),
 			      &(gui->b->Qp), &x, &y);
+
+
+  /* Parallel to Series button */
+  button = gtk_button_new_with_label (_("Parallel to Series"));
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (analyze_p2s), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
+		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_tooltips_set_tip(tips, button, 
+		       _("Calculate equivalent series circuit "
+		       "from given parallel circuit"),
+		       NULL);
+  y++;
+
+
+  if(gui->b->use_Q){
+    gtk_widget_set_sensitive (gui->text_Rs, FALSE);
+    gtk_widget_set_sensitive (gui->text_Rp, FALSE);
+    gtk_widget_set_sensitive (gui->text_Qs, TRUE);
+    gtk_widget_set_sensitive (gui->text_Qp, TRUE);
+  }
+  else{
+    gtk_widget_set_sensitive (gui->text_Rs, TRUE);
+    gtk_widget_set_sensitive (gui->text_Rp, TRUE);
+    gtk_widget_set_sensitive (gui->text_Qs, FALSE);
+    gtk_widget_set_sensitive (gui->text_Qp, FALSE);
+  }
+
+
+  /* QC button */
+  gui->button_use_Q = gtk_radio_button_new_with_label (NULL, _("Q/C"));
+  gtk_table_attach(GTK_TABLE(table), gui->button_use_Q, x+1, x+2, y, y+1,
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(gui->button_use_Q), "clicked",
+		     GTK_SIGNAL_FUNC(use_Q_pressed),
+		     gui);
+  gtk_widget_show (gui->button_use_Q);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->button_use_Q), TRUE);
+  use_Q_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gui->button_use_Q));
+
+  /* RC button */
+  gui->button_use_R = gtk_radio_button_new_with_label (use_Q_group, _("R/C"));
+  gtk_table_attach(GTK_TABLE(table), gui->button_use_R, x+2, x+3, y, y+1,
+		   0, 0, WC_XPAD, WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(gui->button_use_R), "clicked",
+		     GTK_SIGNAL_FUNC(use_R_pressed),
+		     gui);
+  if (gui->b->use_Q == 0) {
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->button_use_R), TRUE);
+  }
+  gtk_widget_show (gui->button_use_R);
+
 
 
   gtk_widget_show(table);
@@ -327,8 +415,17 @@ static void picture_init(parallel_rc_gui *gui, GtkWidget *window,GtkWidget *pare
 }
 
 
-static void analyze( GtkWidget *w, gpointer data )
+static void analyze_s2p( GtkWidget *w, gpointer data )
 {
+
+  WC_PARALLEL_RC_GUI(data)->b->series_to_parallel = 1;
+  calculate(WC_PARALLEL_RC_GUI(data), w, "analyze");
+}
+
+static void analyze_p2s( GtkWidget *w, gpointer data )
+{
+
+  WC_PARALLEL_RC_GUI(data)->b->series_to_parallel = 0;
   calculate(WC_PARALLEL_RC_GUI(data), w, "analyze");
 }
 
@@ -363,6 +460,31 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
   gui->b->freq=atof(vstr)*wc_units_to_sf(gui->b->units_freq);
   
+#ifdef DEBUG
+  g_print("parallel_rc_gui.c:calculate(): --------------- Series/Parallel RC Network -----------\n");
+  g_print("parallel_rc_gui.c:calculate(): Cs = %g %s\n",
+	  gui->b->Cs/gui->b->units_C->sf, gui->b->units_C->name);
+  g_print("parallel_rc_gui.c:calculate(): Rs = %g %s\n",
+	  gui->b->Rs/gui->b->units_Rs->sf, gui->b->units_Rs->name);
+  g_print("parallel_rc_gui.c:calculate(): Qs = %g\n",
+	  gui->b->Qs);
+
+  g_print("parallel_rc_gui.c:calculate(): Cp = %g %s\n",
+	  gui->b->Cp/gui->b->units_C->sf, gui->b->units_C->name);
+  g_print("parallel_rc_gui.c:calculate(): Rp = %g %s\n",
+	  gui->b->Rp/gui->b->units_Rp->sf, gui->b->units_Rp->name);
+  g_print("parallel_rc_gui.c:calculate(): Qp = %g\n",
+	  gui->b->Qp);
+
+  g_print("parallel_rc_gui.c:calculate(): Frequency = %g %s\n",
+	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name); 
+
+  g_print("parallel_rc_gui.c:calculate(): use_Q = %d\n", gui->b->use_Q);
+  g_print("parallel_rc_gui.c:calculate(): series_to_parallel = %d\n", gui->b->series_to_parallel);
+  
+  g_print("parallel_rc_gui.c:calculate(): data = \"%s\"\n", (char *) data);
+#endif
+
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
       rslt = parallel_rc_calc(gui->b, gui->b->freq);
@@ -372,7 +494,29 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
   }
   
 #ifdef DEBUG
-  g_print(_("parallel_rc_gui.c:calculate():  finished calculation\n"));
+  g_print("parallel_rc_gui.c:calculate():  finished calculation, got %d\n", rslt);
+  g_print("parallel_rc_gui.c:calculate(): Cs = %g %s\n",
+	  gui->b->Cs/gui->b->units_C->sf, gui->b->units_C->name);
+  g_print("parallel_rc_gui.c:calculate(): Rs = %g %s\n",
+	  gui->b->Rs/gui->b->units_Rs->sf, gui->b->units_Rs->name);
+  g_print("parallel_rc_gui.c:calculate(): Qs = %g\n",
+	  gui->b->Qs);
+
+  g_print("parallel_rc_gui.c:calculate(): Cp = %g %s\n",
+	  gui->b->Cp/gui->b->units_C->sf, gui->b->units_C->name);
+  g_print("parallel_rc_gui.c:calculate(): Rp = %g %s\n",
+	  gui->b->Rp/gui->b->units_Rp->sf, gui->b->units_Rp->name);
+  g_print("parallel_rc_gui.c:calculate(): Qp = %g\n",
+	  gui->b->Qp);
+
+  g_print("parallel_rc_gui.c:calculate(): Frequency = %g %s\n",
+	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name); 
+
+  g_print("parallel_rc_gui.c:calculate(): use_Q = %d\n", gui->b->use_Q);
+  g_print("parallel_rc_gui.c:calculate(): series_to_parallel = %d\n", gui->b->series_to_parallel);
+  
+  g_print("parallel_rc_gui.c:calculate(): data = \"%s\"\n", (char *) data);
+  g_print("parallel_rc_gui.c:calculate(): -------------- ---------------------- ----------\n");
 #endif
   
   update_display(gui);
@@ -416,6 +560,11 @@ static void update_display(parallel_rc_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->Qp);
   gtk_entry_set_text( GTK_ENTRY(gui->text_Qp), str );
 
+  /* ---------------- Global -------------- */
+  sprintf(str,WC_FMT_G,gui->b->freq/wc_units_to_sf(gui->b->units_freq));
+  gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
+
+  
 }
 
 
