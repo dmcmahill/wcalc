@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.8 2005/09/09 14:36:41 dan Exp $ -->
+<!-- $Id: bars.shtml,v 1.1 2009/01/10 21:11:25 dan Exp $ -->
 <!-- Copyright (c) 2009
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -39,7 +39,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="bars_fig.png"
-    alt="Parallel Rectangular Bars Image" width="593" height="203" hspace="10" vspace="5">
+    alt="Parallel Rectangular Bars Image" width="593" height="185" hspace="10" vspace="5">
     </center>
 
     <font face="helvetica, arial">
@@ -49,11 +49,23 @@ stripline synthesis,
       <LI>
 	Cletus Hoer and Carl Love, "Exact Inductance Equations for Rectangular
         Conductors With Applications to More Complicated Geometries", <em>Journal of Research of the National
-        Bureau of Standards -- C. Engineering andn Instrumentation</em>,
+        Bureau of Standards -- C. Engineering and Instrumentation</em>,
 	Vol. 69C, No. 2, April-June 1965, pp. 127-137
       </LI>
       
     </OL>
+
+    <HR>
+    <H2><A NAME="Comments">Comments</A></H2>
+    <P>
+    The development in the Hoer and Love paper gives an exact
+    expression for the self and mutual partial inductances of a pair
+    of parallel rectangular bars.  Caution must be used though when
+    trying to apply these results to a system of multiple conductors.
+    In the multiple conductor case, all of the mutual inductances must
+    be calculated and retained to avoid producing a model which is
+    active rather than passive.
+    </P>
 
     <HR> 
     <H2><A NAME="bugs">Known Issues</A></H2>

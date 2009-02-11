@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: air_coil.shtml,v 1.6 2002/05/14 00:45:58 dan Exp $ -->
+<!-- $Id: air_coil.shtml,v 1.7 2004/07/28 11:49:04 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -34,7 +34,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="air_coil.png"
-    alt="Air Core Solenoid Image" width="332" height="197" hspace="10" vspace="5">
+    alt="Air Core Solenoid Image" width="332" height="173" hspace="10" vspace="5">
     </center>
     
     <font face="helvetica, arial">
@@ -50,7 +50,7 @@ stripline synthesis,
     article.  
     Corrections for some of the errors (typographical in nature)
     appeared in the Microwave Journal, but not all of them.
-    I have corrected them here.
+    I have corrected all of them here.
     </P>
 
     </font>

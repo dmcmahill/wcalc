@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.7 2004/09/02 00:51:43 dan Exp $ -->
+<!-- $Id: projects.shtml,v 1.8 2005/11/01 01:40:46 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -42,7 +42,7 @@ stripline synthesis,
     I try to collect data points from other tools for comparison.</LI>
     <LI>Better gtk2 support.  The development has went on for so long that
     gtk2 is really the prefered gtk platform, however gtk-wcalc still uses
-    some obsolete gtk1 code.</LI>
+    some obsolete gtk1 code (item factory for the menus).</LI>
     </UL>
 
     <H2>Future</H2>
@@ -54,15 +54,17 @@ stripline synthesis,
     validation.  I have tried to use <a href="http://mmtl.sourceforge.net/">MMTL</a>
     for comparison but haven't fully learned to use that tool yet.  Ideally I'd like
     to have some automated scripts to plot things like impedance and velocity as
-    a function of some input parameter with both wcalc and MMTL to show how they compare.</LI>
+    a function of some input parameter with both wcalc and MMTL to
+    show how they compare.  Another tool that I would like to
+    investigate for providing an electromagnetic solution for
+    comparison is <a href="http://lc.cray.com">LC</a>.
+    </LI>
     <LI>More models.
         <UL>
-	<LI>co-planar waveguide</LI>
 	<LI>various microstrip discontinuities</LI>
 	<LI>spiral inductors.  The ability to interface to fasthenry
 	    is being considered.</LI>
 	</UL></LI>
-    <LI>ability to print under WIN32</LI>
     </UL>
 
     <font face="helvetica, arial">

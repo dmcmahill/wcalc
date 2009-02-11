@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coupled_microstrip.shtml,v 1.5 2002/05/14 00:45:59 dan Exp $ -->
+<!-- $Id: coupled_microstrip.shtml,v 1.6 2004/07/28 11:49:05 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -34,7 +34,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="coupled_microstrip.png"
-    alt="Coupled Microstrip Image" width="376" height="194" hspace="10" vspace="5">
+    alt="Coupled Microstrip Image" width="374" height="184" hspace="10" vspace="5">
     </center>
     
     <font face="helvetica, arial">

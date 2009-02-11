@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.8 2005/09/09 14:36:41 dan Exp $ -->
+<!-- $Id: coax.shtml,v 1.9 2009/01/10 21:05:38 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -37,7 +37,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="coax.png"
-    alt="Coaxial Transmission Line Image" width="327" height="265" hspace="10" vspace="5">
+    alt="Coaxial Transmission Line Image" width="327" height="243" hspace="10" vspace="5">
     </center>
 
     <font face="helvetica, arial">
@@ -70,7 +70,10 @@ stripline synthesis,
       <LI>
       	Ruel V. Churchill and James Ward Brown,
 	<em>Complex Variables and Applications, 4th ed.</em>, 
-	McGraw-Hill, Inc., 1984, New York
+	McGraw-Hill, Inc., 1984, New York.  This book includes an
+	appendix with a catalog of conformal transformations of
+	regions.  A transform which is most useful for coax lines with
+	offset center conductor may be found here.
       </LI>
       
     </OL>
@@ -80,7 +83,8 @@ stripline synthesis,
     <OL>
         <LI>The TE10 cutoff calculation is based on c=0 (center
     conductor is not offset from center).  If anyone cares to offer a
-    suggestion on how to solve this, please let me know.  
+    suggestion on how to solve for the TE10 cutoff frequency when c is
+    not zero, please let me know.  
         </LI>
     </OL>
 

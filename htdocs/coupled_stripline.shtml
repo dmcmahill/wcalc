@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coupled_stripline.shtml,v 1.1 2006/02/12 21:03:33 dan Exp $ -->
+<!-- $Id: coupled_stripline.shtml,v 1.2 2006/02/13 17:30:31 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -34,7 +34,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="coupled_stripline.png"
-    alt="Coupled Stripline Image" width="437" height="178" hspace="10" vspace="5">
+    alt="Coupled Stripline Image" width="433" height="168" hspace="10" vspace="5">
     </center>
     
     <font face="helvetica, arial">

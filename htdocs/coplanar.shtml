@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coplanar waveguide.shtml,v 1.7 2004/07/28 11:49:06 dan Exp $ -->
+<!-- $Id: coplanar.shtml,v 1.1 2006/01/24 16:12:19 dan Exp $ -->
 <!-- Copyright (c) 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -29,7 +29,7 @@ coplanar waveguide,
     <br>
     <br>
     <img src="coplanar.png"
-    alt="Coplanar Waveguide Image" width="368" height="194" hspace="10" vspace="5">
+    alt="Coplanar Waveguide Image" width="489" height="193" hspace="10" vspace="5">
     </center>
     
     <font face="helvetica, arial">

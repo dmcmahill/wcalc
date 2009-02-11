@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: about.shtml,v 1.5 2004/09/02 00:51:41 dan Exp $ -->
+<!-- $Id: about.shtml,v 1.6 2005/11/01 01:31:33 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -50,12 +50,14 @@ stripline synthesis,
     <p>
     Work on Wcalc was started in 1997 as part of a RF and microwave
     filter design toolkit.  During the initial work on that program
-    (no its not currently available), it quickly became apparent that
+    (no the filter toolkit is not currently available), it quickly
+    became apparent that 
     an essential piece of that tool was a microstrip transmission line
     synthesis routine.  Considerable time was spent researching the
     available approximations for microstrip analysis with the goal of
     implementing the most accurate approximations.  The result of that
-    early work was a JavaScript based analysis/synthesis tool.  This
+    early work was a JavaScript based analysis/synthesis tool.  The
+    JavaScript based
     tool is still available under the name <a
     href="http://mcalc.sourceforge.net">mcalc</a>.
     </p>
@@ -65,7 +67,7 @@ stripline synthesis,
     href="http://mcalc.sourceforge.net">mcalc</a> are:  I don't like
     programming in JavaScript, sometimes I don't have access to a
     JavaScript enabled web browser at the computer I'm in front of (at
-    least I didn't in 1997),
+    least I didn't in 1997, now in 2009 that is no longer an issue),
     and sometimes the simple calculator based frontend to the
     numerical routines is simply not enough.  These considerations led
     to the decision to create a tool with the flexibility to support

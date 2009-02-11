@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: microstrip.shtml,v 1.6 2002/05/14 00:46:00 dan Exp $ -->
+<!-- $Id: microstrip.shtml,v 1.7 2004/07/28 11:49:06 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -34,7 +34,7 @@ stripline synthesis,
     <br>
     <br>
     <img src="microstrip.png"
-    alt="Stripline Image" width="368" height="194" hspace="10" vspace="5">
+    alt="Stripline Image" width="366" height="184" hspace="10" vspace="5">
     </center>
     
     <font face="helvetica, arial">

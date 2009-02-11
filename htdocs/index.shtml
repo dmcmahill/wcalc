@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: index.shtml,v 1.6 2004/09/02 00:51:42 dan Exp $ -->
+<!-- $Id: index.shtml,v 1.7 2006/01/03 00:04:35 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -35,7 +35,7 @@ stripline synthesis,
     <br>
 
     <a href="splash.png"><img src="splash.png"
-     alt="Splash Image" border="0" width="363" height="179" hspace="10" vspace="5"></a>
+     alt="Splash Image" border="0" width="363" height="162" hspace="10" vspace="5"></a>
     </center>
     <p>
 
@@ -60,6 +60,10 @@ stripline synthesis,
     <ul>
 
 <!-- Recent news  -->
+
+<li><font face="helvetica, arial" size="-1">
+  <a href="news.html#wcalc-1.1">wcalc-1.1 Released</a>
+</font></li>
 
 <li><font face="helvetica, arial" size="-1">
   <a href="news.html#wcalc-1.0">wcalc-1.0 Released</a>
