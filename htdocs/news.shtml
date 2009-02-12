@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.6 2009/02/11 00:00:25 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.7 2009/02/11 22:34:16 dan Exp $ -->
 <!-- Copyright (c) 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -51,7 +51,7 @@ stripline synthesis,
     <LI>Added parallel/series RC equivalent network calculation.</LI>
     <LI>Corrected some bugs in the Q calculation for air core
     inductors.</LI>
-    <LI>Enabled printing under windows.</LI
+    <LI>Enabled printing under windows.</LI>
     </UL>
     </P>
 	
