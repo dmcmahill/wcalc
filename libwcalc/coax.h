@@ -1,4 +1,4 @@
-/* $Id: coax.h,v 1.12 2004/07/23 22:11:57 dan Exp $ */
+/* $Id: coax.h,v 1.13 2008/11/29 20:42:05 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2003, 2004 Dan McMahill
@@ -71,7 +71,7 @@ typedef struct COAX_LINE
   /* conductor and dielectric losses */
   double alpha_c, alpha_d;
 
-  /* cutoff frequency for TE11 mode (Hz) */
+  /* cutoff frequency for TE10 mode (Hz) */
   double fc;
 
   /* frequency of analysis (Hz) */
