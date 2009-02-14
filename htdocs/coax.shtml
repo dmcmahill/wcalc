@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coax.shtml,v 1.9 2009/01/10 21:05:38 dan Exp $ -->
+<!-- $Id: coax.shtml,v 1.10 2009/02/11 00:00:22 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -77,6 +77,14 @@ stripline synthesis,
       </LI>
       
     </OL>
+
+    <HR> 
+    <H2><A NAME="comments">Comments</A></H2>
+    Coaxial transmission lines are almost always used in a frequency
+    region where only the transverse electric magnetic (TEM) mode will
+    propagate.  Several texts give an approximate formula for the
+    cutoff frequency for the lowest order TE mode but most do not
+    provide details on the exact calculation.
 
     <HR> 
     <H2><A NAME="bugs">Known Issues</A></H2>
