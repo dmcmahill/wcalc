@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.11 2009/02/06 02:24:33 dan Exp $ */
+/* $Id: newprint.c,v 1.12 2009/02/06 23:02:36 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -28,7 +28,6 @@
 /* #define DEBUG */
 
 #include "config.h"
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,6 +50,11 @@
 /* In points */
 #define HEADER_BORDER 8
 #define HEADER_GAP (3*72/25.4)
+
+#define MARGIN_LEFT (0.0 * 72.0)
+#define MARGIN_RIGHT (0.0 * 72.0)
+#define MARGIN_TOP (0.0 * 72.0)
+#define MARGIN_BOT (0.0 * 72.0)
  	
 typedef struct
 {
@@ -69,44 +73,20 @@ typedef struct
 
 
 static GtkPrintSettings *settings = NULL;
-	
+static GtkPageSetup *page_setup = NULL;
+
 static void
 begin_print (GtkPrintOperation *operation,
 	     GtkPrintContext *context,
 	     gpointer user_data)
 {
   PrintData *data = (PrintData *)user_data;
-  gdouble height;
   Wcalc *w;
-  GTimeVal now;
-  GDate date;
-  gchar date_string[128];
+  time_t currenttime;
 
-  g_get_current_time (&now);
-  g_date_set_time_val (&date, &now);
-  g_date_strftime (date_string, sizeof(date_string) / sizeof(date_string[0]),
-		   "%c", &date);
+  currenttime = time (NULL);
+  data->date_string = g_strdup (asctime (localtime (&currenttime)));
 
-  data->date_string = g_strdup (date_string);
-  /* 
-   * get the height in points (we set the units to points in
-   * do_print())
-   */
-
-  /* FIXME -- how do we know what the header height is??? */
-  #define HEADER_HEIGHT 150
-  height = gtk_print_context_get_height (context) - HEADER_HEIGHT - HEADER_GAP;
-  #undef HEADER_HEIGHT
-
-
-  /*
-   * Next we build up a list of strings where each string
-   * represents 1 line of text on our page.
-   *
-   * We get the list of strings by first obtaining a GList of
-   * a combination of a string like "width of trace", a numerical
-   * value (double, int, or string), and a pointer to wcalc units
-   */
   w = data->wcalc;
   data->print_list = NULL;
   if(w->dump_values != NULL) {
@@ -151,16 +131,22 @@ draw_page (GtkPrintOperation *operation,
   double sf;
   char *units_name;
   gchar *text = NULL, *text2 = NULL;
-  double x, y;
+  double xx = 0.0, yy = 0.0;
 
   /* get the cairo context for our page */
   cr = gtk_print_context_get_cairo_context (context);
 
-  /* figure out width and height */
+  /* 
+   * figure out width and height
+   * in points (we set the units to points in
+   * do_print())
+   */
   width = gtk_print_context_get_width (context);
   height = gtk_print_context_get_height (context);
   
 
+  g_print ("gtk_print_context is %g x %g = %g x %g inches\n",
+	   width, height, width / 72.0, height / 72.0);
   /*
    * *********************************************************************
    *  print out the name and version of this program 
@@ -197,9 +183,8 @@ draw_page (GtkPrintOperation *operation,
    *
    */
   
-
   /* define the rectangle */
-  cairo_rectangle (cr, 0, 0, width, header_height);
+  cairo_rectangle (cr, MARGIN_LEFT, 0, width - MARGIN_LEFT - MARGIN_RIGHT, header_height);
 
   /* fill it */
   cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
@@ -241,7 +226,7 @@ draw_page (GtkPrintOperation *operation,
  	
 
   /* create the string and put it in our layout */
-  page_str = g_strdup_printf ("<markup><b>%s</b>\n%s\n<i>http://wcalc.sf.net</i></markup>",
+  page_str = g_strdup_printf ("<markup><b>%s</b>\n%s<i>http://wcalc.sf.net</i></markup>",
 			      data->wcalc->file_name != NULL ?
 			      data->wcalc->file_name : "untitled",
 			      data->date_string);
@@ -253,7 +238,7 @@ draw_page (GtkPrintOperation *operation,
   pango_layout_get_pixel_size (layout, &text_width, &text_height);
 
   /* define the rectangle */
-  cairo_rectangle (cr, 0, height - text_height, width, text_height);
+  cairo_rectangle (cr, MARGIN_LEFT, height - text_height, width - MARGIN_LEFT - MARGIN_RIGHT, text_height);
 
   /* fill it */
   cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
@@ -270,7 +255,7 @@ draw_page (GtkPrintOperation *operation,
 
   g_object_unref (layout);
  	
-  cairo_move_to (cr, x, y);
+  cairo_move_to (cr, xx, yy);
 
   /*
    * *********************************************************************
@@ -286,7 +271,7 @@ draw_page (GtkPrintOperation *operation,
   pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
 
   /* Position ourselves below the header */
-  cairo_move_to (cr, 0, header_height + HEADER_GAP);
+  cairo_move_to (cr, MARGIN_LEFT, header_height + HEADER_GAP);
 
   /* now print out each line for this page */
   for(i = GPOINTER_TO_INT(g_list_nth_data(data->paginations, page_nr)) ;
@@ -333,7 +318,7 @@ draw_page (GtkPrintOperation *operation,
     free(units_name);
 
     if(pv->type == CAIRO) {
-      cairo_get_current_point (cr, &x, &y);
+      cairo_get_current_point (cr, &xx, &yy);
       cairo_save (cr);
       /*
        * The bounding box for our figure has its top left corner at
@@ -342,7 +327,7 @@ draw_page (GtkPrintOperation *operation,
        * position on our page.  This results in a figure which is
        * in line vertically and centered horizontally.
        */
-      cairo_translate (cr, width/2 - pv->width/2, y);
+      cairo_translate (cr, width/2 - pv->width/2, yy);
 
       /* render the figure */
       pv->val.cairoval(NULL, cr);
@@ -352,16 +337,16 @@ draw_page (GtkPrintOperation *operation,
        * down
        */
       cairo_restore (cr);
-      cairo_move_to (cr, 0, y + pv->height);
+      cairo_move_to (cr, MARGIN_LEFT, yy + pv->height);
 
     } else {
-      cairo_get_current_point (cr, &x, &y);
+      cairo_get_current_point (cr, &xx, &yy);
       layout = gtk_print_context_create_pango_layout (context);
       pango_layout_set_font_description (layout, desc);
       pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
   
       /* FIXME -- smarter scaling here */
-#define TEXT_COLUMN_WIDTH 5.0
+#define TEXT_COLUMN_WIDTH 4.0
 #define TEXT_COLUMN_INDENT -0.5
       
       pango_layout_set_width (layout, 
@@ -377,18 +362,18 @@ draw_page (GtkPrintOperation *operation,
       pango_cairo_show_layout (cr, layout);
       g_object_unref (layout);
 
-      cairo_rel_move_to (cr, (TEXT_COLUMN_WIDTH+0.25)*72.0, 0);
+      cairo_rel_move_to (cr, MARGIN_LEFT + (TEXT_COLUMN_WIDTH+0.25)*72.0, 0);
       layout = gtk_print_context_create_pango_layout (context);
       pango_layout_set_font_description (layout, desc);
       pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
       pango_layout_set_text (layout, text2, -1);
       pango_cairo_show_layout (cr, layout);
       g_object_unref (layout);
-      cairo_move_to (cr, x, y);
+      cairo_move_to (cr, xx, yy);
 
       /* moves back to x=y and move down by one line */
       cairo_rel_move_to (cr, 0, text_height);
-      cairo_get_current_point (cr, &x, &y);
+      cairo_get_current_point (cr, &xx, &yy);
 
     }
     g_free(text);
@@ -396,6 +381,20 @@ draw_page (GtkPrintOperation *operation,
   }
 
   pango_font_description_free (desc);
+
+  cairo_set_line_width (cr, 5.0);
+
+  cairo_move_to (cr, 0, 0);
+  cairo_line_to (cr, width, height);
+  cairo_stroke (cr);
+
+  cairo_move_to (cr, width, 0);
+  cairo_line_to (cr, 0, height);
+  cairo_stroke (cr);
+
+  cairo_rectangle (cr, 0, 0, width, height);
+  cairo_stroke (cr);
+  
 
 }
  	
@@ -412,6 +411,22 @@ end_print (GtkPrintOperation *operation,
  	
 
 
+static void
+do_page_setup (GtkWidget *do_widget, Wcalc *wcalc)
+{
+  GtkPageSetup *new_page_setup;
+  
+  if (settings == NULL) {
+    settings = gtk_print_settings_new ();
+  }
+  new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW (do_widget),
+                                                    page_setup, settings);
+  if (page_setup) {
+    g_object_unref (page_setup);
+  }
+
+  page_setup = new_page_setup;
+}
 
 GtkWidget *
 do_printing (GtkWidget *do_widget, Wcalc *wcalc)
@@ -463,7 +478,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
 		    G_CALLBACK (end_print), data);
 
  	
-  /* only use the imagable area (inside the margins */
+  /* only use the imagable area (inside the margins) */
   gtk_print_operation_set_use_full_page (operation, FALSE);
 
   /*
@@ -471,7 +486,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
    * units
    */
   gtk_print_operation_set_unit (operation, GTK_UNIT_POINTS);
-
+  gtk_print_operation_set_unit (operation, GTK_UNIT_PIXEL);
 
   /* Run the print dialog */
   res = gtk_print_operation_run (operation, 
@@ -538,6 +553,23 @@ void newprint_popup(gpointer data,
   } else {
     do_printing(wcalc->window, wcalc);
   }
+}
+
+/*
+ * data is the Wcalc *
+ * action is whats specified in menus.c
+ * widget is the GtkMenuItem *
+ */
+void page_setup_popup(gpointer data,
+		      guint action,
+		      GtkWidget *widget)
+{
+  Wcalc * wcalc;
+  
+  wcalc = WC_WCALC(data);
+  
+  do_page_setup(wcalc->window, wcalc);
+
 }
 
 
