@@ -1,0 +1,136 @@
+% $Id: distortion_notes.tex,v 1.10 2009/02/09 21:15:11 dan Exp $
+%
+
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage[ps2pdf,breaklinks=true,colorlinks=true]{hyperref}
+
+\setlength{\topmargin}{0in}
+\setlength{\textheight}{8.0in}
+\setlength{\evensidemargin}{-0.25in}
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\textwidth}{7in}
+
+
+\title{Coaxial Transmission Line Waveguide Modes}
+\author{Dan McMahill}
+\date{February 2009}
+
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+\rhead{Coaxial Transmission Line Waveguide Modes}
+\chead{}
+\lhead{Dan McMahill}
+\cfoot{\thepage}
+\lfoot{\tiny{Last rev on \today}}
+\rfoot{\tiny{\copyright 2009 Dan McMahill}}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+\section{Review of Maxwells Equations}
+
+Gauss' law for magnetic fields and electric fields are:
+\begin{equation}
+\nabla \cdot \vec{H} = 0
+\end{equation}
+\begin{equation}
+\nabla \cdot \vec{D} = \rho
+\end{equation}
+The magnetic field is $\vec{H}$.  The electric flux density, $\vec{D}$, is related
+to the electric field, $\vec{E}$, and the permitivity of the medium by
+\begin{equation}
+\vec{D} = \epsilon \vec{E}
+\end{equation}
+Finally, the charge density is $\rho$.  Simply stated, the integral of
+the magnetic field normal to a closed surface is zero.  What goes in,
+comes out.  The integral of the electric flux density normal to a
+closed surface is equal to the enclosed charge.
+
+The other half of Maxwell's equations are Faraday's law,
+\begin{equation}
+\nabla \times \vec{E} = - \frac{d \vec{B}}{d t}
+\end{equation}
+and Ampere's law.
+\begin{equation}
+\nabla \times \vec{H} = \vec{J} + \frac{d \vec{D}}{d t}
+\end{equation}
+
+Faraday's law tells us that the electric field is influenced by the
+time rate of change of the magnetic flux density, $\vec{B}$.  In particular,
+the integral of the electric field around a closed path is the same as
+the time rate of change of the integrated magnetic flux density normal
+to any surface defined by the closed path.
+
+Ampere's law tells us that the curl of the magnetic field is given by
+the current density and the time derivatve of the electric flux density.  In
+integral form Ampere's law says that the integral of the magnetic field
+along a closed path equals the integral of the current density through
+the surface defined by that path plus the time rate of change of the
+electric flux density through the surface defined by the path.
+
+For the purposes of wave propagation, it is useful to write the
+electric and magnetic fields as the product of a function that only
+varies with spacial coordinates and another function that only varies
+with time.
+\begin{equation}
+\vec{H}(t,x,y,z) = \vec{H}(x,y,z) \mathrm{e}^{j \omega t}
+\end{equation}
+\begin{equation}
+\vec{E}(t,x,y,z) = \vec{E}(x,y,z) \mathrm{e}^{j \omega t}
+\end{equation}
+
+\subsection{The Wave Equation}
+
+\begin{equation}
+\nabla_t^2 H_z + k^2 H_z = 0
+\end{equation}
+
+In cylindrical coordinates, the operator $\nabla_t^2$ is
+\begin{equation}
+\nabla_t^2 = \frac{1}{\rho} \frac{\partial}{\partial \rho}
+\left(\rho \frac{\partial}{\partial \rho} \right) + 
+\frac{1}{\rho^2}\frac{\partial^2}{\partial \phi^2}
+\end{equation}
+The wave equation then becomes
+\begin{equation}
+\frac{1}{\rho} \frac{\partial}{\partial \rho}
+\left(\rho \frac{\partial H_z\left(\rho, \phi\right)}{\partial \rho} \right) + 
+\frac{1}{\rho^2}\frac{\partial^2 H_z\left(\rho, \phi\right)}{\partial
+  \phi^2} + k^2 H_z\left(\rho, \phi\right) = 0
+\end{equation}
+The solution is well known, see \cite{terman} for example, and is
+given by
+\begin{equation}
+\end{equation}
+
+All that remains is to pick the constants to satisfy the boundary
+conditions imposed by our structure.  For a circular waveguide, a
+structure covered by many textbooks, the boundary condition is that
+the tangential component of the electric field must be zero at the
+surface of the ideal conductor.  In addition, the fields at the origin
+($\rho = 0$) must be continuous.  This latter constraint eliminates
+the ?? terms from our candidate solution.  For the case of a coaxial
+line, our boundary condition at the shield is identical to the
+circular waveguide case.  However we have traded off the condition of
+continuity at $\rho = 0$ for the condition that the tangential
+component of the electric field must be zero at the surface of the
+inner conductor.
+
+
+
+\appendix
+\cite{terman}
+\include{bib}
+
+\end{document}
+
+
+
+
+
+
+
+
