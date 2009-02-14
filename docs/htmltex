@@ -1,30 +1,30 @@
-# !/bin/awk -f
+#!/usr/bin/awk -f
 #
-# $Id$
+# $Id: htmltex,v 1.1 2001/10/25 00:49:53 dan Exp $
 #
 
-BEGIN{
-    img=0;
-    state=0;
-
+BEGIN {
+  img=0;
+  state=0;
+  
 # how much room to leave around the figures
-    border=4;
-
+  border=4;
+  
 # resolution (DPI) 
-    sf=4;
+  sf=4;
   res=72;
   xres=sf*res;
   yres=sf*res;
-
+  
   tmp=ENVIRON["TMP_DIR"];
   if (tmp == ""){
     tmp="/tmp";
   }
   printf("using temporary directory \"%s\"\n",tmp);
-
+  
   tmpbase="htmltex";
   printf("using temporary basename \"%s\"\n",tmpbase);
-
+  
   outf="air_coil_theory.html";
   texf=sprintf("%s/%s.tex",tmp,tmpbase);
 }
@@ -38,7 +38,7 @@ state==2 {
   print "\\end{document}\n\n" > texf;
   close(texf);
   print "------ Processing ------";
-
+  
 # run latex on the file
   cmd=sprintf("cd %s && latex %s.tex",tmp,tmpbase);
   print cmd;
@@ -48,7 +48,7 @@ state==2 {
   cmd=sprintf("cd %s && dvips %s.dvi -o %s.ps",tmp,tmpbase,tmpbase);
   print cmd;
   do_system(cmd);
-
+  
 # extract the bounding box of the ps file
 #%%BoundingBox: 237 615 374 659
   cmd=sprintf("cd %s && " \
@@ -76,24 +76,24 @@ state==2 {
 	      dx,dy,tmp,tmpbase,img,sf*width,sf*height,xres,yres);
   print cmd;
   do_system(cmd);
-
+  
 # clean up
   cmd=sprintf("cd %s && rm %s.*",tmp,tmpbase);
   print cmd;
   do_system(cmd);
   
   print "---- Done Processing ---";
-
+  
   printf("<BR><CENTER>\n" \
 	 "<IMG SRC=\"file%d.png\" \n" \
 	 "     WIDTH=%d HEIGHT=%d \n" \
 	 "     ALT=\"[eq %d]\" \n"\
 	 "     >\n" \
 	 "</CENTER><BR>\n",img,width,height,img) > outf;
-
+  
 # update the image number
   img++;
-
+  
 # return to state 0 (via 2) (waiting for <LATEXEQ>)
   state=2;
 }
@@ -103,20 +103,20 @@ state==1 {
 }
 
 /<LATEXEQ>/ {
-    print "\\documentclass[12pt]{article}" > texf;
-    print "\\usepackage{graphicx}" > texf;
-    print "\\usepackage{latexsym}" > texf;
-    print "\\oddsidemargin=0in" > texf;
-    print "\\textwidth=6.5in" > texf;
-    print "\\topmargin=0in" > texf;
-    print "\\textheight=609pt" > texf;
-    print "\\parskip=14pt" > texf;
-    print "\\setlength{\\unitlength}{0.5cm}" > texf;
-    print "\\pagestyle{empty}" > texf;
-    print "\\begin{document}" > texf;
-    print "\\LARGE" > texf;
-    print "\\[" > texf;
-    state=1;
+  print "\\documentclass[12pt]{article}" > texf;
+  print "\\usepackage{graphicx}" > texf;
+  print "\\usepackage{latexsym}" > texf;
+  print "\\oddsidemargin=0in" > texf;
+  print "\\textwidth=6.5in" > texf;
+  print "\\topmargin=0in" > texf;
+  print "\\textheight=609pt" > texf;
+  print "\\parskip=14pt" > texf;
+  print "\\setlength{\\unitlength}{0.5cm}" > texf;
+  print "\\pagestyle{empty}" > texf;
+  print "\\begin{document}" > texf;
+  print "\\LARGE" > texf;
+  print "\\[" > texf;
+  state=1;
 }
 
 
