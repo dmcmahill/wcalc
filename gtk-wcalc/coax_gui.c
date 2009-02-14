@@ -1,4 +1,4 @@
-/* $Id: coax_gui.c,v 1.37 2009/02/06 01:36:31 dan Exp $ */
+/* $Id: coax_gui.c,v 1.38 2009/02/06 23:02:29 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
@@ -1229,7 +1229,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Electrical length", l->elen, l->units_len, list);
     list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
 
-    list = wc_print_add_double("TE<sub>11</sub> mode cutoff frequency", l->fc, l->units_fc, list);
+    list = wc_print_add_double("TE<sub>10</sub> mode cutoff frequency", l->fc, l->units_fc, list);
 
     list = wc_print_add_double("Conductor loss", l->alpha_c, l->units_loss, list);
     list = wc_print_add_double("Dielectric loss", l->alpha_d, l->units_loss, list);
