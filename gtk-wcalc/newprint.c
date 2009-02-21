@@ -1,4 +1,4 @@
-/* $Id: newprint.c,v 1.12 2009/02/06 23:02:36 dan Exp $ */
+/* $Id: newprint.c,v 1.13 2009/02/14 02:11:16 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill
@@ -51,10 +51,10 @@
 #define HEADER_BORDER 8
 #define HEADER_GAP (3*72/25.4)
 
-#define MARGIN_LEFT (0.0 * 72.0)
-#define MARGIN_RIGHT (0.0 * 72.0)
-#define MARGIN_TOP (0.0 * 72.0)
-#define MARGIN_BOT (0.0 * 72.0)
+#define MARGIN_LEFT (0.5 * 72.0)
+#define MARGIN_RIGHT (0.5 * 72.0)
+#define MARGIN_TOP (0.5 * 72.0)
+#define MARGIN_BOT (0.5 * 72.0)
  	
 typedef struct
 {
@@ -133,8 +133,15 @@ draw_page (GtkPrintOperation *operation,
   gchar *text = NULL, *text2 = NULL;
   double xx = 0.0, yy = 0.0;
 
+#ifdef DEBUG
+  g_print ("%s(%p, %p, %d, %p)\n", __FUNCTION__, operation, context, page_nr, user_data);
+#endif
+
   /* get the cairo context for our page */
   cr = gtk_print_context_get_cairo_context (context);
+#ifdef DEBUG
+  g_print ("%s():  cairo context is %p\n", __FUNCTION__, cr);
+#endif
 
   /* 
    * figure out width and height
@@ -145,8 +152,10 @@ draw_page (GtkPrintOperation *operation,
   height = gtk_print_context_get_height (context);
   
 
+#ifdef DEBUG
   g_print ("gtk_print_context is %g x %g = %g x %g inches\n",
 	   width, height, width / 72.0, height / 72.0);
+#endif
   /*
    * *********************************************************************
    *  print out the name and version of this program 
@@ -206,7 +215,7 @@ draw_page (GtkPrintOperation *operation,
  	
   pango_layout_set_width (layout, -1);
   pango_layout_get_pixel_size (layout, &text_width, &text_height);
-  cairo_move_to (cr, width - text_width - 4, (header_height - text_height) / 2);
+  cairo_move_to (cr, width - text_width - 4 - MARGIN_RIGHT, (header_height - text_height) / 2);
   pango_cairo_show_layout (cr, layout);
 
   g_object_unref (layout);
@@ -382,6 +391,12 @@ draw_page (GtkPrintOperation *operation,
 
   pango_font_description_free (desc);
 
+#if 0
+  /* 
+   * This puts a rectangle around the entire imagable area and a full
+   * size "X" across it.  It is just here to help with debugging page
+   * setup stuff.
+   */
   cairo_set_line_width (cr, 5.0);
 
   cairo_move_to (cr, 0, 0);
@@ -394,7 +409,12 @@ draw_page (GtkPrintOperation *operation,
 
   cairo_rectangle (cr, 0, 0, width, height);
   cairo_stroke (cr);
-  
+#endif
+
+
+#ifdef DEBUG
+  g_print ("%s():  all done with page #%d\n", __FUNCTION__, page_nr);
+#endif
 
 }
  	
@@ -405,10 +425,19 @@ end_print (GtkPrintOperation *operation,
 {
   PrintData *data = (PrintData *)user_data;
   
+#ifdef DEBUG
+  g_print ("%s():  freeing data\n", __FUNCTION__);
+#endif
+
   g_free (data->date_string);
   g_free (data);
+
+#ifdef DEBUG
+  g_print ("%s():  all done\n", __FUNCTION__);
+#endif
 }
  	
+
 
 
 static void
@@ -419,6 +448,22 @@ do_page_setup (GtkWidget *do_widget, Wcalc *wcalc)
   if (settings == NULL) {
     settings = gtk_print_settings_new ();
   }
+
+  /* FIXME -- this code is duplicated in do_printing */
+  if (page_setup == NULL) {
+    GtkPaperSize *letter_size;
+    
+#ifdef DEBUG
+    g_print ("%s():  Creating new default page setup\n", __FUNCTION__);
+#endif
+    
+    page_setup = gtk_page_setup_new();
+    letter_size = gtk_paper_size_new (GTK_PAPER_NAME_LETTER);
+    gtk_page_setup_set_orientation (page_setup, GTK_PAGE_ORIENTATION_PORTRAIT);
+    gtk_page_setup_set_paper_size (page_setup, letter_size);
+    gtk_paper_size_free (letter_size);
+  }
+
   new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW (do_widget),
                                                     page_setup, settings);
   if (page_setup) {
@@ -428,8 +473,8 @@ do_page_setup (GtkWidget *do_widget, Wcalc *wcalc)
   page_setup = new_page_setup;
 }
 
-GtkWidget *
-do_printing (GtkWidget *do_widget, Wcalc *wcalc)
+static GtkWidget *
+do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
 {
   GtkPrintOperation *operation;
   GtkPrintOperationResult res;
@@ -440,9 +485,27 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
 
   
   /* load any print settings from the last time */
-  if (settings != NULL)
-    gtk_print_operation_set_print_settings (operation, settings);
- 
+  if (settings == NULL) {
+    settings = gtk_print_settings_new ();
+  }
+  gtk_print_operation_set_print_settings (operation, settings);
+
+  /* set the default page setup */
+  if (page_setup == NULL) {
+    GtkPaperSize *letter_size;
+    
+#ifdef DEBUG
+    g_print ("%s():  Creating new default page setup\n", __FUNCTION__);
+#endif
+
+    page_setup = gtk_page_setup_new();
+    letter_size = gtk_paper_size_new (GTK_PAPER_NAME_LETTER);
+    gtk_page_setup_set_orientation (page_setup, GTK_PAGE_ORIENTATION_PORTRAIT);
+    gtk_page_setup_set_paper_size (page_setup, letter_size);
+    gtk_paper_size_free (letter_size);
+  }
+  gtk_print_operation_set_default_page_setup(operation, page_setup);
+
 
   /* 
    * store some user data, in particular a pointer to our current
@@ -486,27 +549,47 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc)
    * units
    */
   gtk_print_operation_set_unit (operation, GTK_UNIT_POINTS);
-  gtk_print_operation_set_unit (operation, GTK_UNIT_PIXEL);
 
   /* Run the print dialog */
-  res = gtk_print_operation_run (operation, 
-				 GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, 
-				 GTK_WINDOW (do_widget), &error);
- 	
+  if (filename == NULL) {
+    res = gtk_print_operation_run (operation, 
+				   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, 
+				   GTK_WINDOW (do_widget), &error);
 
-  /*
-   * If the user didn't just cancel the print, then store the print
-   * settings for next time.
-   */
-  if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
-    if (settings != NULL) {
-      g_object_unref (settings); 
+    /*
+     * If the user didn't just cancel the print, then store the print
+     * settings for next time.
+     */
+    if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
+      if (settings != NULL) {
+	g_object_unref (settings); 
+      }
+      settings = g_object_ref (gtk_print_operation_get_print_settings (operation));
     }
-    settings = g_object_ref (gtk_print_operation_get_print_settings (operation));
+    
+#ifdef DEBUG
+    g_print ("%s():  Unreferencing the print operation\n", __FUNCTION__);
+#endif
+    g_object_unref (operation);
+    
+  } else {
+#ifdef DEBUG
+    g_print ("Exporting PDF to \"%s\"\n", filename);
+#endif
+    gtk_print_operation_set_export_filename (operation, filename);
+    res = gtk_print_operation_run (operation, 
+				   GTK_PRINT_OPERATION_ACTION_EXPORT, 
+				   GTK_WINDOW (do_widget), &error);
+#ifdef DEBUG
+    g_print ("Finished print operation that exported PDF to \"%s\"\n", filename);
+#endif
+
   }
 
-  g_object_unref (operation);
  	
+#ifdef DEBUG
+  g_print ("%s():  After running the print operation, error = %p\n", __FUNCTION__, error);
+#endif
 
   /* If there was an error printing, display it */
   if (error) {
@@ -551,8 +634,51 @@ void newprint_popup(gpointer data,
 	  "or one of the synthesis buttons in the calculator\n"
 	  "to make the input and output values be consistent\n");
   } else {
-    do_printing(wcalc->window, wcalc);
+    do_printing(wcalc->window, wcalc, NULL);
   }
+}
+
+
+/*
+ * data is the Wcalc *
+ * action is whats specified in menus.c
+ * widget is the GtkMenuItem *
+ */
+void newprint_pdf_popup(gpointer data,
+			guint action,
+			GtkWidget *widget)
+{
+  Wcalc * wcalc;
+  GtkWidget *dia;
+
+  wcalc = WC_WCALC(data);
+
+  if(wcalc->values_in_sync == FALSE) {
+    
+    alert("The input and output values are out of sync\n"
+	  "Before printing, please press the analyze button\n"
+	  "or one of the synthesis buttons in the calculator\n"
+	  "to make the input and output values be consistent\n");
+    return;
+  }
+
+  dia = gtk_file_chooser_dialog_new (_("Export to PDF"),
+				     GTK_WINDOW (wcalc->window),
+				     GTK_FILE_CHOOSER_ACTION_SAVE,
+				     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				     GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+				     NULL);
+  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dia), TRUE);
+  
+  if (gtk_dialog_run (GTK_DIALOG (dia)) == GTK_RESPONSE_ACCEPT)
+    {
+      char *filename;
+      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dia));
+      do_printing(wcalc->window, wcalc, filename);
+      g_free (filename);
+    }
+  gtk_widget_destroy (dia);
+
 }
 
 /*

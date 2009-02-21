@@ -1,4 +1,4 @@
-/* $Id: menus.c,v 1.17 2009/02/05 22:15:23 dan Exp $ */
+/* $Id: menus.c,v 1.18 2009/02/14 02:11:15 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
@@ -82,7 +82,8 @@ static GtkItemFactoryEntry static_menu_items[] = {
   { N_("/File/Save _As"),   NULL,          wcalc_save_as,    0, NULL },
   { N_("/File/sep2"),       NULL,          NULL,             0, "<Separator>" },
 #if GTK_CHECK_VERSION(2,10,0)
-  { N_("/File/_Print"),     "<control>P",  newprint_popup,      0, NULL },
+  { N_("/File/_Print"),     "<control>P",  newprint_popup,   0, NULL },
+  { N_("/File/_Export to PDF"),"<control>E",newprint_pdf_popup,  0, NULL },
   { N_("/File/Page Set_up"),NULL,          page_setup_popup,      0, NULL },
 #else
   { N_("/File/_Print"),     "<control>P",  print_popup,      0, NULL },

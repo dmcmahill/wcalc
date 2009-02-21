@@ -1,4 +1,4 @@
-/* $Id: newprint.h,v 1.6 2009/02/08 14:42:55 dan Exp $ */
+/* $Id: newprint.h,v 1.7 2009/02/14 02:11:16 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill
@@ -55,6 +55,10 @@ void wc_print_value_free(PrintValue * val);
 void newprint_popup(gpointer data,
 		    guint action,
 		    GtkWidget *widget);
+
+void newprint_pdf_popup(gpointer data,
+			guint action,
+			GtkWidget *widget);
 
 void page_setup_popup(gpointer data,
 		      guint action,
