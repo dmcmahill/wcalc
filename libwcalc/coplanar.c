@@ -1,4 +1,4 @@
-/*      $Id: coplanar.c,v 1.15 2007/11/29 17:29:04 dan Exp $ */
+/*      $Id: coplanar.c,v 1.16 2008/11/29 20:42:06 dan Exp $ */
 
 /*
  * Copyright (C) 2006, 2007 Dan McMahill
@@ -302,43 +302,40 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     /*
      * Dielectric Losses
      */
-    if( line->with_ground == 0) {
 
-      /* freq * wavelength = velocity */
-      lambdag = (LIGHTSPEED/sqrt(line->keff)) / f;
+    /* freq * wavelength = velocity */
+    lambdag = (LIGHTSPEED/sqrt(line->keff)) / f;
 
 #ifdef DEBUG_CALC
-    printf("coplanar_calc_int():  no ground plane equations\n");
+    printf("coplanar_calc_int():  \n");
     printf("                      lambdag = %g\n", lambdag);
     printf("                      keff    = %g\n", line->keff);
     printf("                      er      = %g\n", line->subs->er);
 #endif
 
-      /* q from Wadell (2.7.2.1) avoiding a 0/0 error  */
-      /* FIXME -- what is the right thing here?  */
-      if( fabs(line->subs->er*line->keff - line->keff) < 1e-6 )
-	q = 1.0;
-      else
-	q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
+    /* q from Wadell (2.7.2.1) avoiding a 0/0 error  */
+    /* FIXME -- what is the right thing here?  */
+    if( fabs(line->subs->er*line->keff - line->keff) < 1e-6 )
+      q = 1.0;
+    else
+      q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
 
-      /* loss from Wadell (3.4.1.10) */
-      ld = q * line->subs->er * line->subs->tand / (line->keff * lambdag);
+    /* 
+     * loss from Wadell (3.4.1.10).  Note that (3.4.1.10) seems to be
+     * missing a factor of pi.
+     */
+    ld = M_PI * q * line->subs->er * line->subs->tand / (line->keff * lambdag);
 
-      /* Equivalent shunt conductance (Siemens/meter) */
-      G = 2.0*ld/z0;
+    /* Equivalent shunt conductance (Siemens/meter) */
+    G = 2.0*ld/z0;
 
-    } else {
-      /* loss in nepers/meter */
-      ld = G*z0/2;
+    /* loss in dB/meter */
+    ld = 20.0*log10(exp(1.0)) * ld;
+    
+    /* loss in dB */
+    ld = ld * line->l;
 
-      
-      /* loss in dB/meter */
-      ld = 20.0*log10(exp(1.0)) * ld;
-      
-      /* loss in dB */
-      ld = ld * line->l;
-    }
-
+  
     /*
      * Conduction Losses
      */
