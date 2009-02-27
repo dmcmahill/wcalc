@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.22 2006/03/01 20:35:22 dan Exp $ */
+/*      $Id: stripline.c,v 1.23 2008/11/29 20:42:20 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -241,6 +241,11 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   
    /* resistance will be updated below */
    R = 0.0;
+
+   /* 
+    * this formulation for G works because we have a uniform
+    * dielectric 
+    */
    G = 2*M_PI*f*C*line->subs->tand;
 
    delay = line->l / v;
