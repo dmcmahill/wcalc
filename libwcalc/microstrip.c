@@ -1,4 +1,4 @@
-/* $Id: microstrip.c,v 1.20 2006/02/08 03:34:28 dan Exp $ */
+/* $Id: microstrip.c,v 1.21 2008/11/29 20:42:17 dan Exp $ */
 
 /*
  * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
@@ -110,6 +110,9 @@ static double z0_HandJ(double u);
  *    ELAB Report STF44 A74169, February 1975
  *    University of Trondheim, Norway
  *
+ *    Edgar J. Denlinger, "Losses of Microstrip Lines",
+ *    IEEE Trnasactions on Microwave Theory and Techniques,
+ *    Vol MTT-28, No. 6, June 1980, pp. 513-522.
  *
  *
  * flag=1 enables loss calculations
@@ -402,9 +405,9 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    L = z0/v;
    C = 1.0/(z0*v);
   
-   /* resistance will be updated below */
+   /* resistance and conductance will be updated below */
    R = 0.0;
-   G = 2*M_PI*f*C*line->subs->tand;
+   G = 0.0;
 
    if(flag == WITHLOSS)
      {
@@ -420,7 +423,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 
 
        /* effective relative permittivity */
-       eeff=EF;
+       eeff = EF;
 
 
        line->keff = eeff;
@@ -434,14 +437,39 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	*/
    
        /* loss in nepers/meter */
+
+       /* 
+	* The dielectric loss here matches equation (1) in the
+	* Denlinger paper although the form is slightly different.  In
+	* the Denlinger paper it is in dB/m.  Note that the 27.3 in
+	* the Denlinger paper is equal to pi * 20*log10( e ).
+	*
+	* See also equation (4.21) in Fooks and Zakarevicius.  The
+	* difference in form there is (4.21) uses c/sqrt(EF) in place
+	* of 'v' in our equation here.
+	*
+	*
+	* With a uniform dielectric, we would have this:
+	*
+	* G = 2 * M_PI * f * C * line->subs->tand;
+	*
+	* alpha_d = (G * Z0 / 2) * tand     (nepers/meter)
+	*
+	* but for the mixed air/dielectric that we have, the loss is
+	* less by a factor qd which is the filling factor.
+	* bu
+	*/
+       
        if (er > 1.0) {
 	 ld=(M_PI*f/v)*(er/EF)*((EF-1.0)/(er-1.0))*tand;
        }
        else {
-	 /* XXX verify this one */
+	 /* if er == 1, then this is probably a vacuum */
 	 ld = 0.0;
        }
-
+       
+       G = 2.0 * ld / z0;
+       
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
        line->alpha_d = ld;
@@ -596,10 +624,10 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
    line->delay = delay;
 
    line->Ls = L;
-	line->Rs = R; 
-	line->Cs = C;
-	line->Gs = G;
-
+   line->Rs = R; 
+   line->Cs = C;
+   line->Gs = G;
+   
 
    return (rslt);
 }
