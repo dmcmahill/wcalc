@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: projects.shtml,v 1.8 2005/11/01 01:40:46 dan Exp $ -->
+<!-- $Id: projects.shtml,v 1.9 2009/02/11 00:00:25 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004, 2005
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -40,9 +40,9 @@ stripline synthesis,
     <LI>Bug hunting.  This is always a high priority.</LI>
     <LI>Model verification.  This is also high priority.  When possible
     I try to collect data points from other tools for comparison.</LI>
-    <LI>Better gtk2 support.  The development has went on for so long that
-    gtk2 is really the prefered gtk platform, however gtk-wcalc still uses
-    some obsolete gtk1 code (item factory for the menus).</LI>
+    <LI>Remove the use of some functions like the menu factory which are slated
+    for removal in future gtk releases.
+    </LI>
     </UL>
 
     <H2>Future</H2>
