@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: microstrip.shtml,v 1.7 2004/07/28 11:49:06 dan Exp $ -->
+<!-- $Id: microstrip.shtml,v 1.8 2009/02/11 00:00:24 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -51,7 +51,7 @@ stripline synthesis,
       <LI>
 	M. Kirschning and R. H. Jansen, "Accurate Model for Effective Dielectric
 	Constant of Microstrip with Validity up to Millimetre-Wave Frequencies",
-	<em>Electronics Letters</em>, Vol 18, No. 6, March 18th, 1982, pp
+	<em>Electronics Letters</em>, Vol 18, No. 6, March 18th, 1982, pp.
 	272-273.
       </LI>
 
@@ -62,17 +62,41 @@ stripline synthesis,
       </LI>
 
       <LI>
+	H. A. Wheeler, "Formulas for the skin effect", <em>Proc. IRE</em>,
+	Vol. 30, No. 9, September 1942, pp. 412-4124
+      </LI>
+
+      <LI>
 	E. H. Fooks and R. A. Zakarevicius,
 	<em>Microwave Engineering using Microstrip Circuits</em>,
 	Prentice-Hall, 1990
       </LI>
+
       <LI>
 	E. O. Hammerstad, Edited by F. Bekkadal,
 	<em>Microstrip Handbook</em>, ELAB Report No. STF44 A74169,
 	University of Trondheim, 1975.
       </LI>
+      <LI>
+        Edgar J. Denlinger, "Losses of Microstrip Lines",
+	<em>IEEE Transactions on Microwave Theory and Techniques</em>,
+	Vol MTT-28, No. 6, June 1980, pp. 513-522.
+      </LI>
     </OL>
-  </P>
+    </P>
+
+    <HR> 
+    <H2><A NAME="comments">Comments</A></H2>
+    <P>
+    The primary reference for characteristic impedance is the
+    Hammerstad and Jensen paper.  The conductor losses are found using
+    Wheeler's incremental inductance approach.  Those results are then
+    modified to account for surface roughness.  Note that the equation
+    for surface roughness given in Fooks and Zakarevicius contains a
+    typographical error.  The correct equation may be found in either
+    the Hammerstad and Jensen paper or the Hammerstad and Bekkadal
+    report.  
+    </P>
 
     </font>
 
