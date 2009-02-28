@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: news.shtml,v 1.7 2009/02/11 22:34:16 dan Exp $ -->
+<!-- $Id: news.shtml,v 1.8 2009/02/12 01:35:39 dan Exp $ -->
 <!-- Copyright (c) 2004, 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
@@ -39,7 +39,7 @@ stripline synthesis,
     </center>
 
     <HR>
-    <H2><A NAME="wcalc-1.0">wcalc-1.1 released</A></H2>
+    <H2><A NAME="wcalc-1.1">wcalc-1.1 released</A></H2>
     <P>
     This release contains the following improvements:
     <UL>
@@ -51,7 +51,14 @@ stripline synthesis,
     <LI>Added parallel/series RC equivalent network calculation.</LI>
     <LI>Corrected some bugs in the Q calculation for air core
     inductors.</LI>
+    <LI>Corrected the calculation of incremental conductance for the
+    microstrip model.</LI>
+    <LI>Corrected a bug in the calculation of conductor losses in the
+    microstrip model.</LI>
+    <LI>Added/enabled code for calculating conductor losses in the
+    coupled microstrip model.</LI>
     <LI>Enabled printing under windows.</LI>
+    <LI>Switched to GPL licensing.</LI>
     </UL>
     </P>
 	
