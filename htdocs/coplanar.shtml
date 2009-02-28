@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: coplanar.shtml,v 1.1 2006/01/24 16:12:19 dan Exp $ -->
+<!-- $Id: coplanar.shtml,v 1.2 2009/02/11 00:00:23 dan Exp $ -->
 <!-- Copyright (c) 2006
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -42,7 +42,20 @@ coplanar waveguide,
       </LI>
 
     </OL>
-  </P>
+    </P>
+
+    <HR> 
+    <H2><A NAME="comments">Comments</A></H2>
+    <P>
+    While it is a useful book, the Wadell book contains many
+    typographical errors which is understanding giving the sheer
+    volume of complex equations.  As a result, it is important to
+    obtain as many of the references as possible when refering to this
+    book. The equations for coplanar waveguide losses, and in
+    particular the dielectric losses, contain some typographical
+    errors and those have been corrected in wcalc (and commented in
+    the code).
+    </P>
 
     </font>
 
