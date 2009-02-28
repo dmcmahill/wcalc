@@ -38,7 +38,7 @@ case $lt_maj in
         ;;
 
     *)
-        echo "You are running a newer libtool than gerbv has been tested with."
+        echo "You are running a newer libtool than wcalc has been tested with."
 	echo "It will probably work, but this is a warning that it may not."
 	;;
 esac
