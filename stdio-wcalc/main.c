@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.30 2009/02/11 00:00:48 dan Exp $ */
+/* $Id: main.c,v 1.31 2009/02/11 22:34:26 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2005, 2006, 2007, 2009 Dan McMahill
@@ -885,7 +885,9 @@ static void exec_microstrip_calc(double *args)
     /* print the outputs */
     printf("%g %g %g %g %g %g %g %g %g %g %g %g \n", line->z0, line->keff,
 	   line->len, line->loss, line->Ls, line->Rs, line->Cs, line->Gs,
-      line->alpha_c, line->alpha_d, line->deltal, line->skindepth);
+	   line->alpha_c*20.0*log10(exp(1.0)), 
+	   line->alpha_d*20.0*log10(exp(1.0)),
+	   line->deltal, line->skindepth);
   }
 
   /* clean up */
