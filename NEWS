@@ -1,4 +1,4 @@
-$Id: NEWS,v 1.8 2009/02/11 00:02:23 dan Exp $
+$Id: NEWS,v 1.9 2009/02/11 22:34:10 dan Exp $
 
 Wcalc -- history of user-visible changes. 
 
@@ -25,6 +25,15 @@ Corrected the Q calculations for low frequency (not skindepth) region
 in air core inductors.  Also corrected Q calculation for conductors
 other than copper.
 
+Corrected the calculation of incremental conductance for the
+microstrip model.
+
+Corrected a bug in the calculation of conductor losses in the
+microstrip model.
+
+Added/enabled code for calculating conductor losses in the coupled
+microstrip model.
+
 When compiling with gtk-2.10 or newer, use gtkPrint for printing.
 This gives a more professional/standard print dialog and also enables
 printing under windows.
@@ -50,7 +59,7 @@ standalone mex shell script.
 Switch to GPL licensing.
 
 Create several utility functions to make it faster to build new gtk
-forms.
+forms.  This is only visible to developers.
 
 Improved autogen.sh to check versions of several of the auto* tools to
 help make it easier to diagnose any issues which may come up.
