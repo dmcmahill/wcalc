@@ -1,6 +1,6 @@
-/* $Id: microstrip_calc.c,v 1.5 2004/09/08 22:39:47 dan Exp $ */
+/* $Id: microstrip_calc.c,v 1.6 2008/11/29 20:42:39 dan Exp $ */
 
-static char vcid[] = "$Id: microstrip_calc.c,v 1.5 2004/09/08 22:39:47 dan Exp $";
+static char vcid[] = "$Id: microstrip_calc.c,v 1.6 2008/11/29 20:42:39 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill
@@ -237,8 +237,8 @@ void mexFunction(
     R[ind]    = line->Rs;
     C[ind]    = line->Cs;
     G[ind]    = line->Gs;
-    lc[ind]   = line->alpha_c;
-    ld[ind]   = line->alpha_d;
+    lc[ind]   = line->alpha_c * 20.0*log10(exp(1.0));
+    ld[ind]   = line->alpha_d * 20.0*log10(exp(1.0));
     deltal[ind]  = line->deltal;
     depth[ind]   = line->skindepth;
   }
