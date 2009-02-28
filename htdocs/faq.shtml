@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- $Id: faq.shtml,v 1.7 2005/11/05 01:53:56 dan Exp $ -->
+<!-- $Id: faq.shtml,v 1.8 2009/01/13 02:02:50 dan Exp $ -->
 <!-- Copyright (c) 2001, 2002, 2004
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
@@ -40,7 +40,12 @@ stripline synthesis,
     <H2>Can I run wcalc on my favorite operating system?</H2>
     <p>
 	Wcalc is primarily developed under <a href="http://www.netbsd.org">NetBSD</a>,
-	but should be easily compiled on most major unix-like operating systems.  In
+	but should be easily compiled on most major unix-like
+	operating systems.  A compile or run time failure of wcalc on
+	Linux, *BSD, or OSX, or Solaris is considered to be a high priority
+	bug.  While I am interested in making sure wcalc also works
+	under other unix-like operating systems, I have very limited
+	access to them for testing.  In
 	addition, it is possible to compile Wcalc as a native windows application
 	using <a href="http://www.mingw.org/">MinGW</a>.
     </p>
@@ -48,7 +53,8 @@ stripline synthesis,
     <H2>Why don't you distribute binaries for my favorite operating system?</H2>
     <p>
 	I don't have the resources to provide precompiled binaries for many 
-	different operating systems.  Many Linux and BSD operating systems 
+	different operating systems.  Most Linux distributions and all
+	of the BSD operating systems 
 	have native packaging systems that would be the appropriate place for
 	binaries.  I do, however, provide a windows installer.  This is in
 	recognition of the fact that it is far more common for a windows machine
@@ -76,11 +82,19 @@ stripline synthesis,
     operating system, <tt>uname -a</tt> is often times helpful.</li>
           <li><em>Exact</em> arguments given to the <tt>configure</tt>
     script if you built from sources.</li>
+          <li>Which compiler and compiler version if you built from
+    sources.  If you are using the GNU compiler (gcc), which is the
+    most common case, you can find the version with <tt>gcc
+    --version</tt>.</li>
           <li>How to reproduce the problem.</li>
           <li>If the program produces an output that you believe to be
     incorrect, please say what the correct output should be and
     provide a reference.  Many of the calculations used by wcalc are
-    approximate because no exact closed form solution is known.</li>
+    approximate because no exact closed form solution is known.  In
+    addition, my experience has been that many of the published works
+    contain typographical errors.  I have corrected as many as
+    possible, but currently I do not have a good electromagnetic field
+    solver tool to use as a means for validating my implementations.</li>
 	</ul>
     Any bug report that simply says "program not work" will be ignored.
     </p>
