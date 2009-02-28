@@ -1,7 +1,7 @@
-/* $Id: microstrip.c,v 1.21 2008/11/29 20:42:17 dan Exp $ */
+/* $Id: microstrip.c,v 1.22 2009/02/27 05:22:55 dan Exp $ */
 
 /*
- * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
+ * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -469,10 +469,10 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
        }
        
        G = 2.0 * ld / z0;
+       line->alpha_d = ld;
        
        /* loss in dB/meter */
        ld = 20.0*log10(exp(1.0)) * ld;
-       line->alpha_d = ld;
 
        /* loss in dB */
        ld = ld * l;
@@ -555,7 +555,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	   /* conduction losses, nepers per meter */
 	   lc = (M_PI*f/LIGHTSPEED)*(z1 - z2)/z0;
 
-	   R = lc*2*line->z0;
+	   R = lc*2*z0;
 	 }
 
 	   /* "dc" case  */
@@ -584,9 +584,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	 }
 
  
-       /* loss in dB/meter */
-       lc = 20.0*log10(exp(1.0)) * lc;
-
    
        /* factor due to surface roughness
 	* note that the equation in Fooks and Zakarevicius is slightly 
@@ -595,8 +592,22 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 	* found in Hammerstad and Bekkadal
 	*/
        lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((rough/delta),2.0)));
+
        line->alpha_c = lc;
-   
+
+       /*
+	* recalculate R now that we have the surface roughness in
+	* place 
+	*/
+       R = lc*2.0*z0;
+
+#ifdef DEBUG_CALC
+       printf ("R (%g) = alpha_c (%g) * 2.0 * z0 (%g)\n", R, lc, z0);
+#endif
+
+       /* loss in dB/meter */
+       lc = 20.0*log10(exp(1.0)) * lc;
+
        /* loss in dB */
        lc = lc * l;
 
