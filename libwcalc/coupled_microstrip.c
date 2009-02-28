@@ -1,7 +1,7 @@
-/* $Id: coupled_microstrip.c,v 1.28 2008/11/29 20:42:08 dan Exp $ */
+/* $Id: coupled_microstrip.c,v 1.29 2009/02/27 05:22:34 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2007 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2007, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -164,7 +164,7 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   /* even and odd mode conductor and dielectric losses in nepers/meter */
   double alpha_c_even, alpha_c_odd, alpha_d_even, alpha_d_odd;
 
-  double Ko, Rs, lc, Res, delta;
+  double Ko, Rs, lc, Res, delta, Q_c_even, Q_c_odd;
   
   /* correction factor for surface roughness */
   double rough_factor;
@@ -665,14 +665,6 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   alpha_d_even = line->losslen_ev;
   alpha_d_odd = line->losslen_odd;
 
-  /* loss in dB/meter */
-  line->losslen_ev  = 20.0*log10(exp(1.0)) * line->losslen_ev;
-  line->losslen_odd = 20.0*log10(exp(1.0)) * line->losslen_odd;
-  
-
-  /* loss in dB */
-  line->loss_ev = l * line->losslen_ev;
-  line->loss_odd = l * line->losslen_odd;
   
 #ifdef DEBUG_CALC
   printf("coupled_microstrip_calc():  Even mode dielectric loss = %g dB/m \n",
@@ -716,42 +708,72 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   lc = 0.0;
 
   if (do_loss) {
-    if(depth <= t)
+    if(3.0*depth <= t &&
+       3.0*depth <= w)
       {
 	
 	/*
 	 * Find the current distribution factor.  This is (39) from
 	 * Hammerstad and Jensen.
 	 */
-	Ko = exp(-1.2*pow( (z0e0 + z0o0)/(2.0*FREESPACEZ0), 0.7));
+	Ko = exp(-1.2*pow( sqrt(er)*(z0e0 + z0o0)/(2.0*FREESPACEZ0), 0.7));
 
-	printf("%s():  Ko = %g\n", __FUNCTION__, Ko);
 
 	/* skin resistance */
 	Rs = 1.0 / (sigma * depth);
+#ifdef DEBUG_CALC
+	printf("%s():  Ko = %g\n", __FUNCTION__, Ko);
 	printf("%s():  Skin resistance = %g Ohm, sigma = %g mho/m, skin depth = %g m\n",
 	       __FUNCTION__, Rs, sigma, depth);
+#endif
 
-	/* conduction losses, nepers per meter */
-	alpha_c_even = (M_PI * z0e0 * h * f / (Rs * LIGHTSPEED)) * (u/Ko);
+	/*
+	 * Inductive quality factor (34) from Hammerstand and Jensen
+	 *
+	 * FIXME -- should these be the impedances with or without
+	 * dispersion?  Does is really matter that much for a loss
+	 * calculation which I think in general may be a little less accurate?
+	 *
+	 * The impedance here is the impedance in a homogeneous
+	 * dielectric.  See (1) and (8) in Hammerstad and Jensen. 
+	 */
+	Q_c_even = (M_PI * z0e0 * sqrt(EFEF) * h * f / (Rs * LIGHTSPEED)) * (u/Ko);
+	Q_c_odd  = (M_PI * z0o0 * sqrt(EFOF) * h * f / (Rs * LIGHTSPEED)) * (u/Ko);
 
-	/* dB/meter */
-	lc = 20.0*log10(exp(1.0)) * alpha_c_even;
+#ifdef DEBUG_CALC
+	printf("%s():  Q_c_even = %g\n", __FUNCTION__, Q_c_even);
+	printf("%s():  Q_c_odd = %g\n", __FUNCTION__, Q_c_odd);
+#endif
 
+	/*
+	 * (38) from Hammerstad and Jensen says (after converting to
+	 * nepers/meter)
+	 * alpha_c = pi * lightpeed / (Q * f * sqrt(keff)
+	 *         = pi * lambda_g / Q where lambda_g is the guided
+	 * wavelength
+	 *
+	 * However, I think they have the lambda_g on the wrong side
+	 *
+	 */
+	alpha_c_even = M_PI * f *sqrt(EFEF) / (Q_c_even * LIGHTSPEED);
+	alpha_c_odd = M_PI * f *sqrt(EFOF) / (Q_c_odd * LIGHTSPEED);
+
+#ifdef DEBUG_CALC
 	printf("%s():  Even mode conduction loss = %g dB/m\n",
-	       __FUNCTION__, lc);
-
-	/* conduction losses, nepers per meter */
-	alpha_c_odd = (M_PI * z0o0 * h * f / (Rs * LIGHTSPEED)) * (u/Ko);
-
-	/* dB/meter */
-	lc = 20.0*log10(exp(1.0)) * alpha_c_odd;
-
+	       __FUNCTION__, 20.0*log10(exp(1.0)) * alpha_c_even);
 	printf("%s():  Odd mode conduction loss = %g dB/m\n",
-	       __FUNCTION__, lc);
-
+	       __FUNCTION__, 20.0*log10(exp(1.0)) * alpha_c_odd);
+#endif
 	
-	/* instead try out Wheelers incremental inductance rule */
+	/* 
+	 * Instead try out Wheelers incremental inductance rule 
+	 * for some reason, I'm getting more loss (almost a factor of
+	 * 2) from the above formulation.  Using the incremental
+	 * inductance approach below, I get an answer which is close
+	 * to single microstrip when I make the spacing between traces
+	 * wide.  Until I can get an electromagnetic solver going, go
+	 * with the incremental inductance approach.
+	 */
 
 	{
 	  coupled_microstrip_line tmp_line;
@@ -768,9 +790,10 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
 	  z1e = tmp_line.z0e;
 	  z1o = tmp_line.z0o;
 	  
-	  tmp_line.w = line->w - line->skindepth;
-	  tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
-	  tmp_line.subs->h = line->subs->h + line->skindepth;
+	  tmp_line.w = line->w - depth;
+	  tmp_line.s = line->s + depth;
+	  tmp_line.subs->tmet = line->subs->tmet - depth;
+	  tmp_line.subs->h = line->subs->h + depth;
 	  rslt = coupled_microstrip_calc_int(&tmp_line, f, 0);
 	  z2e = tmp_line.z0e;
 	  z2o = tmp_line.z0o;
@@ -782,10 +805,24 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
 	  alpha_c_even = (M_PI*f/LIGHTSPEED)*(z2e - z1e)/z0ef;
 	  alpha_c_odd = (M_PI*f/LIGHTSPEED)*(z2o - z1o)/z0of;
 	  
+#ifdef DEBUG_CALC
+
 	  printf("%s():  Odd mode conduction loss = %g dB/m (Via Wheelers incremental inductance)\n",
 		 __FUNCTION__, 20.0*log10(exp(1.0))*alpha_c_odd);
 	  printf("%s():  Even mode conduction loss = %g dB/m (Via Wheelers incremental inductance)\n",
 		 __FUNCTION__, 20.0*log10(exp(1.0))*alpha_c_even);
+
+	  if (z2e > z1e) {
+	    printf("%s():  Q_c_even (via incremental inductance) = %g\n", __FUNCTION__, sqrt(EFEF)*z0ef / (z2e - z1e));
+	  } else {
+	    printf("%s():  Q_c_even (via incremental inductance) = Infinite\n", __FUNCTION__);
+	  }
+	  if (z2o > z1o) {
+	    printf("%s():  Q_c_odd  (via incremental inductance) = %g\n", __FUNCTION__, sqrt(EFOF)*z0of / (z2o - z1o));
+	  } else {
+	    printf("%s():  Q_c_odd  (via incremental inductance) = Infinite\n", __FUNCTION__);
+	  }
+#endif
 
 	}
 
@@ -832,7 +869,7 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   rough_factor = 1.0 + (2.0/M_PI)*atan(1.4*pow((rough/delta),2.0));
   lc = lc * rough_factor;
   alpha_c_even = alpha_c_even * rough_factor;
-  alpha_c_odd = alpha_c_even * rough_factor;
+  alpha_c_odd = alpha_c_odd * rough_factor;
 
 #ifdef DEBUG_CALC
   printf ("%s():  rough_factor = %g \n", __FUNCTION__, rough_factor);
@@ -908,11 +945,26 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   line->Lodd = line->z0o * sqrt(line->kodd) / LIGHTSPEED;
   line->Codd = sqrt(line->kodd) / (line->z0o * LIGHTSPEED);
 
+  
   line->Rev = alpha_c_even * 2.0 * z0ef;
   line->Gev = 2.0 * alpha_d_even / z0ef;
 
   line->Rodd = alpha_c_odd * 2.0 * z0of;
   line->Godd = 2.0 * alpha_d_odd / z0of;
+
+#ifdef DEBUG_CALC
+  printf ("Rev  (%g) = alpha_c_even (%g) * 2.0 * z0ef (%g)\n", line->Rev, alpha_c_even, z0ef);
+  printf ("Rodd (%g) = alpha_c_odd  (%g) * 2.0 * z0of (%g)\n", line->Rodd, alpha_c_odd, z0of);
+#endif
+
+  /* loss in dB/meter */
+  line->losslen_ev  = 20.0*log10(exp(1.0)) * (alpha_c_even + alpha_d_even);
+  line->losslen_odd = 20.0*log10(exp(1.0)) * (alpha_c_odd + alpha_d_odd);
+  
+
+  /* loss in dB */
+  line->loss_ev = l * line->losslen_ev;
+  line->loss_odd = l * line->losslen_odd;
 
   return 0;
 }
@@ -1120,7 +1172,8 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
       iters++;
       line->w = w;
       line->s = s;
-      coupled_microstrip_calc(line, line->freq);
+      /* don't bother with loss calculations while we are iterating */
+      coupled_microstrip_calc_int(line, line->freq, 0);
       
       ze0 = line->z0e;
       zo0 = line->z0o;
@@ -1140,13 +1193,13 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 	/* approximate the first jacobian */
 	line->w = w + delta;
 	line->s = s;
-	coupled_microstrip_calc(line, line->freq);
+	coupled_microstrip_calc_int (line, line->freq, 0);
 	ze1 = line->z0e;
 	zo1 = line->z0o;
 
 	line->w = w;
 	line->s = s + delta;
-	coupled_microstrip_calc(line, line->freq);
+	coupled_microstrip_calc_int (line, line->freq, 0);
 	ze2 = line->z0e;
 	zo2 = line->z0o;
 
@@ -1189,11 +1242,15 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
   
   line->w = w;
   line->s = s;
-  coupled_microstrip_calc(line, line->freq);
+  coupled_microstrip_calc_int (line, line->freq, 0);
 
   /* scale the line length to get the desired electrical length */
   line->l = line->l * len/line->len;
-  coupled_microstrip_calc(line, line->freq);
+
+  /* 
+   * one last calculation and this time we find the loss too.
+   */
+  coupled_microstrip_calc_int (line, line->freq, 1);
 
 #ifdef DEBUG_SYN
   printf("Took %d iterations, err = %g\n", iters, err);
@@ -1209,6 +1266,10 @@ int coupled_microstrip_syn(coupled_microstrip_line *line, double f)
 static double ee_HandJ(double u, double er)
 {
   double A,B,E0;
+  
+#ifdef DEBUG_CALC
+  printf ("%s(%g, %g)\n", __FUNCTION__, u, er);
+#endif
 
   /* (4) from Hammerstad and Jensen */
   A = 1.0 + (1.0/49.0)
