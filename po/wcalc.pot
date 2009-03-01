@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-06 13:08-0500\n"
+"POT-Creation-Date: 2009-02-27 22:45-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,80 +44,88 @@ msgstr ""
 msgid "/File/sep2"
 msgstr ""
 
-#: gtk-wcalc/menus.c:85 gtk-wcalc/menus.c:87
+#: gtk-wcalc/menus.c:85 gtk-wcalc/menus.c:89
 msgid "/File/_Print"
 msgstr ""
 
-#: gtk-wcalc/menus.c:89
-msgid "/File/sep3"
+#: gtk-wcalc/menus.c:86
+msgid "/File/_Export to PDF"
 msgstr ""
 
-#: gtk-wcalc/menus.c:90
-msgid "/File/Close"
+#: gtk-wcalc/menus.c:87
+msgid "/File/Page Set_up"
 msgstr ""
 
 #: gtk-wcalc/menus.c:91
-msgid "/File/Quit"
+msgid "/File/sep3"
 msgstr ""
 
 #: gtk-wcalc/menus.c:92
-msgid "/_Options"
+msgid "/File/Close"
 msgstr ""
 
 #: gtk-wcalc/menus.c:93
-msgid "/Options/tearoff"
+msgid "/File/Quit"
 msgstr ""
 
 #: gtk-wcalc/menus.c:94
-msgid "/_Window"
+msgid "/_Options"
 msgstr ""
 
 #: gtk-wcalc/menus.c:95
-msgid "/Window/tearoff"
+msgid "/Options/tearoff"
 msgstr ""
 
 #: gtk-wcalc/menus.c:96
-msgid "/_Help"
+msgid "/_Window"
 msgstr ""
 
 #: gtk-wcalc/menus.c:97
-msgid "/_Help/About"
+msgid "/Window/tearoff"
 msgstr ""
 
 #: gtk-wcalc/menus.c:98
-msgid "/_Help/Copyright"
+msgid "/_Help"
 msgstr ""
 
 #: gtk-wcalc/menus.c:99
-msgid "/_Help/_Material Properties"
+msgid "/_Help/About"
 msgstr ""
 
 #: gtk-wcalc/menus.c:100
-msgid "/_Help/_Material Properties/_Permeabilities"
+msgid "/_Help/Copyright"
+msgstr ""
+
+#: gtk-wcalc/menus.c:101
+msgid "/_Help/_Material Properties"
 msgstr ""
 
 #: gtk-wcalc/menus.c:102
-msgid "/_Help/_Material Properties/_Permitivities"
+msgid "/_Help/_Material Properties/_Permeabilities"
 msgstr ""
 
 #: gtk-wcalc/menus.c:104
-msgid "/_Help/_Material Properties/_Resistivities"
+msgid "/_Help/_Material Properties/_Permitivities"
 msgstr ""
 
 #: gtk-wcalc/menus.c:106
-msgid "/_Help/_Material Properties/_Units"
+msgid "/_Help/_Material Properties/_Resistivities"
 msgstr ""
 
 #: gtk-wcalc/menus.c:108
+msgid "/_Help/_Material Properties/_Units"
+msgstr ""
+
+#: gtk-wcalc/menus.c:110
 msgid "/_Help/_Material Properties/_Wire Sizes"
 msgstr ""
 
-#: gtk-wcalc/menus.c:198
+#: gtk-wcalc/menus.c:200
 #, c-format
 msgid "window_close():  Called with input pointer %p\n"
 msgstr ""
 
-#: gtk-wcalc/menus.c:199
+#: gtk-wcalc/menus.c:201
 #, c-format
 msgid "window_close():  I will destroy window %p\n"
 msgstr ""
