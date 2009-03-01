@@ -1,3 +1,275 @@
+2009-02-28 20:03  dan
+
+	* libwcalc/Makefile.am: bump library rev for 1.1 release
+
+2009-02-28 19:55  dan
+
+	* README-to-release: update instructions a bit
+
+2009-02-27 22:35  dan
+
+	* autogen.sh: s/gerbv/wcalc in one spot
+
+2009-02-27 22:33  dan
+
+	* htdocs/left_column.incl: add a link to the sf project page
+
+2009-02-27 22:32  dan
+
+	* htdocs/projects.shtml: update some gtk1 vs gtk2 comments
+
+2009-02-27 22:26  dan
+
+	* NEWS: add news items for improved/new/corrrected
+	  cuopled_microstrip and microstrip conductor losses and
+	  conductance in the microstrip model
+
+2009-02-27 22:26  dan
+
+	* sci-wcalc/microstrip_calc.c: update for alpha_c and alpha_d being
+	  in nepers/meter instead of dB/meter
+
+2009-02-27 22:21  dan
+
+	* htdocs/coax.shtml: add comments about the TE10 calculation
+
+2009-02-27 22:21  dan
+
+	* htdocs/coplanar.shtml: add some comments about typos in wadells
+	  book
+
+2009-02-27 22:20  dan
+
+	* htdocs/faq.shtml: add a few more notes about what OS I care about
+	  and bug reports
+
+2009-02-27 22:19  dan
+
+	* htdocs/news.shtml: add more news about microstrip and coupled
+	  microstrip loss calculation improvements
+
+2009-02-27 22:19  dan
+
+	* htdocs/microstrip.shtml: add reference for incremental inductance
+	  and also add some comments about loss
+
+2009-02-27 22:14  dan
+
+	* stdio-wcalc/: coupled_microstrip.ref, microstrip.dat,
+	  microstrip.ref: regen after fixing loss calculations
+
+2009-02-27 22:14  dan
+
+	* stdio-wcalc/main.c: account for alpha_c and alpha_d being in
+	  nepers/meter now instead of dB/meter
+
+2009-02-27 22:13  dan
+
+	* libwcalc/microstrip.c: Fix a bug in the conductor loss
+	  calculation where I was using a characteristic impedance based on
+	  er=1 (left over from the  incremental inductance calculation)
+	  instead of the correct impedance.  This produced a incremental
+	  series resistance which was too large.
+
+2009-02-27 22:11  dan
+
+	* libwcalc/coupled_microstrip.c: Implement conductor loss via
+	  Wheelers incremental inductance method.
+
+2009-02-27 00:25  dan
+
+	* libwcalc/coplanar.c: bump copyright date missed on last commit
+
+2009-02-27 00:23  dan
+
+	* libwcalc/coplanar.c: fix some bugs in the loss calculations
+
+2009-02-27 00:23  dan
+
+	* libwcalc/stripline.c: add a comment about dielectric loss
+
+2009-02-27 00:22  dan
+
+	* libwcalc/microstrip.c: correctly use the dielectric fill factor
+	  for the dielectric loss calculation
+
+2009-02-27 00:22  dan
+
+	* libwcalc/coupled_microstrip.c: start work on getting the loss
+	  calculations going
+
+2009-02-26 21:31  dan
+
+	* references/: Gopinath_MTT_1982_coplanar_loss.pdf,
+	  coplanar_conductor_loss.pdf: add a few more references
+
+2009-02-21 00:20  dan
+
+	* gtk-wcalc/: menus.c, newprint.c, newprint.h: - add an export to
+	  pdf menu item (for gtk-2.10.x and newer) - set the default page
+	  size to US Letter.  Is there a better way? - add a half inch
+	  margin on the pages.
+
+2009-02-13 21:11  dan
+
+	* htdocs/coax.shtml: start on some comments about coax waveguide
+	  modes
+
+2009-02-13 21:11  dan
+
+	* gtk-wcalc/: menus.c, newprint.c, newprint.h: add (for now) a page
+	  setup menu
+
+2009-02-13 21:09  dan
+
+	* gtk-wcalc/coax_gui.c: s/TE11/TE10
+
+2009-02-13 21:08  dan
+
+	* docs/coax/: Makefile, bib.tex, coax_waveguide.tex, refs.bib:
+	  start on some notes about coax waveguide modes
+
+2009-02-13 21:08  dan
+
+	* docs/htmltex: indent
+
+2009-02-11 20:35  dan
+
+	* htdocs/news.shtml: fix a markup typo
+
+2009-02-11 20:32  dan
+
+	* cgi-wcalc/parallel_rl.html: fix one last sed induced typo
+
+2009-02-11 20:05  dan
+
+	* libwcalc/coax.h: fix a comment
+
+2009-02-11 17:34  dan
+
+	* NEWS, cgi-wcalc/Makefile.am, cgi-wcalc/parallel_rl.cgi.c,
+	  cgi-wcalc/parallel_rl.html, gtk-wcalc/Makefile.am,
+	  gtk-wcalc/parallel_rc.wc, gtk-wcalc/parallel_rl.wc,
+	  gtk-wcalc/parallel_rl_gui.c, gtk-wcalc/parallel_rl_gui.h,
+	  gtk-wcalc/wcalc.c, htdocs/Makefile.am, htdocs/cgi-wcalc.shtml,
+	  htdocs/left_column.incl, htdocs/news.shtml,
+	  htdocs/parallel_rc.shtml, htdocs/parallel_rl.shtml,
+	  libwcalc/Makefile.am, libwcalc/defaults.c, libwcalc/defaults.h,
+	  libwcalc/make_defaults.c, libwcalc/parallel_rl.c,
+	  libwcalc/parallel_rl.h, libwcalc/parallel_rl_loadsave.c,
+	  libwcalc/parallel_rl_loadsave.h, libwcalc/wcalc_loadsave.c,
+	  libwcalc/wcalc_loadsave.h, sci-wcalc/Makefile.am,
+	  sci-wcalc/mex.mk, sci-wcalc/parallel_rc.dem,
+	  sci-wcalc/parallel_rl.dem, sci-wcalc/parallel_rl_p2s.c,
+	  sci-wcalc/parallel_rl_p2s.dia.ref, sci-wcalc/parallel_rl_p2s.tst,
+	  sci-wcalc/parallel_rl_p2s.xml, sci-wcalc/parallel_rl_s2p.c,
+	  sci-wcalc/parallel_rl_s2p.dia.ref, sci-wcalc/parallel_rl_s2p.tst,
+	  sci-wcalc/parallel_rl_s2p.xml, sci-wcalc/see_also.xml,
+	  stdio-wcalc/Makefile.am, stdio-wcalc/main.c,
+	  stdio-wcalc/parallel_rl.dat, stdio-wcalc/parallel_rl.ref,
+	  stdio-wcalc/tests.list: add parallel/series RL network
+	  calculator.  Fix a few other minor bugs (in parallel_rc) while
+	  here
+
+2009-02-10 21:43  dan
+
+	* stdio-wcalc/Makefile.am: add missing parallel_rc test input
+
+2009-02-10 19:52  dan
+
+	* libwcalc/parallel_rc.c: fix a major bug in the parallel to series
+	  conversion
+
+2009-02-10 19:51  dan
+
+	* gtk-wcalc/: parallel_rc.wc, parallel_rc_gui.c: finish up the
+	  parallel_rc gui
+
+2009-02-10 19:02  dan
+
+	* NEWS: add some NEWS about the parallel_rc module
+
+2009-02-10 19:00  dan
+
+	* sci-wcalc/Makefile.am, sci-wcalc/mex.mk,
+	  sci-wcalc/parallel_rc.dem, sci-wcalc/parallel_rc_p2s.c,
+	  sci-wcalc/parallel_rc_p2s.dia.ref, sci-wcalc/parallel_rc_p2s.tst,
+	  sci-wcalc/parallel_rc_p2s.xml, sci-wcalc/parallel_rc_s2p.c,
+	  sci-wcalc/parallel_rc_s2p.dia.ref, sci-wcalc/parallel_rc_s2p.tst,
+	  sci-wcalc/parallel_rc_s2p.xml, sci-wcalc/see_also.xml,
+	  sci-wcalc/wcalc_test.sci.in, stdio-wcalc/main.c,
+	  stdio-wcalc/parallel_rc.dat, stdio-wcalc/parallel_rc.ref,
+	  stdio-wcalc/tests.list: add parallel_rc
+
+2009-02-10 19:00  dan
+
+	* htdocs/about.shtml, htdocs/air_coil.shtml, htdocs/bars.shtml,
+	  htdocs/bugs.shtml, htdocs/coax.shtml, htdocs/coplanar.shtml,
+	  htdocs/coupled_microstrip.shtml, htdocs/coupled_stripline.shtml,
+	  htdocs/gtk-wcalc.shtml, htdocs/ic_microstrip.shtml,
+	  htdocs/index.shtml, htdocs/microstrip.shtml, htdocs/news.shtml,
+	  htdocs/parallel_rc.shtml, htdocs/projects.shtml,
+	  cgi-wcalc/Makefile.am, cgi-wcalc/air_coil.html,
+	  cgi-wcalc/bars.html, cgi-wcalc/coax.html,
+	  cgi-wcalc/coplanar.html, cgi-wcalc/coupled_microstrip.html,
+	  cgi-wcalc/coupled_stripline.html, cgi-wcalc/ic_microstrip.html,
+	  cgi-wcalc/microstrip.html, cgi-wcalc/parallel_rc.cgi.c,
+	  cgi-wcalc/parallel_rc.html, cgi-wcalc/stripline.html: - update
+	  all the image sizes after I went and touched them all (ugh).
+
+	  - add web pages and cgi front end for the parallel_rc module.
+
+2009-02-10 07:10  dan
+
+	* gtk-wcalc/parallel_rc.wc, gtk-wcalc/parallel_rc_gui.c,
+	  libwcalc/defaults.c, libwcalc/defaults.h, libwcalc/parallel_rc.c,
+	  libwcalc/parallel_rc.h, libwcalc/parallel_rc_loadsave.c,
+	  libwcalc/wcalc_loadsave.c: allow different units for series and
+	  parallel resistance.	Also fix some top level parallel_rc
+	  integration
+
+2009-02-10 00:00  dan
+
+	* README.newmodel, gtk-wcalc/Makefile.am, gtk-wcalc/parallel_rc.wc,
+	  gtk-wcalc/parallel_rc_gui.c, gtk-wcalc/parallel_rc_gui.h,
+	  gtk-wcalc/utils.h, gtk-wcalc/wcalc.c, htdocs/Makefile.am,
+	  htdocs/cgi-wcalc.shtml, htdocs/left_column.incl,
+	  htdocs/parallel_rc.shtml, libwcalc/Makefile.am,
+	  libwcalc/defaults.c, libwcalc/libwcalc.h,
+	  libwcalc/make_defaults.c, libwcalc/parallel_rc.c,
+	  libwcalc/parallel_rc.h, libwcalc/parallel_rc_loadsave.c,
+	  libwcalc/parallel_rc_loadsave.h, libwcalc/wcalc_loadsave.h: start
+	  on the parallel RC calculator
+
+2009-02-09 21:36  dan
+
+	* README: note some of the new models
+
+2009-02-09 21:36  dan
+
+	* NEWS: start on 1.1 release notes
+
+2009-02-09 21:36  dan
+
+	* README-to-release: do not forget the shared library versioning
+
+2009-02-09 21:33  dan
+
+	* configure.ac: correctly search for the cairo driver in pstoedit
+
+2009-02-09 21:32  dan
+
+	* ChangeLog: update for 2 years of commits
+
+2009-02-09 14:43  dan
+
+	* pixmaps/: air_coil.obj, bars_fig.obj, coax.obj, coax_model.obj,
+	  coplanar.obj, coplanar_model.obj, coupled_microstrip.obj,
+	  coupled_stripline.obj, ic_microstrip.obj,
+	  ic_microstrip_model.obj, microstrip.obj, microstrip_model.obj,
+	  rc.obj, rl.obj, splash.obj, stripline.obj, stripline_model.obj:
+	  remove RCS ids from the figures
+
 2009-02-08 09:42  dan
 
 	* configure.ac, gtk-wcalc/Makefile.am, gtk-wcalc/newprint.h,
