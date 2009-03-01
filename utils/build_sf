@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Copyright (C) 2009 Dan McMahill
+# All rights reserved.
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+
+here=`pwd`
+
+./configure \
+	--disable-gtk1 \
+	--disable-gtk2 \
+	--without-scilab \
+	--without-octave \
+	--without-matlab \
+	--disable-stdio \
+	--enable-cgi \
+	--enable-cgistatic \
+	--with-htmlpath="/" \
+	--enable-htdocs \
+	--with-htmldir=${here}/wcalc-website/htdocs \
+	--with-cgibin=${here}/wcalc-website/cgi-bin \
+	--enable-sourceforge \
+	--prefix=${here}/wcalc-inst 2>&1 | tee c.log
+
+gmake -j4 2>&1 | tee m.log
+gmake -j4 install 2>&1 | tee i.log
+

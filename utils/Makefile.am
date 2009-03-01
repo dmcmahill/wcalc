@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.3 2002/05/10 22:53:07 dan Exp $
+## $Id: Makefile.am,v 1.4 2008/11/29 20:42:45 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002 Dan McMahill
+## Copyright (C) 2001, 2002, 2009 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -19,5 +19,5 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ## 
 
-EXTRA_DIST=	eps2c epslint format_tab html2c shtml2html
+EXTRA_DIST=	build_sf eps2c epslint format_tab html2c shtml2html
 
