@@ -1,4 +1,4 @@
-te dnl $Id: configure.ac,v 1.14 2009/02/08 14:42:53 dan Exp $
+te dnl $Id: configure.ac,v 1.15 2009/02/10 02:33:35 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -21,7 +21,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 dnl 
 
-AC_INIT([wcalc], [1.0A])
+AC_INIT([wcalc], [1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.9])
