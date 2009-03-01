@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.6 2006/02/09 13:47:25 dan Exp $
+# $Id: README-to-release,v 1.7 2009/02/10 02:36:30 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -42,44 +42,40 @@ To make a wcalc release do the following:
 =)	if this is a major release, then tag and branch:
 
 	1. Tag the base of the release branch
-		cvs tag wcalc-0_9-base 
+		cvs tag wcalc-1_1-base 
 
 	2. Create the release branch
-		cvs tag -R -b -r wcalc-0_9-base wcalc-0_9
+		cvs tag -R -b -r wcalc-1_1-base wcalc-1_1
 
-	3. FIX_ME [fix up this step.  what shall we do with the version
-	   on the trunk?]
-	   On the trunk, update configure.in and win32/build_wcalc to update the version
+	3. On the trunk, update configure.ac to update the version
 		and to enable the DEVEL_VERSION define.
-		for example 1.99x after releasing 1.99w
+		for example 1.1A after branching the 1.1 branch.
 		cvs update -PdA
-		vi configure.in win32/build_wcalc
-		cvs ci configure.in win32/build_wcalc
+		vi configure.ac
+		cvs ci configure.ac
 
-	4. On the release branch, update configure.in and win32/build_wcalc to 
+	4. On the release branch, update configure.ac to 
 		update the version
-		for example 0_9_ALPHA.  Now pre-release snapshots can be made.
-		cvs update -PdA -r wcalc-0_9
+		for example 1_1_ALPHA.  Now pre-release snapshots can be made.
+		cvs update -PdA -r wcalc-1_1
 
 	5. If desired tag an alpha release:
-		cvs update -PdA -r wcalc-0_9
+		cvs update -PdA -r wcalc-1_1
 		./autogen.sh
-		cvs tag -R -r wcalc-0_9 wcalc-0_9-ALPHA
-		cvs update -PdA -r wcalc-0_9-ALPHA
+		cvs tag -R -r wcalc-1_1 wcalc-1_1-ALPHA
+		cvs update -PdA -r wcalc-1_1-ALPHA
 		./autogen.sh && ./configure && gmake distcheck
 
-	6. When the release branch is ready to go,  update configure.in and
-	   win32/build_wcalc to
-	   set the final release version
-		and to disable the DEVEL_VERSION define.
+	6. When the release branch is ready to go,  update configure.ac
+	   to set the final release version and to disable the DEVEL_VERSION define.
 		Then tag the release.
-		cvs update -PdA -r wcalc-0_9
-		vi configure.in win32/build_wcalc
-		cvs ci configure.in win32/build_wcalc
+		cvs update -PdA -r wcalc-1_1
+		vi configure.ac
+		cvs ci configure.ac
 		./autogen.sh
 		cvs ci
-		cvs tag -R -r wcalc-0_9 wcalc-0_9-RELEASE
-		cvs update -PdA -r wcalc-0_9-RELEASE
+		cvs tag -R -r wcalc-1_1 wcalc-1_1-RELEASE
+		cvs update -PdA -r wcalc-1_1-RELEASE
 		./autogen.sh && gmake distcheck
 
 	7. Return to your regularly scheduled trunk development
@@ -88,32 +84,63 @@ To make a wcalc release do the following:
 =) 	if this is a patch release, then simply make desired changes to the branch, and
 		./autogen.sh 
 		cvs ci
-		cvs tag -R -r wcalc-0_9 wcalc-0_9-PATCH001
+		cvs tag -R -r wcalc-1_1 wcalc-1_1-PATCH001
 
 =)	gmake distclean ; ./autogen.sh && gmake distcheck
 
 =)	Copy the distfile to cygwin and do
 	cd src
-	tar -zxvf wcalc-1.0.tar.gz
-	cd wcalc-1.0
+	tar -zxvf wcalc-1.1.tar.gz
+	cd wcalc-1.1
 	sh win32/build_wcalc
-	Copy the resulting installer (wcinst-1.0.exe and wcinst-1.0.zip)
+	Copy the resulting installer (wcinst-1.1.exe and wcinst-1.1.zip)
 
 =)	Create checksums
 
-		digest sha1 wcalc-1.0.tar.gz wcinst-1.0.* > wcalc-1.0.SHA1
-		digest md5 wcalc-1.0.tar.gz wcinst-1.0.* > wcalc-1.0.MD5
+		openssl sha1 wcalc-1.1.tar.gz wcinst-1.1.* > wcalc-1.1.cksum
+		openssl md5 wcalc-1.1.tar.gz wcinst-1.1.* >> wcalc-1.1.cksum
+		openssl rmd160 wcalc-1.1.tar.gz wcinst-1.1.* >> wcalc-1.1.cksum
 
-=)	Upload the .tar.gz, .MD5, .SHA1, and win32/wcinst-*.{exe,zip} files
-	to ftp://upload.sourceforge.net/incoming/
 
-=)	Create a new file release for wcalc with a release name of
-	"wcalc-1.0" (for wcalc-1.0).
+=)      Create a new file release for the package "gerbv" with a release name of
+        "gerbv-2.2.0" (for gerbv-2.2.0).  Do this by logging into www.sourceforge.net
+        and then navigating to
 
-=)	For file types:
+        https://sourceforge.net/projects/gerbv  (you must be logged in to sourceforge)
 
-	.tar.gz      -  any / source .gz
-	.{SHA1,MD5}  -  Platform Independent / Other Source File
-	.exe         -  i386 / .exe (32-bit Windows)
-	.zip         -  i386 / .zip
+        Pick Admin->File Releases
+
+        Next to the "gerbv" package, click "Add Release"
+
+        In the "Step 1:  Edit Existing Release" section, paste in the section of the NEWS
+        for this version.  Check the "Preserve my pre-formatted text" radio button and click
+        "Submit/Refresh".
+
+        In the "Step 2: Add Files To This Release" section follow the "upload new files" link
+        and then in the next page the "Web Upload" link.  You will have to log in to
+        sourceforge again.
+
+        Upload the .tar.gz, .cksum, and if you built one, the windows installer.
+
+        Once you have completed the file uploads return to the edit releases page, check
+        the radio buttons next to the uploaded files and click the "Add Files..." button.
+
+        In the "Step 3:  Edit Files in this Release" section, set the following:
+             For file types:
+                     .tar.gz  -  any / source .gz
+                     .cksum   -  Platform Independent / Other Source File
+                     .exe     -  i386 / .exe (32-bit Windows)
+
+        You will have to click "update" for each file as you go.
+
+        In the "Step 4:  Email Release Notice" section, check the "I'm sure" 
+        radio button and click the "Send Notice" button.
+        
+=)      Have a project admin go to the Admin->File Releases page and then
+        follow the "Create/Edit Download page" to change the default download
+        file to the new release.
+
+=)      Return to trunk development with
+        cvs update -PdA
+
 
