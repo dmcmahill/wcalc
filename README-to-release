@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.7 2009/02/10 02:36:30 dan Exp $
+# $Id: README-to-release,v 1.8 2009/03/01 00:55:46 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now
@@ -93,13 +93,13 @@ To make a wcalc release do the following:
 	tar -zxvf wcalc-1.1.tar.gz
 	cd wcalc-1.1
 	sh win32/build_wcalc
-	Copy the resulting installer (wcinst-1.1.exe and wcinst-1.1.zip)
+	Copy the resulting installer (wcalcinst-1.1.exe and wcalcinst-1.1.zip)
 
 =)	Create checksums
 
-		openssl sha1 wcalc-1.1.tar.gz wcinst-1.1.* > wcalc-1.1.cksum
-		openssl md5 wcalc-1.1.tar.gz wcinst-1.1.* >> wcalc-1.1.cksum
-		openssl rmd160 wcalc-1.1.tar.gz wcinst-1.1.* >> wcalc-1.1.cksum
+		openssl sha1 wcalc-1.1.tar.gz wcalcinst-1.1.* > wcalc-1.1.cksum
+		openssl md5 wcalc-1.1.tar.gz wcalcinst-1.1.* >> wcalc-1.1.cksum
+		openssl rmd160 wcalc-1.1.tar.gz wcalcinst-1.1.* >> wcalc-1.1.cksum
 
 
 =)      Create a new file release for the package "gerbv" with a release name of
