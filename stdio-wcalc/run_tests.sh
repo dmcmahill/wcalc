@@ -1,40 +1,63 @@
 #!/bin/sh
 #
-# $Id: run_tests.sh,v 1.13 2004/03/18 22:02:34 dan Exp $
+# $Id: run_tests.sh,v 1.1 2004/09/03 03:18:51 dan Exp $
 #
-# Copyright (c) 2003, 2004 Dan McMahill
+# Copyright (c) 2003, 2004, 2009 Dan McMahill
 # All rights reserved.
 #
-# This code is derived from software written by Dan McMahill
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgement:
-#        This product includes software developed by Dan McMahill
-#  4. The name of the author may not be used to endorse or promote products
-#     derived from this software without specific prior written permission.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
 # 
-#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-#  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-#  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-#  AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-#  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-#  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-#  SUCH DAMAGE.
-#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
 
 regen=no
+list_only=no
+
+# make sure we have the right paths when running this from inside the
+# source tree and also from outside the source tree.
+here=`pwd`
+srcdir=${srcdir:-$here}
+srcdir=`cd $srcdir && pwd`
+
+rundir=${here}/run
+
+TESTLIST=${srcdir}/tests.list
+
+
+usage() {
+
+$0 - Interact with the stdio-wcalc test suite
+
+$0 -h|--help
+$0 -l|--list-tests
+$0 [-r|--regen] [testname1 [testname2 [...] ] ]
+
+Command line options:
+
+  -h|--help        Displays this help message and exits
+
+  -l|--list-tests  Lists all available tests
+
+  -r|--regen       Instead of running the selected tests and checking for a correct
+		   result, the results are treated as "golden" and replace the reference
+		   files.  This option is for developer use and should be used with
+		   caution and the resulting reference file should be checked very
+		   carefully.
+
+If no test name is given then $0 will run all of the tests which are 
+configured in ${TESTLIST}.  To run a single test or a subset of the complete tests,
+just list the test names on the $0 command line.
+
+} 
 
 while test -n "$1"
 do
@@ -42,8 +65,14 @@ do
     in
 
     -h|--help)
-	echo "Sorry, help not available for this script yet"
+	usage
 	exit 0
+	;;
+
+    -l|--list-tests)
+	# just list the available tests
+	list_only=yes
+	shift
 	;;
 
     -r|--regen)
@@ -55,6 +84,7 @@ do
 
     -*)
 	echo "unknown option: $1"
+	usage
 	exit 1
 	;;
 
@@ -72,16 +102,6 @@ else
 fi
 
 
-# make sure we have the right paths when running this from inside the
-# source tree and also from outside the source tree.
-here=`pwd`
-srcdir=${srcdir:-$here}
-srcdir=`cd $srcdir && pwd`
-
-rundir=${here}/run
-
-TESTLIST=${srcdir}/tests.list
-
 if [ ! -f $TESTLIST ]; then
     echo "ERROR: ($0)  Test list $TESTLIST does not exist"
     exit 1
@@ -97,6 +117,14 @@ if test -z "$1" ; then
     all_tests=`awk 'BEGIN{FS="|"} /^#/{next} {print $1}' $TESTLIST | sed 's; ;;g'`
 else
     all_tests=$*
+fi
+
+if test "x$list_only" = "xyes" ; then
+	echo "All tests:"
+	for t in $all_tests ; do
+		echo "  ${t}"
+	done
+	exit 0
 fi
 
 echo "Starting tests in $here."
