@@ -1,4 +1,4 @@
-# $Id: coupled_stripline.dat,v 1.1 2006/02/13 16:56:02 dan Exp $
+# $Id: coupled_stripline.dat,v 1.2 2006/03/09 16:05:34 dan Exp $
 #
 # coupled stripline test data
 #
@@ -119,4 +119,12 @@ coupled_stripline_syn 69.37  36.04  90 1.744e-3 0.988e-5 2e-3 1.0 3.0e-5 1.72e-8
 coupled_stripline_syn 50.000 0.500 90 1.744e-3 0.988e-5 2e-3 1.0 3.0e-5 1.72e-8 0.0 2.55 0.0 6e9 0
 coupled_stripline_syn 86.74  28.82 90 1.744e-3 0.988e-5 2e-3 1.0 3.0e-5 1.72e-8 0.0 2.55 0.0 6e9 1
 
+*************** Bug report ************
+*
+*
+
+* [w_out,s_out,l_out] = 
+*   coupled_stripline_syn(z0e,z0o,elen,w,s,h,l,tmet,rho,rough,er,tand,f,1);
+
+coupled_stripline_syn 19.06 12.41 90 50e-3 15e-3 4e-3 1.0 35e-6 1.6e-8 0.0 82 0.0001 815e6 1
 
