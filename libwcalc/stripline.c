@@ -1,7 +1,7 @@
-/*      $Id: stripline.c,v 1.23 2008/11/29 20:42:20 dan Exp $ */
+/*      $Id: stripline.c,v 1.24 2009/02/27 05:23:31 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -145,11 +145,17 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
   double L, R, C, G, delay, depth, deltal;
 
 #ifdef DEBUG_CALC
-  printf("stripline_calc_int(): --------------- Stripline Analysis ------------\n");
-  printf("stripline_calc_int(): flag                        = %d\n",flag);
-  printf("stripline_calc_int():       WITHLOSS              = %d\n",WITHLOSS);
-  printf("stripline_calc_int():       NOLOSS                = %d\n",NOLOSS);
-  printf("stripline_calc_int(): -------------- ---------------------- ----------\n");
+  printf("%s(): --------------- Stripline Analysis ------------\n",
+	 __FUNCTION__);
+  printf("%s(): flag                        = %d (%s)\n",
+	 __FUNCTION__, flag, 
+	 flag == NOLOSS ? "NOLOSS" : (flag == WITHLOSS ? "WITHLOSS" : "unknown"));
+  printf("%s(): Metal width                 = %g m\n",
+	 __FUNCTION__, line->w);
+  printf("%s():                             = %g %s\n",
+	 __FUNCTION__, line->w/line->units_lwht->sf, line->units_lwht->name);
+  printf("%s(): -------------- ---------------------- ----------\n",
+	 __FUNCTION__);
 #endif
 
   /*
@@ -419,6 +425,10 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
    line->Cs = C;
    line->Gs = G;
    
+#ifdef DEBUG_CALC
+   printf("%s():  calculated z0 = %g Ohms\n", __FUNCTION__, line->z0);
+#endif
+
    return 0;
 }
 
@@ -623,6 +633,9 @@ int stripline_syn(stripline_line *line, double f, int flag)
     if (errmax*errmin > 0){
       alert("Could not bracket the solution.\n"
 	    "Synthesis failed.\n");
+#ifdef DEBUG_SYN
+      printf("%s():  Failed to bracket the solution.\n", __FUNCTION__);
+#endif
       return -1;
     }
   
@@ -637,6 +650,9 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
   /* the actual iterations */
   while (!done){
+#ifdef DEBUG_SYN
+      printf("%s():  Starting iteration %d\n", __FUNCTION__, iters);
+#endif
 
     /* update the interation count */
     iters = iters + 1;
@@ -669,8 +685,13 @@ int stripline_syn(stripline_line *line, double f, int flag)
     *optpar = var;
     rslt = stripline_calc_int(line,f,NOLOSS);
     err = line->z0 - Ro;
-    if (rslt)
+    if (rslt) {
+#ifdef DEBUG_SYN
+      printf("%s():  stripline_calc_int returned %d, terminating synthesis early\n", 
+	     __FUNCTION__, rslt);
+#endif
       return rslt;
+    }
 
     /* update our bracket of the solution. */
 
@@ -758,6 +779,10 @@ stripline_line *stripline_line_new()
 {
   stripline_line *newline;
 
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("%s():  entered function\n", __FUNCTION__);
+#endif
+
   newline = (stripline_line *) malloc(sizeof(stripline_line));
   if(newline == NULL)
     {
@@ -784,10 +809,20 @@ stripline_line *stripline_line_new()
   newline->units_deltal  = wc_units_new(WC_UNITS_LENGTH);
 
   /* load in the defaults */
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("%s():  loading defaults\n", __FUNCTION__);
+#endif
   stripline_load_string(newline, default_stripline);
 
   /* and do a calculation to finish the initialization */
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("%s():  running initial calculation\n", __FUNCTION__);
+#endif
   stripline_calc(newline, newline->freq);
+
+#if defined(DEBUG_CALC) || defined(DEBUG_SYN)
+  printf("%s():  returning %p\n", __FUNCTION__, newline);
+#endif
 
   return(newline);
 }
