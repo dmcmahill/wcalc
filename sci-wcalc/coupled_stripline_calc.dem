@@ -1,0 +1,74 @@
+// -*- scilab -*-
+// $Id: air_coil_calc.dem,v 1.2 2009/01/11 04:22:23 dan Exp $
+//
+// Copyright (c) 2009 Dan McMahill
+// All rights reserved.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; version 2 of the License.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+// -----------------------------------------------
+// Coupled Stripline Analysis
+// -----------------------------------------------
+
+sf   = 25.4e-6; // mils to meters conversion
+w    = 50*sf;   // width of lines
+s    = 15*sf;   // spacing between lines
+h    = 62*sf;   // total dielectric thickness
+l    = 1000*sf; // physical length of the lines
+tmet = 0.7*sf;  // metal thickness
+rho  = 1.7e-8;  // metal resistivity (Ohm-meters)
+rough= 0.0;     // metal surface roughness
+er   = 4.8;     // substrate relative permitivity
+tand = 0.01;    // dielectric loss tangent
+f    = 900e6;   // frequency of operation
+[z0,k,z0e,z0o,kev,kodd] =  ...
+    coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+
+
+printf("z0       = %g Ohms\n",z0);
+printf("k        = %g\n",k);
+printf("z0,even  = %g Ohms\n",z0e);
+printf("z0,odd   = %g Ohms\n",z0o)
+
+// Sweep width from 0.01 to 100.0 times the
+// dielectric thickness
+wrel = logspace(-1,1,256)';
+w = wrel*h; 
+[z0,k,z0e,z0o,kev,kodd] = ...
+  coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+[z0s,elen,loss,L,R,C,G,lc,ld,deltal,depth] = ...
+    stripline_calc(w,h,l,tmet,rho,rough,er,tand,f);
+xset("window", 0); xbasc(); xselect();
+plot2d([wrel,wrel,wrel,wrel],[z0e,z0o,z0,z0s], ...
+    logflag="ln",leg="z0e@z0o@z0@z0,single");
+xgrid(3);
+xtitle('Characteristic Impedance vs. Trace Width', ...
+    'Width/Dielectric Thickness','Ohms');
+
+// Sweep width from 0.01 to 100.0 times the
+// dielectric thickness
+wrel = logspace(-2,2,256)';
+w = wrel*h; 
+[z0,k,z0e,z0o,kev,kodd] = ...
+  coupled_stripline_calc(w,s,h,l,tmet,rho,rough,er,tand,f);
+[z0s,elen,loss,L,R,C,G,lc,ld,deltal,depth] = ...
+    stripline_calc(w,h,l,tmet,rho,rough,er,tand,f);
+xset("window", 1); xbasc(); xselect();
+plot2d([wrel,wrel,wrel,wrel],[z0e,z0o,z0,z0s], ...
+    logflag="ln",leg="z0e@z0o@z0@z0,single");
+xgrid(3);
+xtitle('Characteristic Impedance vs. Trace Width', ...
+    'Width/Dielectric Thickness','Ohms');
+

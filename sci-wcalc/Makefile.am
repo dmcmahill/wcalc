@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.58 2009/02/11 00:00:45 dan Exp $
+## $Id: Makefile.am,v 1.59 2009/02/11 22:34:21 dan Exp $
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
@@ -30,9 +30,11 @@ demo_DATA=	${SCIDEMOS}
 SCIDEMOS=	wcalc-demo.dem \
 	air_coil_calc.dem \
 	air_coil_syn.dem \
+	coupled_stripline_calc.dem \
 	bars_calc.dem \
 	parallel_rc.dem \
-	parallel_rl.dem
+	parallel_rl.dem \
+	stripline_calc.dem
 
 SCI_VER=		@SCI_VER@
 scilibdir=	${libdir}/scilab-${SCI_VER}/${PACKAGE}-${VERSION}

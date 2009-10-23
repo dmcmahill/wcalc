@@ -1,4 +1,5 @@
-// $Id: wcalc-demo.dem,v 1.3 2009/01/11 04:10:19 dan Exp $
+// -*- scilab -*-
+// $Id: wcalc-demo.dem,v 1.4 2009/01/11 04:22:24 dan Exp $
 //
 // Copyright (c) 2002, 2005, 2009 Dan McMahill
 // All rights reserved.
@@ -24,7 +25,9 @@ deff('[]=notimpl()','printf(""Demo not implemented yet\n"");')
 
 demolist=[
     'Air Core Inductor Analysis','air_coil_calc.dem';
+    'Coupled Stripline Analysis','coupled_stripline_calc.dem';
     'Parallel Rectangular Bars Analysis','bars_calc.dem';
+    'Stripline Analysis','stripline_calc.dem';
     'Coupled Microstrip Synthesis','xbasc();notimpl();'];
 
 while %t then
