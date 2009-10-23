@@ -52,7 +52,7 @@ disp(sprintf('L    = %8.4g H/m',L));
  
 disp(sprintf('R    = %8.4g Ohms/m',R));
  
- R    =    42.67 Ohms/m   
+ R    =    37.23 Ohms/m   
  
 disp(sprintf('C    = %8.4g F/m',C));
  
@@ -60,7 +60,7 @@ disp(sprintf('C    = %8.4g F/m',C));
  
 disp(sprintf('G    = %8.4g S/m',G));
  
- G    =  0.01538 S/m   
+ G    =  0.01361 S/m   
  
 disp(sprintf('lc   = %8.4g dB/m',lc));
  

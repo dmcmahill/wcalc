@@ -47,7 +47,7 @@ disp(sprintf('kev=%8.4g, kodd=%8.4g',kev,kodd));
  
 disp(sprintf('losse=%8.4g dB, losso=%8.4g dB',losse,losso));
  
- losse=  0.1058 dB, losso=  0.0886 dB   
+ losse=  0.1629 dB, losso=   0.142 dB   
  
 disp(sprintf('deltale=%8.4g mils, deltalo=%8.4g mils', deltale/sf, deltalo/sf));
  
