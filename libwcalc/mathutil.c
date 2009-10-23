@@ -1,4 +1,4 @@
-/* $Id: mathutil.c,v 1.11 2006/01/07 00:02:49 dan Exp $ */
+/* $Id: mathutil.c,v 1.12 2008/11/29 20:42:16 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2006 Dan McMahill
@@ -1689,6 +1689,14 @@ double k_over_kp(double k)
 {
   double kp, r, kf;
   int i = 0;
+
+  /* 
+   * the series calculation below works for k < 1.0, but if k == 1.0
+   * then the series does not converge because k = 1, kp = 0,
+   * and kf = 2 for every iteration which means that r just doubles
+   * each time around.  That makes sense because 
+   * K(k) -> infinity when k = 1
+   */
 
   kp = sqrt(1.0-pow(k,2.0));
   r = 1.0;
