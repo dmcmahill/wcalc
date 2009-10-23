@@ -1,7 +1,7 @@
-/* $Id: coupled_stripline.c,v 1.14 2007/11/29 21:04:05 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.15 2008/11/29 20:42:11 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2009 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -20,8 +20,11 @@
  * 
  */
 
-/* #define DEBUG_SYN  */ /* debug coupled_stripline_syn()  */
-/* #define DEBUG_CALC */ /* debug coupled_stripline_calc() */
+/* debug coupled_stripline_syn()  */
+/* #define DEBUG_SYN  */
+
+/* debug coupled_stripline_calc() */
+/* #define DEBUG_CALC */
 
 #include <math.h>
 #include <stdio.h>
@@ -94,7 +97,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 
   int rslt;
 
- line->freq = f;
+  line->freq = f;
 
 #ifdef DEBUG_CALC
   printf("coupled_stripline_calc(): --------- Coupled_Stripline Analysis ----------\n");
@@ -138,7 +141,7 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   if( (line->freq > 0.0) && (line->subs->tmet > 0.0) ) {
     /* 
      * Find the high frequency asymptotic behaviour of the resistance
-     * using Wheelers incremental inductance rule as a frequency where
+     * using Wheelers incremental inductance rule at a frequency where
      * we're well into the skin effect limited region.
      */
     
@@ -341,45 +344,12 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   double s, smin, smax, z0e, z0o, k;
   double loss, delta, cval, err, d;
 
-  double AW,F1,F2,F3;
-
-  double ai[] = {1, -0.301, 3.209, -27.282, 56.609, -37.746};
-  double bi[] = {0.020, -0.623, 17.192, -68.946, 104.740, -16.148};
-  double ci[] = {0.002, -0.347, 7.171, -36.910, 76.132, -51.616};
-
-  int i;
   double dw, ds;
   double ze0=0, ze1, ze2, dedw, deds;
   double zo0=0, zo1, zo2, dodw, dods;
 
-#ifdef DEBUG_SYN
-  printf("coupled_stripline_syn(): -------- Coupled_Stripline Synthesis ----------\n");
-  printf("coupled_stripline_syn(): Metal width                 = %g %s\n",
-	 line->w/line->units_lwst->sf, line->units_lwst->name);
-  printf("coupled_stripline_syn(): Metal spacing               = %g %s\n",
-	 line->s/line->units_lwst->sf, line->units_lwst->name);
-  printf("coupled_stripline_syn(): Metal thickness             = %g %s\n",
-	 line->subs->tmet/line->units_lwst->sf, line->units_lwst->name);
-  printf("coupled_stripline_syn(): Metal relative resistivity  = %g %s\n",
-	 line->subs->rho/line->units_rho->sf, line->units_rho->name);
-  printf("coupled_stripline_syn(): Metal surface roughness     = %g %s-rms\n",
-	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
-  printf("coupled_stripline_syn(): Substrate thickness         = %g %s\n",
-	 line->subs->h/line->units_lwst->sf, line->units_lwst->name);
-  printf("coupled_stripline_syn(): Substrate dielectric const. = %g \n",
-	 line->subs->er);
-  printf("coupled_stripline_syn(): Substrate loss tangent      = %g \n",
-	 line->subs->tand);
-  printf("coupled_stripline_syn(): Frequency                   = %g %s\n",
-	 line->freq/line->units_freq->sf, line->units_freq->name);
-  printf("coupled_stripline_syn(): -------------- ---------------------- ----------\n");
-  printf("coupled_stripline_syn(): Desired Zo                  = %g ohm\n", line->z0);
-  printf("coupled_stripline_syn(): Desired k                   = %g \n", line->k);
-  printf("coupled_stripline_syn(): Desired Even Mode Zo        = %g ohm\n", line->z0e);
-  printf("coupled_stripline_syn(): Desired Odd Mode Zo         = %g ohm\n", line->z0o);
-  printf("coupled_stripline_syn(): Desired electrical length   = %g degrees\n",line->len);
-  printf("coupled_stripline_syn(): -------------- ---------------------- ----------\n");
-#endif
+  stripline_line *single;
+  int rslt;
 
   len = line->len;
 
@@ -407,6 +377,36 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
     k = (z0e - z0o)/(z0e + z0o);
   }
 
+#ifdef DEBUG_SYN
+  printf("coupled_stripline_syn(): -------- Coupled_Stripline Synthesis ----------\n");
+  printf("coupled_stripline_syn(): Metal width                 = %g %s\n",
+	 line->w/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_stripline_syn(): Metal spacing               = %g %s\n",
+	 line->s/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_stripline_syn(): Metal thickness             = %g %s\n",
+	 line->subs->tmet/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_stripline_syn(): Metal relative resistivity  = %g %s\n",
+	 line->subs->rho/line->units_rho->sf, line->units_rho->name);
+  printf("coupled_stripline_syn(): Metal surface roughness     = %g %s-rms\n",
+	 line->subs->rough/line->units_rough->sf, line->units_rough->name);
+  printf("coupled_stripline_syn(): Substrate thickness         = %g %s\n",
+	 line->subs->h/line->units_lwst->sf, line->units_lwst->name);
+  printf("coupled_stripline_syn(): Substrate dielectric const. = %g \n",
+	 line->subs->er);
+  printf("coupled_stripline_syn(): Substrate loss tangent      = %g \n",
+	 line->subs->tand);
+  printf("coupled_stripline_syn(): Frequency                   = %g %s\n",
+	 line->freq/line->units_freq->sf, line->units_freq->name);
+  printf("coupled_stripline_syn(): -------------- ---------------------- ----------\n");
+  printf("coupled_stripline_syn(): Desired Zo                  = %g ohm\n", z0);
+  printf("coupled_stripline_syn(): Desired k                   = %g \n", k);
+  printf("coupled_stripline_syn(): Desired Even Mode Zo        = %g ohm\n", z0e);
+  printf("coupled_stripline_syn(): Desired Odd Mode Zo         = %g ohm\n", z0o);
+  printf("coupled_stripline_syn(): Desired electrical length   = %g degrees\n",line->len);
+  printf("coupled_stripline_syn(): -------------- ---------------------- ----------\n");
+#endif
+
+
   /* temp value for l used while finding w and s */
   l = 1000.0;
   line->l = l;
@@ -432,32 +432,33 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
 
   /*
-   * Initial guess at a solution -- FIXME:  This is an initial guess
-   * for coupled microstrip _not_ coupled stripline.
+   * As an initial guess use the following approach.  The impedance of
+   * a single trace is typically not too far from sqrt(z0e*z0o) so
+   * pick the starting width based on a single line.  Then choose a
+   * gap which is comparable to the width.  It is not horribly
+   * accurate, but we typically don't need many iterations and each
+   * iteration is fairly fast on any computer from the last 15 years.
    */
-  AW = exp(z0*sqrt(er+1.0)/42.4) - 1.0;
-  F1 = 8.0*sqrt(AW*(7.0 + 4.0/er)/11.0 + (1.0 + 1.0/er)/0.81)/AW;
-
-  F2 = 0;
-  for (i=0; i<=5 ; i++)
-    {
-      F2 = F2 + ai[i] * pow(k,i);
-    }
-
-  F3 = 0;
-  for (i=0 ; i<=5 ; i++)
-    {
-      F3 = F3 + (bi[i] - ci[i]*(9.6 - er))*pow((0.6 - k),(double)(i));
-    }
-
-  w = h*fabs(F1*F2);
-  s = h*fabs(F1*F3);
-
+#ifdef DEBUG_SYN
+  printf("%s():  Creating single stripline for initial guess...\n", __FUNCTION__);
+#endif
+  single = stripline_line_new();
+  *(single->subs) = *(line->subs);
+  single->z0 = z0;
+  single->Ro = z0;
+  single->freq = line->freq;
 
 #ifdef DEBUG_SYN
-  printf("coupled_stripline_syn():  AW=%g, F1=%g, F2=%g, F3=%g\n",
-	 AW, F1, F2, F3);
-  
+  printf("%s(): single->z0 = %g\n", __FUNCTION__, single->z0);
+#endif
+  rslt = stripline_syn(single, single->freq, SLISYN_W);
+  w = single->w;
+#ifdef DEBUG_SYN
+  printf("%s(): rslt = %d, single->z0 = %g\n", __FUNCTION__, rslt, single->z0);
+#endif
+  s = w;
+  stripline_line_free(single);
+#ifdef DEBUG_SYN
   printf("coupled_stripline_syn():  Initial estimate:\n"
 	     "                w = %g %s, s = %g %s\n", 
 	     w/line->units_lwst->sf, line->units_lwst->name,
@@ -540,7 +541,7 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 	}
 	w = fabs(w + dw);
 
-	ds =         ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d;
+	ds = ((ze0-z0e)*dodw - (zo0-z0o)*dedw)/d;
 	if( fabs(ds) > 0.1*s ) {
 	  if( ds > 0.0 )
 	    ds = 0.1 * s;
@@ -588,7 +589,13 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 }
 
 
-/* Zero thickness characteristic impedance */
+/* 
+ * Zero thickness characteristic impedance 
+ *
+ * w = width of trace
+ * s = gap between traces
+ * b = dielectric thickness
+ */
 static int z0_zerot(double w, double s, double b, double er,
 		    double *z0e, double *z0o)
 {
@@ -601,6 +608,27 @@ static int z0_zerot(double w, double s, double b, double er,
   ko = tanh( M_PI*w / (2.0*b) ) * coth( M_PI*(w + s) / (2.0*b) );
   
 
+  /*
+   * some observations here...
+   *
+   * ke * ko = [tanh(M_PI*w/(2.0*b))]^2 always
+   *
+   * As w/b gets large, tanh() and coth() both tend towards 1.0
+   * and we end up with ke and ko tending towards 1.0.  This causes
+   * issues because K(1)/K'(1) (i.e. k_over_kp(1.0)) becomes infinite.
+   *
+   * What I should in fact see though is that as the trace width gets
+   * very large, the even mode and odd mode impedances come together
+   * and approach the single strip impedance.
+   *
+   * To avoid some of the numerical nastiness in this area
+   * for large w/b, we will switch to an alternate formula that is
+   * close enough.  In reality, about the only time we may hit this is
+   * if we have a marginal guess during some of our iterations for the
+   * synthesis.  FIXME -- this part hasn't been implemented yet.  I need
+   * to see if this is something I can solve for by hand.
+   */
+
   /* (2) from Cohn */
   *z0e = (FREESPACEZ0 / 4.0) * sqrt(1.0/er) / k_over_kp( ke );
 
@@ -608,7 +636,7 @@ static int z0_zerot(double w, double s, double b, double er,
   *z0o = (FREESPACEZ0 / 4.0) * sqrt(1.0/er) / k_over_kp( ko );
 
 #ifdef DEBUG_CALC
-  printf("z0_zerot():  ke = %g, ko = %g, *z0e = %g, *z0o = %g\n", ke, ko, *z0e, *z0o);
+  printf("z0_zerot():  ke = %.16f, ko = %.16f, *z0e = %g, *z0o = %g\n", ke, ko, *z0e, *z0o);
 #endif
 
   return 0;
@@ -624,7 +652,7 @@ static int find_z0(coupled_stripline_line *line)
   double z0e_0t, z0o_0t;
 
   /* single stripline */
-  stripline_line single;
+  stripline_line *single;
   double z0s, z0s_0t;
 
   double cf_t, cf_0;
@@ -644,25 +672,26 @@ static int find_z0(coupled_stripline_line *line)
     line->z0e = z0e_0t;
     line->z0o = z0o_0t;
   } else {
-    single.subs = stripline_subs_new();
-    *(single.subs) = *(line->subs);
-    single.w = line->w;
-    single.l = line->l;
-    single.freq = line->freq;
+    single = stripline_line_new();
+    *(single->subs) = *(line->subs);
+    single->w = line->w;
+    single->l = line->l;
+    single->freq = line->freq;
 
-    rslt = stripline_calc(&single, line->freq);
+    rslt = stripline_calc(single, line->freq);
     if( rslt != 0 ) {
       alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
     }
-    z0s = single.z0;
+    z0s = single->z0;
 
-    single.subs->tmet = 0.0;
-    rslt = stripline_calc(&single, line->freq);
+    single->subs->tmet = 0.0;
+    rslt = stripline_calc(single, line->freq);
     if( rslt != 0 ) {
       alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
     }
-    z0s_0t = single.z0;
+    z0s_0t = single->z0;
 
+    stripline_line_free(single);
 
 #ifdef DEBUG_CALC
     printf("find_z0():  z0s = %g, z0s_0t = %g\n", z0s, z0s_0t);
