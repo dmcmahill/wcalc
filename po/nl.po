@@ -2,7 +2,7 @@
 # Copyright (C) 2009 Bert Timmerman
 # This file is distributed under the same license as the wcalc package.
 # Bert Timmerman <bert.timmerman@xs4all.nl>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: wcalc 0.3\n"
@@ -45,8 +45,7 @@ msgstr "/Bestand/Opslaan _Als"
 msgid "/File/sep2"
 msgstr "/Bestand/sep2"
 
-#: gtk-wcalc/menus.c:85
-#: gtk-wcalc/menus.c:89
+#: gtk-wcalc/menus.c:85 gtk-wcalc/menus.c:89
 msgid "/File/_Print"
 msgstr "/Bestand/_Afdrukken"
 
@@ -157,4 +156,3 @@ msgstr ""
 "en het kan staken en/of verkeerde resultaten geven.\n"
 "Tenzij jij een ontwikkelaar bent, zou jij dit programma niet moeten\n"
 "gebruiken."
-
