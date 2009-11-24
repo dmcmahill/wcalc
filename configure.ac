@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.17 2009/11/23 23:20:54 dan Exp $
+dnl $Id: configure.ac,v 1.18 2009/11/23 23:23:37 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -959,6 +959,31 @@ AC_SUBST(MEX_WCALC)
 #	alpha           - .mexaxp
 #	glnx86          - .mexglx
 #	Windows         - .dll
+#
+#
+# matlab 6, release 13 says:
+#
+# sol2, SunOS 5.x - .mexsol
+# hpux            - .mexhpux
+# hp700           - .mexhp7
+# ibm_rs          - .mexrs6
+# sgi             - .mexsg
+# alpha           - .mexaxp
+# glnx86          - .mexglx
+# Mac OS X        - .mexmac <-- not sure what $host will be for this one
+# Windows         - .dll
+#
+# matlab 6, release 14 says:
+#
+# solaris         - .mexsol
+# hpux            - .mexhpux
+# glnx86          - .mexglx
+# glnxi64         - .mexi64 <-- not sure what $host will be for this one
+# glnxa64         - .mexa64
+# Mac OS X        - .mexmac <-- not sure what $host will be for this one
+# Windows         - .dll
+#
+#
 
 MEXSFX="none"
 if test "X$MEX_WCALC" != "X" ; then
@@ -1001,6 +1026,11 @@ case $host in
 	i386-*-netbsd* )
 		# use the linux x86 version
 		MEXSFX="mexglx"
+		;;
+
+	x86_64-*-netbsd* )
+		# use the linux x86_64 version
+		MEXSFX="mexa64"
 		;;
 
 	mips*-*-netbsd* )
