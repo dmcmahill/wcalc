@@ -1,7 +1,7 @@
-/* $Id: bars.c,v 1.6 2009/01/10 20:56:48 dan Exp $ */
+/* $Id: bars.c,v 1.7 2009/02/07 15:10:09 dan Exp $ */
 
 /*
- * Copyright (C) 2008 Dan McMahill
+ * Copyright (C) 2008, 2010 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -122,11 +122,15 @@ static double Mb_fn(double x, double y, double z)
   if ( x != 0 && y != 0 && z != 0) {
     /* all != 0 */
 
-    rslt -= (x*y*pow(z,3.0)/6.0) * atan2( x*y, z*mag);
+    /* note:  using atan2() produced incorrect mutual inductance when
+     * bar #2 is placed to the left or below bar #1 (i.e. negative
+     * values for E or P).
+     */
+    rslt -= (x*y*pow(z,3.0)/6.0) * atan( (x*y) / (z*mag));
       
-    rslt -= (x*pow(y,3.0)*z/6.0) * atan2( x*z, y*mag);
+    rslt -= (x*pow(y,3.0)*z/6.0) * atan( (x*z) / (y*mag));
     
-    rslt -= (pow(x,3.0)*y*z/6.0) * atan2( y*z, x*mag);
+    rslt -= (pow(x,3.0)*y*z/6.0) * atan( (y*z) / (x*mag));
 
   }
 
