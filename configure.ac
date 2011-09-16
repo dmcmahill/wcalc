@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.19 2009/11/24 02:47:56 dan Exp $
+dnl $Id: configure.ac,v 1.20 2009/11/24 03:18:22 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -546,12 +546,10 @@ fi
 if test "X$OCT_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the installed octave site oct directory])
 	SITEOCT=`$OCTAVE_CONFIG --print LOCALVEROCTFILEDIR`
-#	SITEOCT=`$OCTAVE_CONFIG --oct-site-dir`
 	AC_MSG_RESULT([$SITEOCT])
 
 	AC_MSG_CHECKING([for the installed octave site fcn directory])
 	SITEOCTM=`$OCTAVE_CONFIG --print LOCALVERFCNFILEDIR`
-#	SITEOCTM=`$OCTAVE_CONFIG --m-site-dir`
 	AC_MSG_RESULT([$SITEOCTM])
 
 	AC_MSG_CHECKING([for the installed octave libexec directory])
@@ -561,13 +559,6 @@ if test "X$OCT_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the installed octave share directory])
 	OCTDATADIR=`$OCTAVE_CONFIG --print DATADIR`
 	AC_MSG_RESULT([$OCTDATADIR])
-
-	MYSITEOCT=`echo ${SITEOCT} | sed "s;^${OCTLIBEXECDIR}/;;g"`
-	MYSITEOCTM=`echo ${SITEOCTM} | sed "s;^${OCTDATADIR}/;;g"`
-	AC_MSG_CHECKING([for where we should install octave .oct files])
-	AC_MSG_RESULT([$MYSITEOCT])
-	AC_MSG_CHECKING([for where we should install octave .m files])
-	AC_MSG_RESULT([$MYSITEOCTM])
 
 	# if we're building our own libwcalc, then 
 	# we don't have an installed place to link to yet
