@@ -1,4 +1,4 @@
-/* $Id: air_coil.c,v 1.15 2008/11/29 20:42:01 dan Exp $ */
+/* $Id: air_coil.c,v 1.16 2009/02/07 15:10:10 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006, 2009 Dan McMahill
@@ -127,7 +127,8 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   /* variables for loss */
   double A, Q0, w, Qsf;
 
-  double wirelen, Rdc, Qdc;
+  double wirelen, Rdc, Qdc, Rrf, Qrf, Rt;
+  double Kinterp;
 
   /* regular and minimum possible length */
   double len, lmin;
@@ -314,7 +315,11 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   w = (freq*1e-6) / SRF;
 
-  coil->Q     = Qsf * Q0 * (1 - (w*w));
+  /* Skin effect region Q */
+  Qrf = Qsf * Q0 * (1 - (w*w));
+
+  /* R in skin effect region found from Q */
+  Rrf = 2.0 * M_PI * freq * coil->L / Qrf;
 
   /*
    * Low frequency Q
@@ -352,8 +357,21 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   /* Q found from low frequency resistance */
   Qdc = 2.0 * M_PI * freq * coil->L / Rdc;
 
+  /*
+   * This is a bit of a hack but it works out fairly well in practice.  This particular
+   * interpolation function favors the input which is higher amplitude.  So which ever
+   * resistance is higher is the one which really dominates the answer.  It is sort of
+   * like max(Rdc, Rrf) but it has continuous derivatives.  The reality is that the error
+   * in this interpolation is likely to be less than other modeling errors associated
+   * with inductors of this sort so this is a good enough approach.
+   */
+  Kinterp = 6.0;
+  Rt = pow( pow(Rdc, Kinterp) + pow(Rrf, Kinterp) , (1.0 / Kinterp));
+
+  coil->Q = 2.0 * M_PI * freq * coil->L / Rt;
 #ifdef DEBUG_CALC
-  printf("air_coil_calc():  Q using Rdc = %g.  Q using skin effect = %g\n", Qdc, coil->Q);
+  printf("air_coil_calc():  Rdc = %g Ohms, Rt = %g Ohms, Rrf = %g Ohms\n", Rdc, Rt, Rrf);
+  printf("air_coil_calc():  Qdc = %g.  Qrf = %g.  Interpolated Q = %g\n", Qdc, Qrf, coil->Q);
 #endif
 
 
