@@ -1,4 +1,4 @@
-/*      $Id: stripline.c,v 1.24 2009/02/27 05:23:31 dan Exp $ */
+/*      $Id: stripline.c,v 1.25 2009/10/23 01:25:11 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006, 2009 Dan McMahill
@@ -189,7 +189,7 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	  kf=(1.0+k)/(1.0+kp);
 	}
    
-   
+      /* FREESPACE_Z0/4 = 29.976*pi */
       z0 = 29.976*M_PI*r/sqrt(line->subs->er);
     }
   else
