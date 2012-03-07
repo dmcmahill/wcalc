@@ -1,7 +1,7 @@
-/* $Id: air_coil.h,v 1.5 2004/07/26 01:09:16 dan Exp $ */
+/* $Id: air_coil.h,v 1.6 2008/11/29 20:42:01 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -37,6 +37,9 @@ typedef struct AIR_COIL_COIL
   /* wire gauge */
   double AWGf;
 
+  /* wire diameter (meters) */
+  double wire_diameter;
+
   /* resistivity  (ohm-meters) */
   double rho;
 
@@ -66,11 +69,18 @@ typedef struct AIR_COIL_COIL
    */
   int use_fill;
 
+  /* 
+   * use the wire diameter to calculate the wire size in AWG instead
+   * of using the wire size in AWG to calculate wire diameter.
+   */
+  int use_wire_diameter;
+
   /* user units */
   wc_units *units_len, *units_dia;
   wc_units *units_L, *units_SRF;
   wc_units *units_rho;
   wc_units *units_freq;
+  wc_units *units_wire_diameter;
 
 } air_coil_coil;
 

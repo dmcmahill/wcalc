@@ -1,7 +1,7 @@
-/* $Id: air_coil_loadsave.c,v 1.12 2004/08/31 21:38:17 dan Exp $ */
+/* $Id: air_coil_loadsave.c,v 1.13 2008/11/29 20:42:01 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -44,9 +44,10 @@
 #include <dmalloc.h>
 #endif
 
-#define FILE_VERSION "0.1"
+#define FILE_VERSION "1.0"
 
-static fspec * get_fspec(void)
+/* for version 0.1 files */
+static fspec * get_fspec_v0p1(void)
 {
   static fspec *myspec=NULL;
   air_coil_coil *coil=0;
@@ -56,7 +57,7 @@ static fspec * get_fspec(void)
 
     myspec=fspec_add_sect(NULL,"air_coil");
     fspec_add_key(myspec, "file_version","Air coil file version",
-		  'f', FILE_VERSION);
+		  'f', "0.1");
     fspec_add_key(myspec, "Nf","Number of turns",
 		  'd', &coil->Nf);
     fspec_add_key(myspec, "len","Length of coil (meters)",
@@ -98,6 +99,64 @@ static fspec * get_fspec(void)
   return myspec;
 }
 
+static fspec * get_fspec(void)
+{
+  static fspec *myspec=NULL;
+  air_coil_coil *coil=0;
+
+  if (myspec == NULL) {
+    /* Build up the list which describes the file format */
+
+    myspec=fspec_add_sect(NULL,"air_coil");
+    fspec_add_key(myspec, "file_version","Air coil file version",
+		  'f', FILE_VERSION);
+    fspec_add_key(myspec, "Nf","Number of turns",
+		  'd', &coil->Nf);
+    fspec_add_key(myspec, "len","Length of coil (meters)",
+		  'd', &coil->len);
+    fspec_add_key(myspec, "fill","Ratio of coil length to close wound length",
+		  'd', &coil->fill);
+    fspec_add_key(myspec, "AWGf","Wire size (AWG)",
+		  'd', &coil->AWGf);
+    fspec_add_key(myspec, "wire_diameter","Wire diameter (meters)",
+		  'd', &coil->wire_diameter);
+    fspec_add_key(myspec, "rho","Wire resistivity (ohms/meter)",
+		  'd', &coil->rho);
+    fspec_add_key(myspec, "dia","Inside diameter of coil (meters)",
+		  'd', &coil->dia);
+    fspec_add_key(myspec, "L","Desired Inductance (H)",
+		  'd', &coil->L);
+    fspec_add_key(myspec, "freq","Frequency of operation (Hz)",
+		  'd', &coil->freq);
+    fspec_add_key(myspec, "use_fill","Use fill to calculate length?",
+		  'i', &coil->use_fill);
+    fspec_add_key(myspec, "use_wire_diameter","Use wire_diameter to calculate wire size in AWG?",
+		  'i', &coil->use_wire_diameter);
+
+    /*
+     * The desired user units
+     */
+    fspec_add_comment(myspec, "Desired user units and associated scale factors");
+    fspec_add_key(myspec, "units_len", "Coil length units",  
+		  'u', &coil->units_len);
+    fspec_add_key(myspec, "units_dia", "Coil diameter units",  
+		  'u', &coil->units_dia);
+    fspec_add_key(myspec, "units_wire_diameter", "Wire diameter units",  
+		  'u', &coil->units_wire_diameter);
+    fspec_add_key(myspec, "units_L", "Inductance units",  
+		  'u', &coil->units_L);
+    fspec_add_key(myspec, "units_SRF", "Self resonant frequency units",  
+		  'u', &coil->units_SRF);
+    fspec_add_key(myspec, "units_rho", "Resistivity units",  
+		  'u', &coil->units_rho);
+    fspec_add_key(myspec, "units_freq", "Frequency units",  
+		  'u', &coil->units_freq);
+
+  }
+
+  return myspec;
+}
+
 int air_coil_load(air_coil_coil *coil, FILE *fp)
 {
   fspec *myspec;
@@ -117,18 +176,17 @@ int air_coil_load(air_coil_coil *coil, FILE *fp)
 	 val);
 #endif
 
-  if (strcmp(val, FILE_VERSION) != 0) {
+  if (strcmp (val, "0.1") == 0) {
+    myspec = get_fspec_v0p1();
+  } else if (strcmp(val, FILE_VERSION) == 0) {
+    myspec = get_fspec();
+  } else {
     alert("Unable to load a wcalc air_coil file with air_coil file version\n"
-	  "\"%s\".  I only understand version \"%s\"\n", 
+	  "\"%s\".  I only understand versions \"0.1\" and \"%s\"\n", 
 	  val, FILE_VERSION);
     return -1;
   }
-  /*
-   * If the file format changes, this is where we would call legacy
-   * routines to read old style file formats.
-   */
 
-  myspec = get_fspec();
   rslt = fspec_read_file(myspec, fp,(unsigned long) coil);
 
   return rslt;
@@ -160,8 +218,8 @@ int air_coil_load_string(air_coil_coil *coil, const char *str)
   mystr = strdup(str);
 
   /* XXX fixme*/
-  val = strtok(mystr," ");
-
+  val = strtok (mystr," ");
+  val = strtok (NULL, " ");
   free(mystr);
 
   /* read the model version  */
@@ -175,12 +233,18 @@ int air_coil_load_string(air_coil_coil *coil, const char *str)
 	 "Got file_version=\"%s\"\n",
 	 val);
 #endif
-  /*
-   * If the file format changes, this is where we would call legacy
-   * routines to read old style formats.
-   */
 
-  myspec = get_fspec();
+  if (strcmp (val, "0.1") == 0) {
+    myspec = get_fspec_v0p1();
+  } else if (strcmp(val, FILE_VERSION) == 0) {
+    myspec = get_fspec();
+  } else {
+    alert("Unable to load a wcalc air_coil file with air_coil file version\n"
+	  "\"%s\".  I only understand versions \"0.1\" and \"%s\"\n", 
+	  val, FILE_VERSION);
+    return -1;
+  }
+
 #ifdef DEBUG
   printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
 #endif

@@ -1,7 +1,7 @@
-/* $Id: air_coil.c,v 1.16 2009/02/07 15:10:10 dan Exp $ */
+/* $Id: air_coil.c,v 1.17 2012/03/05 21:58:53 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004, 2006, 2009 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2006, 2009, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -142,6 +142,17 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 	  "model.\n"));
     return -1;
   }
+
+  /*
+   * figure out if we've been asked to use AWG or wire diameter for
+   * the purposes of defining the wire size.
+   */
+  if (coil->use_wire_diameter) {
+    coil->AWGf = dia2awg (coil->wire_diameter);
+  } else {
+    coil->wire_diameter = awg2dia (coil->AWGf);
+  }
+
   /* 
    * are we using the given length directly or calculating it based on
    * fill?
@@ -149,7 +160,7 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   /* 
    * minimum length is # of turns * (wire diameter + insulation
-   * thickness) 
+   * thickness).  Value in inches
    */
   lmin = coil->Nf*(M2INCH(awg2dia(coil->AWGf)) + TINSUL);
   if (coil->use_fill){
@@ -235,6 +246,9 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   printf("air_coil_calc():  ----------------------\n");
   printf("air_coil_calc():  N    = %g\n",coil->Nf);
   printf("air_coil_calc():  AWG  = %g\n",coil->AWGf);
+  printf("air_coil_calc():  wire_diameter = %g %s\n",coil->wire_diameter/coil->units_wire_diameter->sf, 
+	 coil->units_wire_diameter->name);
+  printf("air_coil_calc():  use_wire_diameter = %d\n",coil->use_wire_diameter);
   printf("air_coil_calc():  I.D. = %g inches\n",M2INCH(coil->dia));
   printf("air_coil_calc():  len  = %g inches\n",M2INCH(coil->len));
   printf("air_coil_calc():  rho  = %g\n",coil->rho);
@@ -443,6 +457,7 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
   int use_fill;
 
 
+
   /* store the use_fill setting and switch to length for synthesis */
   use_fill = coil->use_fill;
   coil->use_fill=0;
@@ -455,6 +470,8 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
   printf("air_coil_syn():  ----------------------\n");
   printf("air_coil_syn():  N    = %g\n",coil->Nf);
   printf("air_coil_syn():  AWG  = %g\n",coil->AWGf);
+  printf("air_coil_syn():  wire_diameter = %g\n", coil->wire_diameter);
+  printf("air_coil_syn():  use_wire_diameter = %d\n", coil->use_wire_diameter);
   printf("air_coil_syn():  I.D. = %g inches\n",M2INCH(coil->dia));
   printf("air_coil_syn():  len  = %g inches\n",M2INCH(coil->len));
   printf("air_coil_syn():  rho  = %g\n",coil->rho);
@@ -464,6 +481,16 @@ int air_coil_syn(air_coil_coil *coil, double f, int flag)
   printf("air_coil_syn():  \n");
   printf("air_coil_syn():  ----------------------\n");
 #endif
+
+  /*
+   * figure out if we've been asked to use AWG or wire diameter for
+   * the purposes of defining the wire size.
+   */
+  if (coil->use_wire_diameter) {
+    coil->AWGf = dia2awg (coil->wire_diameter);
+  } else {
+    coil->wire_diameter = awg2dia (coil->AWGf);
+  }
 
   /* initial guess for N */
   if (flag == AIRCOILSYN_NMIN){
@@ -591,6 +618,7 @@ void air_coil_free(air_coil_coil *coil)
 
   wc_units_free(coil->units_len);
   wc_units_free(coil->units_dia);
+  wc_units_free(coil->units_wire_diameter);
   wc_units_free(coil->units_L);
   wc_units_free(coil->units_SRF);
   wc_units_free(coil->units_rho);
@@ -615,6 +643,7 @@ air_coil_coil *air_coil_new()
 
   newcoil->units_len = wc_units_new(WC_UNITS_LENGTH);
   newcoil->units_dia = wc_units_new(WC_UNITS_LENGTH);
+  newcoil->units_wire_diameter = wc_units_new(WC_UNITS_LENGTH);
   newcoil->units_L = wc_units_new(WC_UNITS_INDUCTANCE);
   newcoil->units_SRF = wc_units_new(WC_UNITS_FREQUENCY);
   newcoil->units_rho = wc_units_new(WC_UNITS_RESISTIVITY);
