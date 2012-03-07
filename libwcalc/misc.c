@@ -1,7 +1,7 @@
-/* $Id: misc.c,v 1.13 2004/08/02 20:58:45 dan Exp $ */
+/* $Id: misc.c,v 1.14 2008/11/29 20:42:19 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -80,7 +80,16 @@ double dia2awg(double dia)
   dia = M2INCH(dia);
 
   awg = 36.0 + (39.0*(log(0.005) - log(dia)))/log(92.0);
-  awg = rint(awg);
+
+  /*
+   * don't convert to integer because we want to be able to support
+   * countries outside of the US where wire diameters are commonly not
+   * in units of AWG.  However, since we've had several releases where
+   * interface to the air coil routines has been stable, we'll keep it
+   * that way and the user will have to deal with converting mm to AWG.
+   * If they want to round to the nearest AWG, it is up to the user.
+
+  /* awg = rint(awg); */
 
   return awg;
 }
