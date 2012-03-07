@@ -1,7 +1,8 @@
-/* $Id: coupled_stripline.c,v 1.15 2008/11/29 20:42:11 dan Exp $ */
+/* $Id: coupled_stripline.c,v 1.16 2009/10/23 01:30:27 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2009, 
+ *               2011, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -77,6 +78,10 @@ static int find_z0(coupled_stripline_line *line);
  *    S. B. Cohn, "Shielded Coupled-Strip Transmission Line",
  *      Lines", IRE Transactions on Microwave Theory and Techniques, Vol MTT-3,
  *      No 10, October 1955, pp. 29-38.
+ *
+ *    S. B. Cohn, "Characteristic Impedance of the Shielded-Strip
+ *    Transmission Line", IRE Transactions on Microwave Theory and
+ *    Techniques, Vol. MTT-2, pp. 52-57, July, 1954.
  *
  */
 
@@ -657,6 +662,8 @@ static int find_z0(coupled_stripline_line *line)
 
   double cf_t, cf_0;
 
+  double tb;
+
   int rslt;
 
   /*
@@ -667,11 +674,23 @@ static int find_z0(coupled_stripline_line *line)
   z0_zerot( line->w, line->s, line->subs->h,
 	    line->subs->er, &z0e_0t, &z0o_0t);
 
+#ifdef DEBUG_CALC
+  printf("find_z0():  z0o_0t = %3.8f Ohms, z0e_0t = %3.8f Ohms\n", z0e_0t, z0o_0t);
+#endif
 
   if( line->subs->tmet == 0.0 ) {
+    /* 
+     * if metal thickness is zero, then we are done.  Just use the
+     * zero thickness result.
+     */
     line->z0e = z0e_0t;
     line->z0o = z0o_0t;
   } else {
+
+    /*
+     * we have a non-zero line thickness and so we use the
+     * approximations to correct for this.
+     */
     single = stripline_line_new();
     *(single->subs) = *(line->subs);
     single->w = line->w;
@@ -697,14 +716,43 @@ static int find_z0(coupled_stripline_line *line)
     printf("find_z0():  z0s = %g, z0s_0t = %g\n", z0s, z0s_0t);
 #endif
 
-    /* fringing capacitance */
-    cf_t = (FREESPACE_E0 * line->subs->er / M_PI) * (
-						     (2.0 / (1.0 - line->subs->tmet / line->subs->h)) *
-						     log( (1.0/(1.0 - line->subs->tmet / line->subs->h)) + 1.0) -
-						     (1.0 / (1.0 - line->subs->tmet / line->subs->h) - 1.0) *
-						     log( (1.0/pow(1.0 - line->subs->tmet / line->subs->h, 2.0)) - 1.0) );
+    /* 
+     * Just before (11) in Cohn, there is a statement that says
+     * ".... stripes are wide enough to allow the fringing capacitances
+     * at the two edges of each strip to be independent of w/b.  This
+     * will hold with good accuracy for w/b >= 0.35...".  In the
+     * notation of this function, the condition is 
+     * line->w / line->subs->h > 0.35 (trace width divided by total
+     * dielectric thickness).  Later on at the bottom left of p. 34,
+     * it says the best accuracy is for t/b less than about 0.1
+     * (i.e. line->subs->tmet / line->subs->h < 0.1
+     */
 
-    /* zero thickness fringing capacitance  */
+    /* 
+     * fringing capacitance from (2) of the 2nd Cohn reference (MTT-2)
+     * The text in the paper says that this is usable for
+     * w/(b-t) >= 0.35 with a maximum error of
+     * 1.2% at the lower limit for W.
+     * w = line->w
+     * b = line->subs->h
+     * t = line->subs->tmet
+     */
+
+    tb = line->subs->tmet / line->subs->h;
+    cf_t = (FREESPACE_E0 * line->subs->er / M_PI) * (
+						     (2.0 / (1.0 - tb)) *
+						     log( (1.0/(1.0 - tb)) + 1.0) -
+						     (1.0 / (1.0 - tb) - 1.0) *
+						     log( (1.0/pow(1.0 - tb, 2.0)) - 1.0) );
+
+    /*
+     * zero thickness fringing capacitance .  (13) from Cohn.  This is
+     * the fringing capacitance from one edge to one ground plane for
+     * a single strip of zero thickness.  
+     * 
+     * C'(0) in the notation of Cohn.
+     *  f
+     */
     cf_0 = (FREESPACE_E0 * line->subs->er / M_PI) * 2.0 * log(2.0);
 
 
