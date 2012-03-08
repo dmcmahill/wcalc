@@ -13,6 +13,21 @@
 --> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
 2.16686e-07 241.287 6.42239e+08 0.0049097 1.2 2.41605e-07
 *
+* Air coil calculation using fill, 100 kHz
+*
+--> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e3 1
+2.16686e-07 7.8144 6.42239e+08 0.0049097 1.2 2.41605e-07
+*
+* Air coil calculation using fill, 10 kHz
+*
+--> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 10e3 1
+2.16686e-07 1.88375 6.42239e+08 0.0049097 1.2 2.41605e-07
+*
+* Air coil calculation using fill, 1 kHz
+*
+--> air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 1e3 1
+2.16686e-07 0.195319 6.42239e+08 0.0049097 1.2 2.41605e-07
+*
 *  [N, LEN, FILL] = 
 *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
 *

@@ -3,8 +3,13 @@
 *    bars_calc(a, b, l1, d, c, l2, E, P, l3, freq);
 *
 *
-* Bars calculation.  Two conductors, 1 um thick, 10 um wide, 1um gap, 1mm long
+* Bars calculation.  Two conductors, 1 um thick, 10 um wide, 2um gap, 1mm long
 *
 --> bars_calc 10e-6 1e-6 1e-3 10e-6 1e-6 1e-3 12e-6 0 0 1e9
+1.14086e-09 1.14086e-09 8.39194e-10 0.735581
+*
+* same thing but the second bar is moved to the other side of the
+* first.  The answer should be the same.
+--> bars_calc 10e-6 1e-6 1e-3 10e-6 1e-6 1e-3 -12e-6 0 0 1e9
 1.14086e-09 1.14086e-09 8.39194e-10 0.735581
 *
