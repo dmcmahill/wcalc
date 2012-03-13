@@ -1,4 +1,4 @@
-$Id: TODO,v 1.5 2006/01/10 17:06:59 dan Exp $
+$Id: TODO,v 1.6 2007/11/30 01:10:12 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
@@ -32,7 +32,7 @@ $Id: TODO,v 1.5 2006/01/10 17:06:59 dan Exp $
 - Better checking of inputs to avoid problems when someone asks for
   900 GHz calculations or other sillyness.
 
-- rework the air_coil, coax, and ic_microstrip gtk frontends to use
+- rework the  coax, and ic_microstrip gtk frontends to use
   x,y variables to keep track of the position of widgets in the table.
   This will make form modifications much easier.  The other gtk frontends
   are ok already.
@@ -42,8 +42,12 @@ $Id: TODO,v 1.5 2006/01/10 17:06:59 dan Exp $
 - Figure out how to use LC (finite difference time domain, FDTD, electromagnetic
   simulator) and script it to be able to generate some plots of impedance and
   loss for various structues.  This would provide the basis for some accuracy
-  checking of wcalc.  
+  checking of wcalc.   Also have wcalc spit out input files for LC or other
+  E&M tools.  
 
-- Add the ability to write out a LC model for the structures.
+- Add the ability to write out a LC (lc.cray.com) model for the structures.
+
+- On the coupled stripline model, make it behave better in the face of some of the 
+  more advanced geometries found in MCM substrates and the like.
 
 

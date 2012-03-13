@@ -1,7 +1,8 @@
-/* $Id: air_coil_gui.c,v 1.22 2009/02/05 22:15:14 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.23 2009/02/06 23:02:28 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 
+ * 2009, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -229,6 +230,9 @@ static void values_init(air_coil_gui *gui,
   /* the "Len/Fill" radio button group */
   GSList *len_group;
 
+  /* x,y position in the form */
+  int x = 0;
+  int y = 0;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(value_parent), frame);
@@ -260,47 +264,13 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Number of Turns -------------- */
 
-  gui->button_synth_N = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_N, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show (gui->button_synth_N);
-
-  /* I.D. */
-  gui->button_synth_ID = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_ID, 3, 4, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_sensitive (gui->button_synth_ID, FALSE);
-  gtk_widget_show (gui->button_synth_ID);
-
-  /* Len */
-  gui->button_synth_L = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_L, 3, 4, 2, 4, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_show (gui->button_synth_L);
-
-
-
-  /* ---------------- Number of Turns -------------- */
-
   text = gtk_label_new( "N" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->text_Nf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_entry_set_text(GTK_ENTRY(gui->text_Nf),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_Nf, 1, 2, 0, 1,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_Nf, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_Nf),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -308,13 +278,27 @@ static void values_init(air_coil_gui *gui,
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_Nf);
 
+
+  /* ---------------- Synthesize Number of Turns Button -------------- */
+
+  gui->button_synth_N = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_N, x+3, x+4, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show (gui->button_synth_N);
+
+  y++;
+
   /* ---------------- Coil Diameter -------------- */
   text = gtk_label_new( "I.D." );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->text_dia = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_dia, 1, 2, 1, 2,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_dia, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_dia),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -323,107 +307,27 @@ static void values_init(air_coil_gui *gui,
   gtk_widget_show(gui->text_dia);
 
   text = wc_units_menu_new(gui->coil->units_dia, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  /* ---------------- Wire Size  -------------- */
 
-  text = gtk_label_new( _("Wire Dia.") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_AWGf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, 6, 7, 0, 1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
+  /* synthesize I.D. button */
+  gui->button_synth_ID = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_AWGf);
-
-  hbox = gtk_hbox_new(FALSE,1);
-  gtk_table_attach(GTK_TABLE(table), hbox, 7, 8, 0, 1, 
-		   GTK_EXPAND|GTK_FILL,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(hbox);
-  text = gtk_label_new( _("AWG") );
-  gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-  /* ---------------- Resistivity  -------------- */
-
-  text = gtk_label_new( _("Resistivity") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_rho = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rho, 
-		    6, 7, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rho);
-
-  text = wc_units_menu_new(gui->coil->units_rho, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 1, 2, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ----------------  Inductance  -------------- */
-
-  text = gtk_label_new( _("Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_L = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_L, 6, 7, 2, 3,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_L);
-
-
-  text = wc_units_menu_new(gui->coil->units_L, WC_WCALC(gui), &L_ug);
-  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 2, 3, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ----------------  Frequency  -------------- */
-
-  text = gtk_label_new( _("Frequency") );
-  gtk_table_attach(GTK_TABLE(table), text, 5, 6, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-
-  gui->text_freq = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_freq,
-		    6, 7, 3, 4, 0, 0, WC_XPAD, WC_YPAD);  
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_freq);
-
-
-  text = wc_units_menu_new(gui->coil->units_freq, WC_WCALC(gui), &f_ug);
-  gtk_table_attach(GTK_TABLE(table), text, 7, 8, 3, 4, 
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ----------------    -------------- */
-
-  text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
-		   GTK_EXPAND|GTK_FILL, 0,
-		   WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_ID, x+3, x+4, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_sensitive (gui->button_synth_ID, FALSE);
+  gtk_widget_show (gui->button_synth_ID);
+  y++;
 
 
   /* ----------------  Coil Length  -------------- */
   /* the 2 text entries */
   gui->text_len = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_len, 1, 2, 2, 3,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_len, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_len),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -432,7 +336,7 @@ static void values_init(air_coil_gui *gui,
   gtk_widget_show(gui->text_len);
 
   gui->text_fill = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_fill, 1, 2, 3, 4,0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->text_fill, x+1, x+2, y+1, y+2,0,0,WC_XPAD,WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_fill),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
 		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
@@ -440,9 +344,9 @@ static void values_init(air_coil_gui *gui,
 		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
   gtk_widget_show(gui->text_fill);
 
-  /* */
+  /* length/fill radio buttons*/
   button = gtk_radio_button_new_with_label (NULL, _("Len."));
-  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(use_len_pressed),
 		     gui);
@@ -452,7 +356,7 @@ static void values_init(air_coil_gui *gui,
 
   len_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
   button = gtk_radio_button_new_with_label(len_group, "Fill");
-  gtk_table_attach(GTK_TABLE(table), button, 0, 1, 3, 4, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y+1, y+2, 0,0,WC_XPAD,WC_YPAD);
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(use_fill_pressed),
 		     gui);
@@ -473,7 +377,124 @@ static void values_init(air_coil_gui *gui,
   gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  /* ----------------    -------------- */
+
+
+  /* Synthesize Length button */
+  gui->button_synth_L = gtk_button_new_with_label (_("<-Synthesize"));
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
+		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
+		      gui);
+  gtk_table_attach(GTK_TABLE(table), gui->button_synth_L, x+3, x+4, y, y+2,
+		   0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+  gtk_widget_show (gui->button_synth_L);
+  
+  /* ---------------- Start 2nd Column  of entries -----------------*/
+  y = 0;
+  x = 5;
+
+  /* ---------------- Wire Size  -------------- */
+
+  text = gtk_label_new( _("Wire Dia.") );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_AWGf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_AWGf);
+
+  hbox = gtk_hbox_new(FALSE,1);
+  gtk_table_attach(GTK_TABLE(table), hbox, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(hbox);
+  text = gtk_label_new( _("AWG") );
+  gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
+  gtk_widget_show(text);
+
+  y++;
+
+  /* ---------------- Resistivity  -------------- */
+
+  text = gtk_label_new( _("Resistivity") );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_rho = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_rho, 
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_rho);
+
+  text = wc_units_menu_new(gui->coil->units_rho, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  y++;
+
+  /* ----------------  Inductance  -------------- */
+
+  text = gtk_label_new( _("Inductance") );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+  gui->text_L = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_L, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_L);
+
+
+  text = wc_units_menu_new(gui->coil->units_L, WC_WCALC(gui), &L_ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  y++;
+
+  /* ----------------  Frequency  -------------- */
+
+  text = gtk_label_new( _("Frequency") );
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+
+  gui->text_freq = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_freq,
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);  
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_freq);
+
+
+  text = wc_units_menu_new(gui->coil->units_freq, WC_WCALC(gui), &f_ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+  /* ----------------  empty text to allow the dialog to expand nicely  -------------- */
+
+  text = gtk_label_new( " " );
+  gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1, 
+		   GTK_EXPAND|GTK_FILL, 0,
+		   WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+
+  /* ----------------  put in some default values into the entries  -------------- */
 
 
   gtk_entry_set_text( GTK_ENTRY(gui->text_Nf),"10" );
@@ -499,79 +520,89 @@ static void values_init(air_coil_gui *gui,
   table = gtk_table_new (2, 7, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
+  x = 0;
+  y = 0;
+
   /* ---------------- Q -------------- */
   text = gtk_label_new( "Q" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Q = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Q, 
-		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
+		    x+1,x+2,y,y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_Q);
 
   gui->label_Qfreq = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), gui->label_Qfreq, 2, 3, 0, 1,
+  gtk_table_attach(GTK_TABLE(table), gui->label_Qfreq, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Qfreq);
   gtk_misc_set_alignment(GTK_MISC(gui->label_Qfreq), 0, 0);
   wc_units_attach_units_label(f_ug, gui->label_Qfreq);
 
+  y++;
   
   /* ---------------- Self resonant freq.  -------------- */
   text = gtk_label_new( _("Self Resonant Freq.") );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_SRF = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_SRF, 
-		    1, 2, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_SRF);
 
   text = wc_units_menu_new(gui->coil->units_SRF, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   wc_units_attach_label(ug, gui->label_SRF, &(gui->coil->SRF), NULL, NULL, WC_FMT_G, 1);
 
+  x = 4;
+  y = 0;
+  
   /* ---------------- closewound inductance -------------- */
 
   text = gtk_label_new( _("Closewound Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gui->label_Lmax = gtk_label_new( WC_OUTPUT_TEXT );
   gtk_table_attach (GTK_TABLE(table), gui->label_Lmax, 
-		    5, 6, 0, 1, 0, 0, WC_XPAD, WC_YPAD);
+		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Lmax);
 
   text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1,
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   wc_units_attach_units_label(L_ug, text);
   wc_units_attach_label(L_ug, gui->label_Lmax, &(gui->coil->Lmax), NULL, NULL, WC_FMT_G, 1);
 
+  y++;
+
   /* ---------------- Fill factor -------------- */
 
   text = gtk_label_new( _("Len/Closewound Len") );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 1, 2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
 
   gui->label_fill = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_fill, 5,6,1,2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach (GTK_TABLE(table), gui->label_fill, x+1, x+2, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_fill);
 
+  /* no units for fill */
   text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
 
   /* spacer */
   text = gtk_label_new( "                " );
-  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1, 
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
