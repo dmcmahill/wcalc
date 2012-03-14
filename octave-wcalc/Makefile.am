@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.21 2012/03/14 03:54:47 dan Exp $
+## $Id: Makefile.am,v 1.22 2012/03/14 21:51:29 dan Exp $
 ##
 
 ## Copyright (C) 2002, 2004, 2005, 2011, 2012 Dan McMahill
@@ -56,7 +56,6 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 # various MEX flags
 MEXLDFLAGS=	@WCALC_OCTLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
-OCTINCLUDEDIR=	@OCTINCLUDEDIR@
 
 all-local:	${MEX_FILES} runoctave ${MEX_MANS} octaverc
 
