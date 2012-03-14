@@ -1,9 +1,9 @@
-/* $Id: microstrip_calc.c,v 1.6 2008/11/29 20:42:39 dan Exp $ */
+/* $Id: microstrip_calc.c,v 1.7 2009/02/28 03:26:09 dan Exp $ */
 
-static char vcid[] = "$Id: microstrip_calc.c,v 1.6 2008/11/29 20:42:39 dan Exp $";
+static char vcid[] = "$Id: microstrip_calc.c,v 1.7 2009/02/28 03:26:09 dan Exp $";
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -24,6 +24,7 @@ static char vcid[] = "$Id: microstrip_calc.c,v 1.6 2008/11/29 20:42:39 dan Exp $
 
 #include "config.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
