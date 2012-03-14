@@ -1,9 +1,9 @@
-/* $Id: air_coil_calc.c,v 1.12 2004/12/03 05:09:14 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.12 2004/12/03 05:09:14 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $";
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -40,7 +40,7 @@ static char vcid[] = "$Id: air_coil_calc.c,v 1.12 2004/12/03 05:09:14 dan Exp $"
 
 /*
  * function [L, Q, SRF, len, fill, Lmax] =
- *       air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag) 
+ *       air_coil_calc(N,len,fill,AWG,wire_diameter,rho,dia,freq,flag) 
  */
 
 /* Input Arguments */
@@ -49,10 +49,11 @@ static char vcid[] = "$Id: air_coil_calc.c,v 1.12 2004/12/03 05:09:14 dan Exp $"
 #define	LEN_IN    prhs[1]
 #define	FILL_IN   prhs[2]
 #define	AWG_IN    prhs[3]
-#define	RHO_IN    prhs[4]
-#define	DIA_IN    prhs[5]
-#define	FREQ_IN   prhs[6]
-#define	FLAG_IN   prhs[7]
+#define	WIRE_DIA_IN prhs[4]
+#define	RHO_IN    prhs[5]
+#define	DIA_IN    prhs[6]
+#define	FREQ_IN   prhs[7]
+#define	FLAG_IN   prhs[8]
 
 /* Output Arguments */
 
@@ -107,9 +108,9 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *N,*AWG,*rho,*len,*dia,*freq,*fill,*flag;
+  double *N,*AWG,*wire_dia,*rho,*len,*dia,*freq,*fill,*flag;
 
-  unsigned int *ind_N,*ind_AWG,*ind_rho,*ind_len,*ind_dia;
+  unsigned int *ind_N,*ind_AWG,*ind_wire_dia,*ind_rho,*ind_len,*ind_dia;
   unsigned int *ind_freq,*ind_fill,*ind_flag;
 
   /* outputs */
@@ -144,14 +145,14 @@ void mexFunction(
   }
 
   /* Check for proper number of arguments */
-  if (nrhs == 7) 
+  if (nrhs == 8) 
     has_flag=0;
-  else if (nrhs == 8)
+  else if (nrhs == 9)
     has_flag=1;
   else
     {
       mexErrMsgTxt("wrong number of input arguments to AIR_COIL_CALC"
-		   " (needs 7 or 8).");
+		   " (needs 8 or 9).");
     } 
 
   if (nlhs > 6)
@@ -171,6 +172,7 @@ void mexFunction(
    */
   CHECK_INPUT(N_IN, N, ind_N, N);
   CHECK_INPUT(AWG_IN, AWG, ind_AWG, AWG);
+  CHECK_INPUT(WIRE_DIA_IN, WIRE_DIA, ind_wire_dia, wire_dia);
   CHECK_INPUT(RHO_IN, RHO, ind_rho, rho);
   CHECK_INPUT(LEN_IN, LEN, ind_len, len);
   CHECK_INPUT(FILL_IN, FILL, ind_fill, fill);
@@ -219,10 +221,12 @@ void mexFunction(
     coil->len      = len[*ind_len];
     coil->fill     = fill[*ind_fill];
     coil->AWGf     = AWG[*ind_AWG];
+    coil->wire_diameter = wire_dia[*ind_wire_dia];
     coil->rho      = rho[*ind_rho];
     coil->dia      = dia[*ind_dia];
     coil->freq     = freq[*ind_freq];
-    coil->use_fill = flag[*ind_flag];    
+    coil->use_fill = flag[*ind_flag] & 1;    
+    coil->use_wire_diameter = (flag[*ind_flag]>>1) & 1;    
 
     /* run the calculation */
     air_coil_calc(coil,coil->freq);

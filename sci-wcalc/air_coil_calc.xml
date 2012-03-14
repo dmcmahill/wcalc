@@ -4,9 +4,9 @@
 ]>
 <TOP>
 <MAN>
-<!-- $Id: air_coil_calc.xml,v 1.5 2006/02/23 14:25:02 dan Exp $ -->
+<!-- $Id: air_coil_calc.xml,v 1.6 2008/11/29 20:42:28 dan Exp $ -->
 <!--
-    Copyright (C) 2001, 2004, 2005, 2006 Dan McMahill
+    Copyright (C) 2001, 2004, 2005, 2006, 2012 Dan McMahill
     All rights reserved.
    
     
@@ -31,7 +31,7 @@
 </SHORTDESCR>
 
 <SYNOPSIS>
-[L, Q, SRF, len_out, fill_out, Lmax] = air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+[L, Q, SRF, len_out, fill_out, Lmax] = air_coil_calc(N,len,fill,AWG,wire_diameter,rho,dia,freq,flag);
 </SYNOPSIS>
 
 <PARAMETERS>
@@ -39,14 +39,17 @@
  <RHS name="len">length of the coil (meters)</RHS>
  <RHS name="fill">ratio of coil length to closewound length</RHS>
  <RHS name="AWG">wire size (American Wire Gauge)</RHS>
+ <RHS name="wire_diameter">wire diameter (meters)</RHS>
  <RHS name="rho">resistivity of wire (ohm-m)</RHS>
  <RHS name="dia">inside diameter of coil (meters)</RHS>
  <RHS name="freq">analysis frequency (Hertz)</RHS>
- <RHS name="flag">used to calculate coil length.
+ <RHS name="flag">used to calculate coil length and wire size.
  <ENUM>
- <ITEM name="flag=0">the length given by len is used.</ITEM>
- <ITEM name="flag=1">the length is calculated from the wire size,
+ <ITEM name="flag bit0=0">the length given by len is used.</ITEM>
+ <ITEM name="flag bit0=1">the length is calculated from the wire size,
  number of turns and fill input.</ITEM>
+ <ITEM name="flag bit1=0">the wire size in AWG is used.</ITEM>
+ <ITEM name="flag bit1=1">the wire size in meters is used.</ITEM>
  </ENUM>
  </RHS>
 
@@ -71,11 +74,12 @@ factor, and self resonant frequency are calculated.
        <SCIEX><SCICMD>len=0;</SCICMD>            <COMMENT>we'll use the fill parameter instead</COMMENT></SCIEX>
        <SCIEX><SCICMD>fill=1.2;</SCICMD>         <COMMENT>the coil is 20% longer than the minimum</COMMENT></SCIEX>
        <SCIEX><SCICMD>AWG=22;</SCICMD>           <COMMENT>wire size</COMMENT></SCIEX>
+       <SCIEX><SCICMD>wire_dia=0.025*.0254;</SCICMD> <COMMENT>25 mil wire diameter</COMMENT></SCIEX>
        <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>      <COMMENT>resistivity of copper (ohm-m)</COMMENT></SCIEX>
        <SCIEX><SCICMD>dia=0.25*0.0254;</SCICMD>  <COMMENT>0.25 inches inside diameter</COMMENT></SCIEX>
        <SCIEX><SCICMD>f=10e6;</SCICMD>           <COMMENT>10 MHz operation</COMMENT></SCIEX>
        <SCIEX><SCICMD>flag=1;</SCICMD>           <COMMENT>use fill to calculate length</COMMENT></SCIEX>
-       <SCIEX><SCICMD>[L,Q,SRF,len_out,fill_out,Lmax] = air_coil_calc(N,len,fill,AWG,rho,dia,f,flag);</SCICMD></SCIEX>
+       <SCIEX><SCICMD>[L,Q,SRF,len_out,fill_out,Lmax] = air_coil_calc(N,len,fill,AWG,wire_dia,rho,dia,f,flag);</SCICMD></SCIEX>
        <SCIEX><SCICMD>disp(sprintf('L=%g nH',L*1e9));</SCICMD></SCIEX>
        <SCIEX><SCICMD>disp(sprintf('Q=%g at %g MHz',Q,f/1e6));</SCICMD></SCIEX>
        <SCIEX><SCICMD>disp(sprintf('Self Resonant Freq=%g MHz',SRF/1e6));</SCICMD></SCIEX>
@@ -84,14 +88,24 @@ factor, and self resonant frequency are calculated.
        <SCIEX><SCICMD>disp(sprintf('Lmax=%g nH',Lmax*1e9));</SCICMD></SCIEX>
        <STDEX>
 *
-* Air coil calculation using length
+* Air coil calculation using length and AWG
 *
-air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+air_coil_calc 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 0
 *
 *
-* Air coil calculation using fill
+* Air coil calculation using fill and AWG
 *
-air_coil_calc 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
+air_coil_calc 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 1
+*
+*
+* Air coil calculation using length and wire diameter
+*
+air_coil_calc 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 2
+*
+*
+* Air coil calculation using fill and wire diameter
+*
+air_coil_calc 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 3
 *
        </STDEX>
 </EXAMPLE>

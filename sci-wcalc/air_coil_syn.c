@@ -1,9 +1,9 @@
-/* $Id: air_coil_syn.c,v 1.8 2004/11/22 22:36:30 dan Exp $ */
+/* $Id: air_coil_syn.c,v 1.9 2008/11/29 20:42:29 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_syn.c,v 1.8 2004/11/22 22:36:30 dan Exp $";
+static char vcid[] = "$Id: air_coil_syn.c,v 1.9 2008/11/29 20:42:29 dan Exp $";
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -38,7 +38,7 @@ static char vcid[] = "$Id: air_coil_syn.c,v 1.8 2004/11/22 22:36:30 dan Exp $";
 
 /*
  * function [N,LEN,FILL] = 
- *      air_coil_syn(L,N,len,fill,AWG,rho,dia,freq,flag) 
+ *      air_coil_syn(L,N,len,fill,AWG,wire_diamter,rho,dia,freq,wire_flag,flag) 
  */
 
 /* Input Arguments */
@@ -48,10 +48,12 @@ static char vcid[] = "$Id: air_coil_syn.c,v 1.8 2004/11/22 22:36:30 dan Exp $";
 #define	LEN_IN	  prhs[2]
 #define	FILL_IN	  prhs[3]
 #define	AWG_IN    prhs[4]
-#define	RHO_IN    prhs[5]
-#define	DIA_IN	  prhs[6]
-#define	FREQ_IN	  prhs[7]
-#define	FLAG_IN	  prhs[8]
+#define	WIRE_DIA_IN    prhs[5]
+#define	RHO_IN    prhs[6]
+#define	DIA_IN	  prhs[7]
+#define	FREQ_IN	  prhs[8]
+#define	WIRE_FLAG_IN	  prhs[9]
+#define	FLAG_IN	  prhs[10]
 
 /* Output Arguments */
 
@@ -103,10 +105,10 @@ void mexFunction(
 		 )
 {
   /* inputs */
-  double *L,*N,*AWG,*rho,*len,*dia,*freq,*fill,*flag;
+  double *L,*N,*AWG,*wire_dia,*rho,*len,*dia,*freq,*fill,*wire_flag,*flag;
 
-  unsigned int *ind_L,*ind_N,*ind_AWG,*ind_rho,*ind_len,*ind_dia;
-  unsigned int *ind_freq,*ind_fill,*ind_flag;
+  unsigned int *ind_L,*ind_N,*ind_AWG,*ind_wire_dia,*ind_rho,*ind_len,*ind_dia;
+  unsigned int *ind_freq,*ind_fill,*ind_wire_flag,*ind_flag;
 
   /* outputs */
   double	*N_out,*len_out,*fill_out;
@@ -119,6 +121,9 @@ void mexFunction(
 
   /* do we have any vectors in our input */
   int vector=0;
+
+  /* we've been given the wire flag */
+  int has_wire_flag=0;
 
   /* we've been given the flag */
   int has_flag=0;
@@ -143,14 +148,19 @@ void mexFunction(
   }
 
   /* Check for proper number of arguments */
-  if (nrhs == 8) 
-    has_flag=0;
-  else if (nrhs == 9)
-    has_flag=1;
-  else
+  if (nrhs == 9) {
+    has_wire_flag = 0;
+    has_flag = 0;
+  } else if (nrhs == 10) {
+    has_wire_flag = 1;
+    has_flag = 0;
+  } else if (nrhs == 11) {
+    has_wire_flag = 1;
+    has_flag = 1;
+  } else
     {
       mexErrMsgTxt("wrong number of input arguments to AIR_COIL_SYN"
-		   " (needs 8 or 9).");
+		   " (needs 9, 10, or 11).");
     } 
 
   if (nlhs > 3)
@@ -172,11 +182,24 @@ void mexFunction(
   CHECK_INPUT(L_IN, L, ind_L, L);
   CHECK_INPUT(N_IN, N, ind_N, N);
   CHECK_INPUT(AWG_IN, AWG, ind_AWG, AWG);
+  CHECK_INPUT(WIRE_DIA_IN, WIRE_DIA, ind_wire_dia, wire_dia);
   CHECK_INPUT(RHO_IN, RHO, ind_rho, rho);
   CHECK_INPUT(LEN_IN, LEN, ind_len, len);
   CHECK_INPUT(FILL_IN, FILL, ind_fill, fill);
   CHECK_INPUT(DIA_IN, DIA, ind_dia, dia);
   CHECK_INPUT(FREQ_IN, FREQ, ind_freq, freq);
+
+  if(has_wire_flag){
+    CHECK_INPUT(WIRE_FLAG_IN,WIRE_FLAG,ind_wire_flag,wire_flag);
+  }
+  else {
+    if ( (wire_flag = malloc(sizeof(double))) == NULL ) {
+      fprintf(stderr,"air_coil_calc.c:  malloc() failed\n");
+      exit(1);
+    }
+    *wire_flag=0;
+    ind_wire_flag=&fixed;
+  }
 
   if(has_flag){
     CHECK_INPUT(FLAG_IN,FLAG,ind_flag,flag);
@@ -217,9 +240,11 @@ void mexFunction(
     coil->len      = len[*ind_len];
     coil->fill     = fill[*ind_fill];
     coil->AWGf     = AWG[*ind_AWG];
+    coil->wire_diameter = wire_dia[*ind_wire_dia];
     coil->rho      = rho[*ind_rho];
     coil->dia      = dia[*ind_dia];
     coil->freq     = freq[*ind_freq];
+    coil->use_wire_diameter = wire_fiag[*ind_wire_flag];
 
     if(flag[*ind_flag]==0) {
       sflag = AIRCOILSYN_NMIN;
@@ -239,6 +264,9 @@ void mexFunction(
 
   /* clean up */
   air_coil_free(coil);
+
+  if (!has_wire_flag) 
+    free(wire_flag);
 
   if (!has_flag) 
     free(flag);

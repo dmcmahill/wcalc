@@ -1,7 +1,7 @@
-/* $Id: main.c,v 1.31 2009/02/11 22:34:26 dan Exp $ */
+/* $Id: main.c,v 1.32 2009/02/28 03:14:03 dan Exp $ */
 
 /*
- * Copyright (C) 2004, 2005, 2006, 2007, 2009 Dan McMahill
+ * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -218,10 +218,10 @@ static void execute_file(FILE *fp, char *fname)
       narg = 0;
       fn = &exec_version;
     } else if(strcmp(tok, "air_coil_calc") == 0) {
-      narg = 8;
+      narg = 9;
       fn = &exec_air_coil_calc;
     } else if(strcmp(tok, "air_coil_syn") == 0) {
-      narg = 9;
+      narg = 11;
       fn = &exec_air_coil_syn;
     } else if(strcmp(tok, "bars_calc") == 0) {
       narg = 10;
@@ -325,13 +325,14 @@ static void execute_file(FILE *fp, char *fname)
 
 /*
  *  [L, Q, SRF, len_out, fill_out, Lmax] = 
- *    air_coil_calc(N,len,fill,AWG,rho,dia,freq,flag);
+ *    air_coil_calc(N,len,fill,AWG, wire_diameter, rho,dia,freq,flag);
  */
 static void exec_air_coil_calc(double *args)
 {
   /* our air_coil for calculations */
   air_coil_coil *line;
   int i = 0;
+  int tmpi;
 
   /* create the line and fill in the parameters */
   line = air_coil_new();
@@ -339,10 +340,14 @@ static void exec_air_coil_calc(double *args)
   line->len   = args[i++];
   line->fill  = args[i++];
   line->AWGf  = args[i++];
+  line->wire_diameter = args[i++];
   line->rho   = args[i++];
   line->dia   = args[i++];
   line->freq  = args[i++];
-  line->use_fill  = (int) rint(args[i++]);
+
+  tmpi  = (int) rint(args[i++]);
+  line->use_fill  = tmpi & 1;
+  line->use_wire_diameter  = (tmpi >> 1) & 1;
 
   /* run the calculation */
   if(  air_coil_calc(line, line->freq) ) {
@@ -362,11 +367,12 @@ static void exec_air_coil_calc(double *args)
 
 /*
  *  [N,LEN,FILL] = 
- *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, flag) 
+ *      air_coil_syn(L, N, len, fill, AWG, rho, dia, freq, wire_flag, flag) 
  */
 static void exec_air_coil_syn(double *args)
 {
-  int i, flag;
+  int i, flag, tmpi;
+
   /* our air_coil for calculations */
   air_coil_coil *line;
 
@@ -378,9 +384,14 @@ static void exec_air_coil_syn(double *args)
   line->len   = args[i++];
   line->fill  = args[i++];
   line->AWGf  = args[i++];
+  line->wire_diameter = args[i++];
   line->rho   = args[i++];
   line->dia   = args[i++];
   line->freq  = args[i++];
+
+  tmpi  = (int) rint(args[i++]);
+  line->use_wire_diameter  = tmpi & 1;
+
   flag        = (int) rint(args[i++]);
 
   /* run the calculation */

@@ -1,7 +1,7 @@
-/* $Id: air_coil_gui.h,v 1.7 2005/10/11 01:57:56 dan Exp $ */
+/* $Id: air_coil_gui.h,v 1.8 2008/11/29 20:41:40 dan Exp $ */
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2005 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2005, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -51,10 +51,13 @@ typedef struct AIR_COIL_GUI
    */
   GtkWidget *values_vbox;
   GtkWidget *text_Nf,*text_dia,*text_len,*text_fill;
-  GtkWidget *text_AWGf,*text_rho,*text_L;
+  GtkWidget *text_AWGf,*text_wire_diameter, *text_rho,*text_L;
 
   /* the radio buttons for fill/length selection */
   GtkWidget *len_button,*fill_button;
+
+  /* the radio buttons for AWG/wire diameter selection */
+  GtkWidget *awg_button, *wire_diameter_button;
 
   /*
    * Outputs vbox and its contents

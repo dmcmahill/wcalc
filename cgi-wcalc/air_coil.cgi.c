@@ -1,7 +1,7 @@
-/* $Id: air_coil.cgi.c,v 1.21 2004/08/31 10:25:28 dan Exp $ */
+/* $Id: air_coil.cgi.c,v 1.22 2008/11/29 20:41:31 dan Exp $ */
 
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -71,6 +71,7 @@
 /* defaults for the various parameters (in MKS) */
 #define defN      4
 #define defAWG    22
+#define defWIREDIA INCH2M(0.025)
 #define defRHO    1.72e-8
 #define defDIA    INCH2M(0.25)
 #define defLEN    INCH2M(0.50)
@@ -92,15 +93,16 @@ int cgiMain(void){
   air_coil_coil *coil;
   double freq;
 
-  double N,AWG,rho,dia,len,L;
+  double N,AWG, wire_diameter, rho,dia,len,L;
 
   char *fill_choices[] = {"no","yes"};
+  char *wire_choices[] = {"no","yes"};
 
   char *cookie_str;
   char cookie_load_str[COOKIE_MAX+1];
   cgiCookieType *cookie;
 
-  cgi_units_menu *menu_len, *menu_dia;
+  cgi_units_menu *menu_len, *menu_wire_diameter, *menu_dia;
   cgi_units_menu *menu_L, *menu_SRF;
   cgi_units_menu *menu_rho;
   cgi_units_menu *menu_freq;
@@ -118,6 +120,7 @@ int cgiMain(void){
   coil = air_coil_new();
 
   menu_len = cgi_units_menu_new(coil->units_len);
+  menu_wire_diameter = cgi_units_menu_new(coil->units_wire_diameter);
   menu_dia = cgi_units_menu_new(coil->units_dia);
   menu_L = cgi_units_menu_new(coil->units_L);
   menu_SRF = cgi_units_menu_new(coil->units_SRF);
@@ -176,7 +179,24 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Wire size must be in the range 1 <= AWG <= 60");
     }
+
+    if(cgiFormDouble("wire_diameter", &wire_diameter, defWIREDIA/coil->units_wire_diameter->sf) !=
+       cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading wire diameter");
+    }
+    if( wire_diameter < 0.0 ) {
+      wire_diameter = defWIREDIA/coil->units_wire_diameter->sf;
+      printFormError("Wire diameter may not be negative");
+    }
     
+    if (cgiFormRadio("use_wire_diameter", wire_choices, 2, &coil->use_wire_diameter, 0) !=
+	cgiFormSuccess){
+      inputErr(&input_err);
+      printFormError("Error reading AWG/wire diameter radio button");
+    }
+    
+
     /* Metal resistivity */
     if(cgiFormDouble("rho", &rho, defRHO/coil->units_rho->sf) 
        != cgiFormSuccess) {
@@ -250,6 +270,7 @@ int cgiMain(void){
     /* copy data over to the coil structure */
     coil->Nf   = N;
     coil->AWGf = AWG;
+    coil->wire_diameter = wire_diameter*coil->units_wire_diameter->sf;
     coil->rho  = rho*coil->units_rho->sf;
     coil->dia  = dia*coil->units_dia->sf;
     coil->len  = len*coil->units_len->sf;
@@ -297,6 +318,9 @@ int cgiMain(void){
 	    coil->Nf);
     fprintf(cgiOut,"CGI: Wire Size                   = %g AWG\n",
 	    coil->AWGf);
+    fprintf(cgiOut,"CGI: Wire wire diameter          = %g %s\n",
+	    coil->wire_diameter/coil->units_wire_diameter->sf,
+	    coil->units_wire_diameter->name);
     fprintf(cgiOut,"CGI: Metal resistivity           = %g %s\n",
 	    coil->rho/coil->units_rho->sf, coil->units_rho->name);
     fprintf(cgiOut,"CGI: Inside Diameter             = %g %s\n",

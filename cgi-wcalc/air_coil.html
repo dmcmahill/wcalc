@@ -1,6 +1,6 @@
-<!-- $Id: air_coil.html,v 1.17 2009/01/11 05:37:43 dan Exp $ -->
+<!-- $Id: air_coil.html,v 1.18 2009/02/11 00:00:26 dan Exp $ -->
 <!--
- * Copyright (c) 2001, 2002, 2004, 2005 Dan McMahill
+ * Copyright (c) 2001, 2002, 2004, 2005, 2012 Dan McMahill
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -144,11 +144,27 @@ Air Core Inductor
 </TR>
 
 <TR>
-<TD>Wire Size</TD>
+<TD><INPUT TYPE="RADIO" NAME="use_wire_diameter" VALUE="no" 
+<@s@coil->use_wire_diameter == 0 ? "CHECKED" : ""@>
+        onChange="valsChanged()">Wire Size</TD>
 <TD><INPUT TYPE="TEXT" SIZE=10 NAME="AWG" VALUE="<@g@coil->AWGf@>"
         onChange="valsChanged()"></TD>
 <TD>[<A HREF="<@s@HTMLPATH@>AWG.html">AWG</A>]</TD>
 </TR>
+
+<TR>
+<TD><INPUT TYPE="RADIO" NAME="use_wire_diameter" VALUE="yes" 
+<@s@coil->use_wire_diameter == 1 ? "CHECKED" : ""@>
+        onChange="valsChanged()">Wire Diameter</TD>
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="wire_diameter" 
+     VALUE="<@g@coil->wire_diameter/coil->units_wire_diameter->sf@>"
+        onChange="valsChanged()"></TD>
+<TD>
+<!-- wire diameter units menu -->
+<@s@cgi_units_menu_display(menu_wire_diameter)@>
+</TD>
+</TR>
+
 
 <TR>
 <TD><A HREF="<@s@HTMLPATH@>resistivity.html">Metal resistivity</A></TD>

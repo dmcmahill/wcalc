@@ -1,4 +1,4 @@
-/* $Id: air_coil_gui.c,v 1.23 2009/02/06 23:02:28 dan Exp $ */
+/* $Id: air_coil_gui.c,v 1.24 2012/03/13 16:16:23 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 
@@ -61,6 +61,9 @@ static GList * dump_values(Wcalc *wcalc);
 
 static void use_len_pressed(GtkWidget *widget, gpointer data );
 static void use_fill_pressed(GtkWidget *widget, gpointer data );
+
+static void use_awg_pressed(GtkWidget *widget, gpointer data );
+static void use_wire_diameter_pressed(GtkWidget *widget, gpointer data );
 
 static void analyze( GtkWidget *w, gpointer data );
 static void synthesize_N( GtkWidget *w, gpointer data );
@@ -230,6 +233,9 @@ static void values_init(air_coil_gui *gui,
   /* the "Len/Fill" radio button group */
   GSList *len_group;
 
+  /* the "AWG/wire diameter" radio button group */
+  GSList *wire_size_group;
+
   /* x,y position in the form */
   int x = 0;
   int y = 0;
@@ -258,9 +264,6 @@ static void values_init(air_coil_gui *gui,
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
   gtk_widget_show (gui->button_analyze);
   
-  /* 
-   * Synthesize buttons 
-   */
 
   /* ---------------- Number of Turns -------------- */
 
@@ -374,7 +377,7 @@ static void values_init(air_coil_gui *gui,
   }
 
   text = wc_units_menu_new(gui->coil->units_len, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
 
@@ -396,9 +399,6 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Wire Size  -------------- */
 
-  text = gtk_label_new( _("Wire Dia.") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
 
   gui->text_AWGf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
@@ -417,6 +417,51 @@ static void values_init(air_coil_gui *gui,
   gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
   gtk_widget_show(text);
 
+  gui->text_wire_diameter = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
+  gtk_table_attach (GTK_TABLE(table), gui->text_wire_diameter, x+1, x+2, y+1, y+2,0,0,WC_XPAD,WC_YPAD);
+  gtk_widget_set_usize(GTK_WIDGET(gui->text_wire_diameter),WC_WIDTH,0);
+  gtk_signal_connect (GTK_OBJECT (gui->text_wire_diameter), "changed",
+		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
+  gtk_signal_connect (GTK_OBJECT (gui->text_wire_diameter), "changed",
+		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
+  gtk_widget_show(gui->text_wire_diameter);
+
+
+  /* AWG/wire diamter radio buttons*/
+  button = gtk_radio_button_new_with_label (NULL, _("AWG"));
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_awg_pressed),
+		     gui);
+  gui->awg_button = button;
+  gtk_widget_show (button);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+
+  wire_size_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+  button = gtk_radio_button_new_with_label(wire_size_group, "Wire Dia.");
+  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y+1, y+2, 0,0,WC_XPAD,WC_YPAD);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked",
+		     GTK_SIGNAL_FUNC(use_wire_diameter_pressed),
+		     gui);
+  gui->wire_diameter_button = button;
+  gtk_widget_show (button);
+
+  if(gui->coil->use_wire_diameter){
+    gtk_widget_set_sensitive (gui->text_AWGf, FALSE);
+    gtk_widget_set_sensitive (gui->text_wire_diameter, TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+  }
+  else{
+    gtk_widget_set_sensitive (gui->text_AWGf, TRUE);
+    gtk_widget_set_sensitive (gui->text_wire_diameter, FALSE);
+  }
+
+  text = wc_units_menu_new(gui->coil->units_wire_diameter, WC_WCALC(gui), &ug);
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y+1, y+2, 
+		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+
+
+  y++;
   y++;
 
   /* ---------------- Resistivity  -------------- */
@@ -501,6 +546,7 @@ static void values_init(air_coil_gui *gui,
   gtk_entry_set_text( GTK_ENTRY(gui->text_dia),"0.25" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_len),"1.0" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf),"22" );
+  gtk_entry_set_text( GTK_ENTRY(gui->text_wire_diameter),"10" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho),"1" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_L),"50" );
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq),"10" );
@@ -724,6 +770,15 @@ static void calculate( air_coil_gui *gui, GtkWidget *w, gpointer data )
 	  gui->coil->AWGf);
 #endif
 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_wire_diameter) ); 
+  gui->coil->wire_diameter = atof(vstr)*gui->coil->units_wire_diameter->sf;
+#ifdef DEBUG
+  g_print(_("air_coil_gui.c:calculate():  wire_diameter = %g = %g %s\n"), 
+	  gui->coil->wire_diameter, 
+	  gui->coil->wire_diameter/gui->coil->units_wire_diameter->sf,
+	  gui->coil->units_wire_diameter->name);
+#endif
+
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
   gui->coil->rho = atof(vstr)*gui->coil->units_rho->sf;
 #ifdef DEBUG
@@ -812,6 +867,10 @@ static void update_display(air_coil_gui *gui)
   sprintf(str, WC_FMT_G, gui->coil->AWGf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf), str );
 
+  /* ----------------  Wire diameter -------------- */
+  sprintf(str, WC_FMT_G, gui->coil->wire_diameter/gui->coil->units_wire_diameter->sf);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_wire_diameter), str );
+
   /* ----------------  resistivity  -------------- */
   sprintf(str, WC_FMT_G, gui->coil->rho/gui->coil->units_rho->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
@@ -887,6 +946,26 @@ static void use_fill_pressed(GtkWidget *widget, gpointer data )
   gui->coil->use_fill=1;
 }
 
+static void use_awg_pressed(GtkWidget *widget, gpointer data )
+{
+  air_coil_gui *gui;
+
+  gui = WC_AIR_COIL_GUI(data);
+  gtk_widget_set_sensitive (gui->text_AWGf, TRUE);
+  gtk_widget_set_sensitive (gui->text_wire_diameter, FALSE);
+  gui->coil->use_wire_diameter=0;
+}
+
+static void use_wire_diameter_pressed(GtkWidget *widget, gpointer data )
+{
+  air_coil_gui *gui;
+
+  gui = WC_AIR_COIL_GUI(data);
+  gtk_widget_set_sensitive (gui->text_AWGf, FALSE);
+  gtk_widget_set_sensitive (gui->text_wire_diameter, TRUE);
+  gui->coil->use_wire_diameter = 1;
+}
+
 
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 {
@@ -919,6 +998,8 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Number of turns (N)", c->Nf, NULL, list);
     list = wc_print_add_double("Length of coil (Len)", c->len, c->units_len, list);
     list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
+    list = wc_print_add_double("Wire diameter (wire_diameter)", c->wire_diameter, c->units_wire_diameter, list);
+
     list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
 
     list = wc_print_add_double("Wire resistivity ("
@@ -980,6 +1061,9 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
   fprintf(fp,"newline\n");
   fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (" WC_FMT_G " AWG) show newline\n",
 	  gui->coil->AWGf);
+  fprintf(fp,"(Wire Diameter) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
+	  gui->coil->wire_diameter/gui->coil->units_wire_diameter->sf,
+	  gui->coil->units_wire_diameter->name);
   fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
 	  gui->coil->rho/gui->coil->units_rho->sf,
 	  gui->coil->units_rho->name);

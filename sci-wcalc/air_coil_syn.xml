@@ -4,9 +4,9 @@
 ]>
 <TOP>
 <MAN>
-<!-- $Id: air_coil_syn.xml,v 1.5 2006/02/23 14:25:02 dan Exp $ -->
+<!-- $Id: air_coil_syn.xml,v 1.6 2008/11/29 20:42:29 dan Exp $ -->
 <!--
-    Copyright (C) 2001, 2004, 2005, 2006 Dan McMahill
+    Copyright (C) 2001, 2004, 2005, 2006, 2012 Dan McMahill
     All rights reserved.
    
     
@@ -32,7 +32,7 @@
 
 <SYNOPSIS>
 [N_out,len_out,fill_out] = 
-  air_coil_syn(L,N,len,fill,AWG,rho,dia,freq,flag);
+  air_coil_syn(L,N,len,fill,AWG,wire_diameter,rho,dia,freq,wire_flag,flag);
 </SYNOPSIS>
 
 <PARAMETERS>
@@ -40,9 +40,19 @@
   <RHS name="len">length of the coil (meters)</RHS>
   <RHS name="fill">ratio of coil length to closewound length</RHS>
   <RHS name="AWG">wire size (American Wire Gauge)</RHS>
+  <RHS name="wire_diameter">wire diameter (meters)</RHS>
   <RHS name="rho">resistivity of wire (ohm-m)</RHS>
   <RHS name="dia">inside diameter of coil (meters)</RHS>
   <RHS name="freq">analysis frequency (Hertz)</RHS>
+  <RHS name="wire_flag">indicates if the wire size is specified via
+  the AWG parameter or the wire_diamter parameter.
+    <ENUM>
+      <ITEM name="wire_flag=0">the wire size given in AWG is used
+        and the wire diameter in meters is ignored.</ITEM>
+      <ITEM name="wire_flag=1">the wire diameter given in meters is used and the
+        wire size in AWG is ignored.</ITEM>
+    </ENUM>
+  </RHS>	
   <RHS name="flag">indicates which parameters should be optimized
     <ENUM>
       <ITEM name="flag=0">the minimum number of turns is calculated
@@ -72,9 +82,12 @@ specification.
   <SCIEX><SCICMD>len=0;</SCICMD>       <COMMENT>we'll synthesize the length/fill</COMMENT></SCIEX>
   <SCIEX><SCICMD>fill=0;</SCICMD>      <COMMENT>we'll synthesize the length/fill</COMMENT></SCIEX>
   <SCIEX><SCICMD>AWG=22;</SCICMD>      <COMMENT>wire size</COMMENT></SCIEX>
+  <SCIEX><SCICMD>wire_dia=0.025*0.0254;</SCICMD>      <COMMENT>25 mil wire diameter</COMMENT></SCIEX>
   <SCIEX><SCICMD>rho=1.72e-8;</SCICMD> <COMMENT>Resistivity of copper (ohm-m)</COMMENT></SCIEX>
   <SCIEX><SCICMD>dia=0.25*0.0254;</SCICMD> <COMMENT>0.25 inches inside diameter</COMMENT></SCIEX>
   <SCIEX><SCICMD>f=10e6;</SCICMD>      <COMMENT>10 MHz operation</COMMENT></SCIEX>
+  <SCIEX><SCICMD>wire_flag=0;</SCICMD> <COMMENT>use wire size instead
+  of wire diameter</COMMENT></SCIEX>
   <SCIEX><SCICMD>flag=0;</SCICMD>      <COMMENT>synthesize for minimum number of turns</COMMENT></SCIEX>
   <SCIEX><SCICMD>[Nout,len_out,fill_out] = air_coil_syn(L,N,len,fill,AWG,rho,dia,f,flag);</SCICMD></SCIEX>
   <SCIEX><SCICMD>disp(sprintf('Number of turns = %g ',Nout));</SCICMD></SCIEX>
@@ -82,14 +95,28 @@ specification.
   <SCIEX><SCICMD>disp(sprintf('Fill=%g',fill_out));</SCICMD></SCIEX>
        <STDEX>
 *
-* Air coil synthesis, flag == 0 (minimize # of turns)
+* Air coil synthesis, flag == 0 (minimize # of turns), 
+*   wire_flag = 0 (use AWG)
 *
-air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 0
+air_coil_syn 100e-9 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 0 0
 
 *
-* Air coil synthesis, flag == 1 (fixed # of turns)
+* Air coil synthesis, flag == 1 (fixed # of turns),
+*   wire_flag = 0 (use AWG)
 *
-air_coil_syn 100e-9 6 0.0127 1.2 22 1.72e-8 0.00635 100e6 1
+air_coil_syn 100e-9 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 0 1
+*
+*
+* Air coil synthesis, flag == 0 (minimize # of turns), 
+*   wire_flag = 1 (use wire diameter)
+*
+air_coil_syn 100e-9 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 1 0
+
+*
+* Air coil synthesis, flag == 1 (fixed # of turns),
+*   wire_flag = 1 (use wire diameter)
+*
+air_coil_syn 100e-9 6 0.0127 1.2 22 0.65e-3 1.72e-8 0.00635 100e6 1 1
 *
        </STDEX>
 </EXAMPLE>

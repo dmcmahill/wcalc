@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.18 2009/01/12 03:47:49 dan Exp $
+## $Id: Makefile.am,v 1.19 2011/09/16 12:15:56 dan Exp $
 ##
 
 ## Copyright (C) 2002, 2004, 2005, 2011 Dan McMahill
@@ -80,6 +80,11 @@ octaverc: $(srcdir)/octaverc.in
 # All the new suffix rules
 SUFFIXES= .c ${MEXSFX} .m .cat .man .txt
 
+# FIXME 
+# this is not parallel make safe because multiple jobs may try to
+# compile alert.c at the same time.  The right fix is probably
+# to compile alert.c once and list the object file on this line
+# assuming mkoctfile --mex can accept a .o file.
 %${MEXSFX} : %.c %.m
 	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
 
