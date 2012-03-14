@@ -1,6 +1,6 @@
-/* $Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $ */
+/* $Id: air_coil_calc.c,v 1.14 2012/03/14 03:27:29 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.13 2008/11/29 20:42:28 dan Exp $";
+static char vcid[] = "$Id: air_coil_calc.c,v 1.14 2012/03/14 03:27:29 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
@@ -225,8 +225,8 @@ void mexFunction(
     coil->rho      = rho[*ind_rho];
     coil->dia      = dia[*ind_dia];
     coil->freq     = freq[*ind_freq];
-    coil->use_fill = flag[*ind_flag] & 1;    
-    coil->use_wire_diameter = (flag[*ind_flag]>>1) & 1;    
+    coil->use_fill = ((int) (0.5 + flag[*ind_flag])) & 1;    
+    coil->use_wire_diameter = ( ( (int) (0.5 + flag[*ind_flag])) >> 1) & 1;    
 
     /* run the calculation */
     air_coil_calc(coil,coil->freq);
