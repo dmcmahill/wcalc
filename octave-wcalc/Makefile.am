@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.19 2011/09/16 12:15:56 dan Exp $
+## $Id: Makefile.am,v 1.20 2012/03/14 03:27:28 dan Exp $
 ##
 
-## Copyright (C) 2002, 2004, 2005, 2011 Dan McMahill
+## Copyright (C) 2002, 2004, 2005, 2011, 2012 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -36,12 +36,13 @@ MEXSFX=	@OCT_MEX_EXEEXT@
 SITEOCT=	@SITEOCT@
 SITEOCTM=	@SITEOCTM@
 octfiledir=	${SITEOCT}/${PACKAGE}-${VERSION}
-fcnfiledir=	${SITEOCTM}/${PACKAGE}-${VERSION}
-octfile_DATA=	${MEX_FILES}
 
-# octave embeds the help information in the .oct file so the .m
-# files are not needed
-fcnfile_DATA=	${MEX_MANS}
+# this is where .m files normally would go, but the .m files which
+# contain help for mex files go in the same directory as the .mex
+# files
+fcnfiledir=	${SITEOCTM}/${PACKAGE}-${VERSION}
+
+octfile_DATA=	${MEX_FILES} ${MEX_MANS}
 
 noinst_SCRIPTS=		runoctave
 
