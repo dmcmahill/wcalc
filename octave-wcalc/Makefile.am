@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.20 2012/03/14 03:27:28 dan Exp $
+## $Id: Makefile.am,v 1.21 2012/03/14 03:54:47 dan Exp $
 ##
 
 ## Copyright (C) 2002, 2004, 2005, 2011, 2012 Dan McMahill
@@ -56,7 +56,7 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 # various MEX flags
 MEXLDFLAGS=	@WCALC_OCTLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
 MEXINCLUDES=	-I$(top_srcdir) -I$(top_srcdir)/include @WCALC_CFLAGS@
-
+OCTINCLUDEDIR=	@OCTINCLUDEDIR@
 
 all-local:	${MEX_FILES} runoctave ${MEX_MANS} octaverc
 
@@ -81,13 +81,14 @@ octaverc: $(srcdir)/octaverc.in
 # All the new suffix rules
 SUFFIXES= .c ${MEXSFX} .m .cat .man .txt
 
-# FIXME 
-# this is not parallel make safe because multiple jobs may try to
-# compile alert.c at the same time.  The right fix is probably
-# to compile alert.c once and list the object file on this line
-# assuming mkoctfile --mex can accept a .o file.
-%${MEXSFX} : %.c %.m
-	$(MEX) $(MEXINCLUDES) $< $(srcdir)/alert.c $(MEXLDFLAGS)
+# We could have included alert.c on the suffix rule recipe but
+# that would cause parallel make problems since alert.c would
+# get compiled multiple times.
+alert.o: $(srcdir)/alert.c
+	$(MEX) $(MEXINCLUDES) -c $(srcdir)/alert.c
+
+%${MEXSFX} : %.c %.m alert.o
+	$(MEX) $(MEXINCLUDES) $< alert.o $(MEXLDFLAGS)
 
 
 TARGETPROGRAM=	octave
