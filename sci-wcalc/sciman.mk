@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.12 2009/01/11 04:22:24 dan Exp $
+## $Id: sciman.mk,v 1.13 2009/02/08 14:42:55 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005, 2009 Dan McMahill
@@ -18,10 +18,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-WC_MANS=	${MEX_SRCS:.c=.man}
-WC_CATS=	${MEX_SRCS:.c=.cat}
-WC_HTML=	${MEX_SRCS:.c=.htm}
-WC_XML=	${MEX_SRCS:.c=.xml}
+WC_MANS=	${MEX_SRCS:.c=.man} wcalc.man
+WC_CATS=	${MEX_SRCS:.c=.cat} wcalc.cat
+WC_HTML=	${MEX_SRCS:.c=.htm} wcalc.htm
+WC_XML=	${MEX_SRCS:.c=.xml} wcalc.xml
 
 SUFFIXES+= .cat .man .htm .xml .txt .m
 

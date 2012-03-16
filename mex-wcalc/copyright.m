@@ -1,4 +1,4 @@
-% Copyright (c) 2001-2009 Dan McMahill
+% Copyright (c) 2001-2012 Dan McMahill
 % All rights reserved.
 %
 % This program is free software; you can redistribute it and/or modify
