@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.22 2012/03/14 21:51:29 dan Exp $
+## $Id: Makefile.am,v 1.23 2012/03/14 21:52:32 dan Exp $
 ##
 
 ## Copyright (C) 2002, 2004, 2005, 2011, 2012 Dan McMahill
@@ -47,7 +47,7 @@ octfile_DATA=	${MEX_FILES} ${MEX_MANS}
 noinst_SCRIPTS=		runoctave
 
 MEX_FILES=	${MEX_SRCS:.c=${MEXSFX}}
-MEX_MANS=	${MEX_SRCS:.c=.m}
+MEX_MANS=	${MEX_SRCS:.c=.m} wcalc.m
 MEX_TMP_CXX_FILES=	${addprefix mex_,${MEX_SRCS:.c=.cc}}
 MEX_TMP_OBJ_FILES=	${MEX_TMP_CXX_FILES:.cc=.o}
 

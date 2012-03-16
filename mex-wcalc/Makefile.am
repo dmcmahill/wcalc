@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.25 2008/11/29 20:42:25 dan Exp $
+## $Id: Makefile.am,v 1.26 2009/01/12 16:27:24 dan Exp $
 ##
 
-## Copyright (C) 2001, 2002, 2004, 2005 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2012 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -46,7 +46,7 @@ INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC
 
 MEX_FILES=		${MEX_SRCS:.c=.${MEXSFX}}
 MEX_LA_FILES=	${MEX_FILES:=.la}
-MEX_MANS=		${MEX_SRCS:.c=.m}
+MEX_MANS=		${MEX_SRCS:.c=.m} wcalc.m
 
 # various MEX flags
 #MEXLDFLAGS=	@WCALC_MEXLIBS@ ${DMALLOC_LIBS} ${EFENCE_LIBS}
