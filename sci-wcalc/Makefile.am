@@ -1,5 +1,5 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.59 2009/02/11 22:34:21 dan Exp $
+## $Id: Makefile.am,v 1.60 2009/10/23 01:23:22 dan Exp $
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
 ## All rights reserved.
@@ -79,7 +79,7 @@ EXTRA_DIST= mex.mk sciman.mk ${SCIMANS} README.newmodel demo.sce ${SCIDEMOS} \
 	${RUN_TESTS} ${TEST_FILES} ${TEST_REF} \
 	whatis whatis.htm ${SCICATS} ${SCIHTML} ${SCIXML} \
 	wcalc_test.sci.in manpage.xsl htmlpage.xsl whatis.xsl man.dtd \
-	dot_scilab.in see_also.xml
+	dot_scilab.in see_also.xml wcalc.xml
 
 BUILT_SOURCES= libsci_wcalc.c  whatis whatis.htm ${SCIMANS} ${SCICATS} ${SCIHTML}
 
