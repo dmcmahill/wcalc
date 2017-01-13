@@ -1,0 +1,9 @@
+*~
+*.o
+*.cgi
+*_html.c
+*_id.h
+Makefile.in
+Makefile
+.deps
+.libs

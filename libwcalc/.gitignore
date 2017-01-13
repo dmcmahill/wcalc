@@ -1,0 +1,11 @@
+*~
+Makefile.in
+Makefile
+*.o
+*.lo
+.deps
+.libs
+libwcalc.la
+wcalc-config
+*_test
+*.core

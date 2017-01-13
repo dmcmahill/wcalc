@@ -1,0 +1,10 @@
+*~
+Makefile.in
+Makefile
+*core
+*.dia
+*.n
+*.o
+.deps
+.libs
+stdio-wcalc

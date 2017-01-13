@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for cgi in *.cgi ; do
+	echo "************ ${cgi} **********"
+	./${cgi} | weblint -x Netscape | \
+	sed -e '/attribute .DISABLED. for <INPUT> is extended markup/d' \
+		-e '/unknown attribute \"\/\" for element <[iI][mM][gG]>/d'
+done
+

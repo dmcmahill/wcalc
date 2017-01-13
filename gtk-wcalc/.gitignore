@@ -1,0 +1,17 @@
+*~
+*.core
+*.o
+*.lo
+wcalc
+.deps
+.libs
+Makefile.in
+Makefile
+AWG.asciitab
+AWG.c
+permeability.c
+permitivity.c
+resistivity.c
+runwcalc
+units.c
+*.pdf
