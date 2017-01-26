@@ -1,5 +1,5 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.48 2009/02/11 22:34:12 dan Exp $
+## $Id: Makefile.am,v 1.49 2017/01/26 04:24:25 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
@@ -20,7 +20,7 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ## 
 
-AUTOMAKE_OPTIONS = subdir-objects
+#AUTOMAKE_OPTIONS = subdir-objects
 
 bin_PROGRAMS = wcalc
 

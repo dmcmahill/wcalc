@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.21 2011/09/16 12:15:55 dan Exp $
+dnl $Id: configure.ac,v 1.22 2017/01/26 04:24:25 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -24,7 +24,8 @@ dnl
 AC_INIT([wcalc], [1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
 AC_PREREQ([2.68])
-AM_INIT_AUTOMAKE([1.9 no-dependencies])
+dnl AM_INIT_AUTOMAKE([1.9 no-dependencies])
+AM_INIT_AUTOMAKE([1.9])
 
 dnl Create a configuration header
 AM_CONFIG_HEADER([config.h])
