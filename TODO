@@ -1,4 +1,4 @@
-$Id: TODO,v 1.6 2007/11/30 01:10:12 dan Exp $
+$Id: TODO,v 1.7 2012/03/13 16:16:22 dan Exp $
 
 - finish spanish translation for gtk-wcalc
 
@@ -21,7 +21,8 @@ $Id: TODO,v 1.6 2007/11/30 01:10:12 dan Exp $
   a reference.  
 
 - Research and add spiral inductors with the ability to write out a fasthenry
-  model
+  model.  Would be neat to be able to write out a layout as well.  Maybe in
+  stream format for IC and pcb format for boards?  
 
 - End correction for stripline?
 
