@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.29 2009/02/11 00:00:26 dan Exp $
+## $Id: Makefile.am,v 1.30 2009/02/11 22:34:11 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -67,7 +67,7 @@ parallel_rl_cgi_SOURCES = parallel_rl.cgi.c ${COMMON}
 
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
-INCLUDES =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
+AM_CPPFLAGS =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
 
 if WC_LOCAL_LIBWCALC
 LDADD = ../libwcalc/libwcalc.la

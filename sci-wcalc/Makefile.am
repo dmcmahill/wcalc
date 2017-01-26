@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.60 2009/10/23 01:23:22 dan Exp $
+## $Id: Makefile.am,v 1.61 2012/03/19 10:57:24 dan Exp $
 
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -62,7 +62,7 @@ AM_LDFLAGS=	${DMALLOC_LIBS} ${EFENCE_LIBS} @WCALC_LIBS@
 # note, we mangle the function name because with matlab, our function will have
 # the same name as the filename, but in Scilab, we need to replace mexFunction with
 # a more unique name
-INCLUDES = -I$(top_srcdir)/include @WCALC_CFLAGS@ -I@SCI@/routines -DmexFunction=mex_$* ${DMALLOC_CFLAGS}
+AM_CPPFLAGS = -I$(top_srcdir)/include @WCALC_CFLAGS@ -I@SCI@/routines -DmexFunction=mex_$* ${DMALLOC_CFLAGS}
 
 SCIMANS=	${MEX_SRCS:.c=.man}
 SCICATS=	${SCIMANS:.man=.cat}

@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.47 2009/02/10 05:00:14 dan Exp $
+## $Id: Makefile.am,v 1.48 2009/02/11 22:34:12 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -19,6 +19,8 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ## 
+
+AUTOMAKE_OPTIONS = subdir-objects
 
 bin_PROGRAMS = wcalc
 
@@ -106,7 +108,7 @@ DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" -DWCALC_RCDIR="\"$(pkgdatadir)\"" @DEF
 
 LIBS= @LIBINTL@ @LIBS@
 
-INCLUDES = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
+AM_CPPFLAGS = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
 	-DWCALC_DATADIR=\"$(pkgdatadir)\" \
 	-I$(top_srcdir)/include @WCALC_CFLAGS@ -I$(top_srcdir)/intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
@@ -165,43 +167,39 @@ SUFFIXES= .asciitab
 	$(FORMAT_TAB) gtk_fname=`basename $*_table` $< > $@
 
 FIGSRCS=	\
-	${top_srcdir}/pixmaps/figure_air_coil.c \
-	${top_srcdir}/pixmaps/figure_air_coil.h \
-	${top_srcdir}/pixmaps/figure_bars_fig.c \
-	${top_srcdir}/pixmaps/figure_bars_fig.h \
-	${top_srcdir}/pixmaps/figure_coax.c \
-	${top_srcdir}/pixmaps/figure_coax.h \
-	${top_srcdir}/pixmaps/figure_coax_model.c \
-	${top_srcdir}/pixmaps/figure_coax_model.h \
-	${top_srcdir}/pixmaps/figure_coplanar.c \
-	${top_srcdir}/pixmaps/figure_coplanar.h \
-	${top_srcdir}/pixmaps/figure_coplanar_model.c \
-	${top_srcdir}/pixmaps/figure_coplanar_model.h \
-	${top_srcdir}/pixmaps/figure_coupled_microstrip.c \
-	${top_srcdir}/pixmaps/figure_coupled_microstrip.h \
-	${top_srcdir}/pixmaps/figure_coupled_stripline.c \
-	${top_srcdir}/pixmaps/figure_coupled_stripline.h \
-	${top_srcdir}/pixmaps/figure_ic_microstrip.c \
-	${top_srcdir}/pixmaps/figure_ic_microstrip.h \
-	${top_srcdir}/pixmaps/figure_ic_microstrip_model.c \
-	${top_srcdir}/pixmaps/figure_ic_microstrip_model.h \
-	${top_srcdir}/pixmaps/figure_microstrip.c \
-	${top_srcdir}/pixmaps/figure_microstrip.h \
-	${top_srcdir}/pixmaps/figure_microstrip_model.c \
-	${top_srcdir}/pixmaps/figure_microstrip_model.h \
-	${top_srcdir}/pixmaps/figure_rc.c \
-	${top_srcdir}/pixmaps/figure_rc.h \
-	${top_srcdir}/pixmaps/figure_rl.c \
-	${top_srcdir}/pixmaps/figure_rl.h \
-	${top_srcdir}/pixmaps/figure_stripline.c \
-	${top_srcdir}/pixmaps/figure_stripline.h \
-	${top_srcdir}/pixmaps/figure_stripline_model.c \
-	${top_srcdir}/pixmaps/figure_stripline_model.h
+	$(top_srcdir)/pixmaps/figure_air_coil.c \
+	$(top_srcdir)/pixmaps/figure_air_coil.h \
+	$(top_srcdir)/pixmaps/figure_bars_fig.c \
+	$(top_srcdir)/pixmaps/figure_bars_fig.h \
+	$(top_srcdir)/pixmaps/figure_coax.c \
+	$(top_srcdir)/pixmaps/figure_coax.h \
+	$(top_srcdir)/pixmaps/figure_coax_model.c \
+	$(top_srcdir)/pixmaps/figure_coax_model.h \
+	$(top_srcdir)/pixmaps/figure_coplanar.c \
+	$(top_srcdir)/pixmaps/figure_coplanar.h \
+	$(top_srcdir)/pixmaps/figure_coplanar_model.c \
+	$(top_srcdir)/pixmaps/figure_coplanar_model.h \
+	$(top_srcdir)/pixmaps/figure_coupled_microstrip.c \
+	$(top_srcdir)/pixmaps/figure_coupled_microstrip.h \
+	$(top_srcdir)/pixmaps/figure_coupled_stripline.c \
+	$(top_srcdir)/pixmaps/figure_coupled_stripline.h \
+	$(top_srcdir)/pixmaps/figure_ic_microstrip.c \
+	$(top_srcdir)/pixmaps/figure_ic_microstrip.h \
+	$(top_srcdir)/pixmaps/figure_ic_microstrip_model.c \
+	$(top_srcdir)/pixmaps/figure_ic_microstrip_model.h \
+	$(top_srcdir)/pixmaps/figure_microstrip.c \
+	$(top_srcdir)/pixmaps/figure_microstrip.h \
+	$(top_srcdir)/pixmaps/figure_microstrip_model.c \
+	$(top_srcdir)/pixmaps/figure_microstrip_model.h \
+	$(top_srcdir)/pixmaps/figure_rc.c \
+	$(top_srcdir)/pixmaps/figure_rc.h \
+	$(top_srcdir)/pixmaps/figure_rl.c \
+	$(top_srcdir)/pixmaps/figure_rl.h \
+	$(top_srcdir)/pixmaps/figure_stripline.c \
+	$(top_srcdir)/pixmaps/figure_stripline.h \
+	$(top_srcdir)/pixmaps/figure_stripline_model.c \
+	$(top_srcdir)/pixmaps/figure_stripline_model.h
 
-if HAVE_GTK2_10
 wcalc_SOURCES+=		${FIGSRCS}
-#wcalc_DEPENDENCIES+=	${FIGSRCS}
-else
-EXTRA_DIST+=	${FIGSRCS}
-endif
+wcalc_DEPENDENCIES+=	${FIGSRCS}
 

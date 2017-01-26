@@ -1,7 +1,7 @@
-## $Id: Makefile.am,v 1.26 2009/01/12 16:27:24 dan Exp $
+## $Id: Makefile.am,v 1.27 2012/03/16 16:09:35 dan Exp $
 ##
 
-## Copyright (C) 2001, 2002, 2004, 2005, 2012 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2012, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -38,11 +38,11 @@ MEXSFX=	@MEXSFX@
 MATLAB_DIR=	@MATLAB_DIR@
 
 pkglibexecdir=	${libexecdir}/matlab/${PACKAGE}-${VERSION}
-pkglibexec_DATA=	${MEX_MANS}
+pkglibexec_MANS=	${MEX_MANS}
 
 noinst_SCRIPTS=		runmatlab
 
-INCLUDES = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
+AM_CPPFLAGS = -I.. -I$(top_srcdir)/include -I${MATLAB_DIR}/extern/include ${DMALLOC_CFLAGS}
 
 MEX_FILES=		${MEX_SRCS:.c=.${MEXSFX}}
 MEX_LA_FILES=	${MEX_FILES:=.la}

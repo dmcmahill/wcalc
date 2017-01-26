@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.21 2009/02/11 02:43:19 dan Exp $
+## $Id: Makefile.am,v 1.22 2009/02/11 22:34:25 dan Exp $
 
 ##
-## Copyright (C) 2004, 2005, 2006, 2008 Dan McMahill
+## Copyright (C) 2004, 2005, 2006, 2008, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -51,7 +51,7 @@ DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" @DEFS@
 
 LIBS= @LIBINTL@ @LIBS@ @WCALC_LIBS@
 
-INCLUDES =  -DVER=\"@VERSION@\" \
+AM_CPPFLAGS =  -DVER=\"@VERSION@\" \
 	-I$(top_srcdir)/include @WCALC_CFLAGS@ -I$(top_srcdir)/intl -I../intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
 

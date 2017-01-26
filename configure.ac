@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.20 2009/11/24 03:18:22 dan Exp $
+dnl $Id: configure.ac,v 1.21 2011/09/16 12:15:55 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007, 2008, 2009 Dan McMahill
+dnl 2007, 2008, 2009, 2017 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl 
@@ -23,8 +23,8 @@ dnl
 
 AC_INIT([wcalc], [1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
-AC_PREREQ([2.59])
-AM_INIT_AUTOMAKE([1.9])
+AC_PREREQ([2.68])
+AM_INIT_AUTOMAKE([1.9 no-dependencies])
 
 dnl Create a configuration header
 AM_CONFIG_HEADER([config.h])
@@ -154,7 +154,7 @@ wc_save_LIBS="$LIBS"
 for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	LIBS="$wc_save_LIBS ${fl}path"
 	AC_MSG_CHECKING([if $CC accepts ${fl}path for runtime libraries])
-	AC_LINK_IFELSE([
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include <stdio.h>
 int main(argc, argv)
 int argc;
@@ -163,7 +163,7 @@ char **argv;
 	printf("Hello, world\n");
 	return 0;
 }
-],
+])],
 
 	AC_MSG_RESULT([yes])
 	rpath=$fl, 
@@ -407,7 +407,7 @@ if test "X$wc_oct_wcalc_yesno" = "Xyes"; then
 	save_ac_exeext=$ac_exeext
 	ac_exeext=.mex
 
-	AC_LINK_IFELSE([
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include "mex.h"
 void mexFunction(
                  int nlhs,
@@ -422,7 +422,7 @@ void mexFunction(
 {
 	mexPrintf("Hello, world\n");
 }
-],
+])],
 	AC_MSG_RESULT([yes])
 	wc_mkoctfile_is_mex=yes
 	OCT_MEX_EXEEXT=.mex
@@ -464,7 +464,7 @@ void mexFunction(
 	save_ac_exeext=$ac_exeext
 	ac_exeext=.oct
 
-	AC_LINK_IFELSE([
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include "mex.h"
 void mexFunction(
                  int nlhs,
@@ -479,7 +479,7 @@ void mexFunction(
 {
 	mexPrintf("Hello, world\n");
 }
-],
+])],
 	AC_MSG_RESULT([yes])
 ,
 	AC_ERROR([$OCTMEX is either broken or is not octave mex])
@@ -505,7 +505,7 @@ if test "X${_use_rpath}" = "Xyes" ; then
 	for fl in  "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $OCTMEX accepts ${fl}path for runtime libraries])
-	    AC_LINK_IFELSE([
+	    AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include "mex.h"
 void mexFunction(
                  int nlhs,
@@ -520,7 +520,7 @@ void mexFunction(
 {
 	mexPrintf("Hello, world\n");
 }
-],
+])],
 
 		AC_MSG_RESULT([yes])
 		rpath=$fl, 
@@ -1080,7 +1080,7 @@ if test "X$MEX_WCALC" != "X"; then
 	save_ac_exeext=$ac_exeext
 	ac_exeext=.${MEXSFX}
 
-	AC_LINK_IFELSE([
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include "mex.h"
 void mexFunction(
                  int nlhs,
@@ -1095,7 +1095,7 @@ void mexFunction(
 {
 	mexPrintf("Hello, world\n");
 }
-],
+])],
 	AC_MSG_RESULT([yes])
 ,
 	AC_ERROR([$MEX is either broken or is not matlab mex])
@@ -1107,7 +1107,7 @@ if test "X${_use_rpath}" = "Xyes" ; then
 	for fl in "-Wl,-rpath -Wl," "-Wl,--rpath -Wl," "-rpath " "--rpath " "-Wl,-R" "-Wl,-R -Wl," "-R" "-R " ; do
 	    LIBS="$wc_save_LIBS ${fl}path"
 	    AC_MSG_CHECKING([if $MEX accepts ${fl}path for runtime libraries])
-	    AC_LINK_IFELSE([
+	    AC_LINK_IFELSE([AC_LANG_SOURCE([
 #include "mex.h"
 void mexFunction(
                  int nlhs,
@@ -1122,7 +1122,7 @@ void mexFunction(
 {
 	mexPrintf("Hello, world\n");
 }
-],
+])],
 
 		AC_MSG_RESULT([yes])
 		rpath=$fl, 
@@ -1205,7 +1205,13 @@ AC_CHECK_FUNCS(rint)
 
 
 dnl gettext
-AM_GNU_GETTEXT([external])
+GETTEXT_PACKAGE=$PACKAGE
+AH_TEMPLATE([GETTEXT_PACKAGE], [Name of this program's gettext domain])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"])
+AC_SUBST(GETTEXT_PACKAGE)
+
+AM_GNU_GETTEXT_VERSION([0.14])
+AM_GNU_GETTEXT
 
 # ------------- GTK -------------------
 dnl GTK checks
@@ -1379,6 +1385,7 @@ AC_OUTPUT(
 	Makefile 
 	doc/Makefile
 	include/Makefile
+	intl/Makefile
 	m4/Makefile
 	po/Makefile.in
 	libwcalc/Makefile
