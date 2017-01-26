@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# $Id: format_tab,v 1.5 2005/10/30 12:29:21 dan Exp $
+# $Id: format_tab,v 1.6 2008/11/29 20:42:45 dan Exp $
 #
 # Copyright (c) 2002, 2005 Dan McMahill
 # All rights reserved.
@@ -111,7 +111,7 @@ first==1 {
     }
   }
   else {
-    printf("ERROR:  unknown \"type\" = \"%s\"\n",type) > /dev/stderr;
+    printf("ERROR:  unknown \"type\" = \"%s\"\n",type) > "/dev/stderr";
     exit(1);
   }
   first=0;
