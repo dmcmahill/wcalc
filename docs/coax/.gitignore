@@ -1,0 +1,10 @@
+*.aux
+*.bbl
+*.bib-stamp
+*.blg
+*.dvi
+*.log
+*.out
+*~
+*.pdf
+*.ps

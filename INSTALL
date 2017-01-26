@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.7 2005/11/01 00:09:33 dan Exp $
+$Id: INSTALL,v 1.8 2009/02/07 04:10:03 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -262,6 +262,6 @@ Makefile(s), the header file containing system-dependent definitions
 (if the package uses one), and `config.status' (all the files that
 `configure' created), type `make distclean'.
 
-The file `configure.in' is used as a template to create `configure' by
+The file `configure.ac' is used as a template to create `configure' by
 a program called `autoconf'.  You will only need it if you want to
 regenerate `configure' using a newer version of `autoconf'.

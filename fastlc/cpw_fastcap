@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# Script to generate a section of CPW for extracting
+# capacitance.
+
+BUSGEN=${BUSGEN:-busgen}
+CUBEGEN=${CUBEGEN:-cubegen}
+FASTCAP=${FASTCAP:-fastcap}
+
+# -xh, -yh, -zh are dimensions in x, y, z directions
+# generate a 11um wide, 1um thick, 1mm long trace
+width=11e-6
+gnd_width=500e-6
+length=1000e-6
+gap=18e-6
+tmet=1e-9
+echo "Generating CPW line"
+# cubegen:
+#  -xo<originx>
+#  -yo<originy>
+#  -zo<originz>
+#  -xh<heightx>
+#  -yh<heighty>
+#  -zh<heightz>
+#  -n<num panels/side>
+#  -e<rel edge panel width>
+#  -na<name>
+#
+#  -o - center cube at 0,0,0
+#  -t - remove panel of top face, z = zo + zh plane
+#  -b - remove panel of bottom face, z = zo plane
+#  -p - -pfl -pfr -pbl -pbr
+#  -pfl - remove panel of left front face, x = xo + xh plane
+#  -pfr - remove panel of right front face, y = yo + yh plane
+#  -pbl - remove panel of back left face, y = yo plane
+#  -pbr - remove panel of back right face, x = xo plane
+#  -d - disable discretization of cube faces
+
+panel_remove="-p"
+echo "${CUBEGEN} -naCPW -n7 -xh${width} -yh${length} -zh${tmet} ${panel_remove} > cpw_line.qui"
+${CUBEGEN} -naCPW -n7 -xh${width} -yh${length} -zh${tmet} ${panel_remove} > cpw_line.qui
+
+#   generate top an bottom ground planes (one file, called 3x in list file)
+#   translate by (-1 -1 -1), (-1 -1 5) and (-1 -1 4)
+echo "Generating CPW gnd"
+echo "${CUBEGEN} -naGND -n50 -xh${gnd_width} -yh${length} -zh${tmet} ${panel_remove} > cpw_gnd.qui"
+${CUBEGEN} -naGND -n50 -xh${gnd_width} -yh${length} -zh${tmet} ${panel_remove} > cpw_gnd.qui
+
+xtrans1=`awk 'END{print width + gap}' width=$width gap=$gap /dev/null`
+xtrans2=`awk 'END{print -gnd_width - gap}' gnd_width=$gnd_width gap=$gap /dev/null`
+
+cat << EOF > cpw.lst
+G test CPW structure
+** the main signal line
+C cpw_line.qui 1  0 0 0 
+**   ground planes (use of same file repeatedly)
+C cpw_gnd.qui 1.0  $xtrans1 0 0 +
+C cpw_gnd.qui 1.0  $xtrans2 0 0
+**
+EOF
+
+echo "Running fastcap to produce drawing"
+# -m : change to line drawing mode from calculation mode
+# -a : specify azimuth view angle in degrees
+# -e : specify elevation view angle in degrees
+# -h : specif view distance
+# -s : two dimensional projection scale
+# -r : rotation in degrees
+# -u : up axis rotation
+# -x : add axes with specified length
+# -w : line width
+# -b : ?
+# -rd : remove dielectric interfaces
+# -rc : remove conductor surfaces
+
+${FASTCAP} \
+	-m./cpw.ps \
+	-l./cpw.lst
+
+ps2pdf cpw.ps  ~/public_html/cpw.pdf
+
+echo "Running fastcap for analysis"
+${FASTCAP} \
+	-l./cpw.lst \
+	| tee cpw.out
+
+
