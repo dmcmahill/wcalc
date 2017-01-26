@@ -1,8 +1,8 @@
 ## -*- makefile -*-
-## $Id: Makefile.am,v 1.38 2009/02/11 22:34:17 dan Exp $
+## $Id: Makefile.am,v 1.39 2009/03/01 01:03:58 dan Exp $
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -24,7 +24,7 @@ lib_LTLIBRARIES = libwcalc.la
 
 bin_SCRIPTS = wcalc-config
 pkgincludedir=	$(includedir)/${PACKAGE}-${VERSION}
-pkginclude_DATA =  \
+pkginclude_HEADERS =  \
 	air_coil.h \
 	air_coil_loadsave.h \
 	bars.h \
@@ -167,5 +167,5 @@ libwcalc_la_SOURCES = \
 	wcalc_loadsave.c \
 	wcalc_loadsave.h
 
-INCLUDES = -I$(top_srcdir)/include -DVER=\"@VERSION@\" ${DMALLOC_CFLAGS}
+AM_CPPFLAGS = -I$(top_srcdir)/include -DVER=\"@VERSION@\" ${DMALLOC_CFLAGS}
 
