@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.22 2017/01/26 04:24:25 dan Exp $
+dnl $Id: configure.ac,v 1.23 2017/01/26 04:50:22 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
@@ -59,6 +59,47 @@ AC_SUBST(WIN32)
 AM_CONDITIONAL(WIN32, test x$WIN32 = xyes)
 
 dnl Checks for programs.
+#
+# ------------- swig/python tests -------------------
+#
+wc_swig_yesno=no
+
+AC_MSG_CHECKING([if the python module should be built])
+AC_ARG_ENABLE([python],
+[  --enable-python        Build the python module.  This 
+                          requires swig and python.
+			  [default = do not build py-wcalc]],
+[
+if test "X$enable_python" = "Xno" ; then
+	PY_WCALC=""
+	AC_MSG_RESULT([no])
+	wc_swig_yesno=no
+else
+	PY_WCALC="py-wcalc"
+	AC_MSG_RESULT([yes])
+	wc_swig_yesno=yes
+fi
+],
+[
+PY_WCALC=""
+AC_MSG_RESULT([no])
+wc_swig_yesno=no
+])
+AC_SUBST(PY_WCALC)
+AX_PKG_SWIG
+AS_IF([test "X$wc_swig_yesno" = "Xyes" -a ! -x "$SWIG"], [
+	AC_MSG_ERROR([SWIG is required to build the python module...]) 
+],[
+	AC_DEFINE(HAVE_SWIG, 1 ,[Define if you have SWIG libraries and header files.])
+	AC_SUBST(swig, "$SWIG")
+])
+	AC_SUBST(swig, "$SWIG")
+AM_PATH_PYTHON
+AX_SWIG_ENABLE_CXX
+AX_SWIG_MULTI_MODULE_SUPPORT
+AX_SWIG_PYTHON
+AM_CONDITIONAL(MOD_PYTHON, [test "x$enable_mod_python" = "xyes"]) 
+
 AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
@@ -245,6 +286,7 @@ AC_SUBST(INTLPO)
 AC_SUBST(PIXMAPS)
 AC_SUBST(WCALC_CFLAGS)
 AC_SUBST(WCALC_LIBS)
+
 
 #
 # ------------- scilab tests -------------------
@@ -560,6 +602,36 @@ if test "X$OCT_WCALC" != "X"; then
 	AC_MSG_CHECKING([for the installed octave share directory])
 	OCTDATADIR=`$OCTAVE_CONFIG --print DATADIR`
 	AC_MSG_RESULT([$OCTDATADIR])
+
+	AC_MSG_CHECKING([for where the octave files will be installed])
+	AC_ARG_WITH([siteoct],
+	[  --with-siteoct=[siteoct]    Override the default octave site oct directory.],
+	[
+		if test "X$with_siteoct" = "Xno" ; then
+			AC_ERROR([--without-siteoct is not allowed])
+		else
+			MYSITEOCT="$with_siteoct"
+		fi
+	],
+	[
+		MYSITEOCT="$SITEOCT"
+	])
+	AC_MSG_RESULT([$MYSITEOCT])
+
+	AC_MSG_CHECKING([for where the octave .m files will be installed])
+	AC_ARG_WITH([siteoctm],
+	[  --with-siteoctm=[siteoctm]    Override the default octave site oct m directory.],
+	[
+		if test "X$with_siteoctm" = "Xno" ; then
+			AC_ERROR([--without-siteoctm is not allowed])
+		else
+			MYSITEOCT="$with_siteoctm"
+		fi
+	],
+	[
+		MYSITEOCTM="$SITEOCTM"
+	])
+	AC_MSG_RESULT([$MYSITEOCTM])
 
 	# if we're building our own libwcalc, then 
 	# we don't have an installed place to link to yet
@@ -1402,6 +1474,7 @@ AC_OUTPUT(
 	mex-wcalc/Makefile
 	mex-wcalc/mexopts.sh
 	octave-wcalc/Makefile
+	py-wcalc/Makefile
 	sci-wcalc/Makefile
 	stdio-wcalc/Makefile
 	pixmaps/Makefile
@@ -1430,6 +1503,7 @@ cgi path       = $CGIPATH
    gtk2-wcalc  $wc_gtk2_wcalc_yesno
    mex-wcalc   $wc_mex_wcalc_yesno
    oct-wcalc   $wc_oct_wcalc_yesno
+   py-wcalc    $wc_swig_yesno
    sci-wcalc   $wc_sci_wcalc_yesno
    stdio-wcalc $wc_stdio_wcalc_yesno
    sourceforge $wc_sf_wcalc_yesno

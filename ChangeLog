@@ -1,3 +1,306 @@
+2017-01-25 23:50  dan
+
+	* configure.ac, gtk-wcalc/Makefile.am: turn dependency tracking
+	  back on and subdir-objects off
+
+2017-01-25 23:32  dan
+
+	* .cvsignore, INSTALL, doc/.cvsignore, docs/coax/.cvsignore,
+	  fastlc/.cvsignore, fastlc/cpw_fastcap, htdocs/.cvsignore,
+	  include/.cvsignore, m4/.cvsignore, po/.cvsignore: add several
+	  cvsignores to clean up my diff output
+
+2017-01-25 23:32  dan
+
+	* libwcalc/Makefile.am: update for newer automake (INCLUDES ->
+	  AM_CPPFLAGS)
+
+2017-01-25 23:31  dan
+
+	* ABOUT-NLS, config.rpath, m4/codeset.m4, m4/iconv.m4,
+	  po/Makefile.in.in: bump gettext
+
+2017-01-25 23:28  dan
+
+	* utils/format_tab: quote /dev/stderr for NetBSDs awk
+
+2017-01-25 23:24  dan
+
+	* Makefile.am, autogen.sh, configure.ac, cgi-wcalc/Makefile.am,
+	  gtk-wcalc/Makefile.am, mex-wcalc/Makefile.am,
+	  sci-wcalc/Makefile.am, stdio-wcalc/Makefile.am: Update to more
+	  recent autotools
+
+2017-01-12 22:46  dan
+
+	* cgi-wcalc/.cvsignore, cgi-wcalc/run_tests.sh,
+	  cgi-wcalc/run_weblint, gtk-wcalc/.cvsignore, libwcalc/.cvsignore,
+	  mex-wcalc/.cvsignore, octave-wcalc/.cvsignore,
+	  pixmaps/.cvsignore, sci-wcalc/.cvsignore, stdio-wcalc/.cvsignore,
+	  utils/.cvsignore, win32/.cvsignore: add many .cvsignore files so
+	  my diffs do not get lost in ??.  Also add a couple of wip scripts
+
+2017-01-12 22:26  dan
+
+	* sci-wcalc/microstrip_compare.sce: add a script for doing some
+	  microstrip comparisons
+
+2012-04-02 14:46  dan
+
+	* references/Wan_IEEE_MTT_Vol44_No1_Jan1996.pdf: add another
+	  coupled microstrip reference
+
+2012-03-19 11:52  dan
+
+	* references/: Jansen_MTT26_N2.pdf,
+	  Kirschning_and_Jansen_MTT32_N1.pdf,
+	  Kirschning_and_Jansen_MTT33_N3.pdf: add some coupled microstrip
+	  references
+
+2012-03-19 06:57  dan
+
+	* sci-wcalc/Makefile.am: add missing wcalc.xml to the distfile
+
+2012-03-16 12:10  dan
+
+	* cgi-wcalc/copying.html, gtk-wcalc/about.c, mex-wcalc/copyright.m,
+	  octave-wcalc/copyright.m, sci-wcalc/sciman.mk,
+	  sci-wcalc/wcalc.xml: update copyright dates
+
+2012-03-16 12:09  dan
+
+	* mex-wcalc/Makefile.am, octave-wcalc/Makefile.am: add an overview
+	  help page for wcalc
+
+2012-03-16 12:09  dan
+
+	* octave-wcalc/runoctave.in: allow overriding octave with $OCTAVE
+
+2012-03-14 22:38  dan
+
+	* mex-wcalc/runmatlab.in: support overriding the name of the matlab
+	  program.  Also update license
+
+2012-03-14 19:41  dan
+
+	* sci-wcalc/microstrip_calc.c: add missing math.h for log10 and exp
+
+2012-03-14 17:52  dan
+
+	* octave-wcalc/Makefile.am: remove OCTINCLUDEDIR which snuck in
+
+2012-03-14 17:51  dan
+
+	* octave-wcalc/Makefile.am: make this parallel make safe and also
+	  avoid building alert.o multiple times.
+
+2012-03-14 12:13  dan
+
+	* sci-wcalc/: air_coil_calc.dia.ref, air_coil_calc.tst,
+	  air_coil_syn.dia.ref, air_coil_syn.tst: expand the air coil tests
+	  for better coverage
+
+2012-03-14 00:27  dan
+
+	* sci-wcalc/: air_coil_calc.dia.ref, air_coil_calc.tst,
+	  air_coil_syn.dia.ref, air_coil_syn.tst: update test suite after
+	  adding wire diameter
+
+2012-03-13 23:55  dan
+
+	* sci-wcalc/: air_coil_calc.c, air_coil_syn.c: fix a couple of
+	  typos in previous
+
+2012-03-13 23:54  dan
+
+	* octave-wcalc/Makefile.am: install the .m help files into the same
+	  location as the .mex files.  This is how recent (3.6.1 for sure)
+	  versions of octave behave
+
+2012-03-13 23:27  dan
+
+	* cgi-wcalc/air_coil.cgi.c, cgi-wcalc/air_coil.html,
+	  gtk-wcalc/air_coil_gui.c, gtk-wcalc/air_coil_gui.h,
+	  octave-wcalc/Makefile.am, sci-wcalc/air_coil_calc.c,
+	  sci-wcalc/air_coil_calc.xml, sci-wcalc/air_coil_syn.c,
+	  sci-wcalc/air_coil_syn.xml, stdio-wcalc/air_coil.dat,
+	  stdio-wcalc/air_coil.ref, stdio-wcalc/main.c:
+	  Allow the air coil functions to specify wire diameter as well as
+	  wire size in AWG for the benefit of some non-US users who may not
+	  deal with AWG.  Reported/requested in bug #3410395
+
+2012-03-13 12:16  dan
+
+	* TODO, gtk-wcalc/air_coil_gui.c: use x,y variables to keep track
+	  of position in the form.  Makes modification much easier.
+
+2012-03-08 11:59  dan
+
+	* stdio-wcalc/: air_coil.dat, air_coil.ref, bars.ref: add tests at
+	  100 kHz, 10 kHz, and 1 kHz to exercise the low frequency
+	  resistance code
+
+2012-03-07 12:02  dan
+
+	* libwcalc/: air_coil.c, air_coil.h, air_coil_loadsave.c,
+	  defaults.c: allow specifying wire size by diameter instead of AWG
+	  if desired
+
+2012-03-07 12:02  dan
+
+	* libwcalc/misc.c: dia2awg():  do not round to the nearest integer.
+	  Leave that to the calling function
+
+2012-03-07 12:02  dan
+
+	* libwcalc/coupled_stripline.c: add a bunch of comments and some
+	  more debug output
+
+2012-03-05 16:58  dan
+
+	* libwcalc/air_coil.c: The formulation from the Geffe article
+	  assumes the coil is operating in the skin effect region when it
+	  comes to Q calculation.  This may or may not be a good assumption
+	  always.  Usually it is, but we might as well try to handle some
+	  corner cases.  To deal with this, find the skin effect resistance
+	  and also the DC resistance.  Then interpolate between the two and
+	  use the result to find an interpolated Q which should be valid at
+	  any frequency.  Even if it isn't exact, it should be close
+	  enough.
+
+	  Pointed out by Sven Wilhelmsson in SF Bug #1397739.
+
+2012-03-05 12:33  dan
+
+	* htdocs/coupled_stripline.shtml: add a reference (Cohn, 1954)
+
+2012-03-05 12:29  dan
+
+	* libwcalc/stripline.c: add a comment
+
+2011-09-16 08:15  dan
+
+	* configure.ac, octave-wcalc/Makefile.am: update these to work
+	  correctly with more modern octave.  Seems to work with
+	  octave-3.2.4
+
+2011-09-16 07:52  dan
+
+	* stdio-wcalc/bars.dat: add a test case for the 2nd bar to the left
+	  of the first instead of to the right of it.  Should get the same
+	  answer.
+
+2010-09-20 22:00  dan
+
+	* libwcalc/bars.c: fix calculation when bar 2 is placed to the left
+	  or below bar 1 (E<0 or P<0)
+
+2009-11-23 22:18  dan
+
+	* configure.ac: Add Darwin and ia64 entries into the list of mex
+	  suffixes
+
+2009-11-23 21:47  dan
+
+	* configure.ac, mex-wcalc/mexlink, mex-wcalc/mexopts.sh.in:
+	  Hopefully repair building of mex-wcalc under release 14 of matlab
+	  while hopefully not breaking release 12 or release 13.  Since I
+	  have no way of testing any of these, I'm relying on bug reports.
+
+2009-11-23 18:23  dan
+
+	* configure.ac: add matlab .mexa64 suffix for x86_64 Linux
+
+2009-11-23 18:20  dan
+
+	* configure.ac: remove some garbage characters that accidentally
+	  crept in
+
+2009-11-23 18:20  dan
+
+	* po/nl.po: update nl translation from Bert Timmerman
+
+2009-10-22 23:13  dan
+
+	* sci-wcalc/: coplanar_calc.dia.ref,
+	  coupled_microstrip_calc.dia.ref, microstrip_calc.dia.ref: update
+	  some loss results after the loss calculation corrections of
+	  2009-01
+
+2009-10-22 21:31  dan
+
+	* libwcalc/mathutil.c: add some comments about the nature of K(k) /
+	  Kprime(k) (k_over_kp(k))
+
+2009-10-22 21:30  dan
+
+	* libwcalc/coupled_stripline.c: - use an initial guess for the
+	  synthesis based on a single stripline.  This	 seems to give a
+	  much better starting guess than trying to use the coupled
+	  microstrip initial guess formulae.
+
+	  - add lots of extra debugging output
+
+	  - make use of stripline_line_new() and stripline_line_free()
+	  instead of   something on the stack.	This is because the _new
+	  and _free functions	do a bit of extra initialization and
+	  freeing.
+
+	  This helps to address a bug report about the synthesis hanging
+	  for some semi-extreme cases.
+
+2009-10-22 21:25  dan
+
+	* libwcalc/stripline.c: add some extra debug output
+
+2009-10-22 21:23  dan
+
+	* sci-wcalc/: Makefile.am, coupled_stripline_calc.dem,
+	  stripline_calc.dem, wcalc-demo.dem: add demos for single and
+	  coupled stripline structures
+
+2009-10-22 18:34  dan
+
+	* stdio-wcalc/: coupled_stripline.dat, coupled_stripline.ref: add a
+	  new test from a bug report submission.  regen the golden file due
+	  to minor synthesis numerical differences (very very tiny
+	  differences)
+
+2009-10-19 17:47  dan
+
+	* stdio-wcalc/run_tests.sh: fix copyright (GPLv2 from BSD), add
+	  usage output, add -l|--list-tests option
+
+2009-10-18 19:00  dan
+
+	* README-to-release: update the name of the win32 installer
+
+2009-03-01 18:45  dan
+
+	* po/nl.po: wcalc-1.1 update from Bert
+
+2009-02-28 23:47  dan
+
+	* utils/: Makefile.am, build_sf: add script to build the
+	  sourceforge site
+
+2009-02-28 21:26  dan
+
+	* configure.ac: set rev for 1.1 release and also remove the "devel
+	  only" flag.
+
+2009-02-28 21:01  dan
+
+	* configure.ac: welcome to 1.1A (after 1-1 branch)
+
+2009-02-28 20:24  dan
+
+	* po/: es.po, nl.po, wcalc.pot: update for 1.1
+
+2009-02-28 20:22  dan
+
+	* ChangeLog: update for release 1.1
+
 2009-02-28 20:03  dan
 
 	* libwcalc/Makefile.am: bump library rev for 1.1 release

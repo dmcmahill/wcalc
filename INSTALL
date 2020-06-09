@@ -1,4 +1,4 @@
-$Id: INSTALL,v 1.8 2009/02/07 04:10:03 dan Exp $
+$Id: INSTALL,v 1.9 2017/01/26 04:32:25 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build
@@ -9,6 +9,106 @@ NOTE:  You must use GNU make to build wcalc.  Sorry, but there
 were some things I didn't see a good way of doing portably and
 once I went down that path I later used a few more GNU make
 extensions.  Other make implementations will *not* work.
+
+============================================================================
+DEPENDENCIES:
+============================================================================
+
+Hopefully this is a somewhat up to date list of dependencies and
+why they are dependencies.
+
+GNU make - required for all builds.  GNU make extensions are used
+so BSD make implementations will not work.
+
+C compiler
+
+awk - used for formatting some tables into formats needed by different
+front ends.  GNU awk, nawk, and the awk that ships with BSD systems
+should all work. 
+
+------------------------------------
+libwcalc
+------------------------------------
+no extra dependencies.  This is the core part of wcalc which 
+contains all of the actual analysis/synthesis routines.
+
+------------------------------------
+CGI frontend
+------------------------------------
+no extra dependencies.
+
+------------------------------------
+gtk frontend
+------------------------------------
+glib2
+gtk2+
+
+------------------------------------
+matlab frontend
+------------------------------------
+matlab
+
+------------------------------------
+octave frontend
+------------------------------------
+octave
+
+------------------------------------
+python frontend
+------------------------------------
+swig - used to generate the python wrapper
+python3
+
+------------------------------------
+scilab frontend
+------------------------------------
+scilab
+
+------------------------------------
+stdio frontend
+------------------------------------
+no additional dependencies over libwcalc
+
+------------------------------------
+debugging tools
+------------------------------------
+dmalloc - only needed if building with dmalloc debugging enabled.
+By default this is not needed.
+
+ElectricFence - only needed if building with ElectricFence debugging
+enabled.  By default this is not needed.
+
+------------------------------------
+additional dependencies for building
+from development sources (i.e. not
+from a released tarball)
+------------------------------------
+autoconf
+automake
+gettext
+
+groff/neqn/tbl - all part of groff.  Used for building docs
+
+ImageMagick - convert program
+
+pstoedit - tgif figures get exported to postscript and then pstoedit
+is used to generate cairo C code for drawing the various figures.
+This is used by the GTK frontend to support printing on different
+platforms.  Only needed if the tgif figures have been modified.
+
+tgif - the figures have all been created with tgif.  tgif is required
+for exporting to the various formats used by wcalc.
+
+xpmtoppm and ppmtowinicon which are part of netpbm - 
+
+xsltproc - part of libxslt. 
+
+w3m or links or lynx - used to dump an html file to text for building
+online help docs for then scilab frontend
+
+============================================================================
+CONFIGURATION NOTES:
+============================================================================
 
 Wcalc includes several different frontends.  Because all users
 may not want to install all frontends (and the requesite dependencies)
