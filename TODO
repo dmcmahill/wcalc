@@ -1,4 +1,8 @@
-$Id: TODO,v 1.7 2012/03/13 16:16:22 dan Exp $
+$Id: TODO,v 1.8 2017/01/26 12:23:33 dan Exp $
+
+- python binding
+
+- move from a private cvs repo to public git and add CI
 
 - finish spanish translation for gtk-wcalc
 
@@ -51,4 +55,11 @@ $Id: TODO,v 1.7 2012/03/13 16:16:22 dan Exp $
 - On the coupled stripline model, make it behave better in the face of some of the 
   more advanced geometries found in MCM substrates and the like.
 
+- Coupled microstrip does *not* include metal thickness in the impedance calculations
+  but this can be important with more modern geometries found in 2020 and
+  beyond compared to PCB manufacturing technology of the 1980's when the
+  primary references used here were published.
 
+- Add the ability to write out s-parameter files for the various structures.  In the
+  case of the coupled lines, select between 4-port single ended files and mixed
+  model s-parameter files.
