@@ -1,9 +1,9 @@
-dnl $Id: configure.ac,v 1.23 2017/01/26 04:50:22 dan Exp $
+dnl $Id: configure.ac,v 1.24 2020/06/09 17:07:40 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007, 2008, 2009, 2017 Dan McMahill
+dnl 2007, 2008, 2009, 2017, 2020 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl 
@@ -62,43 +62,43 @@ dnl Checks for programs.
 #
 # ------------- swig/python tests -------------------
 #
-wc_swig_yesno=no
+#wc_swig_yesno=no
 
-AC_MSG_CHECKING([if the python module should be built])
-AC_ARG_ENABLE([python],
-[  --enable-python        Build the python module.  This 
-                          requires swig and python.
-			  [default = do not build py-wcalc]],
-[
-if test "X$enable_python" = "Xno" ; then
-	PY_WCALC=""
-	AC_MSG_RESULT([no])
-	wc_swig_yesno=no
-else
-	PY_WCALC="py-wcalc"
-	AC_MSG_RESULT([yes])
-	wc_swig_yesno=yes
-fi
-],
-[
-PY_WCALC=""
-AC_MSG_RESULT([no])
-wc_swig_yesno=no
-])
-AC_SUBST(PY_WCALC)
-AX_PKG_SWIG
-AS_IF([test "X$wc_swig_yesno" = "Xyes" -a ! -x "$SWIG"], [
-	AC_MSG_ERROR([SWIG is required to build the python module...]) 
-],[
-	AC_DEFINE(HAVE_SWIG, 1 ,[Define if you have SWIG libraries and header files.])
-	AC_SUBST(swig, "$SWIG")
-])
-	AC_SUBST(swig, "$SWIG")
-AM_PATH_PYTHON
-AX_SWIG_ENABLE_CXX
-AX_SWIG_MULTI_MODULE_SUPPORT
-AX_SWIG_PYTHON
-AM_CONDITIONAL(MOD_PYTHON, [test "x$enable_mod_python" = "xyes"]) 
+#AC_MSG_CHECKING([if the python module should be built])
+#AC_ARG_ENABLE([python],
+#[  --enable-python        Build the python module.  This 
+#                          requires swig and python.
+#			  [default = do not build py-wcalc]],
+#[
+#if test "X$enable_python" = "Xno" ; then
+#	PY_WCALC=""
+#	AC_MSG_RESULT([no])
+#	wc_swig_yesno=no
+#else
+#	PY_WCALC="py-wcalc"
+#	AC_MSG_RESULT([yes])
+#	wc_swig_yesno=yes
+#fi
+#],
+#[
+#PY_WCALC=""
+#AC_MSG_RESULT([no])
+#wc_swig_yesno=no
+#])
+#AC_SUBST(PY_WCALC)
+#AX_PKG_SWIG
+#AS_IF([test "X$wc_swig_yesno" = "Xyes" -a ! -x "$SWIG"], [
+#	AC_MSG_ERROR([SWIG is required to build the python module...]) 
+#],[
+#	AC_DEFINE(HAVE_SWIG, 1 ,[Define if you have SWIG libraries and header files.])
+#	AC_SUBST(swig, "$SWIG")
+#])
+#	AC_SUBST(swig, "$SWIG")
+#AM_PATH_PYTHON
+#AX_SWIG_ENABLE_CXX
+#AX_SWIG_MULTI_MODULE_SUPPORT
+#AX_SWIG_PYTHON
+#AM_CONDITIONAL(MOD_PYTHON, [test "x$enable_mod_python" = "xyes"]) 
 
 AC_PROG_CC
 AC_PROG_AWK
@@ -1474,7 +1474,6 @@ AC_OUTPUT(
 	mex-wcalc/Makefile
 	mex-wcalc/mexopts.sh
 	octave-wcalc/Makefile
-	py-wcalc/Makefile
 	sci-wcalc/Makefile
 	stdio-wcalc/Makefile
 	pixmaps/Makefile
@@ -1503,7 +1502,6 @@ cgi path       = $CGIPATH
    gtk2-wcalc  $wc_gtk2_wcalc_yesno
    mex-wcalc   $wc_mex_wcalc_yesno
    oct-wcalc   $wc_oct_wcalc_yesno
-   py-wcalc    $wc_swig_yesno
    sci-wcalc   $wc_sci_wcalc_yesno
    stdio-wcalc $wc_stdio_wcalc_yesno
    sourceforge $wc_sf_wcalc_yesno
