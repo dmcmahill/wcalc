@@ -1,4 +1,3 @@
-/* $Id: cookie.cgi.c,v 1.5 2004/08/05 21:42:51 dan Exp $ */
 
 /*
  * Copyright (C) 2002, 2004 Dan McMahill

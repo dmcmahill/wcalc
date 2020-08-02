@@ -1,4 +1,3 @@
-/* $Id: version.c,v 1.3 2002/06/12 11:30:19 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002 Dan McMahill

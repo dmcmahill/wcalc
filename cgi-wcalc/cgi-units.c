@@ -1,4 +1,3 @@
-/* $Id: cgi-units.c,v 1.14 2005/10/13 22:39:56 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

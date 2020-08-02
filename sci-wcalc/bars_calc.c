@@ -1,6 +1,4 @@
-/* $Id: bars_calc.c,v 1.2 2009/01/11 07:15:03 dan Exp $ */
 
-static char vcid[] = "$Id: bars_calc.c,v 1.2 2009/01/11 07:15:03 dan Exp $";
 
 /*
  * Copyright (C) 2009 Dan McMahill

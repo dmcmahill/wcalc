@@ -1,4 +1,3 @@
-/* $Id: cgi-common.c,v 1.6 2005/10/13 22:39:46 dan Exp $ */
 
 /*
  * Copyright (C) 2002, 2005 Dan McMahill

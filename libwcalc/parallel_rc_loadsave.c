@@ -1,4 +1,3 @@
-/* $Id: parallel_rc_loadsave.c,v 1.1 2009/02/10 05:00:21 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

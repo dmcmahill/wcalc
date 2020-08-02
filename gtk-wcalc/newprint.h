@@ -1,4 +1,3 @@
-/* $Id: newprint.h,v 1.7 2009/02/14 02:11:16 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: bars_loadsave.h,v 1.1 2008/07/02 15:03:53 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill

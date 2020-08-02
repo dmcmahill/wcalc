@@ -1,4 +1,3 @@
-/* $Id: misc.h,v 1.10 2007/11/29 21:04:06 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2007 Dan McMahill

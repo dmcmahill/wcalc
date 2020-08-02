@@ -1,4 +1,3 @@
-/* $Id: ic_microstrip_gui.h,v 1.5 2004/08/30 22:59:20 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: bars.c,v 1.7 2009/02/07 15:10:09 dan Exp $ */
 
 /*
  * Copyright (C) 2008, 2010 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: capture.c,v 1.2 2002/01/18 14:20:02 dan Exp $ */
 
 #include "cgic.h"
 

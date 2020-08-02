@@ -1,6 +1,4 @@
-/* $Id: parallel_rl_p2s.c,v 1.1 2009/02/11 00:00:46 dan Exp $ */
 
-static char vcid[] = "$Id: parallel_rl_p2s.c,v 1.1 2009/02/11 00:00:46 dan Exp $";
 
 /*
  * Copyright (C) 2009 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: ic_microstrip.c,v 1.18 2004/08/31 21:29:26 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

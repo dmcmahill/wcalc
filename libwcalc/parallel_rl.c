@@ -1,4 +1,3 @@
-/* $Id: parallel_rl.c,v 1.3 2009/02/11 00:52:04 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

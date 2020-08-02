@@ -1,4 +1,3 @@
-/* $Id: stripline_loadsave.h,v 1.5 2004/08/31 21:38:25 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

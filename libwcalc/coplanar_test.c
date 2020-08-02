@@ -1,4 +1,3 @@
-/* $Id: coplanar_test.c,v 1.2 2007/11/27 16:55:43 dan Exp $ */
 
 /*
  * Copyright (C) 2006, 2007 Dan McMahill

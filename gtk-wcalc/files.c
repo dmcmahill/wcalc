@@ -1,4 +1,3 @@
-/* $Id: files.c,v 1.11 2005/10/25 21:26:00 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002 Dan McMahill

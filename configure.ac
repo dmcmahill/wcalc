@@ -1,4 +1,3 @@
-dnl $Id: configure.ac,v 1.24 2020/06/09 17:07:40 dan Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl

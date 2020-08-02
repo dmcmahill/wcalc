@@ -1,4 +1,3 @@
-/* $Id: defaults.c,v 1.14 2009/02/11 22:34:18 dan Exp $ */
 
 /* GENERATED FILE.  DO NOT EDIT. */
 /* use "make_defaults" to generate */

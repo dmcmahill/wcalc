@@ -1,4 +1,3 @@
-## $Id: shtml.mk,v 1.5 2004/09/02 00:51:43 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2002 Dan McMahill

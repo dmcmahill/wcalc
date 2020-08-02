@@ -1,4 +1,3 @@
-/* $Id: ic_microstrip.cgi.c,v 1.10 2006/03/01 15:31:36 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006 Dan McMahill

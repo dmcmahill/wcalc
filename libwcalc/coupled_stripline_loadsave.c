@@ -1,4 +1,3 @@
-/* $Id: coupled_stripline_loadsave.c,v 1.1 2006/02/12 06:16:26 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006 Dan McMahill

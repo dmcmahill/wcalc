@@ -1,4 +1,3 @@
-/* $Id: air_coil_loadsave.h,v 1.7 2004/08/31 21:38:17 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002 Dan McMahill

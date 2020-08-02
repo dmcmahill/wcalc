@@ -1,4 +1,3 @@
-/* $Id: units.h,v 1.6 2004/07/26 22:22:30 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

@@ -1,6 +1,4 @@
-/* $Id: coplanar_calc.c,v 1.3 2007/11/29 17:27:45 dan Exp $ */
 
-static char vcid[] = "$Id: coplanar_calc.c,v 1.3 2007/11/29 17:27:45 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006, 2007 Dan McMahill

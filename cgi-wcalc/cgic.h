@@ -1,4 +1,3 @@
-/* $Id: cgic.h,v 1.1 2001/09/11 22:52:07 dan Exp $ */
 /* The CGI_C library, by Thomas Boutell, version 1.0. CGI_C is intended
 	to be a high-quality API to simplify CGI programming tasks. */
 

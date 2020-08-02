@@ -1,5 +1,4 @@
 ## -*- Makefile -*-
-## $Id: sciman.mk,v 1.13 2009/02/08 14:42:55 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2004, 2005, 2009 Dan McMahill

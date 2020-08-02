@@ -1,6 +1,4 @@
-/* $Id: stripline_calc.c,v 1.5 2004/09/08 22:39:48 dan Exp $ */
 
-static char vcid[] = "$Id: stripline_calc.c,v 1.5 2004/09/08 22:39:48 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

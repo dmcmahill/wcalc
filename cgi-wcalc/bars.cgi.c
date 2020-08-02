@@ -1,4 +1,3 @@
-/* $Id: bars.cgi.c,v 1.2 2009/01/11 06:42:51 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

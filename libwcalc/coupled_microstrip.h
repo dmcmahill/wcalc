@@ -1,4 +1,3 @@
-/* $Id: coupled_microstrip.h,v 1.10 2005/01/06 22:53:09 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill

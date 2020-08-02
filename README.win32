@@ -1,4 +1,3 @@
-$Id: README.win32,v 1.2 2001/09/20 20:34:37 dan Exp $
 
 Yes, Wcalc runs on windows too!  To build from source, you need cygwin
 and also the mingw compilers.  It builds as a native WIN32 application.

@@ -1,4 +1,3 @@
-/* $Id: utils.h,v 1.1 2009/01/11 15:57:21 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill

@@ -1,6 +1,4 @@
-/* $Id: air_coil_calc.c,v 1.14 2012/03/14 03:27:29 dan Exp $ */
 
-static char vcid[] = "$Id: air_coil_calc.c,v 1.14 2012/03/14 03:27:29 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: make_defaults.c,v 1.6 2009/02/10 05:00:20 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2006, 2008, 2009 Dan McMahill
@@ -87,7 +86,6 @@ int main(int argc, char **argv)
   parallel_rl *prl;
   stripline_line *st_line;
 
-  printf("/* $Id: make_defaults.c,v 1.6 2009/02/10 05:00:20 dan Exp $ */\n\n");
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
   printf("/* use \"make_defaults\" to generate */\n\n");
 

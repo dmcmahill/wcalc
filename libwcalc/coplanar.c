@@ -1,4 +1,3 @@
-/*      $Id: coplanar.c,v 1.17 2009/02/27 05:23:48 dan Exp $ */
 
 /*
  * Copyright (C) 2006, 2007, 2009 Dan McMahill

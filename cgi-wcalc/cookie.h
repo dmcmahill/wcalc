@@ -1,4 +1,3 @@
-/* $Id: cookie.h,v 1.3 2004/07/23 22:11:53 dan Exp $ */
 
 /* 
  * Cookie support written by Dan McMahill borrowing heavily from 

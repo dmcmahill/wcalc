@@ -1,5 +1,4 @@
 ## -*- Makefile -*-
-## $Id: Makefile.am,v 1.61 2012/03/19 10:57:24 dan Exp $
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
 ## All rights reserved.

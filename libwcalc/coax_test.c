@@ -1,4 +1,3 @@
-/* $Id: coax_test.c,v 1.7 2005/01/06 22:52:35 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002 Dan McMahill

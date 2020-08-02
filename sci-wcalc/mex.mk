@@ -1,4 +1,3 @@
-## $Id: mex.mk,v 1.16 2009/02/11 00:00:46 dan Exp $
 ##
 
 ## Copyright (c) 2001, 2006, 2009 Dan McMahill

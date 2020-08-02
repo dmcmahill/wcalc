@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id: README-to-release,v 1.8 2009/03/01 00:55:46 dan Exp $
 #
 
 This documents what is done to create a wcalc release.  The releases now

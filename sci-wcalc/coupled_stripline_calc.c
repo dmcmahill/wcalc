@@ -1,6 +1,4 @@
-/* $Id: coupled_stripline_calc.c,v 1.2 2006/02/13 19:20:23 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_stripline_calc.c,v 1.2 2006/02/13 19:20:23 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006 Dan McMahill

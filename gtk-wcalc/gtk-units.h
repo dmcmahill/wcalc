@@ -1,4 +1,3 @@
-/*      $Id: gtk-units.h,v 1.16 2004/08/05 12:39:44 dan Exp $ */
 
 /*
  * Copyright (C) 2002, 2003, 2004 Dan McMahill

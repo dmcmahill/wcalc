@@ -1,4 +1,3 @@
-/* $Id$ */
 
 This license file pertains to the files
 "cgic.c" and "cgic.h"

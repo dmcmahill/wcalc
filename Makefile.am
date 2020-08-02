@@ -1,4 +1,3 @@
-## $Id: Makefile.am,v 1.31 2020/06/09 17:07:39 dan Exp $
 
 ##
 ## Copyright (C) 2001, 2002, 2003, 2004, 2017, 2020 Dan McMahill

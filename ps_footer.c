@@ -1,4 +1,3 @@
-/* $Id: ps_footer.c,v 1.1 2001/09/17 20:45:18 dan Exp $ */
 
 /* ********* Automatically Generated.  Do not edit! ******** */
 /* *********         Created with html2c            ******** */

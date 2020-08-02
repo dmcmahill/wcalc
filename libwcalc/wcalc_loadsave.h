@@ -1,4 +1,3 @@
-/* $Id: wcalc_loadsave.h,v 1.15 2009/02/10 05:00:21 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009 Dan McMahill
