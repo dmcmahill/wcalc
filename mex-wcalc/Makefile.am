@@ -1,4 +1,3 @@
-## $Id: Makefile.am,v 1.27 2012/03/16 16:09:35 dan Exp $
 ##
 
 ## Copyright (C) 2001, 2002, 2004, 2005, 2012, 2017 Dan McMahill

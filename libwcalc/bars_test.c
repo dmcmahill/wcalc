@@ -1,4 +1,3 @@
-/* $Id: bars_test.c,v 1.4 2008/11/29 18:58:05 dan Exp $ */
 
 /*
  * Copyright (C) 2008 Dan McMahill

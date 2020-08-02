@@ -1,4 +1,3 @@
-// $Id$
 //
 
 exec('wcalc_test.sci',  -1);

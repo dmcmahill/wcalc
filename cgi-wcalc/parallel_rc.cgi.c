@@ -1,4 +1,3 @@
-/* $Id: coupled_stripline.cgi.c,v 1.3 2008/11/29 20:41:35 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

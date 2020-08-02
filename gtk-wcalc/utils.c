@@ -1,4 +1,3 @@
-/* $Id: bars_gui.c,v 1.4 2009/01/10 20:56:16 dan Exp $ */
 
 /*
  * Copyright (c) 2009 Dan McMahill

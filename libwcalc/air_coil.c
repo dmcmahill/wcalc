@@ -1,4 +1,3 @@
-/* $Id: air_coil.c,v 1.17 2012/03/05 21:58:53 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006, 2009, 2012 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: print.c,v 1.11 2008/11/29 20:41:51 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2009 Dan McMahill

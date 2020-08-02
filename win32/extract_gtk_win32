@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id: extract_gtk_win32,v 1.9 2008/11/30 01:08:24 danmc Exp $
 #
 # This script is probably not useful to most people.  It is used
 # to extract a set of downloaded files for gtk for windows and 

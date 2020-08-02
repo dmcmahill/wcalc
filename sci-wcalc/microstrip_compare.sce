@@ -1,4 +1,3 @@
-// $Id$
 //
 // Copyright (c) 2001, 2009 Dan McMahill
 // All rights reserved.

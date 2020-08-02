@@ -1,4 +1,3 @@
-/* $Id: start.h,v 1.3 2002/06/12 11:30:18 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002 Dan McMahill

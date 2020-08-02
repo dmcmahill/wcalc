@@ -1,4 +1,3 @@
-/* $Id: physconst.h,v 1.6 2006/02/15 15:14:55 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2006 Dan McMahill

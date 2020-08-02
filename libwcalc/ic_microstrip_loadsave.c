@@ -1,4 +1,3 @@
-/* $Id: ic_microstrip_loadsave.c,v 1.11 2004/09/02 21:27:37 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

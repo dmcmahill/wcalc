@@ -1,4 +1,3 @@
-/* $Id: ps_header.c,v 1.5 2002/01/03 03:54:43 dan Exp $ */
 
 fprintf(fp,"%%!PS-Adobe-3.0\n");
 fprintf(fp,"%%%%Creator: Wcalc\n");

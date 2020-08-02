@@ -1,6 +1,5 @@
 #!/usr/bin/awk -f
 #
-# $Id: htmltex,v 1.1 2001/10/25 00:49:53 dan Exp $
 #
 
 BEGIN {

@@ -1,4 +1,3 @@
-/* $Id: defaults.h,v 1.6 2009/02/10 12:10:09 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2006 Dan McMahill

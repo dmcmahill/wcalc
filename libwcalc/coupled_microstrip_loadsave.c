@@ -1,4 +1,3 @@
-/* $Id: coupled_microstrip_loadsave.c,v 1.6 2005/01/06 22:53:21 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004 Dan McMahill

@@ -1,6 +1,5 @@
 #! /usr/bin/awk -f
 #
-# $Id: shtml2html,v 1.8 2005/10/12 18:11:21 dan Exp $
 #
 # Copyright (c) 2001, 2002, 2005 Dan McMahill
 # All rights reserved.

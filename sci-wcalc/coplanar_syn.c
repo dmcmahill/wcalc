@@ -1,6 +1,4 @@
-/* $Id: coplanar_syn.c,v 1.1 2006/02/23 14:08:09 dan Exp $ */
 
-static char vcid[] = "$Id: coplanar_syn.c,v 1.1 2006/02/23 14:08:09 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2006 Dan McMahill

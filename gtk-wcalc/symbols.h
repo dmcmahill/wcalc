@@ -1,4 +1,3 @@
-/* $Id: symbols.h,v 1.1 2009/02/06 01:36:32 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

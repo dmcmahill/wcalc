@@ -1,4 +1,3 @@
-/* $Id: misc.c,v 1.14 2008/11/29 20:42:19 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill

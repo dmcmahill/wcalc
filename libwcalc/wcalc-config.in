@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id: wcalc-config.in,v 1.5 2005/10/29 13:27:28 dan Exp $
 #
 
 # directories from the configure script

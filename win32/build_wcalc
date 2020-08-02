@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id: build_wcalc,v 1.6 2009/01/12 23:32:32 dan Exp $
 #
 
 # error out on failed commands whose return code wasn't explicitly

@@ -1,4 +1,3 @@
-/* $Id: bars_gui.h,v 1.1 2008/07/12 04:28:11 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2008 Dan McMahill

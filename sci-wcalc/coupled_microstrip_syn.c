@@ -1,6 +1,4 @@
-/* $Id: coupled_microstrip_syn.c,v 1.8 2007/11/29 19:13:02 dan Exp $ */
 
-static char vcid[] = "$Id: coupled_microstrip_syn.c,v 1.8 2007/11/29 19:13:02 dan Exp $";
 
 /*
  * Copyright (C) 2001, 2002, 2004, 2007 Dan McMahill

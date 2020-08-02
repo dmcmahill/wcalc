@@ -1,4 +1,3 @@
-/* $Id: coplanar_loadsave.h,v 1.2 2006/01/08 06:35:29 dan Exp $ */
 
 /*
  * Copyright (C) 2006 Dan McMahill

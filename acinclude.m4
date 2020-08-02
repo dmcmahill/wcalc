@@ -1,4 +1,3 @@
-dnl $Id: acinclude.m4,v 1.8 2008/11/29 20:41:28 dan Exp $
 dnl
 dnl Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill
 dnl All rights reserved.

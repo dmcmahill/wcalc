@@ -1,4 +1,3 @@
-/* $Id: alert.c,v 1.1 2002/06/17 21:19:46 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002 Dan McMahill

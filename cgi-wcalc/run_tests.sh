@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id: run_tests.sh,v 1.1 2004/09/03 03:18:51 dan Exp $
 #
 # Copyright (c) 2009 Dan McMahill
 # All rights reserved.

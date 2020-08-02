@@ -1,4 +1,3 @@
-/* $Id: coax.c,v 1.32 2005/09/29 01:09:18 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2003, 2004, 2005 Dan McMahill

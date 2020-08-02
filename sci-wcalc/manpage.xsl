@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- $Id: manpage.xsl,v 1.3 2005/10/20 22:24:28 dan Exp $ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="yes"  />
 <xsl:strip-space elements="*"/>

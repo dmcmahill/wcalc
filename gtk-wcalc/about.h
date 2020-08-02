@@ -1,4 +1,3 @@
-/* $Id: about.h,v 1.8 2004/08/05 12:12:25 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill

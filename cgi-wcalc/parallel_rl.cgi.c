@@ -1,4 +1,3 @@
-/* $Id: parallel_rl.cgi.c,v 1.1 2009/02/11 00:00:30 dan Exp $ */
 
 /*
  * Copyright (C) 2009 Dan McMahill

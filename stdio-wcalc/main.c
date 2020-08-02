@@ -1,4 +1,3 @@
-/* $Id: main.c,v 1.32 2009/02/28 03:14:03 dan Exp $ */
 
 /*
  * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id$ */
 
 fprintf(fp,"%% We are currently where the top center of the figure should be.\n");
 fprintf(fp,"%% First figure out where the text will be when we continue\n");
@@ -826,13 +825,11 @@ fprintf(fp,"      GS\n");
 fprintf(fp,"        GS\n");
 fprintf(fp,"        0\n");
 fprintf(fp,"            /Helvetica FF [10 0 0 -10 0 0] MS\n");
-fprintf(fp,"            ($Id: microstrip.obj,v 1.2 2001/09/13 13:26:20 dan Exp $) TGSW \n");
 fprintf(fp,"        AD\n");
 fprintf(fp,"        GR\n");
 fprintf(fp,"      2 DI NE 0 RM\n");
 fprintf(fp,"            0 SG\n");
 fprintf(fp,"            /Helvetica FF [10 0 0 -10 0 0] MS\n");
-fprintf(fp,"            ($Id: microstrip.obj,v 1.2 2001/09/13 13:26:20 dan Exp $) SH\n");
 fprintf(fp,"      GR\n");
 fprintf(fp,"   GR\n");
 fprintf(fp,"\n");

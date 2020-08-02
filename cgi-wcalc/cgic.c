@@ -1,4 +1,3 @@
-/* $Id: cgic.c,v 1.6 2002/05/10 22:52:28 dan Exp $ */
 #if CGICDEBUG
 #define CGICDEBUGSTART \
 	{ \

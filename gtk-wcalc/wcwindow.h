@@ -1,4 +1,3 @@
-/* $Id: wcwindow.h,v 1.2 2002/06/12 11:30:21 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001 Dan McMahill

@@ -1,4 +1,3 @@
-/* $Id: mex-alert.c,v 1.2 2002/06/12 11:30:38 dan Exp $ */
 
 /*
  * Copyright (C) 2001 Dan McMahill

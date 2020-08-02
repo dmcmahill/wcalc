@@ -1,4 +1,3 @@
-/* $Id: microstrip.h,v 1.9 2004/08/31 21:38:22 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill

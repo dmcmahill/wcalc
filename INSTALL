@@ -1,4 +1,3 @@
-$Id: INSTALL,v 1.9 2017/01/26 04:32:25 dan Exp $
 
 
 Wcalc uses a standard GNU autoconf/automake/libtool based build

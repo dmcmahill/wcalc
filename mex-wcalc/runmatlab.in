@@ -1,6 +1,5 @@
 #! /bin/sh
 #
-# $Id: runmatlab.in,v 1.4 2005/10/21 04:36:32 dan Exp $
 #
 # Copyright (c) 2001, 2005, 2012 Dan McMahill
 # All rights reserved.

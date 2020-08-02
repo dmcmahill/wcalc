@@ -1,4 +1,3 @@
-// $Id: demo.sce,v 1.2 2009/01/11 04:10:18 dan Exp $
 //
 // Copyright (c) 2001, 2009 Dan McMahill
 // All rights reserved.

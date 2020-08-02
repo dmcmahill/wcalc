@@ -1,4 +1,3 @@
-## $Id: common-man.mk,v 1.9 2009/01/11 15:22:44 dan Exp $
 
 ##
 ## Copyright (c) 2005 Dan McMahill

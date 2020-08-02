@@ -1,4 +1,3 @@
-/* $Id: coupled_stripline_gui.h,v 1.2 2006/02/13 19:20:22 dan Exp $ */
 
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006 Dan McMahill

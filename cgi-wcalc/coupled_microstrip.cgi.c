@@ -1,4 +1,3 @@
-/* $Id: coupled_microstrip.cgi.c,v 1.14 2006/03/01 15:31:35 dan Exp $ */
 
 /*
  * Copyright (C) 2001, 2002, 2003, 2004, 2006 Dan McMahill

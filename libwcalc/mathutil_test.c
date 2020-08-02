@@ -1,4 +1,3 @@
-/* $Id: mathutil_test.c,v 1.7 2002/06/25 20:46:45 dan Exp $ */
 
 /*
  * Copyright (C) 2002 Dan McMahill

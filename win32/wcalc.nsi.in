@@ -1,4 +1,3 @@
-;; $Id: wcalc.nsi.in,v 1.3 2008/11/29 22:10:46 dan Exp $
 ;;
 ;; Installer script file for wcalc for windows.  See http://nsis.sourceforge.net
 ;; for details on NSIS.
