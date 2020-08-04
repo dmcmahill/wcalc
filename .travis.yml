@@ -1,0 +1,66 @@
+#dist: xenial
+dist: bionic
+
+# c++ for pstoedit build
+language: c cpp
+
+os:
+  - linux
+#  - osx
+#  - bsd
+
+before_install:
+  - ./travis/install-pstoedit.sh
+  - ./travis/install-tgif.sh
+
+install:
+  - ./autogen.sh
+  - bison --version
+  - export PSTOEDIT=/usr/bin/pstoedit-3.75 ; ./configure
+
+script: |
+  if test "${COVERITY_SCAN_BRANCH}" != "1"; then
+    export PSTOEDIT=/usr/bin/pstoedit-3.75
+    make
+    make distcheck
+  fi
+
+addons:
+  apt:
+    packages:
+    - autoconf
+    - automake
+    - autopoint
+    - libgettextpo-dev
+    - libgtk2.0-dev
+    - netpbm
+    # need newer version
+    #- pstoedit
+    - w3m
+    - xsltproc
+    # for tgif
+    - libxmu-dev
+    - xfonts-75dpi
+    - gsfonts-x11
+    # for pstoedit
+    - ghostscript
+    #- gcc-8
+    #- g++-8
+
+  homebrew:
+    packages:
+    - autoconf
+    - automake
+    - autopoint
+    - libgettextpo-dev
+    - libgtk2.0-dev
+    - netpbm
+    - pstoedit
+    - tgif
+    - w3m
+    - xsltproc
+
+# need an X display for tgif for exporting the various
+# graphics.
+services:
+    - xvfb
