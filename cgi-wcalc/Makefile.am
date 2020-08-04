@@ -1,6 +1,6 @@
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009, 2017 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009, 2017, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -91,10 +91,9 @@ HTML_FILES= \
 	parallel_rl.html \
 	stripline.html 
 
-ID_FILES=	${HTML_FILES:.html=_id.h}
 CHTML_FILES=	${HTML_FILES:.html=_html.c}
 
-BUILT_SOURCES = ${ID_FILES} ${CHTML_FILES}
+BUILT_SOURCES = ${CHTML_FILES}
 
 EXTRA_DIST=	${BUILT_SOURCES} ${HTML_FILES} 
 
@@ -103,7 +102,6 @@ HTML2C_SF= sourceforge=1
 endif
 
 HTML2C  = ${AWK} -f $(top_srcdir)/utils/html2c out=cgiOut ${HTML2C_SF}
-HTML2ID = $(AWK) '/\$$.*\$$/ {printf("const char id_string[]=\"%s\";\n",gensub(/.*(\$$.*\$$).*/,"\\1","g"));}'
 
 SUFFIXES = .html 
 
@@ -115,20 +113,6 @@ else
 	@echo "          function.  This prevents the rebuilding of the"
 	@echo "          .html.c files from the .html files.  If you need"
 	@echo "          this functionality, you will need to install gawk."
-	@echo "          By setting the variable AWK in your configure"
-	@echo "          environment, you can force configure to find a"
-	@echo "          particular awk program."
-endif
-
-%_id.h : %.html
-if AWK_GENSUB
-	$(HTML2ID) $< > $@
-else
-	@echo "WARNING:  your awk (${AWK}) does not include the gensub()"
-	@echo "          function.  This prevents the rebuilding of the"
-	@echo "          _id.h files from the .html files.  If you need"
-	@echo "          this functionality, (which you should not),"
-	@echo "          you will need to install gawk."
 	@echo "          By setting the variable AWK in your configure"
 	@echo "          environment, you can force configure to find a"
 	@echo "          particular awk program."
