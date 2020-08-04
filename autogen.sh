@@ -51,17 +51,26 @@ autopoint --force || exit 1
 # libtoolize (libtool)
 #
 
+case `uname` in
+    Darwin*)
+        LIBTOOLIZE=${LIBTOOLIZE:-glibtoolize}
+        ;;
+    *)
+        LIBTOOLIZE=${LIBTOOLIZE:-libtoolize}
+        ;;
+esac
+
 libtool_min_version=2.4.0
 echo "Checking libtoolize version..."
-libtoolize --version 2>&1 > /dev/null
+${LIBTOOLIZE} --version 2>&1 > /dev/null
 rc=$?
 if test $rc -ne 0 ; then
     echo "Could not determine the version of libtool on your machine"
-    echo "libtool --version produced:"
+    echo "${LIBTOOLIZE} --version produced:"
     libtool --version
     exit 1
 fi
-lt_ver=`libtoolize --version | awk '{print $NF; exit}'`
+lt_ver=`${LIBTOOLIZE} --version | awk '{print $NF; exit}'`
 lt_maj=`echo $lt_ver | sed 's;\..*;;g'`
 lt_min=`echo $lt_ver | sed -e 's;^[0-9]*\.;;g'  -e 's;\..*$;;g'`
 lt_teeny=`echo $lt_ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g'`
@@ -85,8 +94,8 @@ case $lt_maj in
 	echo "It will probably work, but this is a warning that it may not."
 	;;
 esac
-echo "Running libtoolize..."
-libtoolize --force --copy --automake || exit 1
+echo "Running ${LIBTOOLIZE}..."
+${LIBTOOLIZE} --force --copy --automake || exit 1
 
 ############################################################################
 #
