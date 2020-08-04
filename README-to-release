@@ -1,6 +1,6 @@
-#!/bin/sh
-#
-#
+******* NOT UPDATED FOR GIT YET ******
+This must be updated for the next release which will be from git
+
 
 This documents what is done to create a wcalc release.  The releases now
 are done by branching the sources, fixing up the release version number
