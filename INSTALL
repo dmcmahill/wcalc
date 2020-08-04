@@ -53,7 +53,7 @@ octave frontend
 octave
 
 ------------------------------------
-python frontend
+python frontend -- NOT YET
 ------------------------------------
 swig - used to generate the python wrapper
 python3
@@ -90,6 +90,8 @@ groff/neqn/tbl - all part of groff.  Used for building docs
 
 ImageMagick - convert program
 
+libtool
+
 pstoedit - tgif figures get exported to postscript and then pstoedit
 is used to generate cairo C code for drawing the various figures.
 This is used by the GTK frontend to support printing on different
@@ -103,7 +105,7 @@ xpmtoppm and ppmtowinicon which are part of netpbm -
 xsltproc - part of libxslt. 
 
 w3m or links or lynx - used to dump an html file to text for building
-online help docs for then scilab frontend
+online help docs for the scilab frontend
 
 ============================================================================
 CONFIGURATION NOTES:

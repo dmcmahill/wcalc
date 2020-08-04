@@ -1,7 +1,7 @@
 
 - python binding
 
-- move from a private cvs repo to public git and add CI
+- add CI
 
 - finish spanish translation for gtk-wcalc
 
