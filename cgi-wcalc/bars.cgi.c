@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2009 Dan McMahill
+ * Copyright (C) 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -47,9 +46,6 @@
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
-
-/* ID's for this module */
-#include "bars_id.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>

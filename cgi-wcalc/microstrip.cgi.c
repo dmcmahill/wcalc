@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004, 2005, 2006 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -44,9 +43,6 @@
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
-
-/* ID's for this module */
-#include "microstrip_id.h"
 
 #ifdef DMALLOC
 #include <dmalloc.h>
