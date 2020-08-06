@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2006, 2007, 2009 Dan McMahill
+ * Copyright (C) 2006, 2007, 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -589,7 +588,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     break;
 
   default:
-    fprintf(stderr,"coplanar_synth():  illegal flag=%d\n",flag);
+    fprintf(stderr,"%s():  illegal flag=%d\n", __FUNCTION__, flag);
     exit(1);
     break;
   }
@@ -769,7 +768,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
   /* velocity on line */
   coplanar_calc(line, f);
 
-  v = LIGHTSPEED / sqrt(line->subs->er);
+  v = LIGHTSPEED / sqrt(line->keff);
 
   line->l = (len/360.0) * (v/f);
 
