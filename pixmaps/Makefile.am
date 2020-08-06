@@ -74,7 +74,7 @@ if MISSING_PSTOEDIT
 	@echo "          rebuilt from $*.eps.  Changes to $*.eps"
 	@echo "          will be ignored."
 else
-	${PSTOEDIT} -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
+	${PSTOEDIT} -nb -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
 endif
 # This rule forces a serialization of the jobs during a parallel make.  Note, the cairo driver creates
 # the header before the .c file.
@@ -85,7 +85,7 @@ if MISSING_PSTOEDIT
 	@echo "          rebuilt from $*.eps.  Changes to $*.eps"
 	@echo "          will be ignored."
 else
-	${PSTOEDIT} -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
+	${PSTOEDIT} -nb -dt -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
 endif
 endef
 $(foreach __tmp__,$(TGIF_NAMES),$(eval $(call cairo_template,$(__tmp__))))

@@ -1,6 +1,6 @@
 ##
 
-## Copyright (c) 2001, 2002 Dan McMahill
+## Copyright (c) 2001, 2002, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 ## 
 
 
-# the include= is a ':' seperated search path for SSI directives
-SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include=$(SHTML_INCLUDE_PATH) $(SHTML2HTML_SF)
+# the include_path= is a ':' seperated search path for SSI directives
+SHTML2HTML  = ${AWK} -f $(top_srcdir)/utils/shtml2html include_path=$(SHTML_INCLUDE_PATH) $(SHTML2HTML_SF)
 
 # All the new suffix rules
 
@@ -27,7 +27,9 @@ SUFFIXES+= .shtml .html
 
 .shtml.html :
 if AWK_GENSUB
-	$(SHTML2HTML) $< | sed 's;/cgi-bin/;${CGIPATH};g' > $@
+	( ( ( $(SHTML2HTML) $<  ; echo $$? >&4 ) | \
+		sed 's;/cgi-bin/;${CGIPATH};g' > $@) 4>&1 | \
+		(read a ; exit $$a))
 else
 	@echo "WARNING:  your awk (${AWK}) does not include the gensub()"
 	@echo "          function.  This prevents the rebuilding of the"

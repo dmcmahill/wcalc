@@ -33,7 +33,7 @@ pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgimgdatadir= @HTMLDIR@
 pkgimgdata_DATA= ${PNGS} ${HTML_OUT} favicon.ico
 
-# the include= is a ':' seperated search path for SSI directives
+# the include_path= is a ':' seperated search path for SSI directives
 SHTML_INCLUDE_PATH= $(srcdir)
 
 SHTML_IN=	\
