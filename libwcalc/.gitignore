@@ -9,3 +9,5 @@ libwcalc.la
 wcalc-config
 *_test
 *.core
+make_defaults
+wcalc.pc
