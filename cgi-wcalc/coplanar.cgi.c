@@ -289,7 +289,7 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Error reading electrical length");
     }
-    if( freq <= 0.0 ) {
+    if( elen <= 0.0 ) {
       elen = defELEN;
       printFormError("Electrical length must be %gt 0");
     }
