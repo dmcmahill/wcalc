@@ -2,6 +2,8 @@
 Makefile.in
 Makefile
 
+favicon.ico
+
 # BUILT_INCL_FILES
 AWG.incl
 permeability.incl
