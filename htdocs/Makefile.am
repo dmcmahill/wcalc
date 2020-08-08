@@ -106,7 +106,7 @@ clean-local:
 	-rm ${HTML_OUT}
 
 distclean-local:
-	-rm AWG.incl
+	-rm ${BUILT_INCL_FILES}
 
 BUILT_SOURCES=	${BUILT_INCL_FILES} 
 EXTRA_DIST=	${SHTML_IN} ${INCL_FILES} ${PNGS} favicon.ico favicon.xpm shtml.mk common-man.mk
