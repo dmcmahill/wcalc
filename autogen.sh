@@ -137,8 +137,23 @@ echo "... done with automake."
 #
 # autoconf
 
-# FIXME -- extract from configure.ac
-autoconf_min_version=2.68
+# look for the AC_PREREQ([2.68]) line in configure.ac
+autoconf_min_version=`awk '/^[ \t]*AC_PREREQ\(/ {v=$0; gsub(/^[^0-9]*/, "", v); gsub(/[^0-9]*$/, "", v); print v;}' configure.ac`
+autoconf_rest=${autoconf_min_version}
+
+autoconf_major=`echo $autoconf_rest | sed -e 's;[.].*;;g'`
+autoconf_rest=`echo $autoconf_rest | sed -e 's;^[0-9]*[.]*;;g'`
+echo "$autoconf_rest"
+
+autoconf_minor=`echo $autoconf_rest | sed -e 's;[.].*;;g'`
+autoconf_rest=`echo $autoconf_rest | sed -e 's;^[0-9]*[.]*;;g'`
+echo "$autoconf_rest"
+
+autoconf_teeny=${autoconf_rest}
+if test -z "${autoconf_teeny}" ; then
+    autoconf_teeny=0
+fi
+echo "Extracted autoconf_min_version=${autoconf_min_version} from configure.ac (${autoconf_major} ${autoconf_minor} ${autoconf_teeny})"
 
 echo "Checking autoconf version..."
 ac_ver=`autoconf --version | awk '{print $NF; exit}'`
@@ -147,24 +162,27 @@ ac_min=`echo $ac_ver | sed -e 's;^[0-9]*\.;;g'  -e 's;\..*$;;g'`
 ac_teeny=`echo $ac_ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g'`
 echo "    $ac_ver"
 
-case $ac_maj in
-    0|1)
-        echo "You must have autoconf >= ${autoconf_min_version} but you seem to have $ac_ver"
-        exit 1
-	;;
+ac_too_old=no
+ac_too_new=no
+if test $ac_maj -lt $autoconf_major ; then
+    ac_too_old=yes
+elif  test $ac_maj -eq $autoconf_major -a $ac_min -lt $autoconf_minor ; then
+    ac_too_old=yes
+elif test $ac_maj -gt $autoconf_major ; then
+    ac_too_new=yes
+else
+    ac_too_old=no
+fi
 
-    2)
-        if test $ac_min -lt 68 ; then
-            echo "You must have autoconf >= ${autoconf_min_version} but you seem to have $ac_ver"
-            exit 1
-        fi
-        ;;
+if test ${ac_too_old} = yes ; then
+    echo "You must have autoconf >= ${autoconf_min_version} but you seem to have $ac_ver"
+    exit 1
+fi
 
-    *)
-        echo "You are running a newer autoconf than wcalc has been tested with."
-	echo "It will probably work, but this is a warning that it may not."
-	;;
-esac
+if test ${ac_too_new} = yes ; then
+    echo "You are running a newer autoconf than wcalc has been tested with."
+    echo "It will probably work, but this is a warning that it may not."
+fi
 
 echo "Running autoconf..."
 autoconf || exit 1
