@@ -14,15 +14,22 @@ before_install:
   - ./travis/install-tgif.sh
 
 install:
+  - pwd ; ls -l ChangeLog
   - ./autogen.sh
+  - pwd ; ls -l ChangeLog
   - bison --version
   - export PSTOEDIT=/usr/bin/pstoedit-3.75 ; ./configure
+  - pwd ; ls -l ChangeLog
+  - grep ChangeLog Makefile*
 
 script: |
   if test "${COVERITY_SCAN_BRANCH}" != "1"; then
     export PSTOEDIT=/usr/bin/pstoedit-3.75
+    pwd
     make
+    ls -l ChangeLog
     make check
+    ls -l ChangeLog
     make distcheck
   fi
 
