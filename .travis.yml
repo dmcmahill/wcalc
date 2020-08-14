@@ -22,7 +22,6 @@ install:
 script: |
   if test "${COVERITY_SCAN_BRANCH}" != "1"; then
     export PSTOEDIT=/usr/bin/pstoedit-3.75
-    pwd
     make
     make check
     make distcheck
