@@ -1,7 +1,6 @@
-
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2009, 
- *               2011, 2012 Dan McMahill
+ *               2011, 2012, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -166,6 +165,9 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
       1.0 / ( pow(0.1 * line->subs->tmet, 2.0) * M_PI * mu * sigma);
   
     rslt = find_z0(&tmp_line);
+    if(rslt != 0) {
+      alert("failed step 1 of Wheeler's incremental inductance analysis\n");
+    }
     z1e = tmp_line.z0e;
     z1o = tmp_line.z0o;
 
@@ -176,7 +178,12 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
     tmp_line.s = line->s + delta0;
     tmp_line.subs->tmet = line->subs->tmet - delta0;
     tmp_line.subs->h = line->subs->h + delta0;
+
     rslt = find_z0(&tmp_line);
+    if(rslt != 0) {
+      alert("failed step 2 of Wheeler's incremental inductance analysis\n");
+    }
+
     z2e = tmp_line.z0e;
     z2o = tmp_line.z0o;
     free(tmp_line.subs);
@@ -338,14 +345,14 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 int coupled_stripline_syn(coupled_stripline_line *line, double f)
 {
 
-  double h, er, l, wmin, wmax, abstol, reltol;
+  double l;
   int maxiters;
   double z0, w;
   int iters;
   int done;
   double len;
 
-  double s, smin, smax, z0e, z0o, k;
+  double s, z0e, z0o, k;
   double loss, delta, cval, err, d;
 
   double dw, ds;
@@ -356,12 +363,6 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   int rslt;
 
   len = line->len;
-
-  /* Substrate dielectric thickness (m) */
-  h = line->subs->h;
-
-  /* Substrate relative permittivity */
-  er = line->subs->er;
 
   /* impedance and coupling */
   z0 = line->z0;
@@ -416,21 +417,16 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   line->l = l;
 
 
-  /* FIXME - change limits to be normalized to substrate thickness */
+  /* 
+   * FIXME -- should I put in some limits that clamp the range for w
+   * and s during synthesis?
+   */
+  
   /* limits on the allowed range for w */
-  wmin = MIL2M(0.5);
-  wmax = MIL2M(1000);
-
+  /* wmin = 0.01*line->subs->h; */
+  
   /* limits on the allowed range for s */
-  smin = MIL2M(0.5);
-  smax = MIL2M(1000);
 
-
-  /* impedance convergence tolerance (ohms) */
-  abstol = 1e-6;
-
-  /* width relative convergence tolerance (mils) (set to 0.1 micron) */
-  reltol = MICRON2MIL(0.1);
 
   maxiters = 50;
 
@@ -456,6 +452,9 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
   printf("%s(): single->z0 = %g\n", __FUNCTION__, single->z0);
 #endif
   rslt = stripline_syn(single, single->freq, SLISYN_W);
+  if(rslt != 0) {
+    alert("Synthesis of a single stripline to use as an initial condition failed\n");
+  }
   w = single->w;
 #ifdef DEBUG_SYN
   printf("%s(): rslt = %d, single->z0 = %g\n", __FUNCTION__, rslt, single->z0);
@@ -475,6 +474,9 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 
   iters = 0;
   done = 0;
+
+  /* FIXME -- think about calculating a new delta based on this at
+     each iteration */
   if( w < s )
     delta = 1e-3*w;
   else

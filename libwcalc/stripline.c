@@ -1,6 +1,6 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006,
+ * 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -325,12 +325,18 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   
 	   tmp_line.subs->er = 1.0;
 	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+           if(rslt != 0) {
+             alert("failed step 1 of Wheeler's incremental inductance analysis\n");
+           }
 	   z1=tmp_line.z0;
 
 	   tmp_line.w = line->w - line->skindepth;
 	   tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
 	   tmp_line.subs->h = line->subs->h + line->skindepth;
 	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
+           if(rslt != 0) {
+             alert("failed step 2 of Wheeler's incremental inductance analysis\n");
+           }
 	   z2 = tmp_line.z0;
 	   free(tmp_line.subs);
 
@@ -455,17 +461,8 @@ int stripline_syn(stripline_line *line, double f, int flag)
   int rslt;
 
   double l;
-  double Ro, Xo;
+  double Ro;
   double v,len;
-
-  /* the parameters which define the structure */
-  double w;
-  double tmet;
-  double h,es,tand;
-
-  /* permeability and permitivity of free space */
-  double mu0, e0;
-
 
   /* the optimization variables, current, min/max, and previous values */
   double var=0, varmax=0, varmin=0, varold=0;
@@ -492,12 +489,6 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
   /* flag to end optimization */
   int done=0;
-
-
-  /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4*M_PI*1.0e-7;
-  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
-
 
   /*
    * figure out what parameter we're synthesizing and set up the
@@ -550,19 +541,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
    */
 
   Ro = line->Ro;
-  Xo = line->Xo;
   len = line->len;
-
-  /* Metal width, length, and thickness */
-  w = line->w;
-  l = line->l;
-  tmet = line->subs->tmet;
-
-  /* Substrate thickness, relative permitivity, and loss tangent */
-  h = line->subs->h;
-  es = line->subs->er;
-  tand = line->subs->tand;
-
 
   /*
    * temp value for l used while synthesizing the other parameters.

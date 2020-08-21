@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2001, 2002, 2003, 2004, 2005 Dan McMahill
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -116,6 +116,7 @@ int coax_calc(coax_line *line, double freq)
   return rslt;
 }
 
+/* returns -1 on failure, 0 on success */
 static int coax_calc_int(coax_line *line, double freq, int flag)
 {
   double x;
@@ -324,6 +325,9 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 	   "********** Starting Wheelers Incremental Inductance #1 (er = 1) **********\n");
 #endif
     rslt = coax_calc_int(&tmp_line, line->freq, CALC_MIN);
+    if(rslt != 0) {
+      alert("Calculation for step 1 (er=1) of Wheeler's incremental inductance failed\n");
+    }
     z1 = tmp_line.z0;
     
     /* find Z0 with the conductor sizes modified with the skindepth */
@@ -354,6 +358,9 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 	   "********** Starting Wheelers Incremental Inductance #2 (modify center) **********\n");
 #endif
     rslt = coax_calc_int(&tmp_line, tmp_line.freq, CALC_MIN);
+    if(rslt != 0) {
+      alert("Calculation for step 2 of Wheeler's incremental inductance failed\n");
+    }
     z2 = tmp_line.z0;
 
     /* conduction losses, nepers per meter */
@@ -391,6 +398,9 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 	   "********** Starting Wheelers Incremental Inductance #3 (modify shield) **********\n");
 #endif
     rslt = coax_calc_int(&tmp_line, tmp_line.freq, CALC_MIN);
+    if(rslt != 0) {
+      alert("Calculation for step 3 of Wheeler's incremental inductance failed\n");
+    }
     z2 = tmp_line.z0;
     lc = (M_PI*tmp_line.freq/LIGHTSPEED)*(z2 - z1)/line->z0;
     RsHF = lc*2*line->z0;
@@ -464,7 +474,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 
     /*
      * TE10 mode cutoff frequency
-     * XXX This is only for line->c == 0 despite the fact that this
+     * This is only for line->c == 0 despite the fact that this
      * equation was found in Rosloniec along with the eccentric line
      * impedance formula
      */
@@ -477,7 +487,10 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     /*
      * Rather than use the approximate TE10 cutoff frequency from
      * Rosloniec, use an exact solution.  This can actually be solved
-     * by hand without too much pain for the case where c == 0.
+     * by hand without too much pain for the case where c == 0.  For
+     * c != 0, I don't know of a closed form solution, but we ca
+     * numerically solve by adjusting 'k' until we meed the boundary
+     * conditions.
      *
      * Start with the value of 'k' found by the approximate cutoff
      * frequency calculation and iterate until we exactly meet the

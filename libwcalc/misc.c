@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004, 2012 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2012, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -87,7 +86,8 @@ double dia2awg(double dia)
    * interface to the air coil routines has been stable, we'll keep it
    * that way and the user will have to deal with converting mm to AWG.
    * If they want to round to the nearest AWG, it is up to the user.
-
+   */
+  
   /* awg = rint(awg); */
 
   return awg;
