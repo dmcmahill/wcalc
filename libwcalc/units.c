@@ -109,7 +109,7 @@ const wc_units_data wc_units_length[]=
   {"m", 1.0},
   {"mil", 25.4e-6},
   {"inch", 25.4e-3},
-  {"feet", 0.3048},
+  {"foot", 0.3048},
   {"yard", 0.9144},
   {NULL,0}
 };
