@@ -135,6 +135,13 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
   double L, R, C, G, delay, depth, deltal;
 
+  /* angular frequency (rad/s) */
+  double omega;
+
+  /* complex characteristic impedance */
+  complex z0_c;
+  
+
 #ifdef DEBUG_CALC
   printf("coplanar_calc_int(): --------------- Coplanar Analysis ------------\n");
   printf("coplanar_calc_int(): flag                        = %d\n",flag);
@@ -382,6 +389,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
 	/* er = 1.0 impedance with nominal dimensions */
 	rslt = coplanar_calc_int(&tmp_line, f, NOLOSS);
+        if(rslt != 0) {
+          alert("Calculation for step 1 (er=1) of Wheeler's incremental inductance failed\n");
+        }
 	z1 = tmp_line.z0;
 
 	/* 
@@ -394,6 +404,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	tmp_line.subs->tmet = line->subs->tmet - line->skindepth;
 	tmp_line.subs->h = line->subs->h + line->skindepth;
 	rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
+        if(rslt != 0) {
+          alert("Calculation for step 2 (altered dimensions) of Wheeler's incremental inductance failed\n");
+        }
 	z2 = tmp_line.z0;
 	free(tmp_line.subs);
 
@@ -469,10 +482,6 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /*  store results */
   line->z0 = z0;
 
-  /* XXX fixme .  Ro + j Xo = sqrt((jwL + R) / (jwC + G))*/
-  line->Ro = z0;
-  line->Xo = 0.0;
-
   line->lc = lc;
   line->ld = ld;
 
@@ -487,6 +496,20 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   line->Rs = R; 
   line->Cs = C;
   line->Gs = G;
+  
+  /* XXX FIXME
+   * Ro + j Xo = sqrt((jwL + R) / (jwC + G))
+   * but need to take a pass through and fix
+   * any cases where line->z0 and line->Ro are
+   * used inconsistently.
+   */
+  omega = 2.0*M_PI*f;
+  z0_c = c_sqrt(c_div(c_complex(R, omega*L), c_complex(G, omega*C)));
+  line->Ro = REAL(z0_c);
+  line->Xo = IMAG(z0_c);
+  
+  line->Ro = z0;
+  line->Xo = 0.0;
 
 #ifdef DEBUG_CALC
     printf("%s():  L     = %g\n", __FUNCTION__, L);
@@ -509,12 +532,9 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 {
   int rslt;
 
-  double Ro, Xo;
+  double Ro;
+  /* double Xo; */
   double v, len;
-
-  /* permeability and permitivity of free space */
-  double mu0, e0;
-
 
   /* the optimization variables, current, min/max, and previous values */
   double var = 0, varmax = 0, varmin = 0, varold = 0;
@@ -542,12 +562,6 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
   /* flag to end optimization */
   int done = 0;
   
-  
-  /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4.0 * M_PI * 1.0e-7;
-  e0  = 1.0 / (mu0 * LIGHTSPEED * LIGHTSPEED);
-  
-
   /*
    * figure out what parameter we're synthesizing and set up the
    * various optimization parameters.
@@ -598,7 +612,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
    */
 
   Ro = line->Ro;
-  Xo = line->Xo;
+  /* Xo = line->Xo; */
 
 
   /*

@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -137,9 +136,12 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   complex *Zo_mis=NULL;
 
   complex *gamma_mis=NULL;
-  double alpha_mis, beta_mis;
-  double lambda_mis, loss_per_lambda_mis;
-
+  double beta_mis;
+  double lambda_mis;
+#ifdef DEBUG_CALC
+  double alpha_mis, loss_per_lambda_mis;
+#endif
+  
   double slowwave;
 
   /* frequency in rad/sec */
@@ -391,7 +393,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * Wheeler's incremental inductance rule and add in that resistance.
    * For now, simply use the DC resistance.
    */
-  
+
+  /* FIXME -- add Wheeler's incremental inductance */
   /* XXX this is only DC resistnace.  No skin effect! */
   /* resistance per meter = resistivity/Area */
   Rmet = line->subs->rho / (line->w*line->subs->tmet);  
@@ -442,9 +445,9 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* propagation constant */
   gamma_mis = c_mul_p(Ztot,Ytot,gamma_mis);
   gamma_mis = c_sqrt_p(gamma_mis,gamma_mis);
-  alpha_mis = REAL_P(gamma_mis);
   beta_mis  = IMAG_P(gamma_mis);
 #ifdef DEBUG_CALC
+  alpha_mis = REAL_P(gamma_mis);
   printf("gamma_mis = %g + i%g\n",alpha_mis,beta_mis);
 #endif
 
@@ -455,12 +458,14 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   printf("omega = %g rad/sec\n",omega);
 #endif
 
-  /* loss in dB per wavelentgh of transmission line */
-  loss_per_lambda_mis = alpha_mis*lambda_mis*8.68;
 
   /* loss total for the line */
   
 #ifdef DEBUG_CALC
+  /* loss in dB per wavelentgh of transmission line */
+  /* FIXME -- do something with this */
+  loss_per_lambda_mis = alpha_mis*lambda_mis*8.68;
+  
   printf("Zo (ohms) = %g + j%g\n",REAL_P(Zo_mis),IMAG_P(Zo_mis));
   printf("MIS wavelength           = %g mm\n",1e3*lambda_mis);
   printf("Free space wavelength    = %g mm\n",1e3*LIGHTSPEED/f);
@@ -558,18 +563,9 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   int rslt;
 
   double l;
-  double Ro, Xo;
+  double Ro;
   double v,len;
   double eeff;
-
-  /* the parameters which define the structure */
-  double w;
-  double tmet;
-  double tox,eox;
-  double h,es,sigmas;
-
-  /* permeability and permitivity of free space */
-  double mu0, e0;
 
 
   /* the optimization variables, current, min/max, and previous values */
@@ -598,15 +594,8 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
   double abstol=0.1e-6;
   double reltol=0.01e-6;
 
-
-
   /* flag to end optimization */
   int done=0;
-
-
-  /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4*M_PI*1.0e-7;
-  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
 
   /*
    * figure out what parameter we're synthesizing and set up the
@@ -652,28 +641,13 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
    */
 
   Ro = line->Ro;
-  Xo = line->Xo;
 
-
-  /* Metal width, length, and thickness */
-  w = line->w;
+  /* Metal electrical length */
   len = line->len;
-  tmet = line->subs->tmet;
-
-  /* oxide thickness and relative permitivity */
-  tox = line->subs->tox;
-  eox = line->subs->eox;
-
-  /* Substrate thickness, relative permitivity, and conductivity */
-  h = line->subs->h;
-  es = line->subs->es;
-  sigmas = line->subs->sigmas;
-
 
   /* temp value for l used while finding w */
   l = 1000.0;
   line->l = l;
-
 
 #ifdef DEBUG_SYN
   printf("\n");

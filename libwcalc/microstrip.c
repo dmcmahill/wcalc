@@ -1,6 +1,6 @@
-
 /*
- * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006, 2009 Dan McMahill
+ * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006,
+ * 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -144,7 +144,7 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
   double h, er, rho, tand, t, rough;
 
   double T;
-  double u,deltau;
+  double u;
   double u1, ur, deltau1, deltaur;
 
   double E0,EFF0;
@@ -230,8 +230,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
     /* (7) from Hammerstad and Jensen */
     deltaur = 0.5*(1.0 + 1.0/cosh(sqrt(er-1.0)))*deltau1;
 
-    deltau = deltaur;
-
 #ifdef DEBUG_CALC
   printf("microstrip.c: microstrip_calc():  deltau1 = %g \n",deltau1);
   printf("                                  deltaur = %g \n",deltaur);
@@ -239,7 +237,6 @@ static int microstrip_calc_int(microstrip_line *line, double f, int flag)
 #endif
   }
   else {
-    deltau = 0.0;
     deltau1 = 0.0;
     deltaur = 0.0;
   }
@@ -673,18 +670,9 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 {
   int rslt = 0;
   double l;
-  double Ro, Xo;
+  double Ro;
   double v,len;
   double eeff;
-
-  /* the parameters which define the structure */
-  double w;
-  double tmet;
-  double h,es,tand;
-
-  /* permeability and permitivity of free space */
-  double mu0, e0;
-
 
   /* the optimization variables, current, min/max, and previous values */
   double var=0, varmax=0, varmin=0, varold=0;
@@ -711,12 +699,6 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
   /* flag to end optimization */
   int done=0;
-
-
-  /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4*M_PI*1.0e-7;
-  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
-
 
   /*
    * figure out what parameter we're synthesizing and set up the
@@ -769,19 +751,7 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
    */
 
   Ro = line->Ro;
-  Xo = line->Xo;
   len = line->len;
-
-  /* Metal width, length, and thickness */
-  w = line->w;
-  l = line->l;
-  tmet = line->subs->tmet;
-
-  /* Substrate thickness, relative permitivity, and loss tangent */
-  h = line->subs->h;
-  es = line->subs->er;
-  tand = line->subs->tand;
-
 
   /*
    * temp value for l used while synthesizing the other parameters.

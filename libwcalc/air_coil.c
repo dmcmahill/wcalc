@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2001, 2002, 2004, 2006, 2009, 2012 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2006, 2009, 2012, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -126,9 +126,11 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   /* variables for loss */
   double A, Q0, w, Qsf;
 
-  double wirelen, Rdc, Qdc, Rrf, Qrf, Rt;
+  double wirelen, Rdc, Rrf, Qrf, Rt;
   double Kinterp;
-
+#ifdef DEBUG_CALC
+  double Qdc;
+#endif
   /* regular and minimum possible length */
   double len, lmin;
 
@@ -367,8 +369,6 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
   printf("air_coil_calc():  wirelen = %g meters, Rdc = %g Ohms\n", wirelen, Rdc);
 #endif
 
-  /* Q found from low frequency resistance */
-  Qdc = 2.0 * M_PI * freq * coil->L / Rdc;
 
   /*
    * This is a bit of a hack but it works out fairly well in practice.  This particular
@@ -383,6 +383,8 @@ static int air_coil_calc_int(air_coil_coil *coil, double freq, int flag)
 
   coil->Q = 2.0 * M_PI * freq * coil->L / Rt;
 #ifdef DEBUG_CALC
+  /* Q found from low frequency resistance */
+  Qdc = 2.0 * M_PI * freq * coil->L / Rdc;
   printf("air_coil_calc():  Rdc = %g Ohms, Rt = %g Ohms, Rrf = %g Ohms\n", Rdc, Rt, Rrf);
   printf("air_coil_calc():  Qdc = %g.  Qrf = %g.  Interpolated Q = %g\n", Qdc, Qrf, coil->Q);
 #endif

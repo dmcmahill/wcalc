@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2002 Dan McMahill
+ * Copyright (C) 2002, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -41,8 +40,6 @@
 
 int main(int argc, char **argv)
 {
-  /* inches to meters */
-  double sf=0.0254;
 #ifdef notdef
   double a=7;
   double b[]={3.040,3.038,3.026,3.040,3.040,3.040};
@@ -100,7 +97,6 @@ int main(int argc, char **argv)
 	}
       else {
 
-	sf = atof(tok);
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
 	  line->w = atof(tok);
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
