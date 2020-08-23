@@ -97,7 +97,6 @@ int main(int argc, char **argv)
 	}
       else {
 
-	sf = atof(tok);
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
 	  line->w = atof(tok);
 	if ( (tok = strtok(NULL,FIELDSEP)) != NULL )
