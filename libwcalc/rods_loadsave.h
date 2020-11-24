@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004, 2006, 2020 Dan McMahill
+ * Copyright (C) 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -18,20 +18,18 @@
  * 
  */
 
-#ifndef __DEFAULTS_H__
-#define __DEFAULTS_H__
+#ifndef __RODS_LOADSAVE_H__
+#define __RODS_LOADSAVE_H__
 
-extern const char *default_air_coil;
-extern const char *default_bars;
-extern const char *default_coax;
-extern const char *default_coplanar;
-extern const char *default_coupled_microstrip;
-extern const char *default_coupled_stripline;
-extern const char *default_ic_microstrip;
-extern const char *default_microstrip;
-extern const char *default_parallel_rc;
-extern const char *default_parallel_rl;
-extern const char *default_rods;
-extern const char *default_stripline;
+/* writes the data from 'b' to fp */
+void rods_save(rods *b, FILE *fp, char *fname);
 
-#endif /* __DEFAULTS_H__ */
+/*
+ * returns 0 on success
+ */
+int rods_load(rods *bb, FILE *fp);
+
+int rods_load_string(rods *b, const char *str);
+char * rods_save_string(rods *b);
+
+#endif /*__RODS_LOADSAVE_H__*/

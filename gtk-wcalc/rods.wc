@@ -1,0 +1,62 @@
+#
+# File:      /home/dan/src/wcalc/gtk-wcalc/rods.wc
+# Modified:  Sun Jan 11 10:55:38 2009
+# Wcalc Version 1.0A
+
+[wcalc]
+wcalc_file_version = 0.1
+model_name = rods
+
+
+[rods]
+
+# Rods file version
+file_version = 1.0
+
+# Rod #1 diameter (meters)
+d1 = 1.0e-03
+
+# Rod #1 length (z-dimension, meters)
+l1 = 0.001
+
+# Rod #2 diameter (meters)
+d2 = 1.0e-3
+
+# Rod #2 length (z-dimension, meters)
+l2 = 0.001
+
+# Rod #2 distance (meters)
+distance = 3e-3
+
+# Rod #2 offset (meters)
+offset = 0
+
+# Rod #1 self inductance (Henries)
+L1 = 1.1408555278201e-09
+
+# Rod #2 self inductance (Henries)
+L2 = 1.01231961137688e-09
+
+# Mutual inductance (Henries)
+M = 7.74563112075552e-10
+
+# Coupling coefficient
+k = 0.720746694857738
+
+# Frequency of operation (Hz)
+freq = 100000000
+
+# Desired user units and associated scale factors
+
+# Width/Height units
+units_xy = 2
+# [mm]
+
+# Inductance units
+units_L = 1
+# [nH]
+
+# Frequency units
+units_freq = 3
+# [MHz]
+

@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009, 2017, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -48,6 +48,8 @@ pkginclude_HEADERS =  \
 	parallel_rl.h \
 	parallel_rl_loadsave.h \
 	physconst.h \
+	rods.h \
+	rods_loadsave.h \
 	stripline.h \
 	stripline_loadsave.h \
 	units.h \
@@ -67,6 +69,7 @@ coupled_microstrip_test_SOURCES = alert.c coupled_microstrip_test.c
 ic_microstrip_test_SOURCES = alert.c ic_microstrip_test.c 
 mathutil_test_SOURCES = alert.c mathutil_test.c 
 microstrip_test_SOURCES = alert.c microstrip_test.c 
+rods_test_SOURCES = alert.c rods_test.c
 units_test_SOURCES = alert.c units_test.c
 make_defaults_SOURCES = alert.c make_defaults.c
 
@@ -157,6 +160,10 @@ libwcalc_la_SOURCES = \
 	parallel_rl_loadsave.c \
 	parallel_rl_loadsave.h \
 	physconst.h \
+	rods.c \
+	rods.h \
+	rods_loadsave.c \
+	rods_loadsave.h \
 	stripline.c \
 	stripline.h \
 	stripline_loadsave.c \
