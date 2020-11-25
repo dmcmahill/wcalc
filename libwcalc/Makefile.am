@@ -60,7 +60,7 @@ pkgconfig_DATA          = wcalc.pc
 
 noinst_PROGRAMS = bars_test coax_test coplanar_test coupled_microstrip_test \
 	ic_microstrip_test mathutil_test \
-	make_defaults microstrip_test units_test
+	make_defaults microstrip_test rods_test units_test
 
 coax_test_SOURCES = alert.c coax_test.c
 bars_test_SOURCES = alert.c bars_test.c
