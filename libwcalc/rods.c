@@ -45,7 +45,7 @@
  *   Reference:
  *
  *
- *  The two rectangular rods have their major axes parallel to each
+ *  The two circular cross section rods have their major axes parallel to each
  *  other and running along the Z-axis. 
  *
  *  Rod #1:
@@ -68,208 +68,92 @@
  * Note that other common results make assumuptions about long wires that have varying degrees of
  * error at shorter lengths.
  *
+ * Other common expressions but less accurate may be found in
+ *
+ * E. B. Rosa, "The Self and Mutual Inductances of Linear Conductors", Bulletin of the Bureau of
+ * Standards, vol. 4, no. 2, Washington, 1907.
+ *
+ * C. R. Paul, "Inductance", John Wiley & Sons, Hoboken NJ, 2010.
+ *
+ * R. W. P. King and S. Prasad, "Fundamental Electomagnetic Theory and Applications", prentice Hall,
+ * Englewood Cliffs, NJ, 1986.
+ *
  */
 
 
-/* This is the function in (14) in Hoer and Love */
-static double Mb_fn(double x, double y, double z)
-{
-
-  double rslt = 0.0;
-  double mag, mag2;
-
-  /*
-  printf("%s(x=%g, y=%g, z=%g)\n", __FUNCTION__, x, y, z);
-  */
-  mag2 = x*x + y*y + z*z;
-  mag = sqrt(mag2);
-
-#if defined(DEBUG_CALC) &&  (DEBUG_CALC > 1)
-  printf("%s():  mag = %g\n", __FUNCTION__, mag);
-#endif
-
-  /* 
-   * we have to watch out for y and z both being equal to zero.
-   * in that case we have 0/0
-   *
-   * Try setting z = y and we have
-   *
-   * (y^4 / 4.0 - y^4 / 24.0 - y^4 / 24) * x * log (x + m) / sqrt(2
-   * y^2)
-   * => 0
-   */
-
-  if ( (x != 0 && y != 0) ||
-       (x != 0 && z != 0) ||
-       (y != 0 && z != 0) ) {
-    /* at least 2 != 0 */
-    rslt += (pow(y,2.0)*pow(z,2.0)/4.0 - pow(y,4.0)/24.0 - pow(z,4.0)/24.0) * x * 
-      log( (x + mag) / sqrt( y*y + z*z)) ;
-    
-    rslt += (pow(x,2.0)*pow(z,2.0)/4.0 - pow(x,4.0)/24.0 - pow(z,4.0)/24.0) * y * 
-      log( (y + mag) / sqrt( x*x + z*z));
-    
-    rslt += (pow(x,2.0)*pow(y,2.0)/4.0 - pow(x,4.0)/24.0 - pow(y,4.0)/24.0) * z * 
-      log( (z + mag) / sqrt( x*x + y*y));
-    
-  }
-
-  if( x!= 0 || y != 0 || z != 0) {
-    rslt += (1.0 / 60.0) * (pow(x,4.0) + pow(y,4.0) + pow(z,4.0) - 3*pow(x,2.0)*pow(y,2.0)
-			    - 3*pow(y,2.0)*pow(z,2.0) - 3*pow(x,2.0)*pow(z,2.0)) * mag ;
-  }
-
-  /* if any of x, y, z are zero the the followng terms are zero */
-  if ( x != 0 && y != 0 && z != 0) {
-    /* all != 0 */
-
-    /* note:  using atan2() produced incorrect mutual inductance when
-     * bar #2 is placed to the left or below bar #1 (i.e. negative
-     * values for E or P).
-     */
-    rslt -= (x*y*pow(z,3.0)/6.0) * atan( (x*y) / (z*mag));
-      
-    rslt -= (x*pow(y,3.0)*z/6.0) * atan( (x*z) / (y*mag));
-    
-    rslt -= (pow(x,3.0)*y*z/6.0) * atan( (y*z) / (x*mag));
-
-  }
-
-  return rslt;
-}
-
-
-/* (14) */
-static double Mb(rods *b)
-{
-  double rslt, tmp;
-  double q[5], r[5], s[5];
-  unsigned int i, j, k;
-
-  q[1] = b->E - b->a;
-  q[2] = b->E + b->d - b->a;
-  q[3] = b->E + b->d;
-  q[4] = b->E;
-
-  r[1] = b->P - b->b;
-  r[2] = b->P + b->c - b->b;
-  r[3] = b->P + b->c;
-  r[4] = b->P;
-
-  s[1] = b->l3 - b->l1;
-  s[2] = b->l3 + b->l2 - b->l1;
-  s[3] = b->l3 + b->l2;
-  s[4] = b->l3;
-
-#if 0
-  for(i=1; i<=4; i++) {
-    printf("%s():  q[%d] = %g\n", __FUNCTION__, i, q[i]);
-  }
-
-  for(i=1; i<=4; i++) {
-    printf("%s():  r[%d] = %g\n", __FUNCTION__, i, r[i]);
-  }
-
-  for(i=1; i<=4; i++) {
-    printf("%s():  s[%d] = %g\n", __FUNCTION__, i, s[i]);
-  }
-#endif
-
-  rslt = 0.0;
-  for(i=1 ; i<=4 ; i++) {
-    for(j=1 ; j<=4 ; j++) {
-      for(k=1 ; k<=4 ; k++) {
-	tmp = pow(-1.0, (double) (i + j + k + 1)) * 
-	  Mb_fn(q[i], r[j], s[k]);
-	rslt += tmp;
-#ifdef DEBUG_CALC
-	printf("[%d %d %d] [%g %g %g] : %.8g  -------> %.8g\n", 
-	       i-1, j-1, k-1, q[i], r[j], s[k], tmp, rslt);
-#endif
-      }
-    }
-  }
-  
-  /*
-   *  the 1e-7 differs from the 0.001 in the paper so I get a function
-   * that takes meters in and gives Henries out instead of cm in and
-   * microhenries out
-   */
-  rslt = (1e-7 / (b->a * b->b * b->c * b->d)) * rslt;
-
-  return rslt;
-}
-
-/* (20) */
-static double Lb(rods *b, int w)
-{
-  double rslt;
-  double q[3], r[3], s[3];
-  unsigned int i, j, k;
-  double a, bb;
-
-  if (w == 1) {
-    q[1] = b->a;
-    r[1] = b->b;
-    s[1] = b->l1;
-    a = b->a;
-    bb = b->b;
-  } else if (w==2) {
-    q[1] = b->c;
-    r[1] = b->d;
-    s[1] = b->l2;
-    a = b->d;
-    bb = b->c;
-  } else {
-    fprintf(stderr, "rods.c: Lb() - w = %d is not allowed.  Internal error.\n", w);
-    exit(1);
-  }
-
-  q[2] = 0.0;
-  r[2] = 0.0;
-  s[2] = 0.0;
-
-  rslt = 0.0;
-  for(i=1 ; i<=2 ; i++) {
-    for(j=1 ; j<=2 ; j++) {
-      for(k=1 ; k<=2 ; k++) {
-	rslt += pow(-1.0, (double)(i + j + k + 1)) * Mb_fn(q[i], r[j], s[k]);
-      }
-    }
-  }
-
-  /*
-   *  the 8e-7 differs from the 0.008 in the paper so I get a function
-   * that takes meters in and gives Henries out instead of cm in and
-   * microhenries out
-   */
-  rslt = (8e-7 / (a*a*bb*bb)) * rslt;
-
-  return rslt;
-}
 
 /*
- * Rosa (9)
- * l = length [meters] 
- * p = radius [meters] 
+ * l = length [meters]
+ * p = radius [meters]
  *
  * L = self inductance [Henries]
  */
-static double Lself(l, p)
+static double Lself(double l, double p)
 {
-  double Lrosa, L;
+  double Lrosa, L, omega, k, deltaL;
 
-  /* Rosa (9) for reference */
-  Lrosa = 2.0*(l*log( (1.0 + sqrt(l*l + p*p)) / p) - sqrt(l*l + p*p) + 0.25*l + p);
-  Lrosa = FREESPACE_MU0 * Lrosa;
+  printf("%s:  l = %g, p = %g\n", __FUNCTION__, l, p);
 
-  /* Aebischer (34) */
+  /*
+   * Rosa (9) for reference.  The 1e-7 factor is to
+   * take meters in and give H out.
+   */
+  Lrosa = 2e-7*(l*log( (l + sqrt(l*l + p*p)) / p) - sqrt(l*l + p*p) + 0.25*l + p);
+
+  /*
+   * Aebischer (34)
+   * Note that the only actual difference is the factor of 0.905415 that Aebischer obtained
+   * through numerical integration.  It is striking that this seemingly small adjustment
+   * makes a big difference.  The Rosa formula has 10% error around length/radius = 2 or 2.5
+   * and just under 2% at length/radius = 5.  In contrast the Aebisher (34) result has
+   * an error of -0.1% (vs 10%) at length/radius ~ 2 or so and rapidly approaches 0 as
+   * length/radius increases.
+   */
   L = 2e-7*(l*log(sqrt(l*l + p*p) + l) - l*(log(p) - 0.25) - sqrt(l*l + p*p) + 0.905415*p);
 
-  printf("Lrosa = %g\n", Lrosa);
-  printf("L     = %g\n", L);
+  printf("Lrosa = %g nH\n", 1e9*Lrosa);
+  printf("L34   = %g nH\n", 1e9*L);
+
+  /* Aebischer (49) */
+  omega = sqrt(l*l + p*p);
+
+  /* Aebischer (51) */
+  k = 0.094585;
+
+  /* Aebischer (52) */
+  deltaL = 2e-7*k*p*p * (omega - l) / (omega*(omega + l));
+  printf("deltaL = %g nH\n", 1e9*deltaL);
+
+  /* with this correction, the error is less than about 0.018% for length/radius >= 2 */
+  L = L + deltaL;
+  printf("L     = %g nH\n", 1e9*L);
 
   return L;
+}
+
+static double Lmutual(double l, double d, double r)
+{
+  double Mrosa, M, w, deltaM;
+
+  /*
+   * Rosa (12)
+   * Note:  This equation assumes that the lengths area identical and that
+   * the wires are lined up in the z-axis (occupy the same range in z)
+   */
+  Mrosa = 2e-7*(l*log( (l + sqrt(l*l + d*d)) / d) - sqrt(l*l + d*d) + d);
+
+  /* Aebischer (63) */
+  w = sqrt(l*l + d*d + r*r);
+
+  /* Aebischer (63) */
+  M = 2e-7*(l*log(w + l) - l*log(d) - w + d + r*r/(4.0*d));
+
+  /* Aebischer (62) */
+  deltaM = 2e-7*sqrt(d*d + r*r) * (sqrt(d*d + r*r) - d - r*r/(4.0*d)) * ((w - l) / (w*(w + l)));
+  printf("Mrosa = %g\n", Mrosa);
+  printf("M     = %g\n", M);
+
+  return M;
 }
 
 
@@ -313,8 +197,7 @@ int rods_calc(rods *b, double freq)
 
   b->L1 = Lself(b->l1, 0.5*b->d1);
   b->L2 = Lself(b->l2, 0.5*b->d2);
-  //b->M = Mb(b);
-  b->M = 0.0;
+  b->M = Lmutual(b->l1, b->distance, 0.5*b->d1);
   b->k = b->M / sqrt(b->L1 * b->L2);
 
 #ifdef DEBUG_CALC

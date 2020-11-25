@@ -52,14 +52,14 @@ typedef struct RODS
   wc_units *units_L;
   wc_units *units_freq;
 
-} bars;
+} rods;
 
 
-int rods_calc(bars *, double);
-int rods_syn(bars *, double, int);
+int rods_calc(rods *, double);
+int rods_syn(rods *, double, int);
 
-void rods_free(bars *);
-bars *rods_new(void);
+void rods_free(rods *);
+rods *rods_new(void);
 
 
 /*
