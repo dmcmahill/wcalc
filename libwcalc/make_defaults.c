@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2004, 2006, 2008, 2009 Dan McMahill
+ * Copyright (C) 2004, 2006, 2008, 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -57,6 +56,8 @@
 #include "parallel_rc_loadsave.h"
 #include "parallel_rl.h"
 #include "parallel_rl_loadsave.h"
+#include "rods.h"
+#include "rods_loadsave.h"
 #include "stripline.h"
 #include "stripline_loadsave.h"
 
@@ -84,6 +85,7 @@ int main(int argc, char **argv)
   microstrip_line *ms_line;
   parallel_rc *prc;
   parallel_rl *prl;
+  rods *r;
   stripline_line *st_line;
 
   printf("/* GENERATED FILE.  DO NOT EDIT. */\n");
@@ -197,6 +199,17 @@ int main(int argc, char **argv)
     printf("const char *default_parallel_rl=\"%s\";\n", str);
     free(str);
     parallel_rl_free(prl);
+    fclose(fp);
+  }
+
+  sprintf(fname, "%s/%s", dir, "rods.wc");
+  if( (fp = fopen(fname, "r")) != NULL ) {
+    r = rods_new();
+    rods_load(r, fp);
+    str = rods_save_string(r);
+    printf("const char *default_rods=\"%s\";\n", str);
+    free(str);
+    rods_free(r);
     fclose(fp);
   }
 

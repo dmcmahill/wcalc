@@ -93,7 +93,6 @@ static double Lself(double l, double R)
 {
   double L, omega, k, deltaL;
 
-  printf("%s:  l = %g, R = %g\n", __FUNCTION__, l, R);
 
   /*
    * Rosa (9) for reference.  The 1e-7 factor is to
@@ -175,6 +174,7 @@ static double Lmutual(double l, double d, double R)
 
 int rods_calc(rods *b, double freq)
 {
+    double r1, r2;
     int touching = 1;
 
     if(freq < 0.0) {
@@ -193,9 +193,11 @@ int rods_calc(rods *b, double freq)
     }
 
     /* now see if the rods are touching. */
+    r1 = 0.5*b->d1;
+    r2 = 0.5*b->d2;
 
     /* see if we have overlap in the circles when we project to a plane */
-    if( 0.5*(b->d1 + b->d2) < b->distance) {
+    if( (r1 + r2) < b->distance) {
 	touching = 0;
     }
     
@@ -211,10 +213,13 @@ int rods_calc(rods *b, double freq)
 	return -1;
     }
 
-  b->L1 = Lself(b->l1, 0.5*b->d1);
-  b->L2 = Lself(b->l2, 0.5*b->d2);
-  b->M = Lmutual(b->l1, b->distance, 0.5*b->d1);
+  b->L1 = Lself(b->l1, r1);
+  b->L2 = Lself(b->l2, r2);
+  b->M = Lmutual(b->l1, b->distance, r1);
   b->k = b->M / sqrt(b->L1 * b->L2);
+
+  b->R1 = b->rho*b->l1/(M_PI*r1*r1);
+  b->R2 = b->rho*b->l2/(M_PI*r2*r2);
 
 #ifdef DEBUG_CALC
   printf("%s ----------------------\n", __FUNCTION__);
@@ -249,6 +254,8 @@ int rods_calc(rods *b, double freq)
   printf("%s  Calculated L2 = %g nH\n",  __FUNCTION__, b->L2*1e9);
   printf("%s  Calculated M  = %g nH\n",  __FUNCTION__, b->M*1e9);
   printf("%s  Calculated k  = %g\n",  __FUNCTION__, b->k);
+  printf("%s  Calculated R1 = %g Ohm\n",  __FUNCTION__, b->R1);
+  printf("%s  Calculated R2 = %g Ohm\n",  __FUNCTION__, b->R2);
   printf("%s  ----------------------\n");
 #endif
 
@@ -274,6 +281,8 @@ void rods_free(rods *b)
 
   wc_units_free(b->units_xy);
   wc_units_free(b->units_L);
+  wc_units_free(b->units_R);
+  wc_units_free(b->units_rho);
   wc_units_free(b->units_freq);
 
   free(b);
@@ -294,7 +303,9 @@ rods *rods_new()
   /* Create the units */
   newb->units_xy = wc_units_new(WC_UNITS_LENGTH);
   newb->units_L = wc_units_new(WC_UNITS_INDUCTANCE);
+  newb->units_R = wc_units_new(WC_UNITS_RESISTANCE);
   newb->units_freq = wc_units_new(WC_UNITS_FREQUENCY);
+  newb->units_rho  = wc_units_new(WC_UNITS_RESISTIVITY);
 
   /* load in the defaults */
   rods_load_string(newb, default_rods);

@@ -80,6 +80,14 @@ static fspec * get_fspec(void)
     fspec_add_key(myspec, "k","Coupling coefficient",
 		  'd', &b->k);
 
+    fspec_add_key(myspec, "R1","Rod #1 DC resistance (Ohms)",
+		  'd', &b->R1);
+    fspec_add_key(myspec, "R2","Rod #2 DC resistance (Ohms)",
+		  'd', &b->R2);
+
+    fspec_add_key(myspec, "rho","Bulk resistivity (Ohm-meter)",
+		  'd', &b->rho);
+
     fspec_add_key(myspec, "freq","Frequency of operation (Hz)",
 		  'd', &b->freq);
 
@@ -91,6 +99,10 @@ static fspec * get_fspec(void)
 		  'u', &b->units_xy);
     fspec_add_key(myspec, "units_L", "Inductance units",  
 		  'u', &b->units_L);
+    fspec_add_key(myspec, "units_R", "Resistance units",
+		  'u', &b->units_R);
+    fspec_add_key(myspec, "units_rho", "Resistivity units",
+		  'u', &b->units_rho);
     fspec_add_key(myspec, "units_freq", "Frequency units",  
 		  'u', &b->units_freq);
 
@@ -140,7 +152,7 @@ void rods_save(rods *b, FILE *fp, char *fname)
 {
   fspec *myspec;
 
-  wcalc_save_header(fp, fname, FILE_BARS);
+  wcalc_save_header(fp, fname, FILE_RODS);
   myspec=get_fspec();
   fspec_write_file(myspec,fp,(unsigned long) b);
 }

@@ -26,14 +26,17 @@
 typedef struct RODS
 {
 
-  /* Bar 1 diameter and length */
+  /* Wire 1 diameter and length */
   double d1, l1;
 
-  /* Bar 2 diameter and length */
+  /* Wire 2 diameter and length */
   double d2, l2;
 
-  /* Bar 2 offsets, axis-to-axis distance and length offset */
+  /* Wire 2 offsets, axis-to-axis distance and length offset */
   double distance, offset;
+
+  /* bulk resistivity */
+  double rho;
 
   /* Self inductances */
   double L1, L2;
@@ -44,12 +47,17 @@ typedef struct RODS
   /* coupling coefficient */
   double k;
 
+  /* DC resistances */
+  double R1, R2;
+
   /* operating frequency */
   double freq;
 
   /* user units */
   wc_units *units_xy;
   wc_units *units_L;
+  wc_units *units_R;
+  wc_units *units_rho;
   wc_units *units_freq;
 
 } rods;
