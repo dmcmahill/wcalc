@@ -1,7 +1,7 @@
 #
-# File:      /home/dan/src/wcalc/gtk-wcalc/rods.wc
-# Modified:  Sun Jan 11 10:55:38 2009
-# Wcalc Version 1.0A
+# File:      /Users/dan/src/wcalc/gtk-wcalc/rods.wc
+# Modified:  Mon Nov 30 23:09:27 2020
+# Wcalc Version 1.1A
 
 [wcalc]
 wcalc_file_version = 0.1
@@ -14,50 +14,50 @@ model_name = rods
 file_version = 1.0
 
 # Rod #1 diameter (meters)
-d1 = 1.0e-03
+d1 = 0.001
 
 # Rod #1 length (z-dimension, meters)
-l1 = 0.001
+l1 = 0.01
 
 # Rod #2 diameter (meters)
-d2 = 1.0e-3
+d2 = 0.001
 
 # Rod #2 length (z-dimension, meters)
-l2 = 0.001
+l2 = 0.01
 
-# Rod #2 distance (meters)
-distance = 3e-3
+# Rod #2 radial distance (meters)
+distance = 0.003
 
-# Rod #2 offset (meters)
+# Rod #2 length offset (meters)
 offset = 0
 
 # Rod #1 self inductance (Henries)
-L1 = 1.1408555278201e-09
+L1 = 5.96705109336864e-09
 
 # Rod #2 self inductance (Henries)
-L2 = 1.01231961137688e-09
+L2 = 5.96705109336864e-09
 
 # Mutual inductance (Henries)
-M = 7.74563112075552e-10
+M = 2.35270203674731e-09
 
 # Coupling coefficient
-k = 0.720746694857738
+k = 0.394282200694065
 
-# Rod #1 self inductance (Henries)
-R1 = 1.1408555278201e-09
+# Rod #1 DC resistance (Ohms)
+R1 = 0.000218997201694448
 
-# Rod #2 self inductance (Henries)
-R2 = 1.01231961137688e-09
+# Rod #2 DC resistance (Ohms)
+R2 = 0.000218997201694448
 
-# Frequency of operation (Hz)
-rho = 1.72e-8
+# Bulk resistivity (Ohm-meter)
+rho = 1.72e-08
 
 # Frequency of operation (Hz)
 freq = 100000000
 
 # Desired user units and associated scale factors
 
-# Width/Height units
+# Diameter and Length units
 units_xy = 2
 # [mm]
 
@@ -65,13 +65,13 @@ units_xy = 2
 units_L = 1
 # [nH]
 
-# Inductance units
-units_R = 2 
-# [nH]
+# Resistance units
+units_R = 1
+# [mOhm]
 
-# Inductance units
-units_rho = 2-2
-# [nH]
+# Resistivity units
+units_rho = 2-4
+# [Ohm-m]
 
 # Frequency units
 units_freq = 3
