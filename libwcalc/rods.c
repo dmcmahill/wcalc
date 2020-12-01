@@ -76,7 +76,7 @@
  *
  * C. R. Paul, "Inductance", John Wiley & Sons, Hoboken NJ, 2010.
  *
- * R. W. P. King and S. Prasad, "Fundamental Electomagnetic Theory and Applications", prentice Hall,
+ * R. W. P. King and S. Prasad, "Fundamental Electomagnetic Theory and Applications", Prentice Hall,
  * Englewood Cliffs, NJ, 1986.
  *
  */

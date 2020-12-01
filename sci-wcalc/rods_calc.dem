@@ -1,0 +1,52 @@
+// Copyright (c) 2020 Dan McMahill
+// All rights reserved.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; version 2 of the License.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+// --------------------------------------------------------
+// Self and mutual inductance of a pair of circular wires
+// --------------------------------------------------------
+
+// dimensions in meters
+d1   = 1e-3;   // Diameter of wire #1
+l1   = 10e-3;  // Length of wire #1
+
+d2   = 1e-3;   // Diameter of wire #2
+l2   = 10e-3;  // Length of wire #2
+
+dist = 3e-3;  // Radial distance between wire centers
+ofs  = 0;     // Axial offset between the wires
+
+rho  = 1.72e-8;  // resistivity (Ohm-meter)
+f    = 1e9;   // operating frequency (Hz).  Not used
+
+[L1, L2, M, k, R1, R2] = ...
+  rods_calc(d1, l1, d2, l2, dist, ofs, rho, freq);
+
+printf("L1 = %g nH\n", L1*1e9);
+printf("L2 = %g nH\n", L2*1e9);
+printf("M  = %g nH\n", M*1e9);
+printf("k  = %g\n", k);
+printf("R1 = %g Ohm\n", R1);
+printf("R2 = %g Ohm\n", R2);
+
+gap = linspace(0.5e-6, 20e-6, 100);
+[L1, L2, M, k, R1, R2] = ...
+  rods_calc(d1, l1, d2, l2, 0.5*(d1 + d2) + gap, ofs, rho, freq);
+xbasc(); xselect();
+plot2d(gap/1e-6, k);
+xgrid(3);
+xtitle('Coupling Coefficient versus Gap','um','k');
+

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<!-- Copyright (c) 2020
+	Dan McMahill  ALL RIGHTS RESERVED. -->
+<link rev="made" href="mailto:danmc@sourceforge.net">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>Wcalc Parallel Circular Wires</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="DESCRIPTION" content="Wcalc:  A transmission line calculator">
+<meta name="KEYWORDS" content="
+bars,
+mutual inductance,
+coax,
+coaxial,
+coaxial transmission line,
+coupled microstrip,
+coupled microstrip analysis,
+coupled microstrip synthesis,
+microstrip,
+microstrip analysis,
+microstrip synthesis,
+rods,
+stripline,
+stripline analysis,
+stripline synthesis,
+">
+</head>
+
+<!-- Start the main page table -->
+<!--#include virtual="page_start.incl"-->
+
+<!-- The main action area -->
+    <center>
+    <font face="helvetica, arial" size="+2">
+      Wcalc Parallel Circular Wires Inductance
+    </font>
+    <br>
+    <br>
+    <img src="rods_fig.png"
+    alt="Parallel Rectangular Bars Image" width="593" height="185" hspace="10" vspace="5">
+    </center>
+
+    <font face="helvetica, arial">
+    <HR> 
+    <H2><A NAME="References">Selected References</A></H2>
+    <OL>
+      <LI>
+        H. A. Aebischer and B. Aebischer, "Improved Formulae for the Inductance of Straight Wires",
+        <em>Advanced Electromagnetics</em>, Vol. 3, No. 1, September 2014, pp. 31-43
+      </LI>
+      <LI>
+        E. B. Rosa, "The Self and Mutual Inductances of Linear Conductors", <em>Bulletin of the Bureau of
+        Standards</em>, Vol. 4, No. 2, Washington, 1907
+      </LI>
+      <LI>
+        C. R. Paul, "Inductance", John Wiley & Sons, Hoboken NJ, 2010
+      </LI>
+      <LI>
+         R. W. P. King and S. Prasad, "Fundamental Electomagnetic Theory and Applications", Prentice Hall,
+         Englewood Cliffs, NJ, 1986.
+      </LI>
+    </OL>
+ 
+ * Note that other common results make assumuptions about long wires that have varying degrees of
+ * error at shorter lengths.
+ *
+ * Other common expressions but less accurate may be found in
+ *
+ *
+ *
+ *
+      
+
+    <HR>
+    <H2><A NAME="Comments">Comments</A></H2>
+    <P>
+    The development in the Aebischer paper is the primary reference.  Aebischer provides some accuracy
+    comparisons between his expressions and exact numerical solutions and also compares to other common
+    formula.  The Aebischer results are quite good.  In the case for relatively short wires,
+    the Aebischer results are much more accurate than the other common expressions.
+    </P>
+    <P>
+    Currently this module requires equal diameter and length wires with no axial offset.  Hopefully this
+    restriction can be removed at some point.  In addition, frequency dependence is not accounted for.
+    I believe there is some later work from Aebischer that may show the path towards including frequency
+    dependence accurately.
+    </P>
+
+    <HR> 
+    <H2><A NAME="bugs">Known Issues</A></H2>
+
+    </font>
+
+  </td>
+
+</tr>
+
+<!-- The left hand column -->
+<!--#include virtual="left_column.incl"-->
+
+</table>
+<p>
+
+<!--#include virtual="main_footer.incl"-->
+
+
+</body>
+</html>

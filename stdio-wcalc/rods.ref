@@ -1,0 +1,11 @@
+*
+*  [L1, L2, M, k, R1, R2] = 
+*    rods_calc(d1, l1, d2, distance, offset, rho, freq);
+*
+*
+* Rods calculation.  Two conductors, 1 mm diameter, 10 mm long, 3mm center to center,
+* copper conductivity
+*
+--> rods_calc 1e-3 10e-3 1e-3 10e-3 3e-3 0.0 1.72e-8 1e9
+5.96705e-09 5.96705e-09 2.3527e-09 0.394282 0.000218997 0.000218997
+*

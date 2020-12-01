@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -49,8 +48,13 @@
 #include <dmalloc.h>
 #endif
 
+/* #define DEBUG */
 
+/* units menus that may need to sync their values to other spots in the page */
 static cgi_menu_list * all_menus=NULL;
+
+/* other entries that may need to sync */
+static cgi_sync_list * all_sync=NULL;
 
 char * cgi_units_menu_show(const wc_units_data *units, char *name, int ind)
 {
@@ -219,6 +223,80 @@ void cgi_units_attach_entry(cgi_units_menu *menu, char *name)
 
 }
 
+void cgi_sync_entry(char *src, char *dst)
+{
+  cgi_sync_list *sl;
+  entry_list *el;
+
+  /* add to the master list */
+  if( all_sync == NULL ) {
+    if( (all_sync = (cgi_sync_list *) malloc(sizeof(cgi_sync_list))) == NULL ) {
+      fprintf(stderr,"cgi_sync_entry():  malloc() failed\n");
+      exit(1);
+    }
+    all_sync->prev = NULL;
+    all_sync->next = NULL;
+    all_sync->src = strdup(src);
+    all_sync->dst = NULL;
+#ifdef DEBUG
+    printf("%s:  Allocated a new all_sync for src = %s\n", __FUNCTION__, src);
+#endif
+  }
+
+  /* search and see if the source entry is listed already */
+  sl = all_sync;
+  while(sl->src != NULL && strcmp(sl->src, src) != 0 && sl->next != NULL)
+      sl = sl->next;
+
+  /*
+   * we either got to a point where ->src is NULL, we have a match, or there are no
+   * more entries
+   */
+
+  /* no match so create a new source entry */ 
+  if( strcmp(sl->src, src) != 0 ) {
+    if( (sl->next = (cgi_sync_list *) malloc(sizeof(cgi_sync_list))) == NULL ) {
+      fprintf(stderr,"cgi_sync_entry():  malloc() failed\n");
+      exit(1);
+    }
+    sl->next->prev = sl;
+    sl->next->next = NULL;
+    sl->next->src = strdup(src);
+    sl->next->dst = NULL;
+    sl = sl->next;
+  }
+
+  el = sl->dst;
+
+  if(el == NULL) {
+    if( (el = (entry_list *) malloc(sizeof(entry_list))) == NULL ) {
+      fprintf(stderr,"cgi_sync_entry():  malloc() failed\n");
+      exit(1);
+    }
+    sl->dst = el;
+    el->next = NULL;
+    el->prev = NULL;
+    el->name = strdup(dst);
+  } else {
+    /* try to find the destination already in the list */
+    while(strcmp(el->name, dst) != 0 && el->next != NULL)
+      el = el->next;
+
+    
+    /* now check if we have the destination already */
+    if( strcmp(el->name, dst) != 0) {
+       if( (el->next = (entry_list *) malloc(sizeof(entry_list))) == NULL ) {
+         fprintf(stderr,"cgi_sync_entry():  malloc() failed\n");
+         exit(1);
+       }
+       el->next->prev = el;
+       el->next->next = NULL;
+       el->next->name = strdup(dst);
+    }
+  }
+
+}
+
 /* 
  * cgi_units_menu_init()
  *
@@ -228,6 +306,7 @@ void cgi_units_attach_entry(cgi_units_menu *menu, char *name)
 char * cgi_units_menu_init()
 {
   cgi_menu_list *ml=all_menus;
+  cgi_sync_list *sl=all_sync;
   entry_list *el;
   wc_units * units;
   int i,j;
@@ -246,6 +325,18 @@ char * cgi_units_menu_init()
   fprintf(cgiOut, "\tsetCookie(cgi, cookie, expires);\n");
   fprintf(cgiOut, "}\n\n");
 
+  while( sl != NULL ) {
+    fprintf(cgiOut, "function changed_wc_sync_entry_%s()\n", sl->src);
+    fprintf(cgiOut, "{\n");
+    el = sl->dst;
+    while(el != NULL) {
+      fprintf(cgiOut, "\tdocument.wcalc.%s.value = document.wcalc.%s.value;\n", el->name, sl->src);
+      el = el->next;
+    } 
+    fprintf(cgiOut, "}\n\n");
+    sl = sl->next;
+  }
+    
 
   while( ml != NULL ) {
     fprintf(cgiOut, "function changed_%s()\n", ml->menu->name);

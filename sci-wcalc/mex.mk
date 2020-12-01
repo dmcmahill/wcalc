@@ -1,6 +1,4 @@
-##
-
-## Copyright (c) 2001, 2006, 2009 Dan McMahill
+## Copyright (c) 2001, 2006, 2009, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -36,6 +34,7 @@ MEX_SRCS=	\
 	parallel_rc_s2p.c \
 	parallel_rl_p2s.c \
 	parallel_rl_s2p.c \
+	rods_calc.c \
 	stripline_calc.c \
 	stripline_syn.c
 

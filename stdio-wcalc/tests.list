@@ -1,5 +1,4 @@
-#
-# Copyright (c) 2004, 2006, 2009 Dan McMahill
+# Copyright (c) 2004, 2006, 2009, 2020 Dan McMahill
 # All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,5 +24,6 @@ ic_microstrip
 microstrip
 parallel_rc
 parallel_rl
+rods
 stripline
 

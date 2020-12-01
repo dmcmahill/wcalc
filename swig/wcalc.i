@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2012 Dan McMahill
+ * Copyright (C) 2012, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -40,6 +39,7 @@
 #include "microstrip.h"
 #include "parallel_rc.h"
 #include "parallel_rl.h"
+#include "rods.h"
 #include "stripline.h"
 
 %}
@@ -56,5 +56,6 @@
 %include "microstrip.h"
 %include "parallel_rc.h"
 %include "parallel_rl.h"
+%include "rods.h"
 %include "stripline.h"
 

@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 ##
 
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2009, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -62,6 +62,7 @@ SHTML_IN=	\
 	permitivity.shtml \
 	projects.shtml \
 	resistivity.shtml \
+	rods.shtml \
 	sci-wcalc.shtml \
 	stdio-wcalc.shtml \
 	stripline.shtml \
