@@ -43,6 +43,15 @@ M = 7.74563112075552e-10
 # Coupling coefficient
 k = 0.720746694857738
 
+# Rod #1 self inductance (Henries)
+R1 = 1.1408555278201e-09
+
+# Rod #2 self inductance (Henries)
+R2 = 1.01231961137688e-09
+
+# Frequency of operation (Hz)
+rho = 1.72e-8
+
 # Frequency of operation (Hz)
 freq = 100000000
 
@@ -54,6 +63,14 @@ units_xy = 2
 
 # Inductance units
 units_L = 1
+# [nH]
+
+# Inductance units
+units_R = 2 
+# [nH]
+
+# Inductance units
+units_rho = 2-2
 # [nH]
 
 # Frequency units

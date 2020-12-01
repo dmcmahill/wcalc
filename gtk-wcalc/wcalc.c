@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -51,6 +50,7 @@
 #include "microstrip_gui.h"
 #include "parallel_rc_gui.h"
 #include "parallel_rl_gui.h"
+#include "rods_gui.h"
 #include "stripline_gui.h"
 
 /* libwcalc related */
@@ -334,6 +334,13 @@ static void global_model_init()
   global_model_defaults = g_list_append(global_model_defaults, FILE_PARALLEL_RL);
 
 
+  /* ************************  Rods ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Parallel Circular Wires");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_Rods");
+  global_model_new = g_list_append(global_model_new, (gpointer) rods_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_RODS);
+
   /* ************************ Stripline ******************** */
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
@@ -533,6 +540,10 @@ void wcalc_setup (gpointer data,
       
     case MODEL_PARALLEL_RL:
       new_cmd = (void *) parallel_rl_gui_new;
+      break;
+      
+    case MODEL_RODS:
+      new_cmd = (void *) rods_gui_new;
       break;
       
     case MODEL_STRIPLINE:
