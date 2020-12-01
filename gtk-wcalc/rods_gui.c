@@ -591,6 +591,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Wire #1 DC Resistance (R1)", b->R1, b->units_R, list);
     list = wc_print_add_double("Wire #2 DC Resistance (R2)", b->R2, b->units_R, list);
 
+    list = wc_print_add_double("Wire Resistivity (rho)", b->rho, b->units_rho, list);
   }
 #endif
 
