@@ -178,7 +178,6 @@ int cgiMain(void){
       printFormError("Length of wire must be &gt 0");
     }
    
-#ifdef notdef 
     /* Diameter of wire #2 */
     if(cgiFormDouble("d2", &d2, defD2/rod->units_xy->sf) !=
        cgiFormSuccess){
@@ -207,12 +206,6 @@ int cgiMain(void){
       inputErr(&input_err);
       printFormError("Error reading axial offset");
     }
-#else
-    /* disabling the inputs prevents me from reading them for some reason */
-    d2 = d1;
-    l2 = l1;
-    offset = 0;
-#endif
 
     /* Radial distance between centers */
     if(cgiFormDouble("distance", &distance, defDISTANCE/rod->units_xy->sf) !=
