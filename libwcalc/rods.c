@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2020 Dan McMahill
  * All rights reserved.
@@ -59,6 +58,8 @@
  * The distance is defined as the distance between the centers of the projections onto
  * the x-y plane and the offset is the difference in z-axis starting point.
  *
+ * NOTE:  Currently this only supports d1=d2, l1=l2, and offset=0.  I.e. the two wires
+ * are identical and occupy the same z-axis range.
  * 
  * Primary reference:
  *
@@ -84,74 +85,89 @@
 
 /*
  * l = length [meters]
- * p = radius [meters]
+ * R = radius [meters]
  *
  * L = self inductance [Henries]
  */
-static double Lself(double l, double p)
+static double Lself(double l, double R)
 {
-  double Lrosa, L, omega, k, deltaL;
+  double L, omega, k, deltaL;
 
-  printf("%s:  l = %g, p = %g\n", __FUNCTION__, l, p);
+  printf("%s:  l = %g, R = %g\n", __FUNCTION__, l, R);
 
   /*
    * Rosa (9) for reference.  The 1e-7 factor is to
    * take meters in and give H out.
+   *
+   *
+   * Lrosa = 2e-7*(l*log( (l + sqrt(l*l + R*R)) / R) - sqrt(l*l + R*R) + 0.25*l + R);
+   *
    */
-  Lrosa = 2e-7*(l*log( (l + sqrt(l*l + p*p)) / p) - sqrt(l*l + p*p) + 0.25*l + p);
 
   /*
    * Aebischer (34)
-   * Note that the only actual difference is the factor of 0.905415 that Aebischer obtained
+   * Note that the only actual difference compared to Rosa's equation is the factor
+   * of 0.905415 that Aebischer obtained
    * through numerical integration.  It is striking that this seemingly small adjustment
    * makes a big difference.  The Rosa formula has 10% error around length/radius = 2 or 2.5
    * and just under 2% at length/radius = 5.  In contrast the Aebisher (34) result has
    * an error of -0.1% (vs 10%) at length/radius ~ 2 or so and rapidly approaches 0 as
    * length/radius increases.
    */
-  L = 2e-7*(l*log(sqrt(l*l + p*p) + l) - l*(log(p) - 0.25) - sqrt(l*l + p*p) + 0.905415*p);
+  L = 2e-7*(l*log(sqrt(l*l + R*R) + l) - l*(log(R) - 0.25) - sqrt(l*l + R*R) + 0.905415*R);
 
-  printf("Lrosa = %g nH\n", 1e9*Lrosa);
-  printf("L34   = %g nH\n", 1e9*L);
+  /* High frequency inductance, Aebischer (35) */
+  /* Lhf = 2e-7*(l*log(sqrt(l*l + 2*R*R) + l) - l*log(R) - sqrt(l*l + 2*R*R) + (4.0/M_PI)*R); */
 
   /* Aebischer (49) */
-  omega = sqrt(l*l + p*p);
+  omega = sqrt(l*l + R*R);
 
   /* Aebischer (51) */
   k = 0.094585;
 
   /* Aebischer (52) */
-  deltaL = 2e-7*k*p*p * (omega - l) / (omega*(omega + l));
-  printf("deltaL = %g nH\n", 1e9*deltaL);
+  deltaL = 2e-7*k*R*R * (omega - l) / (omega*(omega + l));
 
   /* with this correction, the error is less than about 0.018% for length/radius >= 2 */
   L = L + deltaL;
-  printf("L     = %g nH\n", 1e9*L);
 
   return L;
 }
 
-static double Lmutual(double l, double d, double r)
+/*
+ * NOTE:  This function is limited to d1=d2=2*R, l1=l2, offset=0.
+ * Once that limitation is addressed here the rest of the module will
+ * be in good shape.
+ *
+ * l = length [meters]
+ * d = distance between centers [meters]
+ * R = wire radius
+ *
+ */
+static double Lmutual(double l, double d, double R)
 {
-  double Mrosa, M, w, deltaM;
+  double M, w, deltaM;
 
   /*
    * Rosa (12)
    * Note:  This equation assumes that the lengths area identical and that
    * the wires are lined up in the z-axis (occupy the same range in z)
+   *
+   * In addition, it basically assumes that R=0 (i.e. it is the mutual inductance
+   * between two filaments)
+   * Mrosa = 2e-7*(l*log( (l + sqrt(l*l + d*d)) / d) - sqrt(l*l + d*d) + d);
    */
-  Mrosa = 2e-7*(l*log( (l + sqrt(l*l + d*d)) / d) - sqrt(l*l + d*d) + d);
 
   /* Aebischer (63) */
-  w = sqrt(l*l + d*d + r*r);
+  w = sqrt(l*l + d*d + R*R);
 
   /* Aebischer (63) */
-  M = 2e-7*(l*log(w + l) - l*log(d) - w + d + r*r/(4.0*d));
+  M = 2e-7*(l*log(w + l) - l*log(d) - w + d + R*R/(4.0*d));
 
   /* Aebischer (62) */
-  deltaM = 2e-7*sqrt(d*d + r*r) * (sqrt(d*d + r*r) - d - r*r/(4.0*d)) * ((w - l) / (w*(w + l)));
-  printf("Mrosa = %g\n", Mrosa);
-  printf("M     = %g\n", M);
+  deltaM = 2e-7*sqrt(d*d + R*R) * (sqrt(d*d + R*R) - d - R*R/(4.0*d)) * ((w - l) / (w*(w + l)));
+
+  M = M + deltaM;
 
   return M;
 }
@@ -206,12 +222,12 @@ int rods_calc(rods *b, double freq)
   printf("%s ----------------------\n", __FUNCTION__);
 
   
-  printf("%s  Bar #1 dimensions:\n", __FUNCTION__);
+  printf("%s  Rod #1 dimensions:\n", __FUNCTION__);
   printf("%s  d1   = %g\n", __FUNCTION__, b->d1);
   printf("%s  l1   = %g\n", __FUNCTION__, b->l1);
 
   printf("%s  ----------------------\n", __FUNCTION__);
-  printf("%s  Bar #2 dimensions:\n", __FUNCTION__);
+  printf("%s  Rod #2 dimensions:\n", __FUNCTION__);
   printf("%s  d2   = %g\n", __FUNCTION__, b->d2);
   printf("%s  l2   = %g\n", __FUNCTION__, b->l2);
 
@@ -248,55 +264,6 @@ int rods_syn(rods *b, double f, int flag)
   alert (_("rods_syn() -- not yet implemented\n"));
   return -1;
 
-#ifdef DEBUG_SYN
-  printf("rods_syn():  ----------------------\n");
-  printf("rods_syn():  Input values:\n");
-  printf("rods_syn():  ----------------------\n");
-  printf("rods_syn():  N    = %g\n",coil->Nf);
-  printf("rods_syn():  AWG  = %g\n",coil->AWGf);
-  printf("rods_syn():  I.D. = %g inches\n",M2INCH(coil->dia));
-  printf("rods_syn():  len  = %g inches\n",M2INCH(coil->len));
-  printf("rods_syn():  rho  = %g\n",coil->rho);
-  printf("rods_syn():  freq = %g MHz\n",coil->freq*1e-6);
-  printf("rods_syn():  ----------------------\n");
-  printf("rods_syn():  desired inductance  = %g nH\n",L*1e9);
-  printf("rods_syn():  \n");
-  printf("rods_syn():  ----------------------\n");
-#endif
-
-#ifdef FIXME
-  error=1.0;
-  while(error > 1e-8){
-    len1 = len2;
-    len2 = len;
-    
-    coil->len = INCH2M(len1);
-    if (rods_calc_int(coil,f,CALC_MIN) != 0)
-      return -1;
-    Lsyn1     = coil->L;
-    
-    coil->len = INCH2M(len2);
-    if (rods_calc_int(coil,f,CALC_MIN) != 0)
-      return -1;
-    Lsyn2     = coil->L;
-    
-  
-    len = len2 + (L - Lsyn2)*(len2-len1)/(Lsyn2-Lsyn1);
-    error = fabs(len-len2)/len;
-
-#ifdef DEBUG_SYN
-    printf("rods_syn():  len=%g\tlen1=%g\tlen2=%g\n",len,len1,len2);
-    printf("                 L1=%g\tL2=%g\terror=%g\n",Lsyn1,Lsyn2,error);
-#endif
-  
-    coil->len = INCH2M(len);
-
-    /* fill in the rest of the data */
-    if (rods_calc_int(coil,f,CALC_ALL) != 0)
-      return -1;
-
-  }
-#endif
 
   return 0;
 }
