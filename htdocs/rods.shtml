@@ -63,15 +63,6 @@ stripline synthesis,
       </LI>
     </OL>
  
- * Note that other common results make assumuptions about long wires that have varying degrees of
- * error at shorter lengths.
- *
- * Other common expressions but less accurate may be found in
- *
- *
- *
- *
-      
 
     <HR>
     <H2><A NAME="Comments">Comments</A></H2>
