@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 ##
 
-## Copyright (C) 2001, 2002, 2005, 2006, 2008, 2009 Dan McMahill
+## Copyright (C) 2001, 2002, 2005, 2006, 2008, 2009, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -50,6 +50,7 @@ TGIF_SRCS=	\
 		microstrip_model.obj \
 		rc.obj \
 		rl.obj \
+		rods_fig.obj \
 		splash.obj \
 		stripline.obj \
 		stripline_model.obj
