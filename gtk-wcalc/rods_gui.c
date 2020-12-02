@@ -267,6 +267,7 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   x += 4;
   y = 0;
 
+#ifdef notdef
   /* ---------------- Wire 2, diameter, length  -------------- */
   wc_table_add_entry_attach_units(table, gui, "Wire 2 Diameter (d2)", 
 				  &(gui->text_d2), gui->b->units_xy, &xy_ug, 
@@ -277,13 +278,14 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 				  &(gui->b->l2), &x, &y);
 
   /* ---------------- Wire 2, position  -------------- */
+  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)", 
+				  &(gui->text_offset), gui->b->units_xy, &xy_ug, 
+				  &(gui->b->offset), &x, &y);
+#endif
   wc_table_add_entry_attach_units(table, gui, "Radial Distance (distance)", 
 				  &(gui->text_distance), gui->b->units_xy, &xy_ug, 
 				  &(gui->b->distance), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)", 
-				  &(gui->text_offset), gui->b->units_xy, &xy_ug, 
-				  &(gui->b->offset), &x, &y);
 
   gtk_widget_show(table);
 
@@ -411,7 +413,7 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   gui->b->l1=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Wire #2 */
-
+#ifdef notdef
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d2) ); 
   gui->b->d2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
@@ -419,12 +421,18 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   gui->b->l2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Wire #2 position */
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_offset) ); 
+  gui->b->offset=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
+
+#else
+  gui->b->d2 = gui->b->d1;
+  gui->b->l2 = gui->b->l1;
+  gui->b->offset = 0.0;
+#endif
 
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_distance) ); 
   gui->b->distance=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_offset) ); 
-  gui->b->offset=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Resistivity */
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
@@ -474,6 +482,7 @@ static void update_display(rods_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->l1/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l1), str );
 
+#ifdef notdef
   /* ---------------- d2 -------------- */
   sprintf(str,WC_FMT_G,gui->b->d2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_d2), str );
@@ -482,13 +491,15 @@ static void update_display(rods_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->l2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l2), str );
 
-  /* ---------------- distance -------- */
-  sprintf(str,WC_FMT_G,gui->b->distance/wc_units_to_sf(gui->b->units_xy));
-  gtk_entry_set_text( GTK_ENTRY(gui->text_distance), str );
-  
   /* ---------------- offset --------- */
   sprintf(str,WC_FMT_G,gui->b->offset/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_offset), str );
+ 
+#endif
+ 
+  /* ---------------- distance -------- */
+  sprintf(str,WC_FMT_G,gui->b->distance/wc_units_to_sf(gui->b->units_xy));
+  gtk_entry_set_text( GTK_ENTRY(gui->text_distance), str );
   
   /* ---------------- rho -------------- */
   sprintf(str,WC_FMT_G,gui->b->rho/wc_units_to_sf(gui->b->units_rho));
@@ -534,11 +545,13 @@ static void tooltip_init(rods_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_d1, _("Diameter of wire #1"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_l1, _("Length of wire #1"), NULL);
 
+#ifdef notdef
   gtk_tooltips_set_tip(tips, gui->text_d2, _("Diameter of wire #2"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_l2, _("Length of wire #2"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_offset, _("Offset position of wire #2 in the axial direction"), NULL);
+#endif
 
   gtk_tooltips_set_tip(tips, gui->text_distance, _("Offset position of wire #2 in the radial direction"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_offset, _("Offset position of wire #2 in the axial direction"), NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_rho, _("Bulk resistivity of wires"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
@@ -575,10 +588,9 @@ static GList * dump_values(Wcalc *wcalc)
     
     list = wc_print_add_double("Diameter of wire #1 (d1)", b->d1, b->units_xy, list);
     list = wc_print_add_double("Length of wire #1 (l1)", b->l1, b->units_xy, list);
-    
+   
     list = wc_print_add_double("Diameter of wire #2 (d2)", b->d2, b->units_xy, list);
     list = wc_print_add_double("Length of wire #2 (l2)", b->l2, b->units_xy, list);
-    
 
     list = wc_print_add_double("Wire #2 position in the radial direction (distance)", b->distance, b->units_xy, list);
     list = wc_print_add_double("Wire #2 position in the axial direction (offset)", b->offset, b->units_xy, list);
