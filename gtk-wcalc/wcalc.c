@@ -263,13 +263,6 @@ static void global_model_init()
   global_model_new = g_list_append(global_model_new, (gpointer) air_coil_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_AIR_COIL);
 
-  /* ************************  Bars ******************** */
-  global_model_names = g_list_append(global_model_names,
-				     "Parallel Rectangular Bars");
-  global_model_menus = g_list_append(global_model_menus,"/File/New/_Bars");
-  global_model_new = g_list_append(global_model_new, (gpointer) bars_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, FILE_BARS);
-
   /* ************************  Coax ******************** */
   global_model_names = g_list_append(global_model_names,
 				     "Coaxial Transmission Line");
@@ -318,6 +311,20 @@ static void global_model_init()
   global_model_defaults = g_list_append(global_model_defaults, 
 					FILE_MICROSTRIP);
 
+  /* ************************  Rods ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Parallel Circular Wires");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_Rods");
+  global_model_new = g_list_append(global_model_new, (gpointer) rods_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_RODS);
+
+  /* ************************  Bars ******************** */
+  global_model_names = g_list_append(global_model_names,
+				     "Parallel Rectangular Bars");
+  global_model_menus = g_list_append(global_model_menus,"/File/New/_Bars");
+  global_model_new = g_list_append(global_model_new, (gpointer) bars_gui_new);
+  global_model_defaults = g_list_append(global_model_defaults, FILE_BARS);
+
   /* ************************  Parallel RC ******************** */
   global_model_names = g_list_append(global_model_names,
 				     "Series/Parallel RC");
@@ -333,13 +340,6 @@ static void global_model_init()
   global_model_new = g_list_append(global_model_new, (gpointer) parallel_rl_gui_new);
   global_model_defaults = g_list_append(global_model_defaults, FILE_PARALLEL_RL);
 
-
-  /* ************************  Rods ******************** */
-  global_model_names = g_list_append(global_model_names,
-				     "Parallel Circular Wires");
-  global_model_menus = g_list_append(global_model_menus,"/File/New/_Rods");
-  global_model_new = g_list_append(global_model_new, (gpointer) rods_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, FILE_RODS);
 
   /* ************************ Stripline ******************** */
   global_model_names = g_list_append(global_model_names,"Stripline");
