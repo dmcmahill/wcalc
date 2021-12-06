@@ -338,6 +338,11 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   wc_table_add_label_no_units(table, gui, "k", 
 				  &(gui->label_k), &x, &y);
 
+  /* Column #2 */
+  x += 4;
+  y = 0;
+
+
   wc_table_add_label_new_units(table, gui, "R1", 
 			       &(gui->label_R1), gui->b->units_R, &ug_R, 
 			       &(gui->b->R1), &x, &y);
