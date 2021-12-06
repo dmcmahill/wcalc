@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2007, 2008, 2009, 2020 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2007, 2008, 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -47,7 +47,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"Wcalc is copyright (C) 1999-2020 Dan McMahill."
+"Wcalc is copyright (C) 1999-2021 Dan McMahill."
 
 
 /*
