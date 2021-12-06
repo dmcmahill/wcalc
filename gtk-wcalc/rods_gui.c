@@ -197,6 +197,13 @@ void rods_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
  * Private Functions
  */
 
+static void sync_l2_to_l1(GtkWidget *widget, gpointer data)
+{
+  rods_gui *gui;
+
+  gui = WC_RODS_GUI(data);
+  gtk_entry_set_text( GTK_ENTRY(gui->text_l2), gtk_entry_get_text( GTK_ENTRY(gui->text_l1) ) ); 
+}
 
 static void values_init(rods_gui *gui, GtkWidget *parent)
 {
@@ -267,7 +274,6 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   x += 4;
   y = 0;
 
-#ifdef notdef
   /* ---------------- Wire 2, diameter, length  -------------- */
   wc_table_add_entry_attach_units(table, gui, "Wire 2 Diameter (d2)", 
 				  &(gui->text_d2), gui->b->units_xy, &xy_ug, 
@@ -276,16 +282,21 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   wc_table_add_entry_attach_units(table, gui, "Wire 2 Length (l2)",
 				  &(gui->text_l2), gui->b->units_xy, &xy_ug, 
 				  &(gui->b->l2), &x, &y);
+  /* don't support l2 != l1 yet */
+  gtk_widget_set_sensitive (gui->text_l2, FALSE);
+  gtk_signal_connect (GTK_OBJECT (gui->text_l1), "changed",
+		      GTK_SIGNAL_FUNC (sync_l2_to_l1), (gpointer) gui);
 
   /* ---------------- Wire 2, position  -------------- */
-  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)", 
-				  &(gui->text_offset), gui->b->units_xy, &xy_ug, 
-				  &(gui->b->offset), &x, &y);
-#endif
   wc_table_add_entry_attach_units(table, gui, "Radial Distance (distance)", 
 				  &(gui->text_distance), gui->b->units_xy, &xy_ug, 
 				  &(gui->b->distance), &x, &y);
 
+  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)", 
+				  &(gui->text_offset), gui->b->units_xy, &xy_ug, 
+				  &(gui->b->offset), &x, &y);
+  /* don't support offset != 0 yet */
+  gtk_widget_set_sensitive (gui->text_offset, FALSE);
 
   gtk_widget_show(table);
 
@@ -545,13 +556,11 @@ static void tooltip_init(rods_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_d1, _("Diameter of wire #1"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_l1, _("Length of wire #1"), NULL);
 
-#ifdef notdef
   gtk_tooltips_set_tip(tips, gui->text_d2, _("Diameter of wire #2"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l2, _("Length of wire #2"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_offset, _("Offset position of wire #2 in the axial direction"), NULL);
-#endif
+  gtk_tooltips_set_tip(tips, gui->text_l2, _("Length of wire #2\nConstrained to be the same as wire #1 in this release."), NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_distance, _("Offset position of wire #2 in the radial direction"), NULL);
+  gtk_tooltips_set_tip(tips, gui->text_offset, _("Offset position of wire #2 in the axial direction.\nNot supported yet."), NULL);
 
   gtk_tooltips_set_tip(tips, gui->text_rho, _("Bulk resistivity of wires"), NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
@@ -580,7 +589,7 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     figure_rods_fig_init();
-  }  {
+  } else {
     // FIXME -- free the old list first!!!!
     list = NULL;
     list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0], 
