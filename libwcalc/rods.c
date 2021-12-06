@@ -94,6 +94,9 @@ static double Lself(double l, double R, double freq, double rho)
   double L, omega, k, deltaL;
   double Lhf;
   double mu0, depth_c, fc, a;
+#ifdef DEBUG_CALC
+  double skin_depth;
+#endif
 
   /*
    * Rosa (9) for reference.  The 1e-7 factor is to
@@ -144,6 +147,10 @@ static double Lself(double l, double R, double freq, double rho)
   mu0 = 4*M_PI*1.0e-7;
   depth_c = R;
   fc = rho / (M_PI*mu0*depth_c*depth_c);
+#ifdef DEBUG_CALC
+  skin_depth = sqrt(rho / (M_PI*freq*mu0) );
+  printf("%s freq = %g MHz, fc = %g MHz, rho = %g, skin_depth = %g mm, Ldc = %g nH, Lhf = %g nH\n", __FUNCTION__, freq/1e6, fc/1e6, rho, skin_depth*1e3, L*1e9, Lhf*1e9);
+#endif
 
   /*
    * pick something like Ldc*(1 - factor) + factor*Lhf where factor goes from 0 to 1
