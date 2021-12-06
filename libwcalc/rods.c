@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2020 Dan McMahill
+ * Copyright (C) 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG_CALC */  /* debug the rods_calc() function */
@@ -45,7 +45,7 @@
  *
  *
  *  The two circular cross section rods have their major axes parallel to each
- *  other and running along the Z-axis. 
+ *  other and running along the Z-axis.
  *
  *  Rod #1:
  *     diameter             = d1
@@ -60,7 +60,7 @@
  *
  * NOTE:  Currently this only supports d1=d2, l1=l2, and offset=0.  I.e. the two wires
  * are identical and occupy the same z-axis range.
- * 
+ *
  * Primary reference:
  *
  * H. A. Aebischer and B. Aebischer, "Improved Formulae for the Inductance of Straight Wires",
@@ -89,10 +89,11 @@
  *
  * L = self inductance [Henries]
  */
-static double Lself(double l, double R)
+static double Lself(double l, double R, double freq, double rho)
 {
   double L, omega, k, deltaL;
-
+  double Lhf;
+  double mu0, depth_c, fc, a;
 
   /*
    * Rosa (9) for reference.  The 1e-7 factor is to
@@ -116,7 +117,7 @@ static double Lself(double l, double R)
   L = 2e-7*(l*log(sqrt(l*l + R*R) + l) - l*(log(R) - 0.25) - sqrt(l*l + R*R) + 0.905415*R);
 
   /* High frequency inductance, Aebischer (35) */
-  /* Lhf = 2e-7*(l*log(sqrt(l*l + 2*R*R) + l) - l*log(R) - sqrt(l*l + 2*R*R) + (4.0/M_PI)*R); */
+  Lhf = 2e-7*(l*log(sqrt(l*l + 2*R*R) + l) - l*log(R) - sqrt(l*l + 2*R*R) + (4.0/M_PI)*R);
 
   /* Aebischer (49) */
   omega = sqrt(l*l + R*R);
@@ -129,6 +130,28 @@ static double Lself(double l, double R)
 
   /* with this correction, the error is less than about 0.018% for length/radius >= 2 */
   L = L + deltaL;
+
+  /*
+   * This is a bit of a hack but at least we have the right values in the limits.
+   * Basically this will try to use L for low frequency, Lhf for high frequency and
+   * have a transition frequency between the two regions as the frequency where the
+   * radius is equal to the skin depth.
+   * skin_depth = sqrt(2/(omega*mu*sigma))
+   * The skin depth is equal to the radius at
+   * radius**2 = 2/(2*pi*freq*mu*sigma) = rho/(pi*freq*mu)
+   * freq = rho / (pi*mu*radius**2)
+   */
+  mu0 = 4*M_PI*1.0e-7;
+  depth_c = R;
+  fc = rho / (M_PI*mu0*depth_c*depth_c);
+
+  /*
+   * pick something like Ldc*(1 - factor) + factor*Lhf where factor goes from 0 to 1
+   * as frequency goes from DC to >> fc.  The exponent as well as fc could be adjusted
+   * if I ever gain access to some numeric results that can be used for a curve fit.
+   */
+  a = pow(freq/fc, 2.0);
+  L = L / (1.0 + a) + Lhf * a / (1.0 + a);
 
   return L;
 }
@@ -143,9 +166,9 @@ static double Lself(double l, double R)
  * R = wire radius
  *
  */
-static double Lmutual(double l, double d, double R)
+static double Lmutual(double R1, double l1, double R2, double l2, double d)
 {
-  double M, w, deltaM;
+  double amd, amsd, gmd, l, M, w, deltaM;
 
   /*
    * Rosa (12)
@@ -157,14 +180,42 @@ static double Lmutual(double l, double d, double R)
    * Mrosa = 2e-7*(l*log( (l + sqrt(l*l + d*d)) / d) - sqrt(l*l + d*d) + d);
    */
 
-  /* Aebischer (63) */
-  w = sqrt(l*l + d*d + R*R);
+  /*
+   * Aebisher gives AMSDd^2 = d^2 + R^2 in (58).  For disks of different radii,
+   * this can be modified to AMSDd^2 = d^2 + 0.5*R1^2 + 0.5*R2^2
+   *
+   * Then in (59) an approximate expression for AMDd is given
+   *   AMDd ~ d + (R^2 / (4*d))
+   * This can be extended to disks of two different radii with
+   *   AMDd ~ d + (R1^2 / (8*d)) + (R2^2 / (8*d))
+   * Numerical checking of the modified epxression shows essentially the same accuracy as
+   * in the R1 = R2 case.
+   */
+
+  amd = d + (R1*R1)/(8.0*d) + (R2*R2)/(8.0*d);
+  amsd = sqrt(d*d + 0.5*R1*R1 + 0.5*R2*R2);
+  gmd = d;
+
+  l = l1;
+
+  /* Aebischer (33) */
+  M = 2e-7*(l*log(sqrt(l*l + amsd*amsd) + l) - l*log(gmd) - sqrt(l*l + amsd*amsd) + amd);
 
   /* Aebischer (63) */
-  M = 2e-7*(l*log(w + l) - l*log(d) - w + d + R*R/(4.0*d));
+  /* w = sqrt(l*l + d*d + R*R); */
+  /*
+   * This term, w, is sqrt(l*l + amsd*amsd)
+   * so with unequal diameters, we have
+   */
+  w = sqrt(l*l + d*d + 0.5*(R1*R1 + R2*R2));
 
   /* Aebischer (62) */
-  deltaM = 2e-7*sqrt(d*d + R*R) * (sqrt(d*d + R*R) - d - R*R/(4.0*d)) * ((w - l) / (w*(w + l)));
+  /* M = 2e-7*(l*log(w + l) - l*log(d) - w + d + R*R/(4.0*d)); */
+
+  /* Aebischer (64) */
+  /* deltaM = 2e-7*sqrt(d*d + R*R) * (sqrt(d*d + R*R) - d - R*R/(4.0*d)) * ((w - l) / (w*(w + l))); */
+
+  deltaM = 0.0;
 
   M = M + deltaM;
 
@@ -181,8 +232,9 @@ int rods_calc(rods *b, double freq)
 	alert(_("Frequency must be >= 0"));
 	return -1;
     }
+    b->freq = freq;
 
-    /* check that none of our individual bar dimensions are negative */
+    /* check that none of our individual rod dimensions are negative */
     if( b->d1 < 0 || b->d2 < 0 ) {
 	alert(_("The rod diameters, d1 and d2, must both be >= 0"));
 	return -1;
@@ -200,22 +252,26 @@ int rods_calc(rods *b, double freq)
     if( (r1 + r2) < b->distance) {
 	touching = 0;
     }
-    
+
     /* see if we have overlap in the direction parallel to the rods */
     if( (b->offset < -1*b->l2) || (b->offset > b->l1) ) {
 	touching = 0;
     }
-    
-    /* for the rods to touch, we have to have overlap in both dimensions */
+
+    /*
+     * for the rods to touch, we have to have overlap in both the radial direction
+     * and the axial direction.  If we didn't manage to set touching=0 in the above
+     * checks then we have this overlap in both directions.
+     */
 
     if(touching) {
 	alert(_("The rods are touching.  This is not allowed."));
 	return -1;
     }
 
-  b->L1 = Lself(b->l1, r1);
-  b->L2 = Lself(b->l2, r2);
-  b->M = Lmutual(b->l1, b->distance, r1);
+  b->L1 = Lself(b->l1, r1, b->freq, b->rho);
+  b->L2 = Lself(b->l2, r2, b->freq, b->rho);
+  b->M = Lmutual(r1, b->l1, r2, b->l2, b->distance);
   b->k = b->M / sqrt(b->L1 * b->L2);
 
   b->R1 = b->rho*b->l1/(M_PI*r1*r1);
@@ -226,7 +282,7 @@ int rods_calc(rods *b, double freq)
   printf("%s Input values:\n", __FUNCTION__);
   printf("%s ----------------------\n", __FUNCTION__);
 
-  
+
   printf("%s  Rod #1 dimensions:\n", __FUNCTION__);
   printf("%s  d1   = %g\n", __FUNCTION__, b->d1);
   printf("%s  l1   = %g\n", __FUNCTION__, b->l1);
@@ -236,7 +292,7 @@ int rods_calc(rods *b, double freq)
   printf("%s  d2   = %g\n", __FUNCTION__, b->d2);
   printf("%s  l2   = %g\n", __FUNCTION__, b->l2);
 
-  
+
   printf("%s  ----------------------\n", __FUNCTION__);
   printf("%s  Bar #2 radial distance and axial offset:\n", __FUNCTION__);
   printf("%s  distance = %g\n", __FUNCTION__, b->distance);
@@ -263,7 +319,7 @@ int rods_calc(rods *b, double freq)
 }
 
 /*
- * 
+ *
  */
 
 int rods_syn(rods *b, double f, int flag)
