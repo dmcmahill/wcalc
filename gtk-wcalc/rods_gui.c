@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Dan McMahill
+ * Copyright (C) 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -429,10 +429,10 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   gui->b->l1=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Wire #2 */
-#ifdef notdef
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d2) ); 
   gui->b->d2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
+#ifdef notdef
   vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l2) ); 
   gui->b->l2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
@@ -441,7 +441,6 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   gui->b->offset=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
 #else
-  gui->b->d2 = gui->b->d1;
   gui->b->l2 = gui->b->l1;
   gui->b->offset = 0.0;
 #endif
@@ -498,7 +497,6 @@ static void update_display(rods_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->l1/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l1), str );
 
-#ifdef notdef
   /* ---------------- d2 -------------- */
   sprintf(str,WC_FMT_G,gui->b->d2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_d2), str );
@@ -510,8 +508,6 @@ static void update_display(rods_gui *gui)
   /* ---------------- offset --------- */
   sprintf(str,WC_FMT_G,gui->b->offset/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_offset), str );
- 
-#endif
  
   /* ---------------- distance -------- */
   sprintf(str,WC_FMT_G,gui->b->distance/wc_units_to_sf(gui->b->units_xy));
