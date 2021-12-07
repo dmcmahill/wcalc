@@ -590,31 +590,31 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     figure_rods_fig_init();
-  } else {
-    // FIXME -- free the old list first!!!!
-    list = NULL;
-    list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0], 
-			      figure_rods_fig_height[0], list);
-    
-    list = wc_print_add_double("Diameter of wire #1 (d1)", b->d1, b->units_xy, list);
-    list = wc_print_add_double("Length of wire #1 (l1)", b->l1, b->units_xy, list);
-   
-    list = wc_print_add_double("Diameter of wire #2 (d2)", b->d2, b->units_xy, list);
-    list = wc_print_add_double("Length of wire #2 (l2)", b->l2, b->units_xy, list);
-
-    list = wc_print_add_double("Wire #2 position in the radial direction (distance)", b->distance, b->units_xy, list);
-    list = wc_print_add_double("Wire #2 position in the axial direction (offset)", b->offset, b->units_xy, list);
-    
-    list = wc_print_add_double("Wire #1 Self Inductance (L1)", b->L1, b->units_L, list);
-    list = wc_print_add_double("Wire #2 Self Inductance (L2)", b->L2, b->units_L, list);
-    list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
-    list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
-
-    list = wc_print_add_double("Wire #1 DC Resistance (R1)", b->R1, b->units_R, list);
-    list = wc_print_add_double("Wire #2 DC Resistance (R2)", b->R2, b->units_R, list);
-
-    list = wc_print_add_double("Wire Resistivity (rho)", b->rho, b->units_rho, list);
   }
+  // FIXME -- free the old list first!!!!
+  list = NULL;
+  list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0], 
+                            figure_rods_fig_height[0], list);
+    
+  list = wc_print_add_double("Diameter of wire #1 (d1)", b->d1, b->units_xy, list);
+  list = wc_print_add_double("Length of wire #1 (l1)", b->l1, b->units_xy, list);
+  
+  list = wc_print_add_double("Diameter of wire #2 (d2)", b->d2, b->units_xy, list);
+  list = wc_print_add_double("Length of wire #2 (l2)", b->l2, b->units_xy, list);
+  
+  list = wc_print_add_double("Wire #2 position in the radial direction (distance)", b->distance, b->units_xy, list);
+  list = wc_print_add_double("Wire #2 position in the axial direction (offset)", b->offset, b->units_xy, list);
+    
+  list = wc_print_add_double("Wire #1 Self Inductance (L1)", b->L1, b->units_L, list);
+  list = wc_print_add_double("Wire #2 Self Inductance (L2)", b->L2, b->units_L, list);
+  list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
+  list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
+
+  list = wc_print_add_double("Wire #1 DC Resistance (R1)", b->R1, b->units_R, list);
+  list = wc_print_add_double("Wire #2 DC Resistance (R2)", b->R2, b->units_R, list);
+
+  list = wc_print_add_double("Wire Resistivity (rho)", b->rho, b->units_rho, list);
+
 #endif
 
   return list;
