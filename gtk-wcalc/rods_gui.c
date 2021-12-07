@@ -2,20 +2,20 @@
  * Copyright (C) 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -162,9 +162,9 @@ void rods_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   outputs_vbox = gtk_vbox_new (FALSE, 1);
   picture_vbox = gtk_vbox_new (FALSE, 1);
 
-  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5); 
+  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5);
 
   gtk_box_pack_start (GTK_BOX (main_vbox), values_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), outputs_vbox, FALSE, TRUE, 0);
@@ -185,7 +185,7 @@ void rods_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
-  
+
 
   /* run the analysis once since we've changed input units */
   wc_units_menu_init( wcalc );
@@ -202,7 +202,7 @@ static void sync_l2_to_l1(GtkWidget *widget, gpointer data)
   rods_gui *gui;
 
   gui = WC_RODS_GUI(data);
-  gtk_entry_set_text( GTK_ENTRY(gui->text_l2), gtk_entry_get_text( GTK_ENTRY(gui->text_l1) ) ); 
+  gtk_entry_set_text( GTK_ENTRY(gui->text_l2), gtk_entry_get_text( GTK_ENTRY(gui->text_l1) ) );
 }
 
 static void values_init(rods_gui *gui, GtkWidget *parent)
@@ -231,26 +231,26 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   /* Setup the values_vbox contents */
   table = gtk_table_new (8, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
-  
+
 
   /* ---------------- Wire 1, diameter, length  -------------- */
-  wc_table_add_entry_new_units(table, gui, "Wire 1 Diameter (d1)", 
-			       &(gui->text_d1), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_new_units(table, gui, "Wire 1 Diameter (d1)",
+			       &(gui->text_d1), gui->b->units_xy, &xy_ug,
 			       &(gui->b->d1), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Wire 1 Length (l1)", 
-				  &(gui->text_l1), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Wire 1 Length (l1)",
+				  &(gui->text_l1), gui->b->units_xy, &xy_ug,
 				  &(gui->b->l1), &x, &y);
 
   y++;
   /* ---------------- Resistivity -------------- */
-  wc_table_add_entry_new_units(table, gui, "Resistivity", 
-			       &(gui->text_rho), gui->b->units_rho, &rho_ug, 
+  wc_table_add_entry_new_units(table, gui, "Resistivity",
+			       &(gui->text_rho), gui->b->units_rho, &rho_ug,
 			       &(gui->b->rho), &x, &y);
 
   /* ---------------- Frequency -------------- */
-  wc_table_add_entry_new_units(table, gui, "Frequency", 
-			       &(gui->text_freq), gui->b->units_freq, &freq_ug, 
+  wc_table_add_entry_new_units(table, gui, "Frequency",
+			       &(gui->text_freq), gui->b->units_freq, &freq_ug,
 			       &(gui->b->freq), &x, &y);
 
 
@@ -263,7 +263,7 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
 		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Calculate electrical characteristics "
 		       "from physical parameters"),
 		       NULL);
@@ -275,12 +275,12 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   y = 0;
 
   /* ---------------- Wire 2, diameter, length  -------------- */
-  wc_table_add_entry_attach_units(table, gui, "Wire 2 Diameter (d2)", 
-				  &(gui->text_d2), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Wire 2 Diameter (d2)",
+				  &(gui->text_d2), gui->b->units_xy, &xy_ug,
 				  &(gui->b->d2), &x, &y);
 
   wc_table_add_entry_attach_units(table, gui, "Wire 2 Length (l2)",
-				  &(gui->text_l2), gui->b->units_xy, &xy_ug, 
+				  &(gui->text_l2), gui->b->units_xy, &xy_ug,
 				  &(gui->b->l2), &x, &y);
   /* don't support l2 != l1 yet */
   gtk_widget_set_sensitive (gui->text_l2, FALSE);
@@ -288,12 +288,12 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 		      GTK_SIGNAL_FUNC (sync_l2_to_l1), (gpointer) gui);
 
   /* ---------------- Wire 2, position  -------------- */
-  wc_table_add_entry_attach_units(table, gui, "Radial Distance (distance)", 
-				  &(gui->text_distance), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Radial Distance (distance)",
+				  &(gui->text_distance), gui->b->units_xy, &xy_ug,
 				  &(gui->b->distance), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)", 
-				  &(gui->text_offset), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Axial offset (offset)",
+				  &(gui->text_offset), gui->b->units_xy, &xy_ug,
 				  &(gui->b->offset), &x, &y);
   /* don't support offset != 0 yet */
   gtk_widget_set_sensitive (gui->text_offset, FALSE);
@@ -311,7 +311,7 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   int x=0;
   int y=0;
   wc_units_gui *ug_L = NULL, *ug_R;
-  
+
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), "Output Values" );
@@ -323,19 +323,19 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
 
 
-  wc_table_add_label_new_units(table, gui, "L1", 
-			       &(gui->label_L1), gui->b->units_L, &ug_L, 
+  wc_table_add_label_new_units(table, gui, "L1",
+			       &(gui->label_L1), gui->b->units_L, &ug_L,
 			       &(gui->b->L1), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "L2", 
-				  &(gui->label_L2), gui->b->units_L, &ug_L, 
+  wc_table_add_label_attach_units(table, gui, "L2",
+				  &(gui->label_L2), gui->b->units_L, &ug_L,
 				  &(gui->b->L2), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "M", 
-				  &(gui->label_M), gui->b->units_L, &ug_L, 
+  wc_table_add_label_attach_units(table, gui, "M",
+				  &(gui->label_M), gui->b->units_L, &ug_L,
 				  &(gui->b->M), &x, &y);
 
-  wc_table_add_label_no_units(table, gui, "k", 
+  wc_table_add_label_no_units(table, gui, "k",
 				  &(gui->label_k), &x, &y);
 
   /* Column #2 */
@@ -343,23 +343,23 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   y = 0;
 
 
-  wc_table_add_label_new_units(table, gui, "R1", 
-			       &(gui->label_R1), gui->b->units_R, &ug_R, 
+  wc_table_add_label_new_units(table, gui, "R1",
+			       &(gui->label_R1), gui->b->units_R, &ug_R,
 			       &(gui->b->R1), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "R2", 
-				  &(gui->label_R2), gui->b->units_R, &ug_R, 
+  wc_table_add_label_attach_units(table, gui, "R2",
+				  &(gui->label_R2), gui->b->units_R, &ug_R,
 				  &(gui->b->R2), &x, &y);
   /* spacer */
 
   text = gtk_label_new( "                " );
-  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gtk_widget_show(table);
-  
+
 }
 
 
@@ -371,7 +371,7 @@ static void picture_init(rods_gui *gui, GtkWidget *window,GtkWidget *parent)
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  GtkStyle *style;    
+  GtkStyle *style;
   GtkWidget *frame;
 
   frame = gtk_frame_new(NULL);
@@ -390,22 +390,22 @@ static void picture_init(rods_gui *gui, GtkWidget *window,GtkWidget *parent)
 
   /* now for the pixmap from gdk */
   style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
 					 (gchar **) rods_fig);
-					
-  
+
+
   /* a pixmap widget to contain the pixmap */
   pixmapwid = gtk_pixmap_new( pixmap , mask);
   gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
   gtk_widget_show( pixmapwid );
-    
+
 
   WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
   gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
   gtk_widget_show (WC_WCALC(gui)->text_status);
-  
+
 
 }
 
@@ -422,22 +422,22 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   int rslt=0;
 
   /* Wire #1 */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d1) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d1) );
   gui->b->d1=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l1) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l1) );
   gui->b->l1=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Wire #2 */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d2) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d2) );
   gui->b->d2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
 #ifdef notdef
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l2) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l2) );
   gui->b->l2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Wire #2 position */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_offset) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_offset) );
   gui->b->offset=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
 #else
@@ -445,18 +445,18 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
   gui->b->offset = 0.0;
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_distance) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_distance) );
   gui->b->distance=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
 
   /* Resistivity */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) );
   gui->b->rho=atof(vstr)*wc_units_to_sf(gui->b->units_rho);
-  
+
   /* Frequency */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) );
   gui->b->freq=atof(vstr)*wc_units_to_sf(gui->b->units_freq);
-  
+
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
       rslt = rods_calc(gui->b, gui->b->freq);
@@ -464,13 +464,13 @@ static void calculate( rods_gui *gui, GtkWidget *w, gpointer data )
       g_print(_("error in rods callback.  data=\"%s\""),(char *)data);
       exit(1);
   }
-  
+
 #ifdef DEBUG
   g_print(_("rods_gui.c:calculate():  finished calculation\n"));
 #endif
-  
+
   update_display(gui);
-  
+
   /*
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
@@ -500,7 +500,7 @@ static void update_display(rods_gui *gui)
   /* ---------------- d2 -------------- */
   sprintf(str,WC_FMT_G,gui->b->d2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_d2), str );
-  
+
   /* ---------------- l2 -------------- */
   sprintf(str,WC_FMT_G,gui->b->l2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l2), str );
@@ -508,11 +508,11 @@ static void update_display(rods_gui *gui)
   /* ---------------- offset --------- */
   sprintf(str,WC_FMT_G,gui->b->offset/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_offset), str );
- 
+
   /* ---------------- distance -------- */
   sprintf(str,WC_FMT_G,gui->b->distance/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_distance), str );
-  
+
   /* ---------------- rho -------------- */
   sprintf(str,WC_FMT_G,gui->b->rho/wc_units_to_sf(gui->b->units_rho));
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
@@ -593,18 +593,18 @@ static GList * dump_values(Wcalc *wcalc)
   }
   // FIXME -- free the old list first!!!!
   list = NULL;
-  list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0], 
+  list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0],
                             figure_rods_fig_height[0], list);
-    
+
   list = wc_print_add_double("Diameter of wire #1 (d1)", b->d1, b->units_xy, list);
   list = wc_print_add_double("Length of wire #1 (l1)", b->l1, b->units_xy, list);
-  
+
   list = wc_print_add_double("Diameter of wire #2 (d2)", b->d2, b->units_xy, list);
   list = wc_print_add_double("Length of wire #2 (l2)", b->l2, b->units_xy, list);
-  
+
   list = wc_print_add_double("Wire #2 position in the radial direction (distance)", b->distance, b->units_xy, list);
   list = wc_print_add_double("Wire #2 position in the axial direction (offset)", b->offset, b->units_xy, list);
-    
+
   list = wc_print_add_double("Wire #1 Self Inductance (L1)", b->L1, b->units_L, list);
   list = wc_print_add_double("Wire #2 Self Inductance (L2)", b->L2, b->units_L, list);
   list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
