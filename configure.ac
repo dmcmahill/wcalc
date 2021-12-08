@@ -809,82 +809,6 @@ AC_SUBST(CGI_STATIC)
 # ------------- done with --enable-cgi -------------------
 
 
-# ------------- enable/disable GTK+ frontend  -------------------
-
-AC_MSG_CHECKING([if gtk-wcalc should be built])
-
-wc_gtk1_wcalc_yesno=no
-
-# keep track of if we're building for gtk1 because that is the program default
-# or because the user explicitly asked for gtk1
-wc_gtk1_askedfor=no
-
-AC_ARG_ENABLE([gtk1],
-[  --enable-gtk1           Causes the GTK+ frontend to be built with gtk1 [default=no]],
-[
-if test "X$enable_gtk1" = "Xno" ; then
-	GTK1=no
-	wc_gtk1_wcalc_yesno=no
-else
-	GTK1=yes
-	wc_gtk1_wcalc_yesno=yes
-fi
-],
-[
-GTK1=no
-wc_gtk1_wcalc_yesno=no
-])
-
-wc_gtk2_wcalc_yesno=yes
-
-AC_ARG_ENABLE([gtk2],
-[  --enable-gtk2           Causes the GTK+ frontend to be built with gtk2 [default=yes]],
-[
-if test "X$enable_gtk2" = "Xno" ; then
-	GTK2=no
-	wc_gtk2_wcalc_yesno=no
-	wc_gtk2_askedfor=yes
-else
-	GTK2=yes
-	wc_gtk2_wcalc_yesno=yes
-fi
-],
-[
-GTK2=yes
-wc_gtk2_wcalc_yesno=yes
-])
-
-#
-# If the user has asked for gtk1 with --enable-gtk1 and not explicitly asked
-# for gtk2 with --enable-gtk2 (but got gtk2 enabled simply via the defaults)
-# then disable gtk2.  This way you can do --enable-gtk1 without needing 
-# --disable-gtk2
-#
-if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" -a "X$wc_gtk2_askedfor" = "Xno"; then
-	GTK2=no
-	wc_gtk2_wcalc_yesno=no
-fi
-
-if test "X$GTK1" = "Xyes" -a "X$GTK2" = "Xyes" ; then
-   AC_ERROR([You may not specify gtk1 and gtk2 at the same time])
-
-fi
-if test "X$GTK1" = "Xyes" -o "X$GTK2" = "Xyes" ; then
-   GTK_WCALC=gtk-wcalc
-   if test "X$GTK1" = "Xyes" ; then
-      AC_MSG_RESULT([yes, gtk1])
-   else
-      AC_MSG_RESULT([yes, gtk2])
-   fi
-else
-   GTK_WCALC=""
-   AC_MSG_RESULT([no])
-fi
-AC_SUBST(GTK_WCALC)
-
-
-# ------------- done with --enable-gtk -------------------
-
 # ------------- pathnames  -------------------
 
 # where to install the CGI programs
@@ -1287,98 +1211,27 @@ AM_GNU_GETTEXT
 
 # ------------- GTK -------------------
 dnl GTK checks
-GTK_CFLAGS=""
-GTK_LIBS=""
+#GTK_CFLAGS=""
+#GTK_LIBS=""
 
+AC_ARG_ENABLE([gtk],
+  [AS_HELP_STRING([--disable-gtk],
+    [disable support for the GTK+ GUI])],
+  [],
+  [enable_gtk=yes])
 
-GTK2_10=no
-if test "X$GTK2" = "Xyes" ; then
-   PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0, 
-			  GTK22="yes"
-			  GTK_VER=`$PKG_CONFIG --version gtk+-2.0`,
-			  GTK22="no")
-
-   if test "X$GTK22" = "Xno" ; then
-      AC_ERROR([Did not find gtk-2.2.0 or higher])
-   fi
-
-	# we now check for gtk-2.10 or newer since that is when gtk print
-	# showed up.  If we don't have gtk print then don't bother trying
-	# to compile in lots of cairo rendering of figures that we won't
-	# use anyway
-   PKG_CHECK_MODULES(GTK2_10, gtk+-2.0 >= 2.10.0, 
-			  GTK2_10="yes", GTK2_10="no")
-fi
-
-AM_CONDITIONAL(HAVE_GTK2_10, test x${GTK2_10} = xyes)
-
-if test "X$GTK1" = "Xyes" ; then
-	AC_PATH_PROG(GTK_CONFIG,gtk-config,none)
-	if test "$WIN32" = "yes"; then
-		dnl XXX this is a hack.  It needs to be detected...
-		GTK_VER=${GTK_VER:-1.3}
-		GLIB_VER=${GLIB_VER:-1.3}
-		GTK=${GTK:-c:/cygwin/usr/local/src/gtk+}
-		GLIB=${GLIB:-c:/cygwin/usr/local/src/glib}
-		AC_MSG_NOTICE([
-
--------------------------------------------------------------
-It sems that you have requested gtk1 but you are on
-a windows (cygwin/mingw) system.  You should really
-consider using gtk2 instead.  If, however, you insist
-on gtk1, you should probably set the following variables:
-
-GTK_VER   currently ${GTK_VER}
-GLIB_VER  currently ${GLIB_VER}
-GTK       currently ${GTK}
-GLIB      currently ${GLIB}
-
-Since these 4 settings are not checked with configure, 
-you will have to make sure they are correct for your system.
--------------------------------------------------------------
-
+AS_IF([test "x$enable_gtk" != xno], [
+   PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.24.0])
+   PKG_CHECK_MODULES([GLIB], [glib-2.0])
+   GTK_WCALC="gtk-wcalc"
+   wc_gtk_wcalc_yesno="yes"
+], [
+   GTK_WCALC=""
+   wc_gtk_wcalc_yesno="no"
 ])
-		GLIB_CFLAGS="-I${GLIB} -I${GLIB}/gmodule"
-		GTK_CFLAGS="$GLIB_CFLAGS -I${GTK}/gdk -I${GTK}"
-		GLIB_LIBS="-L${GLIB} -lglib-${GLIB_VER} \
-		   -L${GLIB}/gmodule -lgmodule-${GLIB_VER} \
-		   -L${GLIB}/gthread -lgthread-${GLIB_VER} \
-		   -L${GLIB}/gobject -lgobject-${GLIB_VER}"
-		GTK_LIBS="$GLIB_LIBS \
-		  -L${GTK}/gtk -lgtk-${GTK_VER} \
-		  -L${GTK}/gdk -lgdk-${GTK_VER}"
-	elif test "x$GTK_CONFIG" = "xnone"; then
-		AC_MSG_ERROR([You must have gtk installed on your system])
-	else
-		AC_MSG_CHECKING([if gtk1 is version 1.2 or later])
-		GTK_VER=`$GTK_CONFIG --version`
 
-		case $GTK_VER in
-		0.* )
-			AC_MSG_ERROR([you need at least version 1.2 of gtk1])
-			;;
-		1.1* )
-			AC_MSG_ERROR([you need at least version 1.2 of gtk1])
-			;;
-		2.* )
-			AC_MSG_ERROR([you need version 1.2.* of gtk1])
-			;;
-		* )
-			AC_MSG_RESULT([$GTK_VER])
-			AC_MSG_CHECKING([for gtk1 CFLAGS])
-			GTK_CFLAGS=`$GTK_CONFIG --cflags`
-			AC_MSG_RESULT([$GTK_CFLAGS])
-			AC_MSG_CHECKING([for gtk1 libs])
-			GTK_LIBS=`$GTK_CONFIG --libs`
-			AC_MSG_RESULT([$GTK_LIBS])
-			;;
-		esac	
-	fi
-fi
+AC_SUBST(GTK_WCALC)
 
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
-	
 
 # ------------- dmalloc -------------------
 dnl dmalloc checks
@@ -1497,8 +1350,7 @@ cgi path       = $CGIPATH
    libwcalc    $wc_libwcalc_yesno
    cgi-wcalc   $wc_cgi_wcalc_yesno
    static cgi? $wc_cgi_static_yesno
-   gtk1-wcalc  $wc_gtk1_wcalc_yesno
-   gtk2-wcalc  $wc_gtk2_wcalc_yesno
+   gtk-wcalc   $wc_gtk_wcalc_yesno
    mex-wcalc   $wc_mex_wcalc_yesno
    oct-wcalc   $wc_oct_wcalc_yesno
    sci-wcalc   $wc_sci_wcalc_yesno

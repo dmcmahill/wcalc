@@ -1,7 +1,8 @@
 ## -*- makefile -*-
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017, 2020 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017, 2020,
+## 2021 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -110,7 +111,7 @@ DEFS= -DLOCALEDIR="\"$(datadir)/locale\"" -DWCALC_RCDIR="\"$(pkgdatadir)\"" @DEF
 
 LIBS= @LIBINTL@ @LIBS@
 
-AM_CPPFLAGS = @GTK_CFLAGS@ -DVER=\"@VERSION@\" \
+AM_CPPFLAGS = @GTK_CFLAGS@ @GLIB_CFLAGS@ -DVER=\"@VERSION@\" \
 	-DWCALC_DATADIR=\"$(pkgdatadir)\" \
 	-I$(top_srcdir)/include @WCALC_CFLAGS@ -I$(top_srcdir)/intl \
 	-I$(top_srcdir) ${DMALLOC_CFLAGS}
@@ -125,7 +126,7 @@ wcalc_LDADD =
 wcalc_DEPENDENCIES = 
 endif
 
-wcalc_LDFLAGS = @GTK_LIBS@ @WCALC_LIBS@
+wcalc_LDFLAGS = @GTK_LIBS@ @GLIB_LIBS@ @WCALC_LIBS@
 
 all-local: runwcalc
 
