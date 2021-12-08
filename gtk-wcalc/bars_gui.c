@@ -3,20 +3,20 @@
  * 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -157,9 +157,9 @@ void bars_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   outputs_vbox = gtk_vbox_new (FALSE, 1);
   picture_vbox = gtk_vbox_new (FALSE, 1);
 
-  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5); 
+  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5);
 
   gtk_box_pack_start (GTK_BOX (main_vbox), values_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), outputs_vbox, FALSE, TRUE, 0);
@@ -180,7 +180,7 @@ void bars_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
-  
+
 
   /* run the analysis once since we've changed input units */
   wc_units_menu_init( wcalc );
@@ -219,25 +219,25 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
   /* Setup the values_vbox contents */
   table = gtk_table_new (8, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
-  
+
 
   /* ---------------- Bar 1, width, height, length  -------------- */
-  wc_table_add_entry_new_units(table, gui, "Bar 1 Width (a)", 
-			       &(gui->text_a), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_new_units(table, gui, "Bar 1 Width (a)",
+			       &(gui->text_a), gui->b->units_xy, &xy_ug,
 			       &(gui->b->a), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Bar 1 Thickness (b)", 
-				  &(gui->text_b), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Bar 1 Thickness (b)",
+				  &(gui->text_b), gui->b->units_xy, &xy_ug,
 				  &(gui->b->b), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Bar 1 Length (l1)", 
-				  &(gui->text_l1), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Bar 1 Length (l1)",
+				  &(gui->text_l1), gui->b->units_xy, &xy_ug,
 				  &(gui->b->l1), &x, &y);
 
   y++;
   /* ---------------- Frequency -------------- */
-  wc_table_add_entry_new_units(table, gui, "Frequency", 
-			       &(gui->text_freq), gui->b->units_freq, &freq_ug, 
+  wc_table_add_entry_new_units(table, gui, "Frequency",
+			       &(gui->text_freq), gui->b->units_freq, &freq_ug,
 			       &(gui->b->freq), &x, &y);
 
 
@@ -250,7 +250,7 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
 		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Calculate electrical characteristics "
 		       "from physical parameters"),
 		       NULL);
@@ -262,29 +262,29 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
   y = 0;
 
   /* ---------------- Bar 2, width, height, length  -------------- */
-  wc_table_add_entry_attach_units(table, gui, "Bar 2 Width (d)", 
-				  &(gui->text_d), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Bar 2 Width (d)",
+				  &(gui->text_d), gui->b->units_xy, &xy_ug,
 				  &(gui->b->d), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Bar 2 Thickness (c)", 
-				  &(gui->text_c), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Bar 2 Thickness (c)",
+				  &(gui->text_c), gui->b->units_xy, &xy_ug,
 				  &(gui->b->c), &x, &y);
 
   wc_table_add_entry_attach_units(table, gui, "Bar 2 Length (l2)",
-				  &(gui->text_l2), gui->b->units_xy, &xy_ug, 
+				  &(gui->text_l2), gui->b->units_xy, &xy_ug,
 				  &(gui->b->l2), &x, &y);
 
   /* ---------------- Bar 2, position  -------------- */
-  wc_table_add_entry_attach_units(table, gui, "X offset (E)", 
-				  &(gui->text_E), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "X offset (E)",
+				  &(gui->text_E), gui->b->units_xy, &xy_ug,
 				  &(gui->b->E), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Y offset (P)", 
-				  &(gui->text_P), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Y offset (P)",
+				  &(gui->text_P), gui->b->units_xy, &xy_ug,
 				  &(gui->b->P), &x, &y);
 
-  wc_table_add_entry_attach_units(table, gui, "Z offset (l3)", 
-				  &(gui->text_l3), gui->b->units_xy, &xy_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Z offset (l3)",
+				  &(gui->text_l3), gui->b->units_xy, &xy_ug,
 				  &(gui->b->l3), &x, &y);
 
   gtk_widget_show(table);
@@ -300,7 +300,7 @@ static void outputs_init(bars_gui *gui, GtkWidget *parent)
   int x=0;
   int y=0;
   wc_units_gui *ug = NULL;
-  
+
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), "Output Values" );
@@ -312,31 +312,31 @@ static void outputs_init(bars_gui *gui, GtkWidget *parent)
   gtk_container_add (GTK_CONTAINER (frame), table);
 
 
-  wc_table_add_label_new_units(table, gui, "L1", 
-			       &(gui->label_L1), gui->b->units_L, &ug, 
+  wc_table_add_label_new_units(table, gui, "L1",
+			       &(gui->label_L1), gui->b->units_L, &ug,
 			       &(gui->b->L1), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "L2", 
-				  &(gui->label_L2), gui->b->units_L, &ug, 
+  wc_table_add_label_attach_units(table, gui, "L2",
+				  &(gui->label_L2), gui->b->units_L, &ug,
 				  &(gui->b->L2), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "M", 
-				  &(gui->label_M), gui->b->units_L, &ug, 
+  wc_table_add_label_attach_units(table, gui, "M",
+				  &(gui->label_M), gui->b->units_L, &ug,
 				  &(gui->b->M), &x, &y);
 
-  wc_table_add_label_no_units(table, gui, "k", 
+  wc_table_add_label_no_units(table, gui, "k",
 				  &(gui->label_k), &x, &y);
 
   /* spacer */
 
   text = gtk_label_new( "                " );
-  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
   gtk_widget_show(table);
-  
+
 }
 
 
@@ -348,7 +348,7 @@ static void picture_init(bars_gui *gui, GtkWidget *window,GtkWidget *parent)
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  GtkStyle *style;    
+  GtkStyle *style;
   GtkWidget *frame;
 
   frame = gtk_frame_new(NULL);
@@ -367,22 +367,22 @@ static void picture_init(bars_gui *gui, GtkWidget *window,GtkWidget *parent)
 
   /* now for the pixmap from gdk */
   style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
 					 (gchar **) bars_fig);
-					
-  
+
+
   /* a pixmap widget to contain the pixmap */
   pixmapwid = gtk_pixmap_new( pixmap , mask);
   gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
   gtk_widget_show( pixmapwid );
-    
+
 
   WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
   gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
   gtk_widget_show (WC_WCALC(gui)->text_status);
-  
+
 
 }
 
@@ -399,41 +399,41 @@ static void calculate( bars_gui *gui, GtkWidget *w, gpointer data )
   int rslt=0;
 
   /* Bar #1 */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_a) );
   gui->b->a=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_b) );
   gui->b->b=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l1) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l1) );
   gui->b->l1=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Bar #2 */
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_d) );
   gui->b->d=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_c) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_c) );
   gui->b->c=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l2) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l2) );
   gui->b->l2=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Bar #2 position */
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_E) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_E) );
   gui->b->E=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_P) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_P) );
   gui->b->P=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l3) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l3) );
   gui->b->l3=atof(vstr)*wc_units_to_sf(gui->b->units_xy);
 
   /* Frequency */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) );
   gui->b->freq=atof(vstr)*wc_units_to_sf(gui->b->units_freq);
-  
+
   /* XXX should use an enum and switch... */
   if( strcmp(data,"analyze")==0) {
       rslt = bars_calc(gui->b, gui->b->freq);
@@ -441,13 +441,13 @@ static void calculate( bars_gui *gui, GtkWidget *w, gpointer data )
       g_print(_("error in bars callback.  data=\"%s\""),(char *)data);
       exit(1);
   }
-  
+
 #ifdef DEBUG
   g_print(_("bars_gui.c:calculate():  finished calculation\n"));
 #endif
-  
+
   update_display(gui);
-  
+
   /*
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
@@ -482,11 +482,11 @@ static void update_display(bars_gui *gui)
   /* ---------------- d -------------- */
   sprintf(str,WC_FMT_G,gui->b->d/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_d), str );
-  
+
   /* ---------------- c -------------- */
   sprintf(str,WC_FMT_G,gui->b->c/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_c), str );
-  
+
   /* ---------------- l2 -------------- */
   sprintf(str,WC_FMT_G,gui->b->l2/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l2), str );
@@ -495,11 +495,11 @@ static void update_display(bars_gui *gui)
   /* ---------------- E -------------- */
   sprintf(str,WC_FMT_G,gui->b->E/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_E), str );
-  
+
   /* ---------------- P -------------- */
   sprintf(str,WC_FMT_G,gui->b->P/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_P), str );
-  
+
   /* ---------------- l3 -------------- */
   sprintf(str,WC_FMT_G,gui->b->l3/wc_units_to_sf(gui->b->units_xy));
   gtk_entry_set_text( GTK_ENTRY(gui->text_l3), str );
@@ -576,22 +576,22 @@ static GList * dump_values(Wcalc *wcalc)
   }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    list = wc_print_add_cairo(figure_bars_fig_render[0], figure_bars_fig_width[0], 
+    list = wc_print_add_cairo(figure_bars_fig_render[0], figure_bars_fig_width[0],
 			      figure_bars_fig_height[0], list);
-    
+
     list = wc_print_add_double("Width of bar #1 (a)", b->a, b->units_xy, list);
     list = wc_print_add_double("Thickness of bar #1 (b)", b->b, b->units_xy, list);
     list = wc_print_add_double("Length of bar #1 (l1)", b->l1, b->units_xy, list);
-    
+
     list = wc_print_add_double("Width of bar #2 (d)", b->d, b->units_xy, list);
     list = wc_print_add_double("Thickness of bar #2 (c)", b->c, b->units_xy, list);
     list = wc_print_add_double("Length of bar #2 (l2)", b->l2, b->units_xy, list);
-    
+
 
     list = wc_print_add_double("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
     list = wc_print_add_double("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
     list = wc_print_add_double("Bar #2 position in the length direction (l3)", b->l3, b->units_xy, list);
-    
+
     list = wc_print_add_double("Bar #1 Self Inductance (L1)", b->L1, b->units_L, list);
     list = wc_print_add_double("Bar #2 Self Inductance (L2)", b->L2, b->units_L, list);
     list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);

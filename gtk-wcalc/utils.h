@@ -3,20 +3,20 @@
  * Copyright (c) 2009 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #ifndef __UTILS_H__
@@ -36,7 +36,7 @@
 /*
  * We need to be able to do the following:
  *
- * add an entry with 
+ * add an entry with
  *    - no units
  *    - a new units menu
  *    - attach to an existing units menu
@@ -83,9 +83,9 @@ typedef  enum {
 
 
 
-void wc_table_add(GtkWidget *table, void * gui, const char *text, 
+void wc_table_add(GtkWidget *table, void * gui, const char *text,
 		  GtkWidget **label, wc_units *units,
-		  wc_units_gui **ug, double *mks_val, 
+		  wc_units_gui **ug, double *mks_val,
 		  int *x, int *y, wc_table_row_type type);
 
 #endif /* __UTILS_H__ */

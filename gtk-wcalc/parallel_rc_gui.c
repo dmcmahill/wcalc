@@ -2,20 +2,20 @@
  * Copyright (C) 2009, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -153,8 +153,8 @@ void parallel_rc_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   values_vbox = gtk_vbox_new (FALSE, 1);
   picture_vbox = gtk_vbox_new (FALSE, 1);
 
-  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5); 
+  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5);
 
   gtk_box_pack_start (GTK_BOX (main_vbox), values_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), picture_vbox, FALSE, TRUE, 0);
@@ -172,7 +172,7 @@ void parallel_rc_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   wcalc->init_done=1;
 
   update_display(gui);
-  
+
 
   /* run the analysis once since we've changed input units */
   wc_units_menu_init( wcalc );
@@ -242,18 +242,18 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
   /* Setup the values_vbox contents */
   table = gtk_table_new (8, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
-  
+
 
   /* ---------------- Series C, R, Q -------------- */
-  wc_table_add_entry_new_units(table, gui, "Series capacitance (Cs)", 
-			       &(gui->text_Cs), gui->b->units_C, &C_ug, 
+  wc_table_add_entry_new_units(table, gui, "Series capacitance (Cs)",
+			       &(gui->text_Cs), gui->b->units_C, &C_ug,
 			       &(gui->b->Cs), &x, &y);
 
-  wc_table_add_entry_new_units(table, gui, "Series resistance (Rs)", 
-			       &(gui->text_Rs), gui->b->units_Rs, &R_ug, 
+  wc_table_add_entry_new_units(table, gui, "Series resistance (Rs)",
+			       &(gui->text_Rs), gui->b->units_Rs, &R_ug,
 			       &(gui->b->Rs), &x, &y);
 
-  wc_table_add_entry_no_units(table, gui, "Series quality factor (Qs)", 
+  wc_table_add_entry_no_units(table, gui, "Series quality factor (Qs)",
 			      &(gui->text_Qs),
 			      &(gui->b->Qs), &x, &y);
 
@@ -268,15 +268,15 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
 		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Calculate equivalent parallel circuit "
 		       "from given series circuit"),
 		       NULL);
   y++;
 
   /* ---------------- Frequency -------------- */
-  wc_table_add_entry_new_units(table, gui, "Frequency", 
-			       &(gui->text_freq), gui->b->units_freq, &freq_ug, 
+  wc_table_add_entry_new_units(table, gui, "Frequency",
+			       &(gui->text_freq), gui->b->units_freq, &freq_ug,
 			       &(gui->b->freq), &x, &y);
 
 
@@ -286,16 +286,16 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
   x += 4;
   y = 0;
 
-  wc_table_add_entry_attach_units(table, gui, "Parallel capacitance (Cp)", 
-				  &(gui->text_Cp), gui->b->units_C, &C_ug, 
+  wc_table_add_entry_attach_units(table, gui, "Parallel capacitance (Cp)",
+				  &(gui->text_Cp), gui->b->units_C, &C_ug,
 				  &(gui->b->Cp), &x, &y);
 
 
-  wc_table_add_entry_new_units(table, gui, "Parallel resistance (Rp)", 
-			       &(gui->text_Rp), gui->b->units_Rp, &R_ug, 
+  wc_table_add_entry_new_units(table, gui, "Parallel resistance (Rp)",
+			       &(gui->text_Rp), gui->b->units_Rp, &R_ug,
 			       &(gui->b->Rp), &x, &y);
 
-  wc_table_add_entry_no_units(table, gui, "Parallel quality factor (Qs)", 
+  wc_table_add_entry_no_units(table, gui, "Parallel quality factor (Qs)",
 			      &(gui->text_Qp),
 			      &(gui->b->Qp), &x, &y);
 
@@ -309,7 +309,7 @@ static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 		      gui);
   gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
 		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Calculate equivalent series circuit "
 		       "from given parallel circuit"),
 		       NULL);
@@ -367,7 +367,7 @@ static void picture_init(parallel_rc_gui *gui, GtkWidget *window,GtkWidget *pare
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  GtkStyle *style;    
+  GtkStyle *style;
   GtkWidget *frame;
 
   frame = gtk_frame_new(NULL);
@@ -386,22 +386,22 @@ static void picture_init(parallel_rc_gui *gui, GtkWidget *window,GtkWidget *pare
 
   /* now for the pixmap from gdk */
   style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
 					 (gchar **) rc);
-					
-  
+
+
   /* a pixmap widget to contain the pixmap */
   pixmapwid = gtk_pixmap_new( pixmap , mask);
   gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
   gtk_widget_show( pixmapwid );
-    
+
 
   WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
   gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
   gtk_widget_show (WC_WCALC(gui)->text_status);
-  
+
 
 }
 
@@ -427,30 +427,30 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
   int rslt=0;
 
   /* Series */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Cs) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Cs) );
   gui->b->Cs=atof(vstr)*wc_units_to_sf(gui->b->units_C);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rs) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rs) );
   gui->b->Rs=atof(vstr)*wc_units_to_sf(gui->b->units_Rs);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qs) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qs) );
   gui->b->Qs=atof(vstr);
 
 
   /* Series */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Cp) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Cp) );
   gui->b->Cp=atof(vstr)*wc_units_to_sf(gui->b->units_C);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rp) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Rp) );
   gui->b->Rp=atof(vstr)*wc_units_to_sf(gui->b->units_Rp);
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qp) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_Qp) );
   gui->b->Qp=atof(vstr);
 
   /* Frequency */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) );
   gui->b->freq=atof(vstr)*wc_units_to_sf(gui->b->units_freq);
-  
+
 #ifdef DEBUG
   g_print("parallel_rc_gui.c:calculate(): --------------- Series/Parallel RC Network -----------\n");
   g_print("parallel_rc_gui.c:calculate(): Cs = %g %s\n",
@@ -468,11 +468,11 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
 	  gui->b->Qp);
 
   g_print("parallel_rc_gui.c:calculate(): Frequency = %g %s\n",
-	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name); 
+	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name);
 
   g_print("parallel_rc_gui.c:calculate(): use_Q = %d\n", gui->b->use_Q);
   g_print("parallel_rc_gui.c:calculate(): series_to_parallel = %d\n", gui->b->series_to_parallel);
-  
+
   g_print("parallel_rc_gui.c:calculate(): data = \"%s\"\n", (char *) data);
 #endif
 
@@ -483,7 +483,7 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
       g_print(_("error in parallel_rc callback.  data=\"%s\""),(char *)data);
       exit(1);
   }
-  
+
 #ifdef DEBUG
   g_print("parallel_rc_gui.c:calculate():  finished calculation, got %d\n", rslt);
   g_print("parallel_rc_gui.c:calculate(): Cs = %g %s\n",
@@ -501,17 +501,17 @@ static void calculate( parallel_rc_gui *gui, GtkWidget *w, gpointer data )
 	  gui->b->Qp);
 
   g_print("parallel_rc_gui.c:calculate(): Frequency = %g %s\n",
-	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name); 
+	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name);
 
   g_print("parallel_rc_gui.c:calculate(): use_Q = %d\n", gui->b->use_Q);
   g_print("parallel_rc_gui.c:calculate(): series_to_parallel = %d\n", gui->b->series_to_parallel);
-  
+
   g_print("parallel_rc_gui.c:calculate(): data = \"%s\"\n", (char *) data);
   g_print("parallel_rc_gui.c:calculate(): -------------- ---------------------- ----------\n");
 #endif
-  
+
   update_display(gui);
-  
+
   /*
    * if the calculation completed with no errors, then clear the
    * "values out of sync" field
@@ -555,7 +555,7 @@ static void update_display(parallel_rc_gui *gui)
   sprintf(str,WC_FMT_G,gui->b->freq/wc_units_to_sf(gui->b->units_freq));
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
 
-  
+
 }
 
 
@@ -603,17 +603,17 @@ static GList * dump_values(Wcalc *wcalc)
   }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    list = wc_print_add_cairo(figure_rc_render[0], figure_rc_width[0], 
+    list = wc_print_add_cairo(figure_rc_render[0], figure_rc_width[0],
 			      figure_rc_height[0], list);
-    
+
     list = wc_print_add_double("Series capacitance (Cs)", b->Cs, b->units_C, list);
     list = wc_print_add_double("Series resistance (Rs)", b->Rs, b->units_Rs, list);
     list = wc_print_add_double("Series quality factor (Qs)", b->Qs, NULL, list);
-    
+
     list = wc_print_add_double("Parallel capacitance (Cp)", b->Cp, b->units_C, list);
     list = wc_print_add_double("Parallel resistance (Rp)", b->Rp, b->units_Rp, list);
     list = wc_print_add_double("Parallel quality factor (Qp)", b->Qp, NULL, list);
-    
+
     list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
 
   }

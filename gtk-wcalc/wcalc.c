@@ -2,20 +2,20 @@
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -71,7 +71,7 @@ static gint wcalc_delete_event( GtkWidget *widget,
 				GdkEvent *event,
 				gpointer data );
 
-static gint wcalc_destroy_event (GtkWidget *widget, 
+static gint wcalc_destroy_event (GtkWidget *widget,
 				 GdkEvent *event,
 				 gpointer data);
 
@@ -108,7 +108,7 @@ static gint wcalc_delete_event( GtkWidget *widget,
   return FALSE;
 }
 
-static gint wcalc_destroy_event (GtkWidget *widget, 
+static gint wcalc_destroy_event (GtkWidget *widget,
 				 GdkEvent *event,
 				 gpointer data)
 {
@@ -120,7 +120,7 @@ static gint wcalc_destroy_event (GtkWidget *widget,
 #endif
 
   gtk_main_quit ();
-  
+
   /* we have indeed handled this event */
   return TRUE;
 }
@@ -129,7 +129,7 @@ static void wcalc_destroy_sig( GtkWidget *widget,
 			       gpointer   data )
 {
   GtkWidget *window;
-  
+
 #ifdef DEBUG
   g_print("wcalc_destroy_sig():  widget = %p\n",widget);
   g_print("                      data   = %p\n",(void *) data);
@@ -137,7 +137,7 @@ static void wcalc_destroy_sig( GtkWidget *widget,
 
   window = ( (Wcalc *) data)->window;
   window_list = g_slist_remove(window_list,window);
-  
+
   /* if this was the last window, then quit */
   if (g_slist_length(window_list) == 0)
     gtk_main_quit ();
@@ -156,8 +156,8 @@ int main( int   argc,
 
   /* on windows we use a registry entry to find WCALC_RCDIR */
 #ifdef WIN32
-  
-  /* 
+
+  /*
    * code for reading from the windows registry was suggested by
    * Goran Rakic on the gtk-app-devel-list mailing list.  Many
    * thanks for the help!  Note, I haven't quite gotten this going.
@@ -171,9 +171,9 @@ int main( int   argc,
   HKEY hkResult;
   DWORD DataType;
   DWORD DataCount = MAX_PATH;
-  
+
   g_print("g_win32_get_package_installation_directory gave \"%s\"\n", rcdir);
-  
+
   /* Open registry key */
   if (RegOpenKeyEx( HKEY_LOCAL_MACHINE,
                     "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\wcalc.exe",
@@ -197,22 +197,22 @@ int main( int   argc,
 
   tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
 #define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE "-" VERSION
-  rcdir = (char *) malloc(strlen(tmps) + 
+  rcdir = (char *) malloc(strlen(tmps) +
 			  strlen(REST_OF_PATH) +
 			  1);
   sprintf(rcdir, "%s%s", tmps, REST_OF_PATH);
   free(tmps);
 #undef REST_OF_PATH
 
-#endif  
+#endif
 
 #else /* !WIN32 */
   rcdir = getenv("WCALC_RCDIR");
   if ( rcdir == NULL )
     rcdir = WCALC_RCDIR;
-  
+
 #endif
-  
+
   setlocale (LC_ALL, "");
   /* This lets you set a directory for the locale stuff for pre-install testing */
   if( (localedir=getenv("WCALC_LOCALEDIR")) == NULL ) {
@@ -284,7 +284,7 @@ static void global_model_init()
 				     "/File/New/Co_upled Microstrip");
   global_model_new = g_list_append(global_model_new,
 				   (gpointer) coupled_microstrip_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, 
+  global_model_defaults = g_list_append(global_model_defaults,
 					FILE_COUPLED_MICROSTRIP);
 
   /* ************************ Coupled Stripline ******************** */
@@ -294,21 +294,21 @@ static void global_model_init()
 				     "/File/New/Coupled S_tripline");
   global_model_new = g_list_append(global_model_new,
 				   (gpointer) coupled_stripline_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, 
+  global_model_defaults = g_list_append(global_model_defaults,
 					FILE_COUPLED_STRIPLINE);
 
   /* ************************ IC Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,"I.C. Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_I.C. Microstrip");
   global_model_new = g_list_append(global_model_new, (gpointer) ic_microstrip_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, 
+  global_model_defaults = g_list_append(global_model_defaults,
 					FILE_IC_MICROSTRIP);
 
   /* ************************ Microstrip ******************** */
   global_model_names = g_list_append(global_model_names,"Microstrip");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Microstrip");
   global_model_new = g_list_append(global_model_new, (gpointer) microstrip_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, 
+  global_model_defaults = g_list_append(global_model_defaults,
 					FILE_MICROSTRIP);
 
   /* ************************  Rods ******************** */
@@ -345,7 +345,7 @@ static void global_model_init()
   global_model_names = g_list_append(global_model_names,"Stripline");
   global_model_menus = g_list_append(global_model_menus,"/File/New/_Stripline");
   global_model_new = g_list_append(global_model_new, (gpointer) stripline_gui_new);
-  global_model_defaults = g_list_append(global_model_defaults, 
+  global_model_defaults = g_list_append(global_model_defaults,
 					FILE_STRIPLINE);
 }
 
@@ -369,10 +369,10 @@ void wcalc_setup (gpointer data,
   char tmps[FILENAME_MAX];
 
   void * (* new_cmd)(void);  /* the function which will create a new
-			      * *_gui 
-			      */ 
+			      * *_gui
+			      */
   char * model_name; /* the name of the model we will analyze */
-  
+
   char *fname=NULL;
   FILE *fp=NULL;
   int type;
@@ -380,9 +380,9 @@ void wcalc_setup (gpointer data,
 #ifdef DEBUG
   g_print("wcalc.c:wcalc_setup(): action = %d\n", action);
 #endif
-  
+
   if (action != -1) {
-    /* 
+    /*
      * This is a "new" command so lets look around for a default
      * settings file for this type of model.
      */
@@ -394,7 +394,7 @@ void wcalc_setup (gpointer data,
     g_print("wcalc.c:wcalc_setup(): looking for defaults file \"%s.wc\"\n",
 	    model_name);
 #endif
-    
+
     /* check current directory */
     sprintf(tmps, "%s.wc", model_name);
 #ifdef DEBUG
@@ -404,11 +404,11 @@ void wcalc_setup (gpointer data,
 #ifdef DEBUG
       g_print("Loading defaults from \"%s\"\n", tmps);
 #endif
-    } 
+    }
 
     if( (fp == NULL) && (homedir != NULL) ) {
       /* check $HOME/.wcalc/ */
-      sprintf(tmps, "%s%s.wcalc%s%s.wc", 
+      sprintf(tmps, "%s%s.wcalc%s%s.wc",
 	      homedir, G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S, model_name);
 #ifdef DEBUG
       g_print("\ttrying \"%s\"\n", tmps);
@@ -418,7 +418,7 @@ void wcalc_setup (gpointer data,
 	g_print("Loading defaults from \"%s\"\n", tmps);
 #endif
       }
-    } 
+    }
 
     if( (fp == NULL) && (rcdir != NULL) ) {
       /* check $WCALC_RCDIR/ */
@@ -443,13 +443,13 @@ void wcalc_setup (gpointer data,
   } /* action != -1 */
 
 
-  /* 
+  /*
    * in the above code for action != -1, we searched for a file
    * containing defaults for the model in question.  If we found such
    * a file, we opened it so fp != NULL
    */
   if ( (action == -1) || (fp != NULL) ) {
-    /* 
+    /*
      * this is a file->open command or a file->new command
      * We can tell because for file->open data is the name of the file
      * for file->open.
@@ -484,7 +484,7 @@ void wcalc_setup (gpointer data,
 	return ;
       }
     }
-    
+
     /* Now it is just a normal file open */
     /* extract the _new function for our selected model */
 #ifdef DEBUG
@@ -509,15 +509,15 @@ void wcalc_setup (gpointer data,
     case MODEL_BARS:
       new_cmd = (void *) bars_gui_new;
       break;
-      
+
     case MODEL_COAX:
       new_cmd = (void *) coax_gui_new;
       break;
-      
+
     case MODEL_COPLANAR:
       new_cmd = (void *) coplanar_gui_new;
       break;
-      
+
     case MODEL_COUPLED_MICROSTRIP:
       new_cmd = (void *) coupled_microstrip_gui_new;
       break;
@@ -537,15 +537,15 @@ void wcalc_setup (gpointer data,
     case MODEL_PARALLEL_RC:
       new_cmd = (void *) parallel_rc_gui_new;
       break;
-      
+
     case MODEL_PARALLEL_RL:
       new_cmd = (void *) parallel_rl_gui_new;
       break;
-      
+
     case MODEL_RODS:
       new_cmd = (void *) rods_gui_new;
       break;
-      
+
     case MODEL_STRIPLINE:
       new_cmd = (void *) stripline_gui_new;
       break;
@@ -568,7 +568,7 @@ void wcalc_setup (gpointer data,
 
     /* extract the name of this model */
     model_name = (char *) g_list_nth_data(global_model_names, action);
-    
+
     /* extract the _new function for our selected model */
     new_cmd = (void *) g_list_nth_data(global_model_new, action);
 
@@ -577,7 +577,7 @@ void wcalc_setup (gpointer data,
     g_print("                new_cmd = %p\n", new_cmd);
 #endif
   }
-  
+
   if(new_cmd == NULL){
     g_print("wcalc.c:wcalc_setup():  Sorry, I don't know how to create \"%s\"\n",
 	    model_name);
@@ -599,7 +599,7 @@ void wcalc_setup (gpointer data,
   window_list = g_slist_append(window_list, wcalc->window);
 
 #ifdef DEBUG
-  g_print("wcalc_setup():  Created new wcalc = %p and set wcalc->window = %p\n", 
+  g_print("wcalc_setup():  Created new wcalc = %p and set wcalc->window = %p\n",
 	  wcalc, wcalc->window);
 #endif
   if ( fname != NULL ) {
@@ -618,7 +618,7 @@ void wcalc_setup (gpointer data,
   /*
    * XXX need a better way to set this size.  We want to pick the
    * right size, but then not have it change while running.
-   * Unfortunately, we don't know the correct size at compile time. 
+   * Unfortunately, we don't know the correct size at compile time.
    */
   /* gtk_widget_set_usize (GTK_WIDGET(wcalc->window), 600, 550); */
 
@@ -628,30 +628,30 @@ void wcalc_setup (gpointer data,
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);
   icon_bitmap = gdk_bitmap_create_from_data(wcalc->window->window,
-					    icon_bitmap_bits, 
-					    icon_bitmap_width, 
+					    icon_bitmap_bits,
+					    icon_bitmap_width,
 					    icon_bitmap_height);
   gdk_window_set_icon(wcalc->window->window, NULL, icon_bitmap, NULL);
 
 
 
-  /* 
-   * Setup main window callbacks 
+  /*
+   * Setup main window callbacks
    */
 
   /* Window Manager "delete" */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
 		      GTK_SIGNAL_FUNC (wcalc_delete_event),
 		      wcalc);
-  
+
   /* Window Manager "destroy" */
   gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy_event",
 		      GTK_SIGNAL_FUNC (wcalc_destroy_event),
 		      wcalc);
-  
+
   /* File->Close */
-  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy", 
-		      GTK_SIGNAL_FUNC (wcalc_destroy_sig), 
+  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy",
+		      GTK_SIGNAL_FUNC (wcalc_destroy_sig),
 		      wcalc);
 
   /*
@@ -669,7 +669,7 @@ void wcalc_setup (gpointer data,
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, TRUE, 0);
   gtk_widget_show (menubar);
 
-  
+
   /* call the MD initialization */
   wcalc->init(wcalc, main_vbox, fp);
 }
@@ -687,7 +687,7 @@ Wcalc *Wcalc_new(void)
     }
 
   Wcalc_init(new);
-  
+
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);
 #endif
@@ -738,7 +738,7 @@ void wcalc_set_title(Wcalc * wcalc)
 {
   size_t len;
   glong flen, i;
-  
+
   /*
    * If we know the file name (i.e. it is not a new window which
    * should be called Untitled)
@@ -757,7 +757,7 @@ void wcalc_set_title(Wcalc * wcalc)
     while(i > 0 && wcalc->file_filename[i] != '.') i--;
     if(i == 0) i = flen;
     wcalc->file_basename = g_utf8_substring(wcalc->file_filename, 0, i);
-    
+
 #ifdef DEBUG
     g_print("%s:  wcalc->file_fullname = %s\n", __FUNCTION__, wcalc->file_fullname);
     g_print("%s:  wcalc->file_dirname = %s\n", __FUNCTION__, wcalc->file_dirname);
@@ -774,10 +774,10 @@ void wcalc_set_title(Wcalc * wcalc)
     g_print("%s:  wcalc->file_basename = %s\n", __FUNCTION__, wcalc->file_basename);
 #endif
   }
-    
+
   if (wcalc->window_title != NULL)
     free(wcalc->window_title);
-  
+
   len  = strlen("Wcalc: ");
   len += strlen(wcalc->model_name);
   len += strlen(": ");
@@ -789,16 +789,16 @@ void wcalc_set_title(Wcalc * wcalc)
   sprintf(wcalc->window_title,"Wcalc: %s: %s ",
 	  wcalc->model_name,
 	  wcalc->file_basename);
-  /* 
+  /*
    * pointer to the last character of the window title which is either
    * ' ' or '*' if no save is needed or a save is needed.
    */
   wcalc->save_needed = wcalc->window_title + strlen(wcalc->window_title) - 1;
-  
+
 #ifdef DEBUG
     g_print("%s:  wcalc->window_title = \"%s\" (%p) %ld len\n",
 	    __FUNCTION__, wcalc->window_title, wcalc->window_title, (long) strlen(wcalc->window_title));
-    g_print("%s:  wcalc->file_saveneeded = \"%c\" (%p)\n", 
+    g_print("%s:  wcalc->file_saveneeded = \"%c\" (%p)\n",
 	    __FUNCTION__, *(wcalc->save_needed), wcalc->save_needed);
 #endif
   gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
@@ -814,7 +814,7 @@ void vals_changedCB(GtkWidget *widget, gpointer data )
   if(gui->init_done)
     gtk_label_set_text(GTK_LABEL(gui->text_status), _("Values Out Of Sync"));
 
-  gui->values_in_sync = FALSE; 
+  gui->values_in_sync = FALSE;
 }
 
 

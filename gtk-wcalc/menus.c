@@ -3,20 +3,20 @@
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -69,7 +69,7 @@ static gchar *wc_menu_translate(const gchar *path, gpointer data);
            <path>             -> path of a radio item to link against
            "<Separator>"      -> create a separator
            "<Branch>"         -> create an item to hold sub items (optional)
-           "<LastBranch>"     -> create a right justified branch 
+           "<LastBranch>"     -> create a right justified branch
 */
 
 static GtkItemFactoryEntry static_menu_items[] = {
@@ -98,22 +98,22 @@ static GtkItemFactoryEntry static_menu_items[] = {
   { N_("/_Help/About"),     NULL,          about_popup,      0, NULL },
   { N_("/_Help/Copyright"), NULL,          copyright_popup,  0, NULL },
   { N_("/_Help/_Material Properties"), NULL,NULL,            0, "<Branch>" },
-  { N_("/_Help/_Material Properties/_Permeabilities"), 
+  { N_("/_Help/_Material Properties/_Permeabilities"),
                         NULL,          permeability_popup,0, NULL },
-  { N_("/_Help/_Material Properties/_Permitivities"), 
+  { N_("/_Help/_Material Properties/_Permitivities"),
                         NULL,          permitivity_popup,0, NULL },
-  { N_("/_Help/_Material Properties/_Resistivities"), 
+  { N_("/_Help/_Material Properties/_Resistivities"),
                         NULL,          resistivity_popup,0, NULL },
-  { N_("/_Help/_Material Properties/_Units"), 
+  { N_("/_Help/_Material Properties/_Units"),
                         NULL,          units_popup,0, NULL },
-  { N_("/_Help/_Material Properties/_Wire Sizes"), 
+  { N_("/_Help/_Material Properties/_Wire Sizes"),
                         NULL,          AWG_popup,0, NULL },
 };
 
 static gchar *wc_menu_translate(const gchar *path, gpointer data)
 {
   gchar *str;
-  
+
   str = _(path);
   return str;
 }
@@ -131,14 +131,14 @@ void get_main_menu( Wcalc *wcalc,
 
   if (!menu_items){
     nmodels = g_list_length(global_model_names);
-    menu_items = (GtkItemFactoryEntry *) 
+    menu_items = (GtkItemFactoryEntry *)
       g_malloc((nmenu_items+nmodels)*sizeof(GtkItemFactoryEntry));
-    
+
     /* copy over the static menu items */
     for (i=0; i<nmenu_items; i++){
       menu_items[i] = static_menu_items[i];
     }
-    
+
     /* add in the models */
     for (i=0; i<nmodels; i++){
       menu_items[nmenu_items+i] = (GtkItemFactoryEntry)
@@ -158,7 +158,7 @@ void get_main_menu( Wcalc *wcalc,
               the accelerator table while generating menus.
   */
 
-  item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", 
+  item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>",
 				       accel_group);
 
   gtk_item_factory_set_translate_func(item_factory,
@@ -181,7 +181,7 @@ void get_main_menu( Wcalc *wcalc,
 #endif
 
   if (menubar){
-    /* Finally, return the actual menu bar created by the item factory. */ 
+    /* Finally, return the actual menu bar created by the item factory. */
     *menubar = gtk_item_factory_get_widget (item_factory, "<main>");
   }
 }

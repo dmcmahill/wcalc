@@ -3,20 +3,20 @@
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2006 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #ifndef __WCALC_H__
@@ -82,7 +82,7 @@ print_config *global_print_config;
 
 typedef struct WCALC
 {
-  /* 
+  /*
    * Flag that says all initialization is done.  This is used to mask the effects
    * of certain callbacks which get triggered during initialization.
    */
@@ -100,7 +100,7 @@ typedef struct WCALC
 
 
   /*
-   * Required public methods 
+   * Required public methods
    */
   void (*init) (struct WCALC *, GtkWidget *, FILE *);
   void (*print_ps) (struct WCALC *, FILE *);
@@ -132,21 +132,21 @@ typedef struct WCALC
 
   /* name of the model.  "Microstrip Analysis/Synthesis" for example */
   char *model_name;
-  
+
   /* version of the model.  "v1.0" for example */
   char *model_version;
 
   /*
-   * name of window (typically "Wcalc:model_name:filename") 
+   * name of window (typically "Wcalc:model_name:filename")
    * Note, this will be set to have room for one extra character which
    * is either \0 or '*'.  The '*' indicates that a file->save is
-   * needed. 
+   * needed.
    */
   char *window_title;
 
   /*
    * pointer to the last character in model_name so we can easily set
-   * to ' ' or '*' 
+   * to ' ' or '*'
    */
   char *save_needed;
 
@@ -162,11 +162,11 @@ typedef struct WCALC
    * part of the GUI initialization.
    */
   GList *units_menu_list;
-  
+
   /* a text widget used for calculation status (values in/out of sync) */
   GtkWidget *text_status;
 
-  /*  
+  /*
   model_new;
   gui_init;
   gui_print;

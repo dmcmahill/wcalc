@@ -2,20 +2,20 @@
  * Copyright (C) 1999, 2000, 2001, 2002, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -109,7 +109,7 @@ static void file_open_ok_sel (GtkWidget *w, gpointer data)
   GtkFileSelection *fs;
 
   fs = data;
-  
+
   ret = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
   fname=strdup(ret);
 
@@ -147,8 +147,8 @@ static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
 }
 
 
-/* 
- * the "Save As..." dialog box 
+/*
+ * the "Save As..." dialog box
  *
  * The data will point to the  (Wcalc *wcalc)
  */
@@ -160,9 +160,9 @@ void wcalc_save_as(gpointer data,
   GtkWidget *filew;
   Wcalc *wcalc;
   static gpointer cbdata[2];
-  
+
   wcalc = WC_WCALC(data);
-     
+
   /* Create a new file selection widget */
   filew = gtk_file_selection_new ("Save As...");
 
@@ -180,29 +180,29 @@ void wcalc_save_as(gpointer data,
   /* Connect the ok_button to file_ok_sel function */
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
 		      "clicked",
-		      (GtkSignalFunc) file_ok_sel, 
+		      (GtkSignalFunc) file_ok_sel,
 		      cbdata );
-    
+
   /* Connect the cancel_button to destroy the widget */
   gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked", 
+		     "clicked",
 		     (GtkSignalFunc) file_cancel_sel,
 		     filew);
-    
-  /* 
+
+  /*
    * choose default filename.  XXX this should be extracted from
    * the wcalc->filename.
    */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew),
 				   "wcalc.wc");
-  
+
   gtk_widget_show(filew);
 }
 
 void wcalc_open(void)
 {
   GtkWidget *filew;
-     
+
   /* Create a new file selection widget */
   filew = gtk_file_selection_new ("Open");
 
@@ -216,18 +216,18 @@ void wcalc_open(void)
   /* Connect the ok_button to file_ok_sel function */
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
 		      "clicked", (GtkSignalFunc) file_open_ok_sel, filew );
-    
+
   /* Connect the cancel_button to destroy the widget */
   gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked", 
+		     "clicked",
 		     (GtkSignalFunc) file_cancel_sel,
 		     GTK_OBJECT (filew));
-    
+
   /* Lets set the filename, as if this were a save dialog, and we are giving
      a default filename */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew),
 				   "wcalc.wc");
-  
+
   gtk_widget_show(filew);
 
 }
@@ -249,7 +249,7 @@ void wcalc_save(gpointer data,
 
   /* open the file */
   if ( (fp = fopen(wcalc->file_fullname,"w")) == NULL){
-    g_print("files.c:wcalc_save():  could not open \"%s\"\n", 
+    g_print("files.c:wcalc_save():  could not open \"%s\"\n",
 	    wcalc->file_fullname);
     return;
   }

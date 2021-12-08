@@ -3,20 +3,20 @@
  * Copyright (C) 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -49,7 +49,7 @@
 #endif
 
 static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
-				       const wc_units_data *units, 
+				       const wc_units_data *units,
 				       int initial,
 				       gpointer gui,
 				       void (*callback)(GtkWidget *, gpointer));
@@ -140,7 +140,7 @@ void wc_units_menu_init2(void * item, void * data)
  * wc_units_menu_new()
  *
  */
-GtkWidget *wc_units_menu_new(wc_units *units, 
+GtkWidget *wc_units_menu_new(wc_units *units,
 			     Wcalc *gui,
 			     wc_units_gui **ug
 			     )
@@ -148,7 +148,7 @@ GtkWidget *wc_units_menu_new(wc_units *units,
   GtkWidget *hbox;
   GtkWidget *item;
   int i;
-  
+
 
   if ( ((*ug) = malloc(sizeof(wc_units_gui))) == NULL ) {
     fprintf(stderr,"wc_units_menu_new():  malloc() failed\n");
@@ -162,7 +162,7 @@ GtkWidget *wc_units_menu_new(wc_units *units,
 
   /* append to our list of units GUI's */
   gui->units_menu_list =  g_list_append(gui->units_menu_list, *ug);
-  
+
   /* create the container for the complete units menu */
   hbox = gtk_hbox_new(FALSE,0);
 #ifdef DEBUG
@@ -170,7 +170,7 @@ GtkWidget *wc_units_menu_new(wc_units *units,
   g_print("wc_units_menu_new():  units                    = %p\n", (*ug)->units);
   g_print("wc_units_menu_new():  created hbox             = %p\n", hbox);
 #endif
-  
+
   /* Create the numerator menus */
   if (units->nnum == 0) {
       item = gtk_label_new("1");
@@ -178,7 +178,7 @@ GtkWidget *wc_units_menu_new(wc_units *units,
   }
   else {
     for ( i = 0; i < units->nnum; i++) {
-      item = wc_units_submenu_new(gui, units->num[i], units->numi[i], (*ug), 
+      item = wc_units_submenu_new(gui, units->num[i], units->numi[i], (*ug),
 				  wc_units_menu_changed);
 
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
@@ -191,7 +191,7 @@ GtkWidget *wc_units_menu_new(wc_units *units,
       g_print("wc_units_menu_new():        numerator list     = %p\n",
 	      (*ug)->menu_num);
 #endif
-      
+
       if (i < (units->nnum - 1)) {
 	item = gtk_label_new("-");
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
@@ -202,9 +202,9 @@ GtkWidget *wc_units_menu_new(wc_units *units,
   if (units->nden > 0) {
       item = gtk_label_new("/");
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-      
+
       for (i=0; i<units->nden; i++) {
-	item = wc_units_submenu_new(gui, units->den[i], units->deni[i], (*ug), 
+	item = wc_units_submenu_new(gui, units->den[i], units->deni[i], (*ug),
 				    wc_units_menu_changed);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
@@ -218,11 +218,11 @@ GtkWidget *wc_units_menu_new(wc_units *units,
 	  item = gtk_label_new("-");
 	  gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 	}
-      }   
+      }
   }
 
   gtk_widget_show_all(hbox);
-  
+
   return hbox;
 }
 
@@ -245,15 +245,15 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
      g_list_nth_data(ug->menu_num,action); */
   menu_data = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)));
   which = menu_data->ind;
-  
+
 #ifdef DEBUG
     g_print("wc_units_menu_changed():  ug = %p\n", ug);
     g_print("wc_units_menu_changed():  ug->units = %p\n", ug->units);
 #endif
-  
+
   if ( (ind = g_list_index(ug->menu_num,menu_data->opt_menu)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed numerator[%d] units to %d\n", 
+    g_print("wc_units_menu_changed():  ug %p changed numerator[%d] units to %d\n",
 	    ug, ind,which);
     g_print("wc_units_menu_changed():  ug->units->numi[%d] = %d\n",
 	    ind, ug->units->numi[ind]);
@@ -262,7 +262,7 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   }
   else if ( (ind = g_list_index(ug->menu_den,menu_data->opt_menu)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed denominator[%d] units\n", 
+    g_print("wc_units_menu_changed():  ug %p changed denominator[%d] units\n",
 	    ug, ind);
 #endif
     ug->units->deni[ind] = which;
@@ -291,7 +291,7 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
 
   /*
    * Now update all the labels and text entries which may be tied to
-   * these units 
+   * these units
    */
 
   for (i=0; i<g_list_length(ug->update_list); i++) {
@@ -324,15 +324,15 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
       case LABEL:
 	gtk_label_set_text(GTK_LABEL(up_item->widget),str);
 	break ;
-	
+
       case ENTRY:
 	gtk_entry_set_text(GTK_ENTRY(up_item->widget),str);
       break ;
-      
+
       case UNITS_LABEL:
 	gtk_label_set_text(GTK_LABEL(up_item->widget),units_str);
       break ;
-      
+
       default:
 	fprintf(stderr,"wc_units_menu_changed():  invalid up_item->type = %d\n",
 		up_item->type);
@@ -364,7 +364,7 @@ static wc_units_menu_data *wc_units_menu_data_new(int ind)
 }
 
 static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
-				       const wc_units_data *units, 
+				       const wc_units_data *units,
 				       int initial,
 				       gpointer gui,
 				       void (*callback)(GtkWidget *, gpointer))
@@ -373,12 +373,12 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
   GtkWidget *menu;
   GtkWidget *item;
   wc_units_menu_data *data;
-  
+
   int i;
-  
+
   opt_menu = gtk_option_menu_new();
   menu = gtk_menu_new();
-  
+
 #ifdef DEBUG
   g_print("wc_units_submenu_new():  opt_menu = %p\n", opt_menu);
   g_print("wc_units_submenu_new():  menu     = %p\n", menu);
@@ -398,10 +398,10 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
      */
     gtk_signal_connect (GTK_OBJECT(item),
 			"activate",
-			GTK_SIGNAL_FUNC (wcalc_save_needed), 
+			GTK_SIGNAL_FUNC (wcalc_save_needed),
 			(gpointer) wcgui);
     gtk_signal_connect(GTK_OBJECT(item), "activate",
-		       GTK_SIGNAL_FUNC(callback), 
+		       GTK_SIGNAL_FUNC(callback),
 		       (gpointer) gui);
     gtk_signal_connect (GTK_OBJECT (item), "activate",
 			GTK_SIGNAL_FUNC (vals_changedCB), wcgui);
@@ -422,22 +422,22 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
 
   /* pick the default (initial) selection */
   gtk_option_menu_set_history(GTK_OPTION_MENU(opt_menu), initial);
-  
+
   gtk_widget_show_all(opt_menu);
-  
+
   return opt_menu;
 }
 
 /*
  * wc_units_attach()
- * 
- * This function attaches various gtk widgets to a 
+ *
+ * This function attaches various gtk widgets to a
  * wc_units_gui.  This lets the wc_units_gui know what actions may
  * need to be taken in its callbacks.  For example, you can attach a
  * label and specify that it will get updated to reflect a new choice
  * of units.  Ie, if you change a wc_units_gui unit from 'cm' to 'mm'
  * you can specify that several attached labels should be converted to
- * 'mm' and updated.  
+ * 'mm' and updated.
  *
  * The supported attachements are (see gtk-units.h for the most up to
  * date list):
@@ -460,7 +460,7 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
  * to set the units to "mil" instead of "cm".  With update=0, you can
  * make the change and the "4.7" stays.  With update=1, the 4.7 cm
  * will be converted to 4.7 mil.
- * 
+ *
  * The other arguments are:
  *
  * double *mks_val;
@@ -490,11 +490,11 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
  *    One of {LABEL, ENTRY, UNITS_LABEL, NONE}
  */
 
-void  wc_units_attach(wc_units_gui *ug, 
-				GtkWidget *widget, 
-				double *mks_val, 
+void  wc_units_attach(wc_units_gui *ug,
+				GtkWidget *widget,
+				double *mks_val,
 				double *sf,
-				char **units_str, 
+				char **units_str,
 				const char *fmt_string,
 				int update,
 				int type)
@@ -507,19 +507,19 @@ void  wc_units_attach(wc_units_gui *ug,
   case LABEL:
     g_print("LABEL");
     break ;
-    
+
   case ENTRY:
     g_print("ENTRY");
     break ;
-    
+
   case UNITS_LABEL:
     g_print("UNITS_LABEL");
     break ;
-    
+
   case NONE:
     g_print("NONE");
     break ;
-    
+
   default:
     g_print("unknown type (%d)",type);
   }
@@ -544,10 +544,10 @@ void  wc_units_attach(wc_units_gui *ug,
 
   /* add to the list in the wc_units_gui */
   ug->update_list = g_list_append(ug->update_list, item);
-  
+
 #ifdef DEBUG
   g_print("wc_units_attach():  Added %p to ug=%p, list=%p\n",item,ug,ug->update_list);
 #endif
-  
+
   return ;
 }
