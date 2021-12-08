@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -25,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 
 /* for stat(2) */
@@ -44,7 +44,7 @@
 
 static void file_ok_sel (GtkWidget *w, gpointer data[])
 {
-  const char *fname;
+  const gchar *fname;
   Wcalc *wcalc;
   GtkFileSelection *fs;
   struct stat sb;
@@ -80,11 +80,11 @@ static void file_ok_sel (GtkWidget *w, gpointer data[])
   }
 
   /* store the filename in the wcalc */
-  wcalc->file_name = strdup(fname);
+  wcalc->file_fullname = g_strdup(fname);
 
   /* actually do the save (model dependent) */
   if (wcalc->save != NULL){
-    wcalc->save(wcalc,fp,wcalc->file_name);
+    wcalc->save(wcalc, fp, wcalc->file_fullname);
   }
   else{
     g_print("files.c:file_ok_sel():  no ->save function available for"
@@ -242,21 +242,21 @@ void wcalc_save(gpointer data,
   wcalc = WC_WCALC(data);
 
   /* if there is no filename stored, then do "Save As..." instead */
-  if(wcalc->file_name == NULL){
-    wcalc_save_as(data,action,widget);
+  if(wcalc->file_fullname == NULL){
+    wcalc_save_as(data, action, widget);
     return;
   }
 
   /* open the file */
-  if ( (fp = fopen(wcalc->file_name,"w")) == NULL){
+  if ( (fp = fopen(wcalc->file_fullname,"w")) == NULL){
     g_print("files.c:wcalc_save():  could not open \"%s\"\n", 
-	    wcalc->file_name);
+	    wcalc->file_fullname);
     return;
   }
 
   /* actually do the save (model dependent) */
   if (wcalc->save != NULL){
-    wcalc->save(wcalc,fp,wcalc->file_name);
+    wcalc->save(wcalc, fp, wcalc->file_fullname);
   }
   else{
     g_print("files.c:wcalc_save():  no ->save function available for"

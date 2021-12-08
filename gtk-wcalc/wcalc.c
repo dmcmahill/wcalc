@@ -603,9 +603,9 @@ void wcalc_setup (gpointer data,
 	  wcalc, wcalc->window);
 #endif
   if ( fname != NULL ) {
-    wcalc->file_name = fname;
+    wcalc->file_fullname = g_strdup(fname);
 #ifdef DEBUG
-    g_print("wcalc_setup():  fname = \"%s\" != NULL so set wcalc->file_name\n",
+    g_print("wcalc_setup():  fname = \"%s\" != NULL so set wcalc->file_fullname\n",
 	    fname);
 #endif
   }
@@ -686,20 +686,41 @@ Wcalc *Wcalc_new(void)
       exit(1);
     }
 
-  new->file_name = NULL;
-  new->file_basename = "Untitled";
-
-  new->init_done=0;
-
-  new->units_menu_list = NULL;
-
-  new->dump_values = NULL;
-
+  Wcalc_init(new);
+  
 #ifdef DEBUG
   g_print("Wcalc_new():  New pointer is %p\n",new);
 #endif
 
   return(new);
+}
+
+void Wcalc_init(Wcalc *wcalc)
+{
+  wcalc->init_done=0;
+
+  wcalc->init = NULL;
+  wcalc->print_ps = NULL;
+  wcalc->load = NULL;
+  wcalc->save = NULL;
+  wcalc->analyze = NULL;
+  wcalc->synthesize = NULL;
+  wcalc->display = NULL;
+  wcalc->dump_values = NULL;
+
+  wcalc->file_fullname=NULL;
+  wcalc->file_dirname=NULL;
+  wcalc->file_filename=NULL;
+  wcalc->file_basename=NULL;
+  wcalc->pdf_filename = NULL;
+
+  wcalc->model_name=NULL;
+  wcalc->model_version=NULL;
+
+  wcalc->window_title=NULL;
+  wcalc->save_needed=NULL;
+  wcalc->units_menu_list = NULL;
+
 }
 
 /* call back used all over all the _gui's */
@@ -716,39 +737,41 @@ void wcalc_save_needed(GtkWidget *widget, gpointer data )
 void wcalc_set_title(Wcalc * wcalc)
 {
   size_t len;
-
+  glong flen, i;
+  
   /*
    * If we know the file name (i.e. it is not a new window which
    * should be called Untitled)
    */
-  if (wcalc->file_name != NULL) {
-    /* extract the basefile name */
-    /* 
-     * filename = 3, len=4 means [3,4,5,6] has characters and 7 has
-     * the \0 termination.  file_name + strlen() = 7.
-     */
-    wcalc->file_basename = wcalc->file_name + strlen(wcalc->file_name);
-    while(--wcalc->file_basename >= wcalc->file_name) {
-      if(*wcalc->file_basename == G_DIR_SEPARATOR)
-	break;
-    }
-    /*
-     * if we ended on a directory separator, then increment 1 to get
-     * the filename string.
-     * otherwise, we ended up 1 before the start of the path and
-     * incrementing by 1 gets us back to the start of the string
-     */
-    wcalc->file_basename++;
+  if (wcalc->file_fullname != NULL) {
+
+    /* file name without directory portion */
+    wcalc->file_filename = g_basename(wcalc->file_fullname);
+
+    /* the directory name */
+    wcalc->file_dirname = g_path_get_dirname(wcalc->file_fullname);
+
+    /* basename (no extension) */
+    flen = g_utf8_strlen(wcalc->file_filename, FILENAME_MAX) - 1;
+    i = flen;
+    while(i > 0 && wcalc->file_filename[i] != '.') i--;
+    if(i == 0) i = flen;
+    wcalc->file_basename = g_utf8_substring(wcalc->file_filename, 0, i);
+    
 #ifdef DEBUG
-    g_print("wcalc.c:wcalc_set_title():  wcalc->file_name = %s\n", wcalc->file_name);
-    g_print("wcalc.c:wcalc_set_title():  wcalc->file_basename = %s\n", wcalc->file_basename);
+    g_print("%s:  wcalc->file_fullname = %s\n", __FUNCTION__, wcalc->file_fullname);
+    g_print("%s:  wcalc->file_dirname = %s\n", __FUNCTION__, wcalc->file_dirname);
+    g_print("%s:  wcalc->file_filename = %s\n", __FUNCTION__, wcalc->file_filename);
+    g_print("%s:  wcalc->file_basename = %s\n", __FUNCTION__, wcalc->file_basename);
 #endif
   } else {
-    /* file_name was NULL */
+    /* file_fullname was NULL */
     wcalc->file_basename = "Untitled";
 #ifdef DEBUG
-    g_print("wcalc.c:wcalc_set_title():  wcalc->file_name = NULL\n");
-    g_print("wcalc.c:wcalc_set_title():  wcalc->file_basename = %s\n", wcalc->file_basename);
+    g_print("%s:  wcalc->file_fullname = %p\n", __FUNCTION__, wcalc->file_fullname);
+    g_print("%s:  wcalc->file_dirname = %p\n", __FUNCTION__, wcalc->file_dirname);
+    g_print("%s:  wcalc->file_filename = %p\n", __FUNCTION__, wcalc->file_filename);
+    g_print("%s:  wcalc->file_basename = %s\n", __FUNCTION__, wcalc->file_basename);
 #endif
   }
     
@@ -773,10 +796,10 @@ void wcalc_set_title(Wcalc * wcalc)
   wcalc->save_needed = wcalc->window_title + strlen(wcalc->window_title) - 1;
   
 #ifdef DEBUG
-    g_print("wcalc.c:wcalc_set_title():  wcalc->window_title = \"%s\" (%p) %ld len\n",
-	    wcalc->window_title, wcalc->window_title, (long) strlen(wcalc->window_title));
-    g_print("wcalc.c:wcalc_set_title():  wcalc->file_saveneeded = \"%c\" (%p)\n", 
-	    *(wcalc->save_needed), wcalc->save_needed);
+    g_print("%s:  wcalc->window_title = \"%s\" (%p) %ld len\n",
+	    __FUNCTION__, wcalc->window_title, wcalc->window_title, (long) strlen(wcalc->window_title));
+    g_print("%s:  wcalc->file_saveneeded = \"%c\" (%p)\n", 
+	    __FUNCTION__, *(wcalc->save_needed), wcalc->save_needed);
 #endif
   gtk_window_set_title (GTK_WINDOW (wcalc->window), wcalc->window_title);
 

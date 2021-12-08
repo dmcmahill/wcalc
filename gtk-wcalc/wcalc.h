@@ -116,10 +116,19 @@ typedef struct WCALC
    */
 
   /* complete file name (path too) */
-  char *file_name;
+  char *file_fullname;
 
-  /* base filename (no path) */
+  /* directory name (path portion of file_name) */
+  char *file_dirname;
+
+  /* file name (no path but name including extension) */
+  char *file_filename;
+
+  /* base filename (no path, no extension) */
   char *file_basename;
+
+  /* PDF file name */
+  gchar *pdf_filename;
 
   /* name of the model.  "Microstrip Analysis/Synthesis" for example */
   char *model_name;
@@ -175,6 +184,7 @@ void wcalc_setup_cb(gpointer data,
 		    GtkWidget *widget);
 
 Wcalc *Wcalc_new(void);
+void Wcalc_init(Wcalc *new);
 
 void wcalc_save_needed(GtkWidget *widget, gpointer data );
 void wcalc_set_title(Wcalc * wcalc);

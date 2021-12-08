@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2009 Dan McMahill
+ * Copyright (C) 2009, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -100,26 +99,19 @@ parallel_rl_gui *parallel_rl_gui_new(void)
   /*
    * Initialize the parent
    */
-  wcalc->init_done=0;
+  Wcalc_init(wcalc);
 
+  /*
+   * Supply info for this particular GUI
+   */
   wcalc->init = parallel_rl_gui_init;
   wcalc->print_ps = print_ps;
-  wcalc->load = NULL;
   wcalc->save = gui_save;
-  wcalc->analyze = NULL;
-  wcalc->synthesize = NULL;
-  wcalc->display = NULL;
   wcalc->dump_values = dump_values;
 
-  wcalc->file_name=NULL;
-  wcalc->file_basename=NULL;
+  wcalc->model_name = name;
+  wcalc->model_version = version;
 
-  wcalc->model_name=name;
-  wcalc->model_version=version;
-
-  wcalc->window_title=NULL;
-  wcalc->save_needed=NULL;
-  wcalc->units_menu_list = NULL;
   /*
    * Initialize the model dependent portions
    */
