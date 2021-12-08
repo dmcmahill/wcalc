@@ -43,25 +43,25 @@ f    = 1e9;     // operating frequency (Hz)
  
 disp(sprintf("L1 = %g nH\n", L1*1e9));
  
- L1 = 1.14086 nH   
+ L1 = 5.50258 nH
  
 disp(sprintf("L2 = %g nH\n", L2*1e9));
  
- L2 = 1.14086 nH   
+ L2 = 5.50258 nH
  
 disp(sprintf("M  = %g nH\n", M*1e9));
  
- M  = 0.839194 nH   
+ M  = 2.3527 nH
  
 disp(sprintf("k  = %g\n", k));
  
- k  = 0.735581   
+ k  = 0.427563
  
 disp(sprintf("R1 = %g Ohm\n", R1));
 
- R1 = 1.1e-3 Ohm
+ R1 = 2.2e-3 Ohm
 
 disp(sprintf("R2 = %g Ohm\n", R2));
 
- R2 = 1.1e-3 Ohm
+ R2 = 2.2e-3 Ohm
  
