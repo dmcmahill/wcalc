@@ -40,9 +40,7 @@
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_rc.h"
-#endif
 #include "parallel_rc.h"
 #include "parallel_rc_gui.h"
 #include "parallel_rc_loadsave.h"
@@ -590,7 +588,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   parallel_rc_gui *gui;
   parallel_rc * b;
 
@@ -617,7 +614,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
 
   }
-#endif
 
   return list;
 }

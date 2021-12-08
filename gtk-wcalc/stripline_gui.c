@@ -36,9 +36,7 @@
 #include "menus.h"
 #include "misc.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_stripline.h"
-#endif
 #include "newprint.h"
 #include "stripline.h"
 #include "stripline_gui.h"
@@ -1046,7 +1044,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   stripline_gui *gui;
   stripline_line *l;
 
@@ -1096,7 +1093,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->Gs, l->units_G, list);
 
   }
-#endif
 
   return list;
 }

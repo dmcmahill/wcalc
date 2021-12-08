@@ -37,9 +37,7 @@
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_air_coil.h"
-#endif
 #include "air_coil.h"
 #include "air_coil_gui.h"
 #include "air_coil_loadsave.h"
@@ -970,7 +968,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   air_coil_gui *gui;
   air_coil_coil * c;
 
@@ -1009,7 +1006,6 @@ static GList * dump_values(Wcalc *wcalc)
 
 
   }
-#endif
   return list;
 }
 

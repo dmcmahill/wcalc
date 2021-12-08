@@ -36,9 +36,7 @@
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_ic_microstrip.h"
-#endif
 #include "ic_microstrip.h"
 #include "ic_microstrip_gui.h"
 #include "ic_microstrip_loadsave.h"
@@ -1099,7 +1097,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   ic_microstrip_gui *gui;
   ic_microstrip_line *l;
 
@@ -1157,7 +1154,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->Gmis, l->units_G, list);
 
   }
-#endif
 
   return list;
 }

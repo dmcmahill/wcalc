@@ -40,9 +40,7 @@
 #include "symbols.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_coax.h"
-#endif
 #include "coax.h"
 #include "coax_gui.h"
 #include "coax_loadsave.h"
@@ -1180,7 +1178,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   coax_gui *gui;
   coax_line *l;
 
@@ -1234,7 +1231,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->G, l->units_G, list);
 
   }
-#endif
 
   return list;
 }

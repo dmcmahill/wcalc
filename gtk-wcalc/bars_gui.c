@@ -41,9 +41,7 @@
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_bars_fig.h"
-#endif
 #include "bars.h"
 #include "bars_gui.h"
 #include "bars_loadsave.h"
@@ -563,7 +561,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   bars_gui *gui;
   bars * b;
 
@@ -598,7 +595,6 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
 
   }
-#endif
 
   return list;
 }

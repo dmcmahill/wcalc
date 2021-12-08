@@ -40,9 +40,7 @@
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_rods_fig.h"
-#endif
 #include "rods.h"
 #include "rods_gui.h"
 #include "rods_loadsave.h"
@@ -573,7 +571,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   rods_gui *gui;
   rods * b;
 
@@ -607,8 +604,6 @@ static GList * dump_values(Wcalc *wcalc)
   list = wc_print_add_double("Wire #2 DC Resistance (R2)", b->R2, b->units_R, list);
 
   list = wc_print_add_double("Wire Resistivity (rho)", b->rho, b->units_rho, list);
-
-#endif
 
   return list;
 }
