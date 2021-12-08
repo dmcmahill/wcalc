@@ -1,4 +1,4 @@
-<!-- Copyright (c) 2001, 2002, 2005, 2006 Dan McMahill, All rights reserved. -->
+<!-- Copyright (c) 2001, 2002, 2005, 2006, 2020 Dan McMahill, All rights reserved. -->
 <tr>
   <td valign="top">
 
@@ -58,6 +58,7 @@
 	&nbsp;<a href="microstrip.html">Microstrip</a><br>
 	&nbsp;<a href="parallel_rc.html">Series/Parallel RC Network</a><br>
 	&nbsp;<a href="parallel_rl.html">Series/Parallel RL Network</a><br>
+	&nbsp;<a href="rods.html">Parallel Circular Wire Inductance</a><br>
 	&nbsp;<a href="stripline.html">Stripline</a><br>
       </font>
     </td></tr></table>

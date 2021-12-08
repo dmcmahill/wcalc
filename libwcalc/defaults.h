@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2004, 2006 Dan McMahill
+ * Copyright (C) 2004, 2006, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -32,6 +31,7 @@ extern const char *default_ic_microstrip;
 extern const char *default_microstrip;
 extern const char *default_parallel_rc;
 extern const char *default_parallel_rl;
+extern const char *default_rods;
 extern const char *default_stripline;
 
 #endif /* __DEFAULTS_H__ */

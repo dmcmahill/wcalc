@@ -3,20 +3,20 @@
  * 2006, 2007, 2012, 2020 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #include <stdio.h>
@@ -66,16 +66,16 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   gtk_widget_destroy(window);
 }
 
- 
+
 void about_popup(void)
 {
   GtkWidget *button;
   GtkWidget *label;
   GtkWidget *window;
- 
+
   /* create the "About" window */
   window = gtk_dialog_new();
-  
+
   /* made it modal */
   gtk_grab_add(window);
 
@@ -88,11 +88,11 @@ void about_popup(void)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
-  
+
 
   /* add the text to the window */
   label = gtk_label_new (ABOUT_TEXT);
@@ -129,10 +129,10 @@ void copyright_popup(void)
   GtkWidget *button;
   GtkWidget *label;
   GtkWidget *window;
- 
+
   /* create the "Copyright" window */
   window = gtk_dialog_new();
-  
+
   /* made it modal */
   gtk_grab_add(window);
 
@@ -145,11 +145,11 @@ void copyright_popup(void)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
-  
+
 
   /* add the text to the window */
   label = gtk_label_new (COPYRIGHT_TEXT);
@@ -171,7 +171,7 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
 
   /* create the window */
   window = gtk_dialog_new();
-  
+
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW (window), title);
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
@@ -181,11 +181,11 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(ok_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
-  
+
 
   /* add the text to the window */
   tab = table_fn();

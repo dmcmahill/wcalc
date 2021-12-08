@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -59,6 +59,8 @@ wcalc_SOURCES = \
 	parallel_rl_gui.h \
 	print.c \
 	print.h \
+	rods_gui.c \
+	rods_gui.h \
 	start.c \
 	start.h \
 	stripline_gui.c \
@@ -86,6 +88,7 @@ pkgdata_DATA= \
 	ic_microstrip.wc \
 	microstrip.wc \
 	parallel_rc.wc \
+	rods.wc \
 	stripline.wc
 
 ASCIITABS=\
@@ -194,6 +197,8 @@ FIGSRCS=	\
 	$(top_srcdir)/pixmaps/figure_rc.h \
 	$(top_srcdir)/pixmaps/figure_rl.c \
 	$(top_srcdir)/pixmaps/figure_rl.h \
+	$(top_srcdir)/pixmaps/figure_rods_fig.c \
+	$(top_srcdir)/pixmaps/figure_rods_fig.h \
 	$(top_srcdir)/pixmaps/figure_stripline.c \
 	$(top_srcdir)/pixmaps/figure_stripline.h \
 	$(top_srcdir)/pixmaps/figure_stripline_model.c \

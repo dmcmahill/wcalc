@@ -3,20 +3,20 @@
  * Copyright (C) 2009 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #ifndef __NEWPRINT_H__
@@ -36,7 +36,7 @@ typedef struct printValue
     gchar *sval;
     cairo_t * (*cairoval)(cairo_surface_t *, cairo_t *);
   } val;
-  
+
   int width, height;
   enum {FLOAT, INT, STRING, CAIRO} type;
 
@@ -46,7 +46,7 @@ typedef struct printValue
 GList * wc_print_add_double(gchar * name, double val, wc_units *units, GList *list);
 GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list);
 GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *list);
-GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), 
+GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr),
 			   int width, int height, GList *list);
 void wc_print_value_free(PrintValue * val);
 

@@ -64,6 +64,7 @@ stripline synthesis,
     <LI><A HREF="/cgi-bin/microstrip.cgi">Printed Circuit Microstrip (MIM)</A></LI>
     <LI><A HREF="/cgi-bin/parallel_rc.cgi">Series/Parallel RC Network</A></LI>
     <LI><A HREF="/cgi-bin/parallel_rl.cgi">Series/Parallel RL Network</A></LI>
+    <LI><A HREF="/cgi-bin/rods.cgi">Parallel Circular Wires Inductance</A></LI>
     <LI><A HREF="/cgi-bin/stripline.cgi">Printed Circuit Symmetric Stripline (MIMIM)</A></LI>
     </ul>
     </font>

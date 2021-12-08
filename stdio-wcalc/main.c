@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012 Dan McMahill
+ * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -64,6 +63,7 @@
 #include "microstrip.h"
 #include "parallel_rc.h"
 #include "parallel_rl.h"
+#include "rods.h"
 #include "stripline.h"
 
 #ifdef DMALLOC
@@ -85,6 +85,7 @@ static void exec_parallel_rc_p2s(double *args);
 static void exec_parallel_rc_s2p(double *args);
 static void exec_parallel_rl_p2s(double *args);
 static void exec_parallel_rl_s2p(double *args);
+static void exec_rods_calc(double *args);
 static void exec_stripline_calc(double *args);
 
 static void exec_air_coil_syn(double *args);
@@ -273,6 +274,9 @@ static void execute_file(FILE *fp, char *fname)
     } else if(strcmp(tok, "parallel_rl_s2p") == 0) {
       narg = 5;
       fn = &exec_parallel_rl_s2p;
+    } else if(strcmp(tok, "rods_calc") == 0) {
+      narg = 8;
+      fn = &exec_rods_calc;
     } else if(strcmp(tok, "stripline_calc") == 0) {
       narg = 9;
       fn = &exec_stripline_calc;
@@ -1086,6 +1090,47 @@ static void exec_parallel_rl_s2p(double *args)
 }
 
 
+/*
+ * [L1, L2, M, k, R1, R2] = 
+ *  rods_calc(d1, l1, d2, l2, distance, offset, rho, f);
+ */
+static void exec_rods_calc(double *args)
+{
+  /* our rods for calculations */
+  rods *rod;
+  int i = 0;
+
+  /* create the rods and fill in the parameters */
+  rod = rods_new();
+
+  rod->d1       = args[i++];
+  rod->l1       = args[i++];
+
+  rod->d2       = args[i++];
+  rod->l2       = args[i++];
+
+  rod->distance = args[i++];
+  rod->offset   = args[i++];
+
+  rod->rho      = args[i++];
+  rod->freq     = args[i++];
+
+  /* run the calculation */
+  if( rods_calc(rod, rod->freq) ) {
+    printf("%s", ERRMSG);
+  } else { 
+    /* print the outputs */
+    printf("%g %g %g %g %g %g\n", 
+	   rod->L1, rod->L2,
+	   rod->M, rod->k,
+	   rod->R1, rod->R2);
+  }
+
+  /* clean up */
+  rods_free(rod);
+  
+  return;
+}
 
 /* 
  * [z0,loss,deltal] = 

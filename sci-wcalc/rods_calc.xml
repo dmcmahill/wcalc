@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE MAN SYSTEM "man.dtd" [
+<!ENTITY see_also SYSTEM "see_also.xml">
+]>
+<TOP>
+<MAN>
+<!--
+    Copyright (C) 2020 Dan McMahill
+    All rights reserved.
+   
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; version 2 of the License.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    
+-->
+
+<NAME>rods_calc</NAME>
+
+<SHORTDESCR>Self and mutual inductance of a pair of parallel circular wires
+</SHORTDESCR>
+
+<SYNOPSIS>
+[L1, L2, M, k, R1, R2] = rods_calc(d1,l1,d2,l2,distance,offset,rho,freq);
+</SYNOPSIS>
+
+<PARAMETERS>
+ <RHS name="d1">Diameter of wire 1 (meters)</RHS>
+ <RHS name="l1">Length of wire 1 (meters)</RHS>
+ <RHS name="d2">Diameter of wire 2 (meters)</RHS>
+ <RHS name="l2">Length of wire 2 (meters)</RHS>
+ <RHS name="distance">Radial distance between wire centers (meters)</RHS>
+ <RHS name="offset">Axial offset between wire ends</RHS>
+
+ <RHS name="rho">resistivity (Ohm-meters)</RHS>
+ <RHS name="freq">analysis frequency (Hertz)</RHS>
+
+ <LHS name="L1">Wire 1 self inductance (Henries)</LHS>
+ <LHS name="L2">Wire 2 self inductance (Henries)</LHS>
+ <LHS name="M">Mutual inductance (Henries)</LHS>
+ <LHS name="k">Coupling coefficient</LHS>
+ <LHS name="R1">Wire 1 DC resistance (Ohms)</LHS>
+ <LHS name="R2">Wire 2 DC resistance (Ohms)</LHS>
+
+</PARAMETERS>
+
+<DESCRIPTION>
+Function to analyze the self and mutual inductances of two parallel
+circular wires.  NOTE:  Currently the wires must have the same diameter,
+same length, and no axial offset.
+</DESCRIPTION>
+
+<EXAMPLE>
+       <SCIEX><SCICMD>d1=1e-3;</SCICMD>          <COMMENT>Diameter of wire #1</COMMENT></SCIEX>
+       <SCIEX><SCICMD>l1=1e-3;</SCICMD>          <COMMENT>Length of wire #1</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>d2=d1;</SCICMD>            <COMMENT>Diameter of wire #2</COMMENT></SCIEX>
+       <SCIEX><SCICMD>l2=l1;</SCICMD>            <COMMENT>Length of wire #2</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>distance=3e-3;</SCICMD>    <COMMENT>Radial distance between wire centers</COMMENT></SCIEX>
+       <SCIEX><SCICMD>offset=0;</SCICMD>         <COMMENT>Axial offset between wire ends</COMMENT></SCIEX>
+
+       <SCIEX><SCICMD>rho=1.72e-8;</SCICMD>      <COMMENT>Copper resistivity</COMMENT></SCIEX>
+       <SCIEX><SCICMD>f=0;</SCICMD>           <COMMENT>DC operation</COMMENT></SCIEX>
+       <SCIEX><SCICMD>[L1, L2, M, k, R1, R2] = rods_calc(d1, l1, d2, l2, distance, offset, rho, f);</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('L1=%g nH',L1*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('L2=%g nH',L2*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('M =%g nH',M*1e9));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('k =%g',k));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('R1=%g Ohm',R1));</SCICMD></SCIEX>
+       <SCIEX><SCICMD>disp(sprintf('R2=%g Ohm',R2));</SCICMD></SCIEX>
+       <STDEX>
+*
+* Parallel wires calculation.  Two conductors, 1 mm diameter, 10 mm long, 3mm center to center space,
+* copper conductivity.
+rods_calc 1e-3 10e-3 1e-3 10e-3 3e-3 0 1.72e-8 0
+*
+*
+       </STDEX>
+</EXAMPLE>
+
+<SEE_ALSO>
+&see_also;
+</SEE_ALSO>
+
+<AUTHOR>
+Dan McMahill
+</AUTHOR>
+
+<BUGS>
+These are limitations and not so much bugs.  Currently the wires must have identical diameters, lengths, and
+no axial offset.  In addition, DC operation is assumed.  Hopefully all of these restrictions will be removed
+at some point.
+</BUGS>
+
+</MAN>
+</TOP>
+

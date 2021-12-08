@@ -3,20 +3,20 @@
  * Copyright (C) 2001, 2002, 2009 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -59,7 +59,7 @@ static GtkWidget *browse_button=NULL;
 #define PRINT_TO_FILE     1
 static int where_print;
 
-/* 
+/*
  * remember the last print command and last print filename so the next
  * time we're asked to print, we can get back the sane info.
  */
@@ -101,7 +101,7 @@ static int print_ps_footer(Wcalc *wcalc, FILE *fp);
  */
 void global_printer_init()
 {
-  
+
   /* allocate memory for the configuration */
   global_print_config = g_malloc(sizeof(print_config));
 
@@ -126,10 +126,10 @@ void global_printer_init()
 
  {
    char * tmps;
-   
+
    tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
 #define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE "-" VERSION
-   global_print_config->eps_dir = (char *) malloc(strlen(tmps) + 
+   global_print_config->eps_dir = (char *) malloc(strlen(tmps) +
 						  strlen(REST_OF_PATH) +
 						  1);
    sprintf(global_print_config->eps_dir, "%s%s", tmps, REST_OF_PATH);
@@ -168,7 +168,7 @@ void print_popup(gpointer data,
   GSList *where_group;
 
   static int first_time=1;
-  
+
   /* block signals */
   stop_sig=1;
 
@@ -185,7 +185,7 @@ void print_popup(gpointer data,
 
   /* create the "print" dialog */
   window = gtk_dialog_new();
-  
+
   /* made it modal */
   gtk_grab_add(window);
 
@@ -217,7 +217,7 @@ void print_popup(gpointer data,
 
   /* also put the focus on the print button */
   gtk_window_set_focus(GTK_WINDOW(window),button);
-  
+
 
   /* Add the "Cancel" button and set its action */
   button = gtk_button_new_with_label ("Cancel");
@@ -226,17 +226,17 @@ void print_popup(gpointer data,
 		     GTK_OBJECT(window));
   gtk_box_pack_end (GTK_BOX (my_hbox), button, FALSE, FALSE, 0);
   gtk_widget_show (button);
-  
 
 
-  /* 
+
+  /*
    * The table to contain everything in the top 1/2 of the dialog box
    */
   table = gtk_table_new (5, 3, FALSE);
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(window)->vbox), table);
-  
 
-  /* 
+
+  /*
    * The "Print To:" line
    */
   my_hbox = gtk_hbox_new (FALSE, 1);
@@ -276,7 +276,7 @@ void print_popup(gpointer data,
   gtk_widget_show (button);
 
 
-  /* 
+  /*
    * The "Print Command:" line
    */
   my_hbox = gtk_hbox_new (FALSE, 1);
@@ -300,7 +300,7 @@ void print_popup(gpointer data,
   gtk_widget_show(text_cmd);
 
 
-  /* 
+  /*
    * The "File Name:" line
    */
   my_hbox = gtk_hbox_new (FALSE, 1);
@@ -326,7 +326,7 @@ void print_popup(gpointer data,
 
   browse_button = gtk_button_new_with_label ("Browse...");
   gtk_signal_connect(GTK_OBJECT(browse_button), "clicked",
-		     GTK_SIGNAL_FUNC(print_browse_file), 
+		     GTK_SIGNAL_FUNC(print_browse_file),
 		     GTK_OBJECT(window));
   gtk_table_attach (GTK_TABLE(table), browse_button, 4, 5, 2, 3, 0,0,0,0);
   if (where_print == PRINT_TO_FILE)
@@ -387,8 +387,8 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
 
   save_state();
 
-  str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
-  str = gtk_entry_get_text( GTK_ENTRY(text_fname) ); 
+  str = gtk_entry_get_text( GTK_ENTRY(text_cmd) );
+  str = gtk_entry_get_text( GTK_ENTRY(text_fname) );
 
 
 #ifdef DEBUG
@@ -402,7 +402,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   else
     g_print("print.c:ok_pressed():  print to UNKNOWN\n");
 #endif
- 
+
   /* unmake it modal */
   gtk_grab_remove(window);
 
@@ -432,18 +432,18 @@ static void save_state()
 {
   const char *str;
 
-  str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
+  str = gtk_entry_get_text( GTK_ENTRY(text_cmd) );
   g_string_assign(print_cmd,str);
 
-  str = gtk_entry_get_text( GTK_ENTRY(text_fname) ); 
+  str = gtk_entry_get_text( GTK_ENTRY(text_fname) );
   g_string_assign(print_file,str);
 }
- 
+
 /* Dialog for when the "Browse..." button is pressed */
 static void print_browse_file(GtkWidget *widget, gpointer data)
 {
   GtkWidget *filew;
-     
+
   /* Create a new file selection widget */
   filew = gtk_file_selection_new ("Save Postscript As...");
 
@@ -454,18 +454,18 @@ static void print_browse_file(GtkWidget *widget, gpointer data)
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
 		      "clicked", (GtkSignalFunc) browse_ok_sel,
 		      GTK_OBJECT (filew) );
-    
+
   /* Connect the cancel_button to destroy the widget */
   gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked", 
+		     "clicked",
 		     (GtkSignalFunc) browse_cancel_sel,
 		     GTK_OBJECT (filew));
 
   /* Lets set the filename, as if this were a save dialog, and we are giving
      a default filename */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), 
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew),
 				   "wcalc.ps");
-  
+
   gtk_widget_show(filew);
 
 }
@@ -473,7 +473,7 @@ static void print_browse_file(GtkWidget *widget, gpointer data)
 /* Get the selected filename and print it to the console */
 static void browse_ok_sel (GtkWidget *w, GtkWidget *fs)
 {
-  g_print ("%s\n", 
+  g_print ("%s\n",
 	   gtk_file_selection_get_filename (GTK_FILE_SELECTION(fs)));
 
   gtk_entry_set_text(GTK_ENTRY(text_fname),
@@ -481,10 +481,10 @@ static void browse_ok_sel (GtkWidget *w, GtkWidget *fs)
 
   /* unmake it modal */
   gtk_grab_remove(fs);
-  
+
   /* blow away the window */
   gtk_widget_destroy(fs);
-  
+
 }
 
 static void browse_cancel_sel (GtkWidget *w, GtkWidget *window)
@@ -507,7 +507,7 @@ static void do_print(GtkWidget *w, gpointer data)
 
   switch(where_print){
   case PRINT_TO_FILE:
-    str = gtk_entry_get_text( GTK_ENTRY(text_fname) ); 
+    str = gtk_entry_get_text( GTK_ENTRY(text_fname) );
     if ( (fp = fopen(str,"w")) == NULL){
       fprintf(stderr,"do_print():  fopen of \"%s\"failed\n\n",str);
       return;
@@ -515,7 +515,7 @@ static void do_print(GtkWidget *w, gpointer data)
     break;
 
   case PRINT_TO_PRINTER:
-    str = gtk_entry_get_text( GTK_ENTRY(text_cmd) ); 
+    str = gtk_entry_get_text( GTK_ENTRY(text_cmd) );
     if ( (fp = popen(str,"w")) == NULL){
       fprintf(stderr,"do_print():  popen of \"%s\"failed\n\n",str);
       return;
@@ -527,7 +527,7 @@ static void do_print(GtkWidget *w, gpointer data)
     return;
     break;
   }
-  
+
   /* print the generic header */
   print_ps_header(wcalc,fp);
 

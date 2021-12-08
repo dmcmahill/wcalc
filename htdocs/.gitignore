@@ -37,6 +37,7 @@ permeability.html
 permitivity.html
 projects.html
 resistivity.html
+rods.html
 sci-wcalc.html
 stdio-wcalc.html
 stripline.html
@@ -84,6 +85,8 @@ units.html
 *-man/parallel_rl_p2s.shtml
 *-man/parallel_rl_s2p.html
 *-man/parallel_rl_s2p.shtml
+*-man/rods_calc.html
+*-man/rods_calc.shtml
 *-man/stripline_calc.html
 *-man/stripline_calc.shtml
 *-man/stripline_syn.html

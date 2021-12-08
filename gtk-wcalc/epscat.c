@@ -3,20 +3,20 @@
  * Copyright (C) 2001, 2002 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #include "config.h"
@@ -41,9 +41,9 @@
 static int eps_isps(FILE *fp)
 {
   char line[MAXLINELEN+1];
-  
-  /* 
-   * make sure its postscript 
+
+  /*
+   * make sure its postscript
    */
   if ( fgets(line,MAXLINELEN,fp) == NULL ) {
     return -1;
@@ -52,7 +52,7 @@ static int eps_isps(FILE *fp)
   if ( strncmp("%!PS",line,4) != 0) {
     return -1;
   }
-  
+
   /* put the line back */
   fseek(fp,-strlen(line),SEEK_CUR);
 
@@ -66,15 +66,15 @@ static int eps_bbox(FILE *fp,int bbox[])
   char *p;
   int i;
 
-  /* 
-   * make sure its postscript 
+  /*
+   * make sure its postscript
    */
   if ( eps_isps(fp) != 0 ) {
     alert("epscat.c:eps_bbox():  NOT Postscript\n");
     return -1;
   }
 
-  /* 
+  /*
    * extract BoundingBox
    */
   p = fgets(line,MAXLINELEN,fp);
@@ -113,9 +113,9 @@ int eps_cat(char *fname, FILE *ofp)
     alert("Could not open EPS file:\"%s\"\n",fname);
     return -1;
   }
-  
-  /* 
-   * make sure its postscript 
+
+  /*
+   * make sure its postscript
    */
   if ( eps_isps(fp) != 0 ) {
     alert("\"%s\" is NOT a Postscript file!\n",fname);
@@ -123,7 +123,7 @@ int eps_cat(char *fname, FILE *ofp)
     return -1;
   }
 
-  /* 
+  /*
    * extract the bounding box
    */
   if ( eps_bbox(fp,bbox) != 0 ) {
@@ -133,7 +133,7 @@ int eps_cat(char *fname, FILE *ofp)
   }
 
 
-  /* 
+  /*
    * Print our EPS wrapper header
    */
   fprintf(ofp,"%% We are currently where the top center of the figure should be.\n");
@@ -152,7 +152,7 @@ int eps_cat(char *fname, FILE *ofp)
   fprintf(ofp,"BEGINEPSFILE\n");
   fprintf(ofp,"\n");
 
-  /* 
+  /*
    * spit out the file eating any
    * PageBoundingBox lines
    */
@@ -172,7 +172,7 @@ int eps_cat(char *fname, FILE *ofp)
       p++;
     }
   }
-  
+
   /* flush anything left in our buffer */
   if ( (p > line) &&
        (strncmp("%%PageBoundingBox:",line,18) != 0) ) {
@@ -180,15 +180,15 @@ int eps_cat(char *fname, FILE *ofp)
     fputs(line,ofp);
   }
 
-  /* 
+  /*
    * Print our EPS wrapper footer
    */
   fprintf(ofp,"\n");
   fprintf(ofp,"ENDEPSFILE\n");
   fprintf(ofp,"grestore\n");
   fprintf(ofp,"moveto\n");
-  
-  
+
+
   fclose(fp);
   return 0;
 }

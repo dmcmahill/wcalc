@@ -3,20 +3,20 @@
  * Copyright (C) 2002, 2003, 2004 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #ifndef __GTK_UNITS_H__
@@ -49,7 +49,7 @@ typedef struct _WC_UNITS_GUI
 
   /*
    * flag that says we should update the displayed value to reflect
-   * new units. 
+   * new units.
    */
   int sync_value;
 
@@ -63,7 +63,7 @@ typedef struct _WC_UNITS_GUI
 
   /*
    * list of gtk_label's and gtk_entry's which we want to update when
-   * the units are changed 
+   * the units are changed
    */
   GList *update_list;
 
@@ -112,18 +112,18 @@ typedef struct _WC_UNITS_UPDATE_ITEM
 
 } wc_units_update_item;
 
-GtkWidget *wc_units_menu_new(wc_units *units, 
+GtkWidget *wc_units_menu_new(wc_units *units,
 			     Wcalc *gui,
 			     wc_units_gui **ug);
 
 void wc_units_menu_changed( GtkWidget *w, gpointer data);
 
 
-void  wc_units_attach(wc_units_gui *ug, 
-		      GtkWidget *widget, 
-		      double *mks_val, 
+void  wc_units_attach(wc_units_gui *ug,
+		      GtkWidget *widget,
+		      double *mks_val,
 		      double *sf,
-		      char **units_str, 
+		      char **units_str,
 		      const char *fmt_string,
 		      int update,
 		      int type);

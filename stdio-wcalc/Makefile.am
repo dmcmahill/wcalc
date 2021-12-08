@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 
 ##
-## Copyright (C) 2004, 2005, 2006, 2008, 2017 Dan McMahill
+## Copyright (C) 2004, 2005, 2006, 2008, 2017, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -73,6 +73,7 @@ TEST_INPUTS= \
 	microstrip.dat \
 	parallel_rc.dat \
 	parallel_rl.dat \
+	rods.dat \
 	stripline.dat
 
 REF_FILES=	${TEST_INPUTS:.dat=.ref}

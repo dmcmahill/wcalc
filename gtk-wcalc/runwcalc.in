@@ -79,8 +79,25 @@ mv -f "${WCALC}" "${WCALC}.orig"
 sed -e 's;LD_LIBRARY_PATH="/;LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/;g' "${WCALC}.orig" > "${WCALC}"
 chmod 755 "${WCALC}"
 
-if [ "X$1" = "X-gdb" ]; then
-	shift
+
+debugger=none
+case $1 in
+   -gdb)
+      debugger=gdb
+      shift
+      ;;
+
+   -lldb)
+      debugger=lldb
+      shift
+      ;;
+
+   *)
+      break
+      ;;
+esac
+
+if test "${debugger}" != "none" ; then
 	tmpd=/tmp/wcalctest.gdb.$$
 	tmpf=${tmpd}/gdb_cmds
 	mkdir -m 0700 ${tmpd}
@@ -90,7 +107,7 @@ if [ "X$1" = "X-gdb" ]; then
 	fi
 	echo set args "$@"  > $tmpf
 	echo set env LD_LIBRARY_PATH = ${LD_LIBRARY_PATH} >> $tmpf
-	exec @BUILDDIR@/../libtool --mode=execute gdb -x $tmpf "${WCALC}"
+	exec @BUILDDIR@/../libtool --mode=execute ${debugger} -x $tmpf "${WCALC}"
 	rm -fr $tmpd
 else
         exec "${WCALC}" $*

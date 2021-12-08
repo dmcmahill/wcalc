@@ -1,4 +1,3 @@
-
 ##
 ## Copyright (C) 2001, 2002, 2004, 2006, 2008, 2009, 2017, 2020 Dan McMahill
 ## All rights reserved.
@@ -31,6 +30,7 @@ cgibinexec_PROGRAMS = \
 	microstrip.cgi \
 	parallel_rc.cgi \
 	parallel_rl.cgi \
+	rods.cgi \
 	stripline.cgi
 
 noinst_PROGRAMS = \
@@ -64,6 +64,8 @@ parallel_rc_cgi_SOURCES = parallel_rc.cgi.c ${COMMON}
 
 parallel_rl_cgi_SOURCES = parallel_rl.cgi.c ${COMMON}
 
+rods_cgi_SOURCES = rods.cgi.c ${COMMON}
+
 stripline_cgi_SOURCES = stripline.cgi.c ${COMMON}
 
 AM_CPPFLAGS =  -I$(top_srcdir)/include @WCALC_CFLAGS@ -DHTMLPATH=\"@HTMLPATH@\" ${DMALLOC_CFLAGS}
@@ -89,6 +91,7 @@ HTML_FILES= \
 	microstrip.html \
 	parallel_rc.html \
 	parallel_rl.html \
+	rods.html \
 	stripline.html 
 
 CHTML_FILES=	${HTML_FILES:.html=_html.c}

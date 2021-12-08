@@ -3,20 +3,20 @@
  * Copyright (C) 1999, 2000, 2001, 2002, 2004 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 #ifndef __COAX_GUI_H__
@@ -26,7 +26,7 @@
 #include "wcalc.h"
 #include "gtk-units.h"
 
-typedef struct COAX_GUI 
+typedef struct COAX_GUI
 {
   /* The parent */
   Wcalc wcalc;
@@ -38,8 +38,8 @@ typedef struct COAX_GUI
    */
   coax_line *line;
 
-  /* 
-   * Frequency/Units/Model vbox and its contents 
+  /*
+   * Frequency/Units/Model vbox and its contents
    */
   GtkWidget *units_vbox;
 

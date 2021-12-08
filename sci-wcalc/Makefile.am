@@ -1,6 +1,6 @@
 ## -*- Makefile -*-
 
-## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2005, 2006, 2008, 2009, 2017, 2020 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -33,6 +33,7 @@ SCIDEMOS=	wcalc-demo.dem \
 	bars_calc.dem \
 	parallel_rc.dem \
 	parallel_rl.dem \
+	rods_calc.dem \
 	stripline_calc.dem
 
 SCI_VER=		@SCI_VER@
@@ -104,6 +105,7 @@ TEST_FILES=	\
 	parallel_rc_s2p.tst \
 	parallel_rl_p2s.tst \
 	parallel_rl_s2p.tst \
+	rods_calc.tst \
 	stripline_calc.tst \
 	stripline_syn.tst
 

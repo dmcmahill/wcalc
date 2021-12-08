@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2007, 2008, 2009, 2020 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2005, 2006, 2007, 2008, 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -47,7 +47,7 @@ VER \
 "Written by,\n" \
 "Dan McMahill, <mcmahill@alum.mit.edu>\n" \
 "\n" \
-"Wcalc is copyright (C) 1999-2020 Dan McMahill."
+"Wcalc is copyright (C) 1999-2021 Dan McMahill."
 
 
 /*
@@ -60,12 +60,12 @@ static GtkWidget *combo_model;
  * The window delete/destroy event callbacks
  */
 
-static gint destroy_event (GtkWidget *widget, 
+static gint destroy_event (GtkWidget *widget,
 			   GdkEvent *event,
 			   gpointer data)
 {
   gtk_main_quit ();
-  
+
   /* we have indeed handled this event */
   return TRUE;
 }
@@ -156,7 +156,7 @@ static void quit_pressed (GtkWidget *w, GtkWidget *window)
   gtk_main_quit();
 }
 
- 
+
 void start_popup(void)
 {
   GtkWidget *window;
@@ -172,13 +172,13 @@ void start_popup(void)
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  GtkStyle *style;    
-  
+  GtkStyle *style;
+
   /* create the initial window */
   /* XXX this was for gtk-1.2 */
   /* window = gtk_window_new(GTK_WINDOW_DIALOG); */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  
+
   /* made it modal */
   gtk_grab_add(window);
 
@@ -195,12 +195,12 @@ void start_popup(void)
   gtk_signal_connect (GTK_OBJECT (window), "delete_event",
 		      GTK_SIGNAL_FUNC (destroy_event),
 		      NULL);
-  
+
   /* Window Manager "destroy" */
   gtk_signal_connect (GTK_OBJECT (window), "destroy_event",
 		      GTK_SIGNAL_FUNC (destroy_event),
 		      NULL);
-  
+
 
   gtk_widget_realize(window);
 
@@ -228,7 +228,7 @@ void start_popup(void)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(open_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_start (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
@@ -238,7 +238,7 @@ void start_popup(void)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(new_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_start (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
   gtk_window_set_focus(GTK_WINDOW(window),button);
@@ -257,7 +257,7 @@ void start_popup(void)
   gtk_signal_connect(GTK_OBJECT(button), "clicked",
 		     GTK_SIGNAL_FUNC(quit_pressed),
 		     GTK_OBJECT(window));
-  
+
   gtk_box_pack_end (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
   gtk_window_set_focus(GTK_WINDOW(window),button);
@@ -281,18 +281,18 @@ void start_popup(void)
   /* now for the pixmap from gdk */
 
   style = gtk_widget_get_style( window );
-  
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
 					 (gchar **) splash);
-    					
+
   /* a pixmap widget to contain the pixmap */
   pixmapwid = gtk_pixmap_new( pixmap , mask);
   gtk_box_pack_start (GTK_BOX (main_vbox),
 		      pixmapwid, FALSE, FALSE, 0);
   gtk_widget_show( pixmapwid );
-    
+
 
 
   /* add the text to the window */

@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -46,6 +45,19 @@ typedef struct _CGI_MENU_LIST
   
 } cgi_menu_list;
 
+typedef struct _CGI_SYNC_LIST
+{
+  /* the name of the HTML entry */
+  char *src;
+
+  /* list of HTML text entries which are attached to this source entry */
+  struct _ENTRY_LIST *dst;
+
+  /* pointers to prev/next node in list */
+  struct _CGI_SYNC_LIST *next, *prev;
+  
+} cgi_sync_list;
+
 typedef struct _CGI_UNITS_MENU
 {
   wc_units *units;
@@ -64,6 +76,7 @@ char * cgi_units_menu_display(cgi_units_menu *menu);
 
 cgi_units_menu * cgi_units_menu_new(wc_units *units);
 void cgi_units_attach_entry(cgi_units_menu *menu, char *name);
+void cgi_sync_entry(char *src, char *dst);
 char * cgi_units_menu_init();
 
 void cgi_units_menu_read(void);

@@ -15,6 +15,7 @@ Models include:
  - metal-insulator-semiconductor microstrip
  - coaxial cable
  - self and mutual inductance of two parallel rectangular bars
+ - self and mutual inductance of two parallel circular rods
 
 Frontends include:
 

@@ -1,27 +1,26 @@
-
 /*
- * Copyright (c) 2009 Dan McMahill
+ * Copyright (c) 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /*
  * Note:  The gtkprint example from the gtk-demo program was used
- * as a starting point for the code here.  
+ * as a starting point for the code here.
  */
 
 /* #define DEBUG */
@@ -54,13 +53,13 @@
 #define MARGIN_RIGHT (0.5 * 72.0)
 #define MARGIN_TOP (0.5 * 72.0)
 #define MARGIN_BOT (0.5 * 72.0)
- 	
+
 typedef struct
 {
   Wcalc *wcalc;
 
   gdouble font_size;
- 	
+
   gint num_pages;
 
   GList * print_list;
@@ -102,7 +101,7 @@ begin_print (GtkPrintOperation *operation,
    * program) FIXME
    */
   data->num_pages = 1;
-  
+
   /*
    * Tell the print_operation how many pages because it will
    *   a) fill in the # of pages in the dialog and
@@ -111,7 +110,7 @@ begin_print (GtkPrintOperation *operation,
   gtk_print_operation_set_n_pages (operation, data->num_pages);
 }
 
- 	
+
 static void
 draw_page (GtkPrintOperation *operation,
 	   GtkPrintContext *context,
@@ -142,14 +141,14 @@ draw_page (GtkPrintOperation *operation,
   g_print ("%s():  cairo context is %p\n", __FUNCTION__, cr);
 #endif
 
-  /* 
+  /*
    * figure out width and height
    * in points (we set the units to points in
    * do_print())
    */
   width = gtk_print_context_get_width (context);
   height = gtk_print_context_get_height (context);
-  
+
 
 #ifdef DEBUG
   g_print ("gtk_print_context is %g x %g = %g x %g inches\n",
@@ -157,7 +156,7 @@ draw_page (GtkPrintOperation *operation,
 #endif
   /*
    * *********************************************************************
-   *  print out the name and version of this program 
+   *  print out the name and version of this program
    * *********************************************************************
    */
   layout = gtk_print_context_create_pango_layout (context);
@@ -166,7 +165,7 @@ draw_page (GtkPrintOperation *operation,
   desc = pango_font_description_from_string ("sans 18");
   pango_layout_set_font_description (layout, desc);
   pango_font_description_free (desc);
- 	
+
 
   /* create the string and put it in our layout */
   page_str = g_strdup_printf ("<markup><b>Wcalc</b> Transmission Line Analysis/Synthesis\n"
@@ -187,17 +186,17 @@ draw_page (GtkPrintOperation *operation,
 
   /*
    * Create a shaded rectangle across the top of the page.  It is the
-   * full width of the printable area.  
+   * full width of the printable area.
    *
    */
-  
+
   /* define the rectangle */
   cairo_rectangle (cr, MARGIN_LEFT, 0, width - MARGIN_LEFT - MARGIN_RIGHT, header_height);
 
   /* fill it */
   cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
   cairo_fill_preserve (cr);
- 	
+
   /* and put a black line around the rectangle */
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_set_line_width (cr, 1);
@@ -211,14 +210,14 @@ draw_page (GtkPrintOperation *operation,
   page_str = g_strdup_printf ("%d/%d", page_nr + 1, data->num_pages);
   pango_layout_set_text (layout, page_str, -1);
   g_free (page_str);
- 	
+
   pango_layout_set_width (layout, -1);
   pango_layout_get_pixel_size (layout, &text_width, &text_height);
   cairo_move_to (cr, width - text_width - 4 - MARGIN_RIGHT, (header_height - text_height) / 2);
   pango_cairo_show_layout (cr, layout);
 
   g_object_unref (layout);
- 	
+
 
   /*
    * *********************************************************************
@@ -231,12 +230,12 @@ draw_page (GtkPrintOperation *operation,
   desc = pango_font_description_from_string ("sans 10");
   pango_layout_set_font_description (layout, desc);
   pango_font_description_free (desc);
- 	
+
 
   /* create the string and put it in our layout */
   page_str = g_strdup_printf ("<markup><b>%s</b>\n%s<i>http://wcalc.sf.net</i></markup>",
-			      data->wcalc->file_name != NULL ?
-			      data->wcalc->file_name : "untitled",
+			      data->wcalc->file_filename != NULL ?
+			      data->wcalc->file_filename : "untitled",
 			      data->date_string);
 
   pango_layout_set_markup(layout, page_str, -1);
@@ -251,7 +250,7 @@ draw_page (GtkPrintOperation *operation,
   /* fill it */
   cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
   cairo_fill_preserve (cr);
- 	
+
   /* and put a black line around the rectangle */
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_set_line_width (cr, 1);
@@ -262,7 +261,7 @@ draw_page (GtkPrintOperation *operation,
   pango_cairo_show_layout (cr, layout);
 
   g_object_unref (layout);
- 	
+
   cairo_move_to (cr, xx, yy);
 
   /*
@@ -296,7 +295,7 @@ draw_page (GtkPrintOperation *operation,
       units_name = strdup( "" );
     }
 
-    /* 
+    /*
      * FIXME -- Some sort of
      * tabs to align all the "=" would be nice as well as a way to
      * use greek letters for some of the units.
@@ -340,7 +339,7 @@ draw_page (GtkPrintOperation *operation,
       /* render the figure */
       pv->val.cairoval(NULL, cr);
 
-      /* 
+      /*
        * restore to undo the translation and move our current point
        * down
        */
@@ -352,16 +351,16 @@ draw_page (GtkPrintOperation *operation,
       layout = gtk_print_context_create_pango_layout (context);
       pango_layout_set_font_description (layout, desc);
       pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
-  
+
       /* FIXME -- smarter scaling here */
 #define TEXT_COLUMN_WIDTH 4.0
 #define TEXT_COLUMN_INDENT -0.5
-      
-      pango_layout_set_width (layout, 
+
+      pango_layout_set_width (layout,
 			      pango_units_from_double(TEXT_COLUMN_WIDTH*72.0));
-      pango_layout_set_indent (layout, 
+      pango_layout_set_indent (layout,
 			       pango_units_from_double(TEXT_COLUMN_INDENT*72.0));
-      
+
       pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
 
@@ -385,13 +384,13 @@ draw_page (GtkPrintOperation *operation,
 
     }
     g_free(text);
-      
+
   }
 
   pango_font_description_free (desc);
 
 #if 0
-  /* 
+  /*
    * This puts a rectangle around the entire imagable area and a full
    * size "X" across it.  It is just here to help with debugging page
    * setup stuff.
@@ -416,14 +415,14 @@ draw_page (GtkPrintOperation *operation,
 #endif
 
 }
- 	
+
 static void
 end_print (GtkPrintOperation *operation,
 	   GtkPrintContext *context,
 	   gpointer user_data)
 {
   PrintData *data = (PrintData *)user_data;
-  
+
 #ifdef DEBUG
   g_print ("%s():  freeing data\n", __FUNCTION__);
 #endif
@@ -435,7 +434,7 @@ end_print (GtkPrintOperation *operation,
   g_print ("%s():  all done\n", __FUNCTION__);
 #endif
 }
- 	
+
 
 
 
@@ -443,7 +442,7 @@ static void
 do_page_setup (GtkWidget *do_widget, Wcalc *wcalc)
 {
   GtkPageSetup *new_page_setup;
-  
+
   if (settings == NULL) {
     settings = gtk_print_settings_new ();
   }
@@ -451,11 +450,11 @@ do_page_setup (GtkWidget *do_widget, Wcalc *wcalc)
   /* FIXME -- this code is duplicated in do_printing */
   if (page_setup == NULL) {
     GtkPaperSize *letter_size;
-    
+
 #ifdef DEBUG
     g_print ("%s():  Creating new default page setup\n", __FUNCTION__);
 #endif
-    
+
     page_setup = gtk_page_setup_new();
     letter_size = gtk_paper_size_new (GTK_PAPER_NAME_LETTER);
     gtk_page_setup_set_orientation (page_setup, GTK_PAGE_ORIENTATION_PORTRAIT);
@@ -479,10 +478,10 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   GtkPrintOperationResult res;
   PrintData *data;
   GError *error = NULL;
- 	
+
   operation = gtk_print_operation_new ();
 
-  
+
   /* load any print settings from the last time */
   if (settings == NULL) {
     settings = gtk_print_settings_new ();
@@ -492,7 +491,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   /* set the default page setup */
   if (page_setup == NULL) {
     GtkPaperSize *letter_size;
-    
+
 #ifdef DEBUG
     g_print ("%s():  Creating new default page setup\n", __FUNCTION__);
 #endif
@@ -506,7 +505,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   gtk_print_operation_set_default_page_setup(operation, page_setup);
 
 
-  /* 
+  /*
    * store some user data, in particular a pointer to our current
    * wcalc gui.  That will let the callbacks get at all of the
    * data needed to render the outputs.
@@ -514,11 +513,11 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   data = g_new0 (PrintData, 1);
   data->wcalc = wcalc;
   data->font_size = 10.0;
- 	
+
   /* Hook up the callbacks */
 
 
-  /* 
+  /*
    * Emitted after the user has finished changing print settings in
    * the dialog, before the actual rendering starts.  Use for pagination.
    */
@@ -539,7 +538,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   g_signal_connect (G_OBJECT (operation), "end-print",
 		    G_CALLBACK (end_print), data);
 
- 	
+
   /* only use the imagable area (inside the margins) */
   gtk_print_operation_set_use_full_page (operation, FALSE);
 
@@ -551,8 +550,8 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
 
   /* Run the print dialog */
   if (filename == NULL) {
-    res = gtk_print_operation_run (operation, 
-				   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, 
+    res = gtk_print_operation_run (operation,
+				   GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				   GTK_WINDOW (do_widget), &error);
 
     /*
@@ -561,23 +560,23 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
      */
     if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
       if (settings != NULL) {
-	g_object_unref (settings); 
+	g_object_unref (settings);
       }
       settings = g_object_ref (gtk_print_operation_get_print_settings (operation));
     }
-    
+
 #ifdef DEBUG
     g_print ("%s():  Unreferencing the print operation\n", __FUNCTION__);
 #endif
     g_object_unref (operation);
-    
+
   } else {
 #ifdef DEBUG
     g_print ("Exporting PDF to \"%s\"\n", filename);
 #endif
     gtk_print_operation_set_export_filename (operation, filename);
-    res = gtk_print_operation_run (operation, 
-				   GTK_PRINT_OPERATION_ACTION_EXPORT, 
+    res = gtk_print_operation_run (operation,
+				   GTK_PRINT_OPERATION_ACTION_EXPORT,
 				   GTK_WINDOW (do_widget), &error);
 #ifdef DEBUG
     g_print ("Finished print operation that exported PDF to \"%s\"\n", filename);
@@ -585,7 +584,7 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
 
   }
 
- 	
+
 #ifdef DEBUG
   g_print ("%s():  After running the print operation, error = %p\n", __FUNCTION__, error);
 #endif
@@ -593,22 +592,22 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   /* If there was an error printing, display it */
   if (error) {
     GtkWidget *dialog;
-    
+
     dialog = gtk_message_dialog_new (GTK_WINDOW (do_widget),
 				     GTK_DIALOG_DESTROY_WITH_PARENT,
 				     GTK_MESSAGE_ERROR,
 				     GTK_BUTTONS_CLOSE,
 				     "%s", error->message);
     g_error_free (error);
-    
+
     g_signal_connect (dialog, "response",
-		      G_CALLBACK (gtk_widget_destroy), 
+		      G_CALLBACK (gtk_widget_destroy),
 		      NULL);
-    
+
     gtk_widget_show (dialog);
   }
-  
-  
+
+
   return NULL;
 }
 
@@ -649,11 +648,12 @@ void newprint_pdf_popup(gpointer data,
 {
   Wcalc * wcalc;
   GtkWidget *dia;
+  gchar *tmps;
 
   wcalc = WC_WCALC(data);
 
   if(wcalc->values_in_sync == FALSE) {
-    
+
     alert("The input and output values are out of sync\n"
 	  "Before printing, please press the analyze button\n"
 	  "or one of the synthesis buttons in the calculator\n"
@@ -668,13 +668,37 @@ void newprint_pdf_popup(gpointer data,
 				     GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 				     NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dia), TRUE);
-  
+
+  if (wcalc->pdf_filename != NULL) {
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dia), wcalc->pdf_filename);
+  } else if (wcalc->file_basename != NULL) {
+
+    /* this makes sure we give a default filename if the pdf doesn't
+       exist */
+    tmps = g_strconcat(wcalc->file_basename, ".pdf", NULL);
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dia), tmps);
+    g_free(tmps);
+
+    /* this makes sure we give a default directory */
+    tmps = g_strconcat(".", G_DIR_SEPARATOR_S, wcalc->file_basename, ".pdf", NULL);
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dia), tmps);
+    g_free(tmps);
+  } else {
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dia), "Untitled.pdf");
+
+    tmps = g_strconcat(".", G_DIR_SEPARATOR_S, "Untitled.pdf", NULL);
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dia), tmps);
+    g_free(tmps);
+  }
+
   if (gtk_dialog_run (GTK_DIALOG (dia)) == GTK_RESPONSE_ACCEPT)
     {
-      char *filename;
+      gchar *filename;
       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dia));
       do_printing(wcalc->window, wcalc, filename);
-      g_free (filename);
+      if(wcalc->pdf_filename != NULL)
+        g_free (wcalc->pdf_filename);
+      wcalc->pdf_filename = filename;
     }
   gtk_widget_destroy (dia);
 
@@ -690,9 +714,9 @@ void page_setup_popup(gpointer data,
 		      GtkWidget *widget)
 {
   Wcalc * wcalc;
-  
+
   wcalc = WC_WCALC(data);
-  
+
   do_page_setup(wcalc->window, wcalc);
 
 }
@@ -735,7 +759,7 @@ GList * wc_print_add_int(gchar * name, int val, wc_units *units, GList *list)
   v->units = units;
   v->width = 0;
   v->height = 0;
-  
+
   return g_list_append(list, v);
 }
 
@@ -755,11 +779,11 @@ GList * wc_print_add_string(gchar * name, gchar * val, wc_units *units, GList *l
   v->units = units;
   v->width = 0;
   v->height = 0;
-  
+
   return g_list_append(list, v);
 }
 
-GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr), 
+GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr),
 			   int width, int height, GList *list)
 {
   PrintValue *v;

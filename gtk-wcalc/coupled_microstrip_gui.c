@@ -1,22 +1,22 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009,
+ * 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /* #define DEBUG */
@@ -96,29 +96,23 @@ coupled_microstrip_gui *coupled_microstrip_gui_new(void)
   /* Wcalc is the parent */
   wcalc = (Wcalc *) new_gui;
 
+  /* Wcalc is the parent */
+  wcalc = (Wcalc *) new_gui;
+
   /*
    * Initialize the parent
    */
-  wcalc->init_done=0;
+  Wcalc_init(wcalc);
 
+  /*
+   * Supply info for this particular GUI
+   */
   wcalc->init = coupled_microstrip_gui_init;
   wcalc->print_ps = print_ps;
-  wcalc->load = NULL;
   wcalc->save = gui_save;
-  wcalc->analyze = NULL;
-  wcalc->synthesize = NULL;
-  wcalc->display = NULL;
   wcalc->dump_values = dump_values;
-
-  wcalc->file_name=NULL;
-  wcalc->file_basename=NULL;
-
-  wcalc->model_name=name;
-  wcalc->model_version=version;
-
-  wcalc->window_title=NULL;
-  wcalc->save_needed=NULL;
-  wcalc->units_menu_list = NULL;
+  wcalc->model_name = name;
+  wcalc->model_version = version;
 
   /*
    * Initialize the model dependent portions
@@ -163,9 +157,9 @@ void coupled_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
   outputs_vbox = gtk_vbox_new (FALSE, 1);
   picture_vbox = gtk_vbox_new (FALSE, 1);
 
-  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5); 
-  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5); 
+  gtk_container_set_border_width (GTK_CONTAINER (values_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (outputs_vbox), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (picture_vbox), 5);
 
   gtk_box_pack_start (GTK_BOX (main_vbox), values_vbox, FALSE, TRUE, 0);
   gtk_box_pack_start (GTK_BOX (main_vbox), outputs_vbox, FALSE, TRUE, 0);
@@ -226,7 +220,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* Setup the values_vbox contents */
   table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
-  
+
 
   /* Synthesize button */
   button = gtk_button_new_with_label (_("<-Synthesize"));
@@ -235,9 +229,9 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (synthesize), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 4, 
+  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 4,
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Synthesize width, spacing, and length to obtain the specified "
 			 "impedances and electrical length"),
 		       NULL);
@@ -250,25 +244,25 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (analyze), (gpointer)
 		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4, 
+  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 0, 4,
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
-  gtk_tooltips_set_tip(tips, button, 
+  gtk_tooltips_set_tip(tips, button,
 		       _("Calculate electrical characteristics "
 		       "from physical parameters"),
 		       NULL);
   gtk_widget_show (button);
-  
+
 
   /* ---------------- Width  -------------- */
 
   text = gtk_label_new( "Width (W)" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->text_w = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_entry_set_text(GTK_ENTRY(gui->text_w),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_w, x+1, x+2, y, y+1, 
+  gtk_table_attach (GTK_TABLE(table), gui->text_w, x+1, x+2, y, y+1,
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_w),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
@@ -278,7 +272,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_w);
 
   text = wc_units_menu_new(gui->line->units_lwst, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
+  gtk_table_attach(GTK_TABLE(table), text,
 		   x+2, x+3, y, y+1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   y++;
@@ -286,13 +280,13 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ---------------- Spacing  -------------- */
 
   text = gtk_label_new( "Spacing (S)" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
   gui->text_s = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
   gtk_entry_set_text(GTK_ENTRY(gui->text_s),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_s, x+1, x+2, y, y+1, 
+  gtk_table_attach (GTK_TABLE(table), gui->text_s, x+1, x+2, y, y+1,
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_set_usize(GTK_WIDGET(gui->text_s),WC_WIDTH,0);
   gtk_signal_connect (GTK_OBJECT (gui->text_s), "changed",
@@ -302,7 +296,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_s);
 
   lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
   gtk_widget_show(lwht);
@@ -327,7 +321,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_l);
 
   lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
   gtk_widget_show(lwht);
@@ -353,7 +347,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_h);
 
   lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
   gtk_widget_show(lwht);
@@ -364,7 +358,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ---------------- Dielectric Constant -------------- */
 
   text = gtk_label_new( "Er" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -383,7 +377,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ---------------- Loss Tangent -------------- */
 
   text = gtk_label_new( "Tand" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -402,7 +396,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ---------------- Metal thickness -------------- */
 
   text = gtk_label_new( "Tmet" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -417,7 +411,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_tmet);
 
   lwht = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), lwht, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(lwht), 0, 0);
   gtk_widget_show(lwht);
@@ -428,7 +422,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ---------------- Resistivity -------------- */
 
   text = gtk_label_new( "Rho" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -443,7 +437,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_rho);
 
   text = wc_units_menu_new(gui->line->units_rho, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   y++;
@@ -473,7 +467,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  COLUMN #2 -------------- */
   text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
@@ -544,7 +538,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		     gui);
   gui->button_z0ez0o = button;
   gtk_widget_show (button);
-  
+
   /*
   text = gtk_label_new( "Z0e" );
   gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
@@ -601,7 +595,7 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   /* ----------------  Electrical length -------------- */
 
   text = gtk_label_new( "Elec. Len." );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -636,13 +630,13 @@ static void values_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(gui->text_freq);
 
   text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
   y++;
 
   /* ----------------  - -------------- */
-  
+
   gtk_widget_show (table);
 }
 
@@ -667,7 +661,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ---------------- Keff-e -------------- */
   text = gtk_label_new( "Keff-e" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -680,7 +674,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ---------------- Keff-o -------------- */
   text = gtk_label_new( "Keff-o" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -693,7 +687,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ---------------- Even mode Loss -------------- */
   text = gtk_label_new( "Even Mode Loss" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -706,14 +700,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_loss_ev, &(gui->line->loss_ev), 
+  wc_units_attach_label(ug, gui->label_loss_ev, &(gui->line->loss_ev),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
 
   /* ---------------- Odd mode Loss -------------- */
   text = gtk_label_new( "Odd Mode Loss" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -722,11 +716,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_loss_od);
 
-  wc_units_attach_label(ug, gui->label_loss_od, &(gui->line->loss_odd), 
+  wc_units_attach_label(ug, gui->label_loss_od, &(gui->line->loss_odd),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   gtk_widget_show(text);
@@ -736,7 +730,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  Even Mode Loss/Length -------------- */
   text = gtk_label_new( "Even Mode Loss/Length" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -749,14 +743,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_losslen_ev, &(gui->line->losslen_ev), 
+  wc_units_attach_label(ug, gui->label_losslen_ev, &(gui->line->losslen_ev),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
 
   /* ----------------  Odd Mode Loss/Length -------------- */
   text = gtk_label_new( "Odd Mode Loss/Length" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -765,11 +759,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_losslen_od);
 
-  wc_units_attach_label(ug, gui->label_losslen_od, &(gui->line->losslen_odd), 
+  wc_units_attach_label(ug, gui->label_losslen_od, &(gui->line->losslen_odd),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   gtk_widget_show(text);
@@ -779,7 +773,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  Skin Depth -------------- */
   text = gtk_label_new( "Skin Depth" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -792,14 +786,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth), 
+  wc_units_attach_label(ug, gui->label_depth, &(gui->line->skindepth),
 			NULL, NULL, WC_FMT_G, 1);
-  
+
   y++;
 
   /* ----------------  COLUMN #2 -------------- */
   text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
@@ -809,7 +803,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ----------------  Even mode End correction -------------- */
   text = gtk_label_new( "Even Mode Delta L" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -822,13 +816,13 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_deltal_ev, &(gui->line->deltale), 
+  wc_units_attach_label(ug, gui->label_deltal_ev, &(gui->line->deltale),
 			NULL, NULL, WC_FMT_G, 1);
   y++;
 
   /* ----------------  Odd mode End correction -------------- */
   text = gtk_label_new( "Odd Mode Delta L" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -837,11 +831,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_deltal_od);
 
-  wc_units_attach_label(ug, gui->label_deltal_od, &(gui->line->deltalo), 
+  wc_units_attach_label(ug, gui->label_deltal_od, &(gui->line->deltalo),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
   gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
   gtk_widget_show(text);
@@ -853,7 +847,7 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 
   /* ---------------- L ----------------- */
   text = gtk_label_new( "Lev" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -866,11 +860,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Lev, &(gui->line->Lev), 
+  wc_units_attach_label(ug, gui->label_Lev, &(gui->line->Lev),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "Lodd" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -879,14 +873,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Lodd);
 
-  wc_units_attach_label(ug, gui->label_Lodd, &(gui->line->Lodd), 
+  wc_units_attach_label(ug, gui->label_Lodd, &(gui->line->Lodd),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
 
   /* ---------------- R ----------------- */
   text = gtk_label_new( "Rev" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -899,11 +893,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Rev, &(gui->line->Rev), 
+  wc_units_attach_label(ug, gui->label_Rev, &(gui->line->Rev),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "Rodd" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -912,14 +906,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Rodd);
 
-  wc_units_attach_label(ug, gui->label_Rodd, &(gui->line->Rodd), 
+  wc_units_attach_label(ug, gui->label_Rodd, &(gui->line->Rodd),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
 
   /* ---------------- C ----------------- */
   text = gtk_label_new( "Cev" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -932,11 +926,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Cev, &(gui->line->Cev), 
+  wc_units_attach_label(ug, gui->label_Cev, &(gui->line->Cev),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "Codd" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -945,14 +939,14 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Codd);
 
-  wc_units_attach_label(ug, gui->label_Codd, &(gui->line->Codd), 
+  wc_units_attach_label(ug, gui->label_Codd, &(gui->line->Codd),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
 
   /* ---------------- G ----------------- */
   text = gtk_label_new( "Gev" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -965,11 +959,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_table_attach(GTK_TABLE(table), text, x+4, x+5, y, y+1,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Gev, &(gui->line->Gev), 
+  wc_units_attach_label(ug, gui->label_Gev, &(gui->line->Gev),
 			NULL, NULL, WC_FMT_G, 1);
 
   text = gtk_label_new( "Godd" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 
+  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(text);
 
@@ -978,11 +972,11 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
 		    0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Godd);
 
-  wc_units_attach_label(ug, gui->label_Godd, &(gui->line->Godd), 
+  wc_units_attach_label(ug, gui->label_Godd, &(gui->line->Godd),
 			NULL, NULL, WC_FMT_G, 1);
 
   y++;
-  
+
   /* XXX */
 #ifdef notdef
   /* ---------------- Delay -------------- */
@@ -991,15 +985,15 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
   gui->label_delay = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_delay, 
+  gtk_table_attach (GTK_TABLE(table), gui->label_delay,
 		    1,2,0,1, 0,0,WC_XPAD,WC_YPAD);
   gtk_widget_show(gui->label_delay);
 
   text = wc_units_menu_new(gui->line->units_delay, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 
+  gtk_table_attach(GTK_TABLE(table), text,
 		   3, 4, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay), 
+  wc_units_attach_label(ug, gui->label_delay, &(gui->line->delay),
 			NULL, NULL, WC_FMT_G, 1);
 
 
@@ -1009,15 +1003,15 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
   gui->label_Rs = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Rs, 
+  gtk_table_attach (GTK_TABLE(table), gui->label_Rs,
 		    5, 6, 1, 2, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Rs);
 
   text = wc_units_menu_new(gui->line->units_R, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs), 
+  wc_units_attach_label(ug, gui->label_Rs, &(gui->line->Rs),
 			NULL, NULL, WC_FMT_G, 1);
 
   /* ---------------- C -------------- */
@@ -1026,15 +1020,15 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
   gui->label_Cp = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Cp, 
+  gtk_table_attach (GTK_TABLE(table), gui->label_Cp,
 		    5, 6, 2, 3, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Cp);
 
   text = wc_units_menu_new(gui->line->units_C, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs), 
+  wc_units_attach_label(ug, gui->label_Cp, &(gui->line->Cs),
 			NULL, NULL, WC_FMT_G, 1);
 
   /* ---------------- G -------------- */
@@ -1043,22 +1037,22 @@ static void outputs_init(coupled_microstrip_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
   gui->label_Gp = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Gp, 
+  gtk_table_attach (GTK_TABLE(table), gui->label_Gp,
 		    5, 6, 3, 4, 0, 0, WC_XPAD, WC_YPAD);
   gtk_widget_show(gui->label_Gp);
 
   text = wc_units_menu_new(gui->line->units_G, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 
+  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4,
 		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
 
-  wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs), 
+  wc_units_attach_label(ug, gui->label_Gp, &(gui->line->Gs),
 			NULL, NULL, WC_FMT_G, 1);
 #endif
 
   /* spacer */
 
   text = gtk_label_new( "                " );
-  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1, 
+  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
@@ -1077,7 +1071,7 @@ static void picture_init(coupled_microstrip_gui *gui, GtkWidget *window,GtkWidge
   GtkWidget *pixmapwid;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  GtkStyle *style;    
+  GtkStyle *style;
   GtkWidget *frame;
 
   frame = gtk_frame_new(NULL);
@@ -1096,22 +1090,22 @@ static void picture_init(coupled_microstrip_gui *gui, GtkWidget *window,GtkWidge
 
   /* now for the pixmap from gdk */
   style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window, 
+  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
 					 &mask,
 					 &style->bg[GTK_STATE_NORMAL],
 					 (gchar **) coupled_microstrip);
-					
-  
+
+
   /* a pixmap widget to contain the pixmap */
   pixmapwid = gtk_pixmap_new( pixmap , mask);
   gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
   gtk_widget_show( pixmapwid );
-    
+
 
   WC_WCALC(gui)->text_status = gtk_label_new( "Values Out Of Sync" );
   gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
   gtk_widget_show (WC_WCALC(gui)->text_status);
-  
+
 
 }
 
@@ -1130,98 +1124,98 @@ static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data 
   const char *vstr;
   int rslt=0;
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_w) );
   gui->line->w=atof(vstr)*gui->line->units_lwst->sf;
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  w = %g %s\n",
 	  gui->line->w/gui->units_lwst->sf, gui->units_lwst->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_s) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_s) );
   gui->line->s = atof(vstr)*gui->line->units_lwst->sf;
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  s = %g %s\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  s = %g %s\n",
 	  gui->line->s/gui->units_lwst->sf, gui->units_lwst->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_l) );
   gui->line->l=atof(vstr)*gui->line->units_lwst->sf;
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  l = %g %s\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  l = %g %s\n",
 	  gui->line->l/gui->units_lwst->sf, gui->units_lwst->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_h) );
   gui->line->subs->h=atof(vstr)*gui->line->units_lwst->sf;
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  h = %g %s\n",
 	  gui->line->subs->h/gui->units_lwst->sf, gui->units_lwst->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_er) );
   gui->line->subs->er=atof(vstr);
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  er = %g\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  er = %g\n",
 	  gui->line->subs->er);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tand) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tand) );
   gui->line->subs->tand=atof(vstr);
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  tand = %g\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  tand = %g\n",
 	  gui->line->subs->tand);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_tmet) );
   gui->line->subs->tmet=atof(vstr)*gui->line->units_lwst->sf;
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  tmet = %g %s\n",
 	  gui->line->subs->tmet/gui->units_lwst->sf, gui->units_lwst->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rho) );
   gui->line->subs->rho=atof(vstr)*gui->line->units_rho->sf;
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  rho = %g %s\n",
 	  gui->line->subs->rho/gui->units_rho->sf, gui->units_rho->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_rough) );
   gui->line->subs->rough=atof(vstr)*gui->line->units_rough->sf;
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  rough = %g %s\n",
 	  gui->line->subs->rough/gui->units_rough->sf, gui->units_rough->name);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0) );
   gui->line->z0 = atof(vstr);
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  z0 = %g\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  z0 = %g\n",
 	  gui->line->z0);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_k) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_k) );
   gui->line->k = atof(vstr);
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  k = %g\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  k = %g\n",
 	  gui->line->k);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0e) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0e) );
   gui->line->z0e = atof(vstr);
 #ifdef DEBUG
-  g_print("coupled_microstrip_gui.c:calculate():  z0e = %g\n", 
+  g_print("coupled_microstrip_gui.c:calculate():  z0e = %g\n",
 	  gui->line->z0e);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0o) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_z0o) );
   gui->line->z0o = atof(vstr);
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  z0o = %g\n",
 	  gui->line->z0o);
 #endif
 
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_elen) );
   gui->line->len=atof(vstr);
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  elen = %g\n",
@@ -1230,7 +1224,7 @@ static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data 
 
 
   /* get the frequency */
-  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) ); 
+  vstr = gtk_entry_get_text( GTK_ENTRY(gui->text_freq) );
   gui->line->freq=atof(vstr)*gui->line->units_freq->sf;
 
 #ifdef DEBUG
@@ -1254,7 +1248,7 @@ static void calculate( coupled_microstrip_gui *gui, GtkWidget *w, gpointer data 
 	    "Please report this bug and how you triggered it\n");
     exit(1);
   }
-  
+
 #ifdef DEBUG
   g_print("coupled_microstrip_gui.c:calculate():  finished calculation\n");
 #endif
@@ -1308,15 +1302,15 @@ static void update_display(coupled_microstrip_gui *gui)
   /* ---------------- tmet -------------- */
   sprintf(str,WC_FMT_G,gui->line->subs->tmet/gui->line->units_lwst->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_tmet), str );
-  
+
   /* ---------------- rho -------------- */
   sprintf(str,WC_FMT_G,gui->line->subs->rho/gui->line->units_rho->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rho), str );
-  
+
   /* ---------------- rough -------------- */
   sprintf(str,WC_FMT_G,gui->line->subs->rough/gui->line->units_rough->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_rough), str );
-  
+
   /* ---------------- z0 -------------- */
   sprintf(str,WC_FMT_G,gui->line->z0);
   gtk_entry_set_text( GTK_ENTRY(gui->text_z0), str );
@@ -1340,7 +1334,7 @@ static void update_display(coupled_microstrip_gui *gui)
   /* ---------------- freq -------------- */
   sprintf(str,WC_FMT_G,gui->line->freq/gui->line->units_freq->sf);
   gtk_entry_set_text( GTK_ENTRY(gui->text_freq), str );
-  
+
 
   /* the labels */
   /* ---------------- Keff-e  -------------- */
@@ -1370,7 +1364,7 @@ static void update_display(coupled_microstrip_gui *gui)
   /* ---------------- depth -------------- */
   sprintf(str, WC_FMT_G, gui->line->skindepth/gui->line->units_depth->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_depth), str );
-    
+
   /* ---------------- Even Mode end correction -------------- */
   sprintf(str, WC_FMT_G,gui->line->deltale/gui->line->units_deltal->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_deltal_ev), str );
@@ -1384,19 +1378,19 @@ static void update_display(coupled_microstrip_gui *gui)
   gtk_label_set_text( GTK_LABEL(gui->label_Lev), str );
   sprintf(str,WC_FMT_G, gui->line->Lodd/gui->line->units_L->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Lodd), str );
-    
+
   /* ---------------- R -------------- */
   sprintf(str,WC_FMT_G, gui->line->Rev/gui->line->units_R->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Rev), str );
   sprintf(str,WC_FMT_G, gui->line->Rodd/gui->line->units_R->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Rodd), str );
-    
+
   /* ---------------- C -------------- */
   sprintf(str,WC_FMT_G, gui->line->Cev/gui->line->units_C->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Cev), str );
   sprintf(str,WC_FMT_G, gui->line->Codd/gui->line->units_C->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Codd), str );
-    
+
   /* ---------------- G -------------- */
   sprintf(str,WC_FMT_G, gui->line->Gev/gui->line->units_G->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_Gev), str );
@@ -1408,7 +1402,7 @@ static void update_display(coupled_microstrip_gui *gui)
   /* ---------------- delay -------------- */
   sprintf(str,WC_FMT_G, gui->line->delay/gui->line->units_delay->sf);
   gtk_label_set_text( GTK_LABEL(gui->label_delay), str );
-  
+
 #endif
 
 }
@@ -1436,7 +1430,7 @@ static void tooltip_init(coupled_microstrip_gui *gui)
   gtk_tooltips_set_tip(tips, gui->text_rho, "Metal resistivity", NULL);
   gtk_tooltips_set_tip(tips, gui->text_rough, "Metal surface roughness", NULL);
   gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
-  
+
 }
 
 static void use_z0k_pressed(GtkWidget *widget, gpointer data )
@@ -1489,7 +1483,7 @@ static GList * dump_values(Wcalc *wcalc)
   }  {
     // FIXME -- free the old list first!!!!
     list = NULL;
-    list = wc_print_add_cairo(figure_coupled_microstrip_render[0], figure_coupled_microstrip_width[0], 
+    list = wc_print_add_cairo(figure_coupled_microstrip_render[0], figure_coupled_microstrip_width[0],
 			      figure_coupled_microstrip_height[0], list);
 
     list = wc_print_add_double("Width of lines (W)", l->w, l->units_lwst, list);
@@ -1504,7 +1498,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Metal thickness (t<sub>met</sub>)", l->subs->tmet, l->units_lwst, list);
     list = wc_print_add_double("Metal resistivity ("
 			       WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
-    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough, 
+    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough,
 			       l->units_rough, list);
 
     list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
@@ -1525,7 +1519,7 @@ static GList * dump_values(Wcalc *wcalc)
 			       l->deltale, l->units_deltal, list);
     list = wc_print_add_double("Odd mode open end length correction",
 			       l->deltalo, l->units_deltal, list);
-     
+
     list = wc_print_add_double("Even mode incremental Inductance", l->Lev, l->units_L, list);
     list = wc_print_add_double("Even mode incremental Capacitance", l->Cev, l->units_C, list);
     list = wc_print_add_double("Even mode incremental Resistance", l->Rev, l->units_R, list);
@@ -1535,7 +1529,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Odd mode incremental Capacitance", l->Codd, l->units_C, list);
     list = wc_print_add_double("Odd mode incremental Resistance", l->Rodd, l->units_R, list);
     list = wc_print_add_double("Odd mode incremental Conductance", l->Godd, l->units_G, list);
-    
+
   }
 #endif
 
@@ -1644,23 +1638,23 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 	  gui->line->len);
 
   fprintf(fp,"(Even Mode) show newlineclose "
-	  "(Loss) show tab1 (=) show tab2 (" 
+	  "(Loss) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->loss_ev/gui->line->units_loss->sf,
 	  gui->line->units_loss->name);
   fprintf(fp,"(Odd Mode) show newlineclose "
-	  "(Loss) show tab1 (=) show tab2 (" 
+	  "(Loss) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->loss_odd/gui->line->units_loss->sf,
 	  gui->line->units_loss->name);
 
   fprintf(fp,"(Even Mode) show newlineclose "
-	  "(Loss/Len) show tab1 (=) show tab2 (" 
+	  "(Loss/Len) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->losslen_ev/gui->line->units_losslen->sf,
 	  gui->line->units_losslen->name);
   fprintf(fp,"(Odd Mode) show newlineclose "
-	  "(Loss/Len) show tab1 (=) show tab2 (" 
+	  "(Loss/Len) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->losslen_odd/gui->line->units_losslen->sf,
 	  gui->line->units_losslen->name);
@@ -1672,12 +1666,12 @@ static void print_ps(Wcalc *wcalc, FILE *fp)
 
 
   fprintf(fp,"(Even Mode ) show newlineclose "
-	  "(D) symbolshow (l) show tab1 (=) show tab2 (" 
+	  "(D) symbolshow (l) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->deltale/gui->line->units_deltal->sf,
 	  gui->line->units_deltal->name);
   fprintf(fp,"(Odd Mode ) show newlineclose "
-	  "(D) symbolshow (l) show tab1 (=) show tab2 (" 
+	  "(D) symbolshow (l) show tab1 (=) show tab2 ("
 	  WC_FMT_G " %s) show newline\n",
 	  gui->line->deltalo/gui->line->units_deltal->sf,
 	  gui->line->units_deltal->name);

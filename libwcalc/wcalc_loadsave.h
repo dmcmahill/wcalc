@@ -112,6 +112,7 @@ int fspec_read_string(fspec *list, const char *str,unsigned long base);
 #define FILE_MICROSTRIP          "microstrip"
 #define FILE_PARALLEL_RC         "parallel_rc"
 #define FILE_PARALLEL_RL         "parallel_rl"
+#define FILE_RODS                "rods"
 #define FILE_STRIPLINE           "stripline"
 
 
@@ -126,6 +127,7 @@ enum {
   MODEL_MICROSTRIP,
   MODEL_PARALLEL_RC,
   MODEL_PARALLEL_RL,
+  MODEL_RODS,
   MODEL_STRIPLINE
 };
 

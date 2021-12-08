@@ -143,6 +143,9 @@ int wcalc_load(FILE *fp)
   else if (strcmp(val, FILE_PARALLEL_RL) == 0) {
     return MODEL_PARALLEL_RL;
   }
+  else if (strcmp(val, FILE_RODS) == 0) {
+    return MODEL_RODS;
+  }
   else if (strcmp(val, FILE_STRIPLINE) == 0) {
     return MODEL_STRIPLINE;
   }
