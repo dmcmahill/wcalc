@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005,
- * 2006, 2007, 2012, 2020 Dan McMahill
+ * 2006, 2007, 2012, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -189,11 +189,7 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
 
   /* add the text to the window */
   tab = table_fn();
-#if GTK_CHECK_VERSION(2,0,0)
   gtk_widget_set_size_request (GTK_WIDGET(tab), ASCII_POPUP_X, ASCII_POPUP_Y);
-#else
-  gtk_widget_set_usize (GTK_WIDGET(window), ASCII_POPUP_X, ASCII_POPUP_Y);
-#endif
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
 		      tab, TRUE, TRUE, 0);
   gtk_widget_show (tab);

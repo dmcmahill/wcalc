@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2005, 2009, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -31,7 +30,6 @@
 #include "about.h"
 #include "files.h"
 #include "newprint.h"
-#include "print.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -80,13 +78,9 @@ static GtkItemFactoryEntry static_menu_items[] = {
   { N_("/File/_Save"),      "<control>S",  wcalc_save,       0, NULL },
   { N_("/File/Save _As"),   NULL,          wcalc_save_as,    0, NULL },
   { N_("/File/sep2"),       NULL,          NULL,             0, "<Separator>" },
-#if GTK_CHECK_VERSION(2,10,0)
   { N_("/File/_Print"),     "<control>P",  newprint_popup,   0, NULL },
   { N_("/File/_Export to PDF"),"<control>E",newprint_pdf_popup,  0, NULL },
   { N_("/File/Page Set_up"),NULL,          page_setup_popup,      0, NULL },
-#else
-  { N_("/File/_Print"),     "<control>P",  print_popup,      0, NULL },
-#endif
   { N_("/File/sep3"),       NULL,          NULL,             0, "<Separator>" },
   { N_("/File/Close"),      "<control>W",  window_close,     0, NULL },
   { N_("/File/Quit"),       "<control>Q",  gtk_main_quit,    0, NULL },
@@ -172,13 +166,8 @@ void get_main_menu( Wcalc *wcalc,
   gtk_item_factory_create_items (item_factory, nmenu_items, menu_items, wcalc);
 
   /* Attach the new accelerator group to the window. */
-  /* XXX gtk-2.2 */
-#if GTK_CHECK_VERSION(2,0,0)
   /* _gtk_accel_group_attach (accel_group, GTK_OBJECT (window)); */
   gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
-#else
-  gtk_accel_group_attach (accel_group, GTK_OBJECT (window));
-#endif
 
   if (menubar){
     /* Finally, return the actual menu bar created by the item factory. */

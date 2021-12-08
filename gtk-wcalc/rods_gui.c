@@ -33,16 +33,13 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "gtk-units.h"
 
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_rods_fig.h"
-#endif
 #include "rods.h"
 #include "rods_gui.h"
 #include "rods_loadsave.h"
@@ -57,7 +54,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -105,7 +101,6 @@ rods_gui *rods_gui_new(void)
    * Supply info for this particular GUI
    */
   wcalc->init = rods_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -573,7 +568,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   rods_gui *gui;
   rods * b;
 
@@ -608,85 +602,7 @@ static GList * dump_values(Wcalc *wcalc)
 
   list = wc_print_add_double("Wire Resistivity (rho)", b->rho, b->units_rho, list);
 
-#endif
-
   return list;
 }
 
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  rods_gui *gui;
-  char *file;
-
-  gui = WC_RODS_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("rods_fig.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "rods_fig.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/bspace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(d1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->d1/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(l1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->l1/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(d2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->d2/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(l2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->l2/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(distance) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->distance/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(offset) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->offset/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->rho/gui->b->units_rho->sf, gui->b->units_rho->name);
-
-  fprintf(fp,"(frequency) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name);
-  fprintf(fp,"newline\n");
-
-  /* Second column of the output */
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-
-
-  fprintf(fp,"(L1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->L1/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(L2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->L2/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(M) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->M/gui->b->units_L->sf, gui->b->units_L->name);
-
-  fprintf(fp,"(k) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->b->k);
-
-  fprintf(fp,"(R1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->R1/gui->b->units_R->sf, gui->b->units_R->name);
-  fprintf(fp,"(R2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->R2/gui->b->units_R->sf, gui->b->units_R->name);
-
-  fprintf(fp,"newline\n");
-
-}
 

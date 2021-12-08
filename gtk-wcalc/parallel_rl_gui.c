@@ -33,16 +33,13 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "gtk-units.h"
 
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_rl.h"
-#endif
 #include "parallel_rl.h"
 #include "parallel_rl_gui.h"
 #include "parallel_rl_loadsave.h"
@@ -57,7 +54,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze_p2s( GtkWidget *w, gpointer data );
@@ -105,7 +101,6 @@ parallel_rl_gui *parallel_rl_gui_new(void)
    * Supply info for this particular GUI
    */
   wcalc->init = parallel_rl_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -590,7 +585,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   parallel_rl_gui *gui;
   parallel_rl * b;
 
@@ -617,67 +611,8 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
 
   }
-#endif
 
   return list;
 }
 
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  parallel_rl_gui *gui;
-  char *file;
-
-  gui = WC_PARALLEL_RL_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("rl.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "rl.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/bspace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Ls/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Rs/gui->b->units_Rs->sf, gui->b->units_Rs->name);
-  fprintf(fp,"(Qs) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->b->Qs);
-
-  fprintf(fp,"(frequency) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name);
-  fprintf(fp,"newline\n");
-
-  /* Second column of the output */
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-
-
-  fprintf(fp,"(Lp) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Lp/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(Rp) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->Rp/gui->b->units_Rp->sf, gui->b->units_Rp->name);
-  fprintf(fp,"(Qp) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->b->Qp);
-
-
-  fprintf(fp,"newline\n");
-
-}
 

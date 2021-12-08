@@ -34,16 +34,13 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "gtk-units.h"
 
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_bars_fig.h"
-#endif
 #include "bars.h"
 #include "bars_gui.h"
 #include "bars_loadsave.h"
@@ -58,7 +55,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -107,7 +103,6 @@ bars_gui *bars_gui_new(void)
    */
 
   wcalc->init = bars_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -563,7 +558,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   bars_gui *gui;
   bars * b;
 
@@ -598,84 +592,8 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
 
   }
-#endif
 
   return list;
 }
 
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  bars_gui *gui;
-  char *file;
-
-  gui = WC_BARS_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("bars_fig.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "bars_fig.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/bspace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(a) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->a/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(b) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->b/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(l1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->l1/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(d) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->d/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(c) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->c/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(l2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->l2/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(E) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->E/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(P) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->P/gui->b->units_xy->sf, gui->b->units_xy->name);
-  fprintf(fp,"(l3) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->l3/gui->b->units_xy->sf, gui->b->units_xy->name);
-
-  fprintf(fp,"(frequency) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->freq/gui->b->units_freq->sf, gui->b->units_freq->name);
-  fprintf(fp,"newline\n");
-
-  /* Second column of the output */
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-
-
-  fprintf(fp,"(L1) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->L1/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(L2) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->L2/gui->b->units_L->sf, gui->b->units_L->name);
-  fprintf(fp,"(M) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->b->M/gui->b->units_L->sf, gui->b->units_L->name);
-
-  fprintf(fp,"(k) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->b->k);
-
-
-  fprintf(fp,"newline\n");
-
-}
 

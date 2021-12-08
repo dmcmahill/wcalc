@@ -32,7 +32,6 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "gtk-units.h"
 
@@ -40,9 +39,7 @@
 #include "symbols.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_coax.h"
-#endif
 #include "coax.h"
 #include "coax_gui.h"
 #include "coax_loadsave.h"
@@ -55,7 +52,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -108,7 +104,6 @@ coax_gui *coax_gui_new(void)
    * Supply info for this particular GUI
    */
   wcalc->init = coax_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -1180,7 +1175,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   coax_gui *gui;
   coax_line *l;
 
@@ -1234,110 +1228,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Incremental Conductance", l->G, l->units_G, list);
 
   }
-#endif
 
   return list;
-}
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  coax_gui *gui;
-  char *file;
-
-  gui = WC_COAX_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("coax.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "coax.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/linespace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(a) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->a/gui->line->units_abct->sf, gui->line->units_abct->name);
-  fprintf(fp,"(2a) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  2*gui->line->a/gui->line->units_abct->sf, gui->line->units_abct->name);
-  fprintf(fp,"(b) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->b/gui->line->units_abct->sf, gui->line->units_abct->name);
-  fprintf(fp,"(2b) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  2*gui->line->b/gui->line->units_abct->sf, gui->line->units_abct->name);
-  fprintf(fp,"(c) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->c/gui->line->units_abct->sf, gui->line->units_abct->name);
-  fprintf(fp,"(t) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->tshield/gui->line->units_abct->sf, gui->line->units_abct->name);
-
-  fprintf(fp,"(length) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->len/gui->line->units_len->sf, gui->line->units_len->name);
-  fprintf(fp,"(e) symbolshow (r) subshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->er);
-  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->tand);
-  fprintf(fp,"(p) symbolshow (a) subshow tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->rho_a/gui->line->units_rho->sf, gui->line->units_rho->name);
-  fprintf(fp,"(r) symbolshow (b) subshow tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->rho_b/gui->line->units_rho->sf, gui->line->units_rho->name);
-  fprintf(fp,"(frequency) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->freq/gui->line->units_freq->sf, gui->line->units_freq->name);
-  fprintf(fp,"newline\n");
-
-  /* Second column of the output */
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-
-
-  fprintf(fp,"(Z0) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
-	  gui->line->z0);
-  fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
-	  gui->line->elen);
-  fprintf(fp,"(delay) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->delay/gui->line->units_delay->sf, gui->line->units_delay->name);
-  fprintf(fp,"(TE) show (10) subshow newlineclose (  cutoff) show "
-	  "tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->fc/gui->line->units_fc->sf,gui->line->units_fc->name);
-  fprintf(fp,"(Loss) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->loss/gui->line->units_loss->sf, gui->line->units_loss->name);
-  fprintf(fp,"(Conductor) show newlineclose (  loss) show "
-	  "tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->alpha_c/gui->line->units_losslen->sf, gui->line->units_losslen->name);
-  fprintf(fp,"(Dielectric) show newlineclose (  loss) show "
-	  "tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->alpha_d/gui->line->units_losslen->sf, gui->line->units_losslen->name);
-
-  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->losslen/gui->line->units_losslen->sf, gui->line->units_losslen->name);
-
-  fprintf(fp,"(Maximum) show  newlineclose (  E-field) show "
-	  "tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->emax/gui->line->units_emax->sf, gui->line->units_emax->name);
-
-  fprintf(fp,"newline\n");
-
-  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->L/gui->line->units_L->sf, gui->line->units_L->name);
-  fprintf(fp,"(R) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->R/gui->line->units_R->sf, gui->line->units_R->name);
-  fprintf(fp,"(C) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->C/gui->line->units_C->sf, gui->line->units_C->name);
-  fprintf(fp,"(G) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->G/gui->line->units_G->sf, gui->line->units_G->name);
-
-  fprintf(fp,"newline\n");
-
 }
 

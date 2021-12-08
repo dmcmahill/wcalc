@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2003, 2005, 2006 Dan McMahill
+ * Copyright (C) 2001, 2002, 2003, 2005, 2006, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -126,9 +125,7 @@ static gint alert_window_create()
   GdkBitmap *mask;
   GtkStyle *style;
 
-#if GTK_CHECK_VERSION(2,0,0)
   GtkTextBuffer *buffer;
-#endif
 
   /* create the dialog box */
   alert_window = gtk_dialog_new();
@@ -172,7 +169,6 @@ static gint alert_window_create()
   gtk_widget_show( pixmapwid );
 
 
-#if GTK_CHECK_VERSION(2,0,0)
   /* add the text to the window */
   alert_scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_container_set_border_width (GTK_CONTAINER (alert_scroll), 10);
@@ -190,15 +186,6 @@ static gint alert_window_create()
   gtk_container_add(GTK_CONTAINER(alert_scroll), alert_view);
 
   gtk_widget_show_all(alert_scroll);
-
-#else /* GTK-1.2 */
-  alert_view = gtk_text_new( NULL, NULL );
-  alert_scroll = gtk_vscrollbar_new (GTK_TEXT(alert_view)->vadj);
-  gtk_box_pack_start(GTK_BOX(hbox), alert_view, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox), alert_scroll, FALSE, FALSE, 0);
-  gtk_text_set_editable(GTK_TEXT(alert_view), FALSE);
-  gtk_text_set_word_wrap(GTK_TEXT(alert_view), TRUE);
-#endif
 
   /*
    * The Action Area
@@ -223,17 +210,9 @@ static gint alert_window_create()
 void alert(const char *fmt,...)
 {
 
-#if GTK_CHECK_VERSION(2,0,0)
   GtkTextIter iter, iter2;
   GtkTextBuffer *buffer;
   static GtkTextMark *mark = NULL;
-#else
-  GtkAdjustment *adj;
-  int i;
-#endif
-
-
-
   gint lines;
 
   /* count of how many alerts we've had */
@@ -264,7 +243,6 @@ void alert(const char *fmt,...)
   cnt++;
   sprintf(prompt, "[%3d]: ", cnt);
 
-#if GTK_CHECK_VERSION(2,0,0)
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(alert_view));
 
   gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -290,76 +268,11 @@ void alert(const char *fmt,...)
   }
   gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(alert_view), mark, 0.05, TRUE, 0.0, 1.0);
 
-#else /* GTK-1.2 */
-  /*
-   * gtk_text_insert(GtkText  *text,
-   *                 GdkFont  *font,
-   *                 GdkColor *fore,
-   *                 GdkColor *back,
-   *                 const char *chars,
-   *                 gint length)
-   */
-
-  /* freeze the widget before making all of our updates */
-  gtk_text_freeze(GTK_TEXT(alert_view));
-
-  /* move our insertion point to the end */
-  lines = gtk_text_get_length(GTK_TEXT(alert_view));
-  gtk_text_set_point( GTK_TEXT(alert_view), lines);
-
-  /*
-   * if this isn't the first alert(), then add a couple of new lines
-   * after the last one
-   */
-  if(cnt > 1) {
-	 gtk_text_insert(GTK_TEXT(alert_view), NULL, NULL, NULL, "\n\n", -1);
-  }
-
-  /* add the prompt and the message */
-  gtk_text_insert(GTK_TEXT(alert_view), NULL, NULL, NULL, prompt, -1);
-  gtk_text_insert(GTK_TEXT(alert_view), NULL, NULL, NULL, msg, -1);
-
-
-  /* see if we need to prune lines */
-  lines = 0;
-  i = gtk_text_get_length(GTK_TEXT(alert_view));
-  while( (i > 0) && (lines < MAX_LINES) ) {
-    if( GTK_TEXT_INDEX(GTK_TEXT(alert_view), i) == '\n' ) {
-      lines++;
-    }
-    i--;
-  }
-
-  if( i > 0 ) {
-    gtk_text_set_point( GTK_TEXT(alert_view), 0);
-    gtk_text_forward_delete( GTK_TEXT(alert_view), i);
-    gtk_text_set_point( GTK_TEXT(alert_view), gtk_text_get_length(GTK_TEXT(alert_view)));
-  }
-
-  /*
-   * thaw the widget.  We do this before scrolling or else the
-   * scrolling fails to do the right thing
-   */
-
-  gtk_text_thaw(GTK_TEXT(alert_view));
-
-  /* scroll down to the bottom */
-  adj = gtk_range_get_adjustment(GTK_RANGE(alert_scroll));
-  gtk_adjustment_set_value(adj, adj->upper);
-  gtk_adjustment_changed(adj);
-
-
-#endif
-
 
   gtk_widget_show_all (alert_window);
 
   /* bring the window to the top  --  these messages are important */
-#if GTK_CHECK_VERSION(2,0,0)
   gtk_window_present( GTK_WINDOW(alert_window) );
-#else
-  gdk_window_raise(alert_window->window);
-#endif
 
   /* and BEEEP */
   gdk_beep();

@@ -32,13 +32,10 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "misc.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_coupled_stripline.h"
-#endif
 #include "coupled_stripline.h"
 #include "coupled_stripline_gui.h"
 #include "coupled_stripline_loadsave.h"
@@ -57,7 +54,6 @@
 static void use_z0k_pressed(GtkWidget *widget, gpointer data );
 static void use_z0ez0o_pressed(GtkWidget *widget, gpointer data );
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -105,7 +101,6 @@ coupled_stripline_gui *coupled_stripline_gui_new(void)
    * Supply info for this particular GUI
    */
   wcalc->init = coupled_stripline_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -1382,7 +1377,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   coupled_stripline_gui *gui;
   coupled_stripline_line *l;
 
@@ -1444,157 +1438,7 @@ static GList * dump_values(Wcalc *wcalc)
     list = wc_print_add_double("Odd mode incremental Conductance", l->Godd, l->units_G, list);
 
   }
-#endif
 
   return list;
-}
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  coupled_stripline_gui *gui;
-  char *file;
-
-  gui = WC_COUPLED_STRIPLINE_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("coupled_stripline.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "coupled_stripline.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/linespace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(W) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->w/gui->line->units_lwst->sf,
-	  gui->line->units_lwst->name);
-  fprintf(fp,"(S) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->s/gui->line->units_lwst->sf,
-	  gui->line->units_lwst->name);
-  fprintf(fp,"(H) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->h/gui->line->units_lwst->sf,
-	  gui->line->units_lwst->name);
-  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->l/gui->line->units_lwst->sf,
-	  gui->line->units_lwst->name);
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->tmet/gui->line->units_lwst->sf,
-	  gui->line->units_lwst->name);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->rho/gui->line->units_rho->sf,
-	  gui->line->units_rho->name);
-  fprintf(fp,"(Rough) show tab1 (=) show tab2 (" WC_FMT_G " %s-rms) show newline\n",
-	  gui->line->subs->rough/gui->line->units_rough->sf,
-	  gui->line->units_rough->name);
-  fprintf(fp,"(e) symbolshow (r) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->subs->er);
-  fprintf(fp,"(tan) show (d) symbolshow tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->subs->tand);
-  fprintf(fp,"newline\n");
-
-  fprintf(fp,"(freq) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->freq/gui->line->units_freq->sf,
-	  gui->line->units_freq->name);
-
-
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(Lev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Lev/gui->line->units_L->sf,
-	  gui->line->units_L->name);
-  fprintf(fp,"(Rev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Rev/gui->line->units_R->sf,
-	  gui->line->units_R->name);
-  fprintf(fp,"(Cev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Cev/gui->line->units_C->sf,
-	  gui->line->units_C->name);
-  fprintf(fp,"(Gev) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Gev/gui->line->units_G->sf,
-	  gui->line->units_G->name);
-
-
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(Z0) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
-	  gui->line->z0);
-  fprintf(fp,"(k) show tab1 (=) show tab2 (" WC_FMT_G " ) show newline\n",
-	  gui->line->k);
-  fprintf(fp,"(Z0e) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
-	  gui->line->z0e);
-  fprintf(fp,"(Z0o) show tab1 (=) show tab2 (" WC_FMT_G " ) show (W) symbolshow newline\n",
-	  gui->line->z0o);
-  fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
-	  gui->line->len);
-
-  fprintf(fp,"(Even Mode) show newlineclose "
-	  "(Loss) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->loss_ev/gui->line->units_loss->sf,
-	  gui->line->units_loss->name);
-  fprintf(fp,"(Odd Mode) show newlineclose "
-	  "(Loss) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->loss_odd/gui->line->units_loss->sf,
-	  gui->line->units_loss->name);
-
-  fprintf(fp,"(Even Mode) show newlineclose "
-	  "(Loss/Len) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->losslen_ev/gui->line->units_losslen->sf,
-	  gui->line->units_losslen->name);
-  fprintf(fp,"(Odd Mode) show newlineclose "
-	  "(Loss/Len) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->losslen_odd/gui->line->units_losslen->sf,
-	  gui->line->units_losslen->name);
-
-  fprintf(fp,"(skin depth) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->skindepth/gui->line->units_depth->sf,
-	  gui->line->units_depth->name);
-
-
-  fprintf(fp,"(Even Mode ) show newlineclose "
-	  "(D) symbolshow (l) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->deltale/gui->line->units_deltal->sf,
-	  gui->line->units_deltal->name);
-  fprintf(fp,"(Odd Mode ) show newlineclose "
-	  "(D) symbolshow (l) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->line->deltalo/gui->line->units_deltal->sf,
-	  gui->line->units_deltal->name);
-
-  fprintf(fp,"newline newlineclose\n");
-  fprintf(fp,"(Lodd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Lodd/gui->line->units_L->sf,
-	  gui->line->units_L->name);
-  fprintf(fp,"(Rodd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Rodd/gui->line->units_R->sf,
-	  gui->line->units_R->name);
-  fprintf(fp,"(Codd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Codd/gui->line->units_C->sf,
-	  gui->line->units_C->name);
-  fprintf(fp,"(Godd) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Godd/gui->line->units_G->sf,
-	  gui->line->units_G->name);
-
-
 }
 

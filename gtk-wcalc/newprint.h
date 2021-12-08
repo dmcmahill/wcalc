@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2009 Dan McMahill
+ * Copyright (C) 2009, 2010 Dan McMahill
  * All rights reserved.
  *
  *
@@ -21,8 +20,6 @@
 
 #ifndef __NEWPRINT_H__
 #define __NEWPRINT_H__
-
-#if GTK_CHECK_VERSION(2,10,0)
 
 #include <cairo.h>
 #include "units.h"
@@ -64,9 +61,5 @@ void page_setup_popup(gpointer data,
 		      GtkWidget *widget);
 
 
-#endif /* GTK_CHECK_VERSION(2,10,0) */
 #endif /*__NEWPRINT_H__*/
-
-
-
 

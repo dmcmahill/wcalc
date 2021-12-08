@@ -43,8 +43,6 @@
 #include <dmalloc.h>
 #endif
 
-#if GTK_CHECK_VERSION(2,10,0)
-
 /* In points */
 #define HEADER_BORDER 8
 #define HEADER_GAP (3*72/25.4)
@@ -820,6 +818,4 @@ void wc_print_value_free(PrintValue * val)
 
   free( val );
 }
-
-#endif
 

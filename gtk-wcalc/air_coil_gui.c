@@ -32,14 +32,11 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "misc.h"
 #include "units.h"
 
-#if GTK_CHECK_VERSION(2,10,0)
 #include "pixmaps/figure_air_coil.h"
-#endif
 #include "air_coil.h"
 #include "air_coil_gui.h"
 #include "air_coil_loadsave.h"
@@ -54,7 +51,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void use_len_pressed(GtkWidget *widget, gpointer data );
@@ -112,7 +108,6 @@ air_coil_gui *air_coil_gui_new(void)
    */
 
   wcalc->init = air_coil_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -970,7 +965,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name)
 static GList * dump_values(Wcalc *wcalc)
 {
   static GList * list = NULL;
-#if GTK_CHECK_VERSION(2,10,0)
   air_coil_gui *gui;
   air_coil_coil * c;
 
@@ -1009,79 +1003,6 @@ static GList * dump_values(Wcalc *wcalc)
 
 
   }
-#endif
   return list;
-}
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  air_coil_gui *gui;
-  char *file;
-
-  gui = WC_AIR_COIL_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("air_coil.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "air_coil.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/linespace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-  fprintf(fp,"(N) show tab1 (=) show tab2 (%g turns) show newline\n",
-	  gui->coil->Nf);
-  fprintf(fp,"(I.D.) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->dia/gui->coil->units_dia->sf,
-	  gui->coil->units_dia->name);
-  fprintf(fp,"(Len.) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->len/gui->coil->units_len->sf,
-	  gui->coil->units_len->name);
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(Wire Size) show tab1 (=) show tab2 (" WC_FMT_G " AWG) show newline\n",
-	  gui->coil->AWGf);
-  fprintf(fp,"(Wire Diameter) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->wire_diameter/gui->coil->units_wire_diameter->sf,
-	  gui->coil->units_wire_diameter->name);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->rho/gui->coil->units_rho->sf,
-	  gui->coil->units_rho->name);
-  fprintf(fp,"\n");
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->L/gui->coil->units_L->sf,
-	  gui->coil->units_L->name);
-  fprintf(fp,"(Q) show tab1 (=) show tab2 (" WC_FMT_G " at " WC_FMT_G " %s) show newline\n",
-	  gui->coil->Q, gui->coil->freq/gui->coil->units_freq->sf,
-	  gui->coil->units_freq->name);
-  fprintf(fp,"(SRF) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->SRF/gui->coil->units_SRF->sf,
-	  gui->coil->units_SRF->name);
-  fprintf(fp,"(Closewound) show\n");
-  fprintf(fp,"linespace /linespace 1.0 def newline /linespace exch def \n");
-  fprintf(fp,"(inductance) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->coil->Lmax/gui->coil->units_L->sf,
-	  gui->coil->units_L->name);
-  fprintf(fp,"(fill) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->coil->fill);
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(freq) show tab1 (=) show tab2 ("
-	  WC_FMT_G " %s) show newline\n",
-	  gui->coil->freq/gui->coil->units_freq->sf,
-	  gui->coil->units_freq->name);
-
 }
 
