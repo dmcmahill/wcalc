@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2004 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2020 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -110,6 +109,8 @@ const wc_units_data wc_units_length[]=
   {"m", 1.0},
   {"mil", 25.4e-6},
   {"inch", 25.4e-3},
+  {"foot", 0.3048},
+  {"yard", 0.9144},
   {NULL,0}
 };
 
