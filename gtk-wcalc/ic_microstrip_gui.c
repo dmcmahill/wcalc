@@ -31,7 +31,6 @@
 #endif
 
 #include "alert.h"
-#include "epscat.h"
 #include "menus.h"
 #include "misc.h"
 #include "units.h"
@@ -51,7 +50,6 @@
 #include <dmalloc.h>
 #endif
 
-static void print_ps(Wcalc *wcalc,FILE *fp);
 static GList * dump_values(Wcalc *wcalc);
 
 static void analyze( GtkWidget *w, gpointer data );
@@ -101,7 +99,6 @@ ic_microstrip_gui *ic_microstrip_gui_new(void)
    * Supply info for this particular GUI
    */
   wcalc->init = ic_microstrip_gui_init;
-  wcalc->print_ps = print_ps;
   wcalc->save = gui_save;
   wcalc->dump_values = dump_values;
 
@@ -1156,90 +1153,5 @@ static GList * dump_values(Wcalc *wcalc)
   }
 
   return list;
-}
-
-static void print_ps(Wcalc *wcalc, FILE *fp)
-{
-  ic_microstrip_gui *gui;
-  char *file;
-
-  gui = WC_IC_MICROSTRIP_GUI(wcalc);
-
-  /* print the EPS file */
-
-  file=g_malloc( (strlen(global_print_config->eps_dir)+strlen("ic_microstrip.eps")+2)*sizeof(char));
-  sprintf(file,"%s%c%s",global_print_config->eps_dir,
-	  global_print_config->dir_sep,
-	  "ic_microstrip.eps");
-  eps_cat(file,fp);
-
-  /* print the data */
-
-  fprintf(fp,"%% spit out the numbers\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"newline\n");
-  fprintf(fp,"/col1x currentpoint pop def\n");
-  fprintf(fp,"/col2x %g 2 div inch def\n", global_print_config->paperwidth);
-  fprintf(fp,"/coly currentpoint exch pop def\n");
-  fprintf(fp,"/linespace 1.5 def\n");
-  fprintf(fp,"\n");
-  fprintf(fp,"col1x coly moveto\n");
-  fprintf(fp,"/leftcol col1x  def\n");
-
-  fprintf(fp,"(W) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->w/gui->line->units_lwht->sf, gui->line->units_lwht->name);
-  fprintf(fp,"(H) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->h/gui->line->units_lwht->sf, gui->line->units_lwht->name);
-  fprintf(fp,"(L) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->l/gui->line->units_lwht->sf, gui->line->units_lwht->name);
-  fprintf(fp,"newline\n");
-
-  fprintf(fp,"(e) symbolshow (s) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->subs->es);
-  fprintf(fp,"(s) symbolshow (s) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->sigmas/gui->line->units_sigmas->sf, gui->line->units_sigmas->name);
-  fprintf(fp,"(Tox) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->tox/gui->line->units_lwht->sf, gui->line->units_lwht->name);
-  fprintf(fp,"(e) symbolshow (ox) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->subs->eox);
-  fprintf(fp,"(Tmet) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->tmet/gui->line->units_lwht->sf, gui->line->units_lwht->name);
-  fprintf(fp,"(Rho) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs->rho/gui->line->units_rho->sf, gui->line->units_rho->name);
-  fprintf(fp,"(Rough) show tab1 (=) show tab2 (" WC_FMT_G " %s-rms) show newline\n",
-	  gui->line->subs->rough/gui->line->units_rough->sf, gui->line->units_rough->name);
-  fprintf(fp,"(Freq) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->freq/gui->line->units_freq->sf, gui->line->units_freq->name);
-  fprintf(fp,"\n");
-
-  fprintf(fp,"col2x coly moveto \n");
-  fprintf(fp,"/leftcol col2x def\n");
-  fprintf(fp,"(Z0) show tab1 (=) show tab2 (" WC_FMT_G " + j " WC_FMT_G " ) show (W) symbolshow newline\n",
-	  gui->line->Ro, gui->line->Xo);
-  fprintf(fp,"(elen) show tab1 (=) show tab2 (" WC_FMT_G " deg) show newline\n",
-	  gui->line->len);
-  fprintf(fp,"(Delay) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->delay/gui->line->units_delay->sf, gui->line->units_delay->name);
-  fprintf(fp,"(Loss) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->loss/gui->line->units_loss->sf, gui->line->units_loss->name);
-  fprintf(fp,"(Loss/Len) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->losslen/gui->line->units_losslen->sf, gui->line->units_losslen->name);
-  fprintf(fp,"(subs. skin) show newlineclose (  depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->subs_skindepth/gui->line->units_depth->sf, gui->line->units_depth->name);
-  fprintf(fp,"(metal skin) show newlineclose (  depth) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->met_skindepth/gui->line->units_depth->sf, gui->line->units_depth->name);
-  fprintf(fp,"(Keff) show tab1 (=) show tab2 (" WC_FMT_G ") show newline\n",
-	  gui->line->keff);
-  fprintf(fp,"newline\n");
-  fprintf(fp,"(Ls) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Lmis/gui->line->units_L->sf, gui->line->units_L->name);
-  fprintf(fp,"(Rs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Rmis/gui->line->units_R->sf, gui->line->units_R->name);
-  fprintf(fp,"(Cs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Cmis/gui->line->units_C->sf, gui->line->units_C->name);
-  fprintf(fp,"(Gs) show tab1 (=) show tab2 (" WC_FMT_G " %s) show newline\n",
-	  gui->line->Gmis/gui->line->units_G->sf, gui->line->units_G->name);
-
 }
 

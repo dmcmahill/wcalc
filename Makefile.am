@@ -1,6 +1,5 @@
-
 ##
-## Copyright (C) 2001, 2002, 2003, 2004, 2017, 2020 Dan McMahill
+## Copyright (C) 2001, 2002, 2003, 2004, 2017, 2020, 2021 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -27,13 +26,9 @@ DIST_SUBDIRS= m4 include intl po libwcalc pixmaps stdio-wcalc gtk-wcalc \
 
 ACLOCAL_AMFLAGS=	-I m4
 
-# XXX need to move the ps stuff
 EXTRA_DIST= config.rpath \
 	gettext.h \
 	ltcf-c.sh \
-	ps_header.c \
-	ps_footer.c \
-	ps_microstrip.c \
 	AUTHORS \
 	README.newmodel \
 	README.win32 \

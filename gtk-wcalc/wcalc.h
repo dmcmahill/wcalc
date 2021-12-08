@@ -48,7 +48,6 @@
 #endif
 
 #include "misc.h"
-#include "print.h"
 
 /* Global list of the names of the various models */
 GList *global_model_names;
@@ -61,9 +60,6 @@ GList *global_model_menus;
 
 /* Global list of default file names for the models */
 GList *global_model_defaults;
-
-/* Global printer page setup */
-print_config *global_print_config;
 
 /* Format string used by many forms and postscript output */
 #define WC_FMT_G "%.4g"
@@ -103,7 +99,6 @@ typedef struct WCALC
    * Required public methods
    */
   void (*init) (struct WCALC *, GtkWidget *, FILE *);
-  void (*print_ps) (struct WCALC *, FILE *);
   int (*load) (struct WCALC *, FILE *);
   void (*save) (struct WCALC *, FILE *, char *);
   int (*analyze) (void);

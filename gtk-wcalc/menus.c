@@ -30,7 +30,6 @@
 #include "about.h"
 #include "files.h"
 #include "newprint.h"
-#include "print.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC

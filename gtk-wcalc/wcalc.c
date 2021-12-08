@@ -230,7 +230,6 @@ int main( int   argc,
 
   /* set up the list of available models for the program */
   global_model_init();
-  global_printer_init();
 
   /* handle command line arguments */
 
@@ -700,7 +699,6 @@ void Wcalc_init(Wcalc *wcalc)
   wcalc->init_done=0;
 
   wcalc->init = NULL;
-  wcalc->print_ps = NULL;
   wcalc->load = NULL;
   wcalc->save = NULL;
   wcalc->analyze = NULL;

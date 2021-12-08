@@ -40,8 +40,6 @@ wcalc_SOURCES = \
 	coupled_microstrip_gui.h \
 	coupled_stripline_gui.c \
 	coupled_stripline_gui.h \
-	epscat.c \
-	epscat.h \
 	files.c \
 	files.h \
 	gtk-units.c \
@@ -58,8 +56,6 @@ wcalc_SOURCES = \
 	parallel_rc_gui.h \
 	parallel_rl_gui.c \
 	parallel_rl_gui.h \
-	print.c \
-	print.h \
 	rods_gui.c \
 	rods_gui.h \
 	start.c \
