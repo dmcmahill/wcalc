@@ -336,11 +336,11 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   y = 0;
 
 
-  wc_table_add_label_new_units(table, gui, "R1",
+  wc_table_add_label_new_units(table, gui, "R1 (LF)",
 			       &(gui->label_R1), gui->b->units_R, &ug_R,
 			       &(gui->b->R1), &x, &y);
 
-  wc_table_add_label_attach_units(table, gui, "R2",
+  wc_table_add_label_attach_units(table, gui, "R2 (LF)",
 				  &(gui->label_R2), gui->b->units_R, &ug_R,
 				  &(gui->b->R2), &x, &y);
   /* spacer */
