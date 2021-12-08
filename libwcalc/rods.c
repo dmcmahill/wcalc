@@ -86,6 +86,10 @@
 /*
  * l = length [meters]
  * R = radius [meters]
+ * freq = frequency [Hz]
+ * rho = resistivity [ohm-meters]
+ *
+ * returns:
  *
  * L = self inductance [Henries]
  */
@@ -119,7 +123,12 @@ static double Lself(double l, double R, double freq, double rho)
    */
   L = 2e-7*(l*log(sqrt(l*l + R*R) + l) - l*(log(R) - 0.25) - sqrt(l*l + R*R) + 0.905415*R);
 
-  /* High frequency inductance, Aebischer (35) */
+  /*
+   * High frequency inductance, Aebischer (35)
+   * This one is derived using closed for results for the integral
+   * that gives GMD (geometric mean distance), AMSD (arithmetic mean
+   * square distance), and AMD (arithmetic mean distance).
+   */
   Lhf = 2e-7*(l*log(sqrt(l*l + 2*R*R) + l) - l*log(R) - sqrt(l*l + 2*R*R) + (4.0/M_PI)*R);
 
   /* Aebischer (49) */
@@ -164,18 +173,21 @@ static double Lself(double l, double R, double freq, double rho)
 }
 
 /*
- * NOTE:  This function is limited to d1=d2=2*R, l1=l2, offset=0.
+ * NOTE:  This function is limited to l1=l2, offset=0.
  * Once that limitation is addressed here the rest of the module will
  * be in good shape.
  *
- * l = length [meters]
+ * R1 = radius of wire 1 [meters]
+ * l1 = length of wire1 [meters]
+ * R2 = radius of wire 2 [meters]
+ * l2 = length of wire2 [meters]
  * d = distance between centers [meters]
- * R = wire radius
+ * offset = offset in the axial position [meters]
  *
  */
 static double Lmutual(double R1, double l1, double R2, double l2, double d)
 {
-  double amd, amsd, gmd, l, M, w, deltaM;
+  double amd, amsd, gmd, l, M, M2, w, deltaM;
 
   /*
    * Rosa (12)
@@ -195,7 +207,7 @@ static double Lmutual(double R1, double l1, double R2, double l2, double d)
    *   AMDd ~ d + (R^2 / (4*d))
    * This can be extended to disks of two different radii with
    *   AMDd ~ d + (R1^2 / (8*d)) + (R2^2 / (8*d))
-   * Numerical checking of the modified epxression shows essentially the same accuracy as
+   * Numerical checking of the modified expression shows essentially the same accuracy as
    * in the R1 = R2 case.
    */
 
@@ -216,15 +228,57 @@ static double Lmutual(double R1, double l1, double R2, double l2, double d)
    */
   w = sqrt(l*l + d*d + 0.5*(R1*R1 + R2*R2));
 
-  /* Aebischer (62) */
-  /* M = 2e-7*(l*log(w + l) - l*log(d) - w + d + R*R/(4.0*d)); */
+  /*
+   * Aebischer (62)
+   * M = 2e-7*(l*log(w + l) - l*log(d) - w + d + R*R/(4.0*d))
+   * The last part, d + R*R/(4*d) is AMD and in our case it becomes
+   *
+   * M = 2e-7*(l*log(w + l) - l*log(d) - w + amd);
+   */
 
-  /* Aebischer (64) */
-  /* deltaM = 2e-7*sqrt(d*d + R*R) * (sqrt(d*d + R*R) - d - R*R/(4.0*d)) * ((w - l) / (w*(w + l))); */
-
-  deltaM = 0.0;
+  /* Aebischer (64)
+   * deltaM = 2e-7*sqrt(d*d + R*R) * (sqrt(d*d + R*R) - d -R*R/(4.0*d)) * ((w - l) / (w*(w + l)));
+   *
+   * but, d*d + R*R is amsd*amsd -> sqrt(d*d + R*R) = amsd
+   * and d + R*R/(4*d) is amd
+   * so we have:
+   */
+  deltaM = 2e-7*amsd*(amsd - amd)*(w-l)/(w*(w+l));
 
   M = M + deltaM;
+
+  /*
+   * The preceeding is all low frequency.  What about high frequency?
+   * In the primary reference there is a comment regarding a shorted
+   * pair of wires and they state "Using the high-frequency limits in
+   * these examples would be of limited validity because one would not
+   * only need to consider the skin effect, but also the proximity
+   * effect."  In other words the current distribution on the surface
+   * of the conductors is affected by the other conductors and hence
+   * our nice result in the self inductance case becomes disturbed.
+   *
+   * So what is the "best" approach here?  Report a self inductance at
+   * low frequencies and also the high frequency limit?  A standard
+   * bondwire used in IC packaging at 100 MHz ends up operating in the
+   * HF limit by a good bit.  However, here is an interesting
+   * observation:  Even with wires almost touching we still don't see
+   * an enormous error.  For example, consider 1 mil diameter gold
+   * bond wires in a few cases.
+   *
+   *  Length (mil), Gap (mil), k_LF   , k_HF
+   *   500        , 0.01     , 0.8611 , 0.8936
+   *   100        , 0.01     , 0.8195 , 0.8602
+   *   500        , 1.0      , 0.7616 , 0.7904
+   *   100        , 1.0      , 0.6911 , 0.7254
+   *
+   * In the above, the LF and HF limits were used to calculate self
+   * inductance and the LF mutual inductance was calculated.  There is
+   * a change in coupling coefficient but it is not super high and
+   * in no case do we risk a total failure where the mutual inductance
+   * exceeds the self inductance.  So, let's pick accounting for
+   * frequency in the self inductance but just use this low frequency
+   * result for the mutual inductance.
+   */
 
   return M;
 }
