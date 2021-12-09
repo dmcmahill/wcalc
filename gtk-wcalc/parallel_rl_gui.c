@@ -250,13 +250,10 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
 
 
   /* Series to Parallel Analyze button */
-  button = gtk_button_new_with_label (_("Series to Parallel"));
-  wc_button_connect( button, analyze_s2p, gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_set_tooltip_text( button,
+  wc_table_add_button(table, _("Series to Parallel"),
 		       _("Calculate equivalent parallel circuit "
-                         "from given series circuit") );
+                         "from given series circuit"),
+                      analyze_s2p, gui, x, y);
   y++;
 
   /* ---------------- Frequency -------------- */
@@ -286,13 +283,10 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
 
 
   /* Parallel to Series button */
-  button = gtk_button_new_with_label (_("Parallel to Series"));
-  wc_button_connect( button, analyze_p2s, gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_set_tooltip_text( button,
-		       _("Calculate equivalent series circuit "
-                         "from given parallel circuit") );
+  wc_table_add_button(table, _("Parallel to Series"),
+                      _("Calculate equivalent series circuit "
+                        "from given parallel circuit"),
+                      analyze_p2s, gui, x, y);
   y++;
 
 

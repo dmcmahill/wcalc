@@ -236,17 +236,12 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 			       &(gui->text_freq), gui->b->units_freq, &freq_ug,
 			       &(gui->b->freq), &x, &y);
 
-
-  /* Analyze button */
-  button = gtk_button_new_with_label (_("Analyze"));
-  wc_button_connect( button, analyze, gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_set_tooltip_text( button,
-		       _("Calculate electrical characteristics "
-                         "from physical parameters") );
+  /* ---------------- Analyze Button -------------- */
+  wc_table_add_button(table, _("Analyze"),
+                      _("Calculate electrical characteristics "
+                        "from physical parameters"),
+                      analyze, gui, x, y);
   y++;
-
 
   /* Column #2 */
   x += 4;
@@ -335,7 +330,7 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
 				  &(gui->label_R2), gui->b->units_R, &ug_R,
 				  &(gui->b->R2), &x, &y);
 
-  
+
   gtk_widget_show(table);
 
 }

@@ -212,15 +212,15 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
   table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
-  wc_table_add_button(table, _("<-Synthesize"),
-                      _("Calculate physical characteristics "
-                        "from electrical parameters"),
-                      synthesize, gui, xb, 0);
+  wc_table_add_button_wh(table, _("<-Synthesize"),
+                         _("Calculate physical characteristics "
+                           "from electrical parameters"),
+                         synthesize, gui, xb, 1, 0, 4, NULL);
 
-  wc_table_add_button(table, _("Analyze->"),
-                      _("Calculate electrical characteristics "
-                        "from physical parameters"),
-                      analyze, gui, xb+1, 0);
+  wc_table_add_button_wh(table, _("Analyze->"),
+                         _("Calculate electrical characteristics "
+                           "from physical parameters"),
+                         analyze, gui, xb+1, 1, 0, 4, NULL);
 
 
   /* ---------------- Width  -------------- */
@@ -284,7 +284,7 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
    /* ---------------- Z0/K -------------- */
   button = gtk_radio_button_new_with_label (NULL, _("Z0"));
   wc_table_add_wentry_fixed_units(table, gui, button, "Ohms",
-                                  &(gui->text_z0), 
+                                  &(gui->text_z0),
                                   &(gui->line->z0), &x, &y);
   g_signal_connect( G_OBJECT( button ), "clicked",
                     G_CALLBACK(use_z0k_pressed),
@@ -295,14 +295,14 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
   z0k_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 
   wc_table_add_entry_no_units(table, gui, "k",
-                              &(gui->text_k), 
+                              &(gui->text_k),
                               &(gui->line->k), &x, &y);
-  
+
 
    /* ---------------- Z0e/Z0o -------------- */
   button = gtk_radio_button_new_with_label (z0k_group, _("Z0e"));
   wc_table_add_wentry_fixed_units(table, gui, button, "Ohms",
-                                  &(gui->text_z0e), 
+                                  &(gui->text_z0e),
                                   &(gui->line->z0e), &x, &y);
   g_signal_connect( G_OBJECT( button ), "clicked",
                     G_CALLBACK(use_z0ez0o_pressed),
@@ -311,13 +311,13 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
   gtk_widget_show (button);
 
   wc_table_add_entry_fixed_units(table, gui, _("Z0o"), "Ohms",
-                                 &(gui->text_z0o), 
+                                 &(gui->text_z0o),
                                  &(gui->line->z0o), &x, &y);
 
 
   /* ---------------- Electrical length -------------- */
   wc_table_add_entry_fixed_units(table, gui, _("Elec. Len."), _("Degrees"),
-                                 &(gui->text_elen), 
+                                 &(gui->text_elen),
                                  &(gui->line->len), &x, &y);
 
 
@@ -342,7 +342,7 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
     gtk_widget_set_sensitive (gui->text_k, FALSE);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
   }
-  
+
   /* ----------------  - -------------- */
 
   gtk_widget_show (table);
@@ -393,7 +393,7 @@ static void outputs_init(coupled_stripline_gui *gui, GtkWidget *parent)
   wc_table_add_label_new_units(table, gui, _("Delay"),
                                &(gui->label_delay), gui->line->units_delay, &ug,
                                &(gui->line->delay), &x, &y);
-  
+
   /* ---------------- new column -------------- */
   x = 4;
   x2 = x + 2;

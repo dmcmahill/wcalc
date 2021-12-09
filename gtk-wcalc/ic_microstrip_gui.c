@@ -206,11 +206,17 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
   table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
+  /* ---------------- Analyze Button  -------------- */
+  wc_table_add_button_wh(table, _("Analyze"),
+                         _("Calculate electrical characteristics "
+                           "from physical parameters"),
+                         analyze, gui, xb+1, 1, 0, 3, NULL);
+
   /* ---------------- Width  -------------- */
   wc_table_add_entry_new_units(table, gui, _("Width (W)"),
                                &(gui->text_w), gui->line->units_lwht, &lwht_ug,
                                &(gui->line->w), &x, &y);
-  
+
   wc_table_add_button(table, _("<-Synthesize"),
                       _("Synthesize width and physical length to "
                         "obtain the requested characteristic "
@@ -259,10 +265,6 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
                               &(gui->text_eox),
                               &(gui->line->subs->eox), &x, &y);
 
-  wc_table_add_button(table, _("Analyze"),
-                      _("Calculate electrical characteristics "
-		       "from physical parameters"),
-                      analyze, gui, xb, y-1);
 
   /* ---------------- new column -------------- */
   x = 5;
@@ -277,13 +279,13 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
 
    /* ---------------- Characteristic impedance -------------- */
   wc_table_add_entry_fixed_units(table, gui, "Z0", "Ohms",
-                                 &(gui->text_Ro), 
+                                 &(gui->text_Ro),
                                  &(gui->line->Ro), &x, &y);
 
-  
+
   /* ---------------- Electrical length -------------- */
   wc_table_add_entry_fixed_units(table, gui, _("Elec. Len."), _("Degrees"),
-                                 &(gui->text_elen), 
+                                 &(gui->text_elen),
                                  &(gui->line->len), &x, &y);
 
 
@@ -306,7 +308,7 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
   wc_table_add_entry_new_units(table, gui, _("Frequency"),
                                &(gui->text_freq), gui->line->units_freq, &ug,
                                &(gui->line->freq), &x, &y);
-  
+
   gtk_widget_show (table);
 }
 
@@ -334,7 +336,7 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
   wc_table_add_label_new_units(table, gui, _("Delay"),
                                &(gui->label_delay), gui->line->units_delay, &ug,
                                &(gui->line->delay), &x, &y);
-  
+
   /* ---------------- total loss -------------- */
   wc_table_add_label_new_units(table, gui, _("Loss"),
                                &(gui->label_loss), gui->line->units_loss, &ug,
@@ -596,7 +598,7 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 #endif
-  
+
   gtk_widget_show(table);
 
 }

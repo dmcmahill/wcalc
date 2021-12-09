@@ -201,7 +201,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   int y = 0;
   int x = 0;
   int xb = 3;
-  
+
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), _("Analysis/Synthesis Values") );
@@ -251,10 +251,11 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
   wc_table_add_entry_new_units(table, gui, _("Length"),
                                   &(gui->text_len), gui->line->units_len, &ug,
                                   &(gui->line->len), &x, &y);
-  button = gtk_button_new_with_label (_("<-Synthesize"));
-  wc_button_connect( button, synthesize_len, gui);
-  gtk_table_attach(GTK_TABLE(table), button, xb, xb+1, y-1, y, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
+
+  wc_table_add_button_wh(table, _("<-Synthesize"),
+                         _("Update length only to match the requested electrical length."
+                           "Not yet implemented."),
+                         synthesize_len, gui, xb, 1, y-1, 1, &button);
   gtk_widget_set_sensitive (button, FALSE);
 
 
@@ -283,7 +284,7 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
                         "from physical parameters"),
                       analyze, gui, xb, y-1);
 
-  
+
   /* ---------------- t -------------- */
   wc_table_add_entry_attach_units(table, gui, "t",
                                   &(gui->text_tshield), gui->line->units_abct, &abct_ug,
@@ -306,21 +307,21 @@ static void values_init(coax_gui *gui, GtkWidget *parent)
 
   /* ---------------- Characteristic impedance -------------- */
   wc_table_add_entry_fixed_units(table, gui, "Z0", "Ohms",
-                                 &(gui->text_z0), 
+                                 &(gui->text_z0),
                                   &(gui->line->z0), &x, &y);
 
-  
+
   /* ---------------- Electrical length -------------- */
 
   wc_table_add_entry_fixed_units(table, gui, "Elen", _("Degrees"),
-                                 &(gui->text_elen), 
+                                 &(gui->text_elen),
                                   &(gui->line->elen), &x, &y);
 
   /* ---------------- TE10 Cutoff -------------- */
   wc_table_add_entry_new_units(table, gui, _("TE10 Cutoff"),
                                &(gui->text_fc), gui->line->units_fc, &ug,
                                &(gui->line->fc), &x, &y);
-  
+
   gtk_widget_set_sensitive(gui->text_fc,FALSE);
   wc_units_attach_entry(ug, gui->text_fc, &(gui->line->fc), NULL, NULL, WC_FMT_G, 1);
 
@@ -367,7 +368,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   wc_table_add_label_new_units(table, gui, _("delay"),
                                &(gui->label_delay), gui->line->units_delay, &ug,
                                &(gui->line->delay), &x, &y);
-  
+
   /* ---------------- total loss -------------- */
   wc_table_add_label_new_units(table, gui, _("loss"),
                                &(gui->label_loss), gui->line->units_loss, &ug,
@@ -387,7 +388,7 @@ static void outputs_init(coax_gui *gui, GtkWidget *parent)
   wc_table_add_label_attach_units(table, gui, _("Conductor loss"),
                                &(gui->label_dloss), gui->line->units_losslen, &losslen_ug,
                                &(gui->line->alpha_d), &x, &y);
-  
+
   /* ---------------- new column -------------- */
   x = 4;
   y = 0;

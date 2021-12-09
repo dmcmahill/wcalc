@@ -194,7 +194,7 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
   int y = 0;
   int x = 0;
   int xb = 3;
-  
+
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), "Analysis/Synthesis Values" );
@@ -207,12 +207,19 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
   table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
+  /* ---------------- Analyze Button -------------- */
+  wc_table_add_button_wh(table, _("Analyze"),
+                      _("Calculate electrical characteristics "
+		       "from physical parameters"),
+                         analyze, gui, xb+1, 1, y, 4, NULL);
+
+
   /* ---------------- Width  -------------- */
 
   wc_table_add_entry_new_units(table, gui, _("Width (W)"),
                                &(gui->text_w), gui->line->units_lwht, &lwht_ug,
                                &(gui->line->w), &x, &y);
-  
+
   wc_table_add_button(table, _("<-Synthesize"),
                       _("Synthesize width and physical length to "
                         "obtain the requested characteristic "
@@ -223,12 +230,12 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
   wc_table_add_entry_attach_units(table, gui, _("Spacing (S)"),
                                &(gui->text_s), gui->line->units_lwht, &lwht_ug,
                                &(gui->line->s), &x, &y);
-  
+
   wc_table_add_button(table, _("<-Synthesize"),
-                      _("Synthesize width and physical length to "
+                      _("Synthesize gap and physical length to "
                         "obtain the requested characteristic "
                         "impedance and electrical length."),
-                      synthesize_w, gui, xb, y-1);
+                      synthesize_s, gui, xb, y-1);
 
   /* ---------------- Length  -------------- */
   wc_table_add_entry_attach_units(table, gui, _("Length (L)"),
@@ -262,11 +269,6 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
                               &(gui->text_tand),
                               &(gui->line->subs->tand), &x, &y);
 
-  wc_table_add_button(table, _("Analyze"),
-                      _("Calculate electrical characteristics "
-		       "from physical parameters"),
-                      analyze, gui, xb, y-1);
-
   /* ---------------- Use bottom side ground -------------- */
   gui->button_gnd =
     gtk_check_button_new_with_label(_("With bottom side ground"));
@@ -288,13 +290,13 @@ static void values_init(coplanar_gui *gui, GtkWidget *parent)
 
    /* ---------------- Characteristic impedance -------------- */
   wc_table_add_entry_fixed_units(table, gui, "Z0", "Ohms",
-                                 &(gui->text_z0), 
+                                 &(gui->text_z0),
                                  &(gui->line->z0), &x, &y);
 
-  
+
   /* ---------------- Electrical length -------------- */
   wc_table_add_entry_fixed_units(table, gui, _("Elec. Len."), _("Degrees"),
-                                 &(gui->text_elen), 
+                                 &(gui->text_elen),
                                  &(gui->line->len), &x, &y);
 
 
@@ -345,7 +347,7 @@ static void outputs_init(coplanar_gui *gui, GtkWidget *parent)
   wc_table_add_label_new_units(table, gui, _("Delay"),
                                &(gui->label_delay), gui->line->units_delay, &ug,
                                &(gui->line->delay), &x, &y);
-  
+
   /* ---------------- total loss -------------- */
   wc_table_add_label_new_units(table, gui, _("Loss"),
                                &(gui->label_loss), gui->line->units_loss, &ug,

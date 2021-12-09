@@ -225,7 +225,7 @@ static void values_init(air_coil_gui *gui,
   int x = 0;
   int y = 0;
   int xb = 3;
-  
+
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(value_parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), _("Analysis/Synthesis Values") );
@@ -239,13 +239,10 @@ static void values_init(air_coil_gui *gui,
   gtk_container_add (GTK_CONTAINER (frame), table);
 
 
-  /* Analyze button */
-  gui->button_analyze = gtk_button_new_with_label (_("Analyze"));
-  wc_button_connect( gui->button_analyze, analyze, gui);
-
-  gtk_table_attach(GTK_TABLE(table), gui->button_analyze, 4, 5, 0, 4,
-		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
-  gtk_widget_show (gui->button_analyze);
+  /* ---------------- Analyze Button -------------- */
+  wc_table_add_button_wh(table, _("Analyze"),
+                         _("Analyze the electrical characteristics from the specified dimensions"),
+                         analyze, gui, xb+1, 1, y, 4, NULL);
 
 
   /* ---------------- Number of Turns -------------- */
@@ -263,14 +260,16 @@ static void values_init(air_coil_gui *gui,
 			       &(gui->text_dia), gui->coil->units_dia, &ug,
 			       &(gui->coil->wire_diameter), &x, &y);
 
-  wc_table_add_button(table, _("<-Synthesize"),
-                      _("Find the inside diameter the specified inductance using the specified number of turns and length"),
-                      synthesize_dia, gui, xb, y-1);
+  wc_table_add_button_wh(table, _("<-Synthesize"),
+                         _("Find the inside diameter the specified inductance using the specified number of turns and length.\n"
+                           "Not yet implemented."),
+                         synthesize_dia, gui, xb, 1, y-1, 1, &button);
+  gtk_widget_set_sensitive (button, FALSE);
 
   /* ----------------  Coil Length  -------------- */
   button = gtk_radio_button_new_with_label (NULL, _("Len."));
   wc_table_add_wentry_new_units(table, gui, button,
-                                &(gui->text_len), gui->coil->units_len, &ug, 
+                                &(gui->text_len), gui->coil->units_len, &ug,
                                 &(gui->coil->len), &x, &y);
   g_signal_connect( G_OBJECT( button ), "clicked",
                     G_CALLBACK(use_len_pressed),
@@ -289,7 +288,7 @@ static void values_init(air_coil_gui *gui,
                     gui);
   gui->fill_button = button;
   gtk_widget_show (button);
-  
+
   if(gui->coil->use_fill){
     gtk_widget_set_sensitive (gui->text_len, FALSE);
     gtk_widget_set_sensitive (gui->text_fill, TRUE);
@@ -300,9 +299,9 @@ static void values_init(air_coil_gui *gui,
     gtk_widget_set_sensitive (gui->text_fill, FALSE);
   }
 
-  wc_table_add_button(table, _("<-Synthesize"),
+  wc_table_add_button_wh(table, _("<-Synthesize"),
                       _("Find length to meet specified inductance with the specified number of turns"),
-                      synthesize_len, gui, xb, y-1);
+                         synthesize_len, gui, xb, 1, y-2, 2, NULL);
 
   /* ---------------- Start 2nd Column  of entries -----------------*/
   y = 0;
@@ -325,10 +324,10 @@ static void values_init(air_coil_gui *gui,
   wire_size_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 
   /* wire diameter - diameter */
-  
+
   button = gtk_radio_button_new_with_label (wire_size_group, _("Wire Dia."));
   wc_table_add_wentry_new_units(table, gui, button,
-                                &(gui->text_wire_diameter), gui->coil->units_len, &ug, 
+                                &(gui->text_wire_diameter), gui->coil->units_len, &ug,
                                 &(gui->coil->wire_diameter), &x, &y);
   g_signal_connect( G_OBJECT( button ), "clicked",
                     G_CALLBACK(use_wire_diameter_pressed),
@@ -346,7 +345,7 @@ static void values_init(air_coil_gui *gui,
     gtk_widget_set_sensitive (gui->text_wire_diameter, FALSE);
   }
 
-  
+
   /* ---------------- Resistivity  -------------- */
   wc_table_add_entry_new_units(table, gui, _("Resistivity"),
 			       &(gui->text_rho), gui->coil->units_rho, &ug,
@@ -650,10 +649,6 @@ static void tooltip_init(air_coil_gui *gui)
   gtk_widget_set_tooltip_text(gui->text_L, _("Inductance of the coil"));
   gtk_widget_set_tooltip_text(gui->text_freq, _("Frequency of operation"));
 
-  gtk_widget_set_tooltip_text(gui->button_analyze, _("Analyze the electrical characteristics from the specified dimensions"));
-  //gtk_widget_set_tooltip_text(gui->button_synth_ID, _("Find the inside diameter the specified inductance using the specified number of turns and length"));
-  //gtk_widget_set_tooltip_text(gui->button_synth_N, _("Find minimum number of turns and length to meet the specified inductance"));
-  //gtk_widget_set_tooltip_text(gui->button_synth_L, _("Find length to meet specified inductance with the specified number of turns"));
 }
 
 static void use_len_pressed(GtkWidget *widget, gpointer data )
