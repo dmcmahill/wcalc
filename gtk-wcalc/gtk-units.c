@@ -448,21 +448,7 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
   int i;
 
 
-  //  GtkWidget *opt_menu;
-  //  GtkWidget *menu;
-  //  GtkWidget *item;
-  //  wc_units_menu_data *data;
-
-
-#ifdef DEBUG
-  g_print("%s():  Create combo box\n", __FUNCTION__);
-#endif
-
   combo = gtk_combo_box_text_new();
-
-#ifdef DEBUG
-  g_print("%s():    Connect combo box signals\n", __FUNCTION__);
-#endif
 
   g_signal_connect (G_OBJECT(combo), "changed",
                     G_CALLBACK (wcalc_save_needed),
