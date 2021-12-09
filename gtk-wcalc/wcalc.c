@@ -364,7 +364,7 @@ void wcalc_setup (gpointer data,
 
   GtkWidget *main_vbox;
   GtkWidget *menubar;
-  GdkBitmap *icon_bitmap;
+  GdkPixbuf *pixbuf;
   char tmps[FILENAME_MAX];
 
   void * (* new_cmd)(void);  /* the function which will create a new
@@ -626,12 +626,17 @@ void wcalc_setup (gpointer data,
 
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);
-  icon_bitmap = gdk_bitmap_create_from_data(wcalc->window->window,
-					    icon_bitmap_bits,
-					    icon_bitmap_width,
-					    icon_bitmap_height);
-  gdk_window_set_icon(wcalc->window->window, NULL, icon_bitmap, NULL);
-
+  pixbuf = gdk_pixbuf_new_from_data(icon_bitmap_bits,
+                                        GDK_COLORSPACE_RGB,
+                                        FALSE,
+                                        8,
+                                        icon_bitmap_width,
+                                        icon_bitmap_height,
+                                        icon_bitmap_width * 3,
+                                        NULL,
+                                        NULL
+                                        );
+  gtk_window_set_icon(GTK_WINDOW(wcalc->window), pixbuf);
 
 
   /*
@@ -639,19 +644,18 @@ void wcalc_setup (gpointer data,
    */
 
   /* Window Manager "delete" */
-  gtk_signal_connect (GTK_OBJECT (wcalc->window), "delete_event",
-		      GTK_SIGNAL_FUNC (wcalc_delete_event),
-		      wcalc);
+  g_signal_connect( G_OBJECT( wcalc->window ), "delete_event",
+                    G_CALLBACK(wcalc_delete_event), NULL);
 
   /* Window Manager "destroy" */
-  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy_event",
-		      GTK_SIGNAL_FUNC (wcalc_destroy_event),
-		      wcalc);
+  g_signal_connect( G_OBJECT( wcalc->window ), "destroy_event",
+                    G_CALLBACK(wcalc_destroy_event), NULL);
+
 
   /* File->Close */
-  gtk_signal_connect (GTK_OBJECT (wcalc->window), "destroy",
-		      GTK_SIGNAL_FUNC (wcalc_destroy_sig),
-		      wcalc);
+  g_signal_connect (G_OBJECT (wcalc->window), "destroy",
+                    G_CALLBACK (wcalc_destroy_sig),
+                    wcalc);
 
   /*
    * Create the main window layout
@@ -659,7 +663,7 @@ void wcalc_setup (gpointer data,
 
   /* create the main vbox */
   main_vbox = gtk_vbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (main_vbox), 1);
+  gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 1);
   gtk_container_add (GTK_CONTAINER (wcalc->window), main_vbox);
   gtk_widget_show (main_vbox);
 
