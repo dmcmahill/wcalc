@@ -70,52 +70,21 @@ static gint destroy_event (GtkWidget *widget,
   return TRUE;
 }
 
-
 static void new_pressed (GtkWidget *w, GtkWidget *window)
 {
   guint ind;
-  guint len;
-  const char *name;
-  int foundit=0;
   void *new_cmd;
 
   /* lookup the selected model in the list of models */
-  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(combo_model)->entry));
+  ind = gtk_combo_box_get_active( GTK_COMBO_BOX(combo_model));
 
-  /* how many model entries might there be? */
-  len = g_list_length(global_model_names);
-
-  /* figure out which one we've selected */
-  for(ind=0; ind<len; ind++){
-    if(strcmp(g_list_nth_data(global_model_names,ind),name) == 0){
-#ifdef DEBUG
-      g_print("new_pressed():  Found entry at index %d\n",ind);
-#endif
-      foundit = 1;
-      break;
-    }
-  }
-
-  if(!foundit){
-    g_print("start.c:new_pressed():  could not find \"%s\" in the model list\n",
-	    name);
-  }
-
-#ifdef DEBUG
-  g_print("start.c:new_pressed():  length of global_model_names is %d\n",
-	  g_list_length(global_model_names));
-  g_print("start.c:new_pressed():  Model \"Microstrip\" is entry # %d\n",
-	  g_list_index(global_model_names,"Microstrip"));
-  g_print("start.c:new_pressed():  Model \"%s\" is entry # %d\n",
-	  name, ind);
-#endif
 
   /* extract the _new function for our selected model */
   new_cmd = (void *) g_list_nth_data(global_model_new,ind);
 
   if(new_cmd == NULL){
-    g_print("start.c:new_pressed():  Sorry, I don't know how to create \"%s\"\n",
-	    name);
+    g_print("%s():  Sorry, I don't know how to create \"%s\"\n",
+	    __FUNCTION__, gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT(combo_model)));
     return ;
   }
 
@@ -156,6 +125,10 @@ static void quit_pressed (GtkWidget *w, GtkWidget *window)
   gtk_main_quit();
 }
 
+static void add_model_to_splash(gpointer data, gpointer user_data)
+{
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (user_data), data);
+}
 
 void start_popup(void)
 {
@@ -169,21 +142,17 @@ void start_popup(void)
   GtkWidget *action_area;
 
   /* stuff for the picture */
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
+  GdkPixbuf *pixbuf;
+  GtkWidget *image;
 
   /* create the initial window */
-  /* XXX this was for gtk-1.2 */
-  /* window = gtk_window_new(GTK_WINDOW_DIALOG); */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
   /* made it modal */
   gtk_grab_add(window);
 
   /* don't let the user grow or shrink this window */
-  gtk_window_set_policy(GTK_WINDOW(window),FALSE,FALSE,TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
@@ -192,14 +161,11 @@ void start_popup(void)
   gtk_container_set_border_width(GTK_CONTAINER(window),10);
 
   /* Window Manager "delete" */
-  gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-		      GTK_SIGNAL_FUNC (destroy_event),
-		      NULL);
-
+  g_signal_connect( G_OBJECT( window ), "delete_event",
+                    G_CALLBACK(destroy_event), NULL);
   /* Window Manager "destroy" */
-  gtk_signal_connect (GTK_OBJECT (window), "destroy_event",
-		      GTK_SIGNAL_FUNC (destroy_event),
-		      NULL);
+  g_signal_connect( G_OBJECT( window ), "destroy_event",
+                    G_CALLBACK(destroy_event), NULL);
 
 
   gtk_widget_realize(window);
@@ -225,9 +191,8 @@ void start_popup(void)
 
   /* Add the "Open..." button and set its action */
   button = gtk_button_new_with_label (_("Open..."));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(open_pressed),
-		     GTK_OBJECT(window));
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(open_pressed), window);
 
   gtk_box_pack_start (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
@@ -235,29 +200,24 @@ void start_popup(void)
 
   /* Add the "New" button and set its action */
   button = gtk_button_new_with_label (_("New"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(new_pressed),
-		     GTK_OBJECT(window));
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(new_pressed), window);
 
   gtk_box_pack_start (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
   gtk_window_set_focus(GTK_WINDOW(window),button);
   gtk_widget_show (button);
 
-
-  combo_model =  gtk_combo_new();
-  gtk_combo_set_popdown_strings( GTK_COMBO(combo_model), global_model_names);
-  gtk_combo_set_use_arrows( GTK_COMBO(combo_model), 1);
+  combo_model = gtk_combo_box_text_new();
+  g_list_foreach( global_model_names, add_model_to_splash, combo_model);
   gtk_box_pack_start (GTK_BOX (action_area), combo_model, FALSE, FALSE, 0);
-  gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(combo_model)->entry), FALSE);
   gtk_widget_show( combo_model );
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo_model), 0);
 
   /* Add the "Quit" button and set its action */
   button = gtk_button_new_with_label (_("Quit"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(quit_pressed),
-		     GTK_OBJECT(window));
-
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(quit_pressed), window);
   gtk_box_pack_end (GTK_BOX (action_area),
 		      button, TRUE, FALSE, 0);
   gtk_window_set_focus(GTK_WINDOW(window),button);
@@ -279,20 +239,10 @@ void start_popup(void)
 #endif
 
   /* now for the pixmap from gdk */
-
-  style = gtk_widget_get_style( window );
-
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) splash);
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (main_vbox),
-		      pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
+  pixbuf = gdk_pixbuf_new_from_xpm_data( (const char **) splash);
+  image = gtk_image_new_from_pixbuf(pixbuf);
+  gtk_box_pack_start (GTK_BOX (main_vbox), image, FALSE, FALSE, 0);
+  gtk_widget_show( image );
 
 
   /* add the text to the window */
