@@ -5,7 +5,9 @@
 
 - finish spanish translation for gtk-wcalc
 
-- testing!
+- testing: make regression tests in the CI environment give more useful output.
+
+- testing: Is there a way to automate GUI testing?
 
 - find a good way to add regression tests to the octave/matlab/scilab
   frontend
@@ -18,6 +20,10 @@
 - Air Coil.  Read RF Design, Jan 1998 and Applied Microwave & Wireless, 
   Nov/Dec 1997 for transmission line based model for helical coils.
   Maybe get a better Q/SRF prediction? 
+
+- air_coil: Consider adding insulation thickness as a parameter.
+
+- air_coil: Consider adding a synthesize I.D. option.
 
 - Improve the coplanar waveguide model.  The model from Wadell's book
   has been implemented and compared to HP's AppCAD, but HP doesn't give
@@ -35,11 +41,6 @@
 
 - Better checking of inputs to avoid problems when someone asks for
   900 GHz calculations or other sillyness.
-
-- rework the  coax, and ic_microstrip gtk frontends to use
-  x,y variables to keep track of the position of widgets in the table.
-  This will make form modifications much easier.  The other gtk frontends
-  are ok already.
 
 - Add the ability to write out a fasthenry model for some of the structures.
 
