@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2005, 2012 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2005, 2012, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -69,12 +69,6 @@ typedef struct AIR_COIL_GUI
    * Picture vbox and its contents
    */
   GtkWidget *picture_vbox;
-
-
-  /*
-   * The buttons
-   */
-  GtkWidget *button_analyze, *button_synth_N, *button_synth_ID, *button_synth_L;
 
 } air_coil_gui;
 
