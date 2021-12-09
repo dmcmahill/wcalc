@@ -744,7 +744,7 @@ void wcalc_set_title(Wcalc * wcalc)
   if (wcalc->file_fullname != NULL) {
 
     /* file name without directory portion */
-    wcalc->file_filename = g_basename(wcalc->file_fullname);
+    wcalc->file_filename = g_path_get_basename(wcalc->file_fullname);
 
     /* the directory name */
     wcalc->file_dirname = g_path_get_dirname(wcalc->file_fullname);
@@ -821,4 +821,5 @@ int wcalc_num_windows(void)
 {
   return (g_slist_length(window_list));
 }
+
 

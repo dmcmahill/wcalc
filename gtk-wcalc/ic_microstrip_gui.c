@@ -35,6 +35,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "pixmaps/ic_microstrip.xpm"
 #include "pixmaps/figure_ic_microstrip.h"
 #include "ic_microstrip.h"
 #include "ic_microstrip_gui.h"
@@ -44,6 +45,7 @@
 
 #include "symbols.h"
 #include "gtk-units.h"
+#include "utils.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -63,9 +65,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void values_init(ic_microstrip_gui *gui, GtkWidget *parent);
 static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent);
-static void picture_init(ic_microstrip_gui *gui,
-			 GtkWidget *window,
-			 GtkWidget *parent);
 static void tooltip_init(ic_microstrip_gui *gui);
 
 static char *name="IC_Microstrip Analysis/Synthesis";
@@ -162,7 +161,7 @@ void ic_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
   values_init(gui,values_vbox);
   outputs_init(gui,outputs_vbox);
-  picture_init(gui,wcalc->window,picture_vbox);
+  wc_picture_init(wcalc, picture_vbox, (const char **) ic_microstrip);
 
   tooltip_init(gui);
 
@@ -184,15 +183,16 @@ void ic_microstrip_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
 
 static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
 {
-  GtkTooltips *tips;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *button;
   GtkWidget *frame;
-  wc_units_gui *ug;
-  wc_units_gui *l_ug;
+  wc_units_gui *ug = NULL, *lwht_ug = NULL;
 
-  tips = gtk_tooltips_new();
+  /* position in the table */
+  int y = 0;
+  int x = 0;
+  int xb = 3;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -206,316 +206,107 @@ static void values_init(ic_microstrip_gui *gui, GtkWidget *parent)
   table = gtk_table_new (4, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
-  /* Analyze button */
-  button = gtk_button_new_with_label (_("Analyze->"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 4, 5, 2, 5, 0,GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Calculate electrical characteristics "
+  /* ---------------- Width  -------------- */
+  wc_table_add_entry_new_units(table, gui, _("Width (W)"),
+                               &(gui->text_w), gui->line->units_lwht, &lwht_ug,
+                               &(gui->line->w), &x, &y);
+  
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Synthesize width and physical length to "
+                        "obtain the requested characteristic "
+                        "impedance and electrical length."),
+                      synthesize_w, gui, xb, y-1);
+
+  /* ---------------- Length  -------------- */
+  wc_table_add_entry_attach_units(table, gui, _("Length (L)"),
+                               &(gui->text_l), gui->line->units_lwht, &lwht_ug,
+                               &(gui->line->l), &x, &y);
+
+  /* ---------------- Substrate Height  -------------- */
+  wc_table_add_entry_attach_units(table, gui, _("Substrate Height (H)"),
+                               &(gui->text_h), gui->line->units_lwht, &lwht_ug,
+                               &(gui->line->subs->h), &x, &y);
+
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Synthesize substrate thickness and physical length to "
+                        "obtain the requested characteristic "
+                        "impedance and electrical length."),
+                      synthesize_h, gui, xb, y-1);
+
+  /* ---------------- Substrate Dielectric Constant -------------- */
+  wc_table_add_entry_no_units(table, gui, "Es",
+                              &(gui->text_es),
+                              &(gui->line->subs->es), &x, &y);
+
+  /* ---------------- Substrate conductivity -------------- */
+  wc_table_add_entry_new_units(table, gui, _("sigmas"),
+                                  &(gui->text_sigmas), gui->line->units_sigmas, &ug,
+                                  &(gui->line->subs->sigmas), &x, &y);
+
+  /* ---------------- Oxide Thickness  -------------- */
+  wc_table_add_entry_attach_units(table, gui, "Tox",
+                               &(gui->text_tox), gui->line->units_lwht, &lwht_ug,
+                               &(gui->line->subs->tox), &x, &y);
+
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Synthesize oxide thickness and physical length to "
+                        "obtain the requested characteristic "
+                        "impedance and electrical length."),
+                      synthesize_tox, gui, xb, y-1);
+
+  /* ---------------- Oxide Dielectric Constant -------------- */
+  wc_table_add_entry_no_units(table, gui, "Eox",
+                              &(gui->text_eox),
+                              &(gui->line->subs->eox), &x, &y);
+
+  wc_table_add_button(table, _("Analyze"),
+                      _("Calculate electrical characteristics "
 		       "from physical parameters"),
-		       NULL);
-  gtk_widget_show (button);
+                      analyze, gui, xb, y-1);
 
-  /*
-   * Synthesize buttons
-   */
+  /* ---------------- new column -------------- */
+  x = 5;
+  y = 0;
 
-  /* width */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_w), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Synthesize width and length to obtain the specified "
-			 "characteristic impedance and electrical length"),
-		       NULL);
-  gtk_widget_show (button);
-
-  /* height */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_h), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Synthesize substrate thickness and length to obtain the specified "
-			 "characteristic impedance and electrical length"),
-		       NULL);
-  gtk_widget_show (button);
-
-  /* oxide thickness */
-  button = gtk_button_new_with_label ("<-Synthesize");
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_tox), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, 3, 4, 5, 6, 0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Synthesize oxide thickness and length to obtain the specified "
-			 "characteristic impedance and electrical length"),
-		       NULL);
-  gtk_widget_show (button);
-
-
-
-  /* ---------------- width  -------------- */
-  text = gtk_label_new( "Width (W)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1, 0,0,WC_XPAD,WC_YPAD);
+  /* spacer between columns */
+  text = gtk_label_new( "                " );
+  gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1,
+                   GTK_EXPAND|GTK_FILL, 0,
+                   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-  gui->text_w = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_entry_set_text(GTK_ENTRY(gui->text_w),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_w, 1, 2, 0, 1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_w),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_w), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_w);
+   /* ---------------- Characteristic impedance -------------- */
+  wc_table_add_entry_fixed_units(table, gui, "Z0", "Ohms",
+                                 &(gui->text_Ro), 
+                                 &(gui->line->Ro), &x, &y);
 
-  text = wc_units_menu_new(gui->line->units_lwht, WC_WCALC(gui), &l_ug);
-  gtk_table_attach(GTK_TABLE(table), text,
-		   2, 3, 0, 1, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  
+  /* ---------------- Electrical length -------------- */
+  wc_table_add_entry_fixed_units(table, gui, _("Elec. Len."), _("Degrees"),
+                                 &(gui->text_elen), 
+                                 &(gui->line->len), &x, &y);
 
-  /* ---------------- length  -------------- */
-  text = gtk_label_new( "Length (L)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_l = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_l, 1, 2, 1, 2,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_l),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_l), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_l);
-
-  text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 1, 2,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  gtk_widget_show(text);
-  wc_units_attach_units_label(l_ug, text);
-
-  /* ---------------- substrate height  -------------- */
-  text = gtk_label_new( "Substrate Height (H)" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_h = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_h, 1, 2, 2, 3,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_h),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_h), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_h);
-
-  text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 2, 3,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  gtk_widget_show(text);
-  wc_units_attach_units_label(l_ug, text);
-
-  /* ---------------- substrate permitivity  -------------- */
-  text = gtk_label_new( "Es" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_es = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_es, 1, 2, 3, 4,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_es),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_es), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_es), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_es);
-
-  /* ---------------- substrate conductivity  -------------- */
-  text = gtk_label_new( "sigmas" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 4, 5, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_sigmas = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_sigmas, 1, 2, 4, 5,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_sigmas),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_sigmas), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_sigmas), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_sigmas);
-
-  text = wc_units_menu_new(gui->line->units_sigmas, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text,
-		   2, 3, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ---------------- oxide thickness -------------- */
-  text = gtk_label_new( "Tox" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 5, 6, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_tox = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_tox, 1, 2, 5, 6,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_tox),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tox), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tox), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_tox);
-
-  text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, 2, 3, 5, 6,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  gtk_widget_show(text);
-  wc_units_attach_units_label(l_ug, text);
-
-  /* ---------------- oxide permitivity -------------- */
-  text = gtk_label_new( "Eox" );
-  gtk_table_attach(GTK_TABLE(table), text, 0, 1, 6, 7, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_eox = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_eox, 1, 2, 6, 7,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_eox),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_eox), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_eox), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_eox);
-
-
-  /* ---------------- characteristic impedance -------------- */
-  text = gtk_label_new( "Ro" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 0, 1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_Ro = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_Ro, 7, 8, 0, 1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_Ro),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_Ro), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_Ro), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_Ro);
-
-  /* ---------------- electrical length -------------- */
-  text = gtk_label_new( "Elec. Len." );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 1, 2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_elen = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_elen, 7, 8, 1, 2,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_elen),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_elen), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_elen), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_elen);
-
-  text = gtk_label_new( "deg." );
-  gtk_table_attach(GTK_TABLE(table), text, 8, 9, 1, 2,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  gtk_widget_show(text);
 
   /* ---------------- Metal thickness -------------- */
-  text = gtk_label_new( "Tmet" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 2, 3, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
+  wc_table_add_entry_attach_units(table, gui, "Tmet",
+                               &(gui->text_tmet), gui->line->units_lwht, &lwht_ug,
+                               &(gui->line->subs->tmet), &x, &y);
 
-  gui->text_tmet = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_tmet, 7, 8, 2, 3,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_tmet),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_tmet), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_tmet);
+  /* ---------------- Resistivity -------------- */
+  wc_table_add_entry_new_units(table, gui, _("Rho"),
+                               &(gui->text_rho), gui->line->units_rho, &ug,
+                               &(gui->line->subs->rho), &x, &y);
 
-  text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, 8, 9, 2, 3,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  gtk_widget_show(text);
-  wc_units_attach_units_label(l_ug, text);
+  /* ---------------- Surface roughness -------------- */
+  wc_table_add_entry_new_units(table, gui, _("Rough"),
+                               &(gui->text_rough), gui->line->units_rough, &ug,
+                               &(gui->line->subs->rough), &x, &y);
 
-  /* ---------------- Metal resistivity -------------- */
-  text = gtk_label_new( "Rho" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 3, 4, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_rho  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rho, 7, 8, 3, 4,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rho);
-
-  text = wc_units_menu_new(gui->line->units_rho, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text,
-		   8, 9, 3, 4, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ---------------- Metal roughness -------------- */
-  text = gtk_label_new( "Rough" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 4, 5, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_rough  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rough, 7, 8, 4, 5,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rough),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rough), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rough);
-
-  text = wc_units_menu_new(gui->line->units_rough, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text,
-		   8, 9, 4, 5, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ---------------- frequency -------------- */
-  text = gtk_label_new( "Frequency" );
-  gtk_table_attach(GTK_TABLE(table), text, 6, 7, 5, 6,
-		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-
-
-  gui->text_freq  = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_freq, 7, 8, 5, 6,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_freq);
-
-  text = wc_units_menu_new(gui->line->units_freq, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text,
-		   8, 9, 5, 6, GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  /* ---------------- - -------------- */
-
-  text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, 4, 5, 0, 1,
-		   GTK_EXPAND|GTK_FILL, 0,
-		   WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
+  /* ---------------- Frequency -------------- */
+  wc_table_add_entry_new_units(table, gui, _("Frequency"),
+                               &(gui->text_freq), gui->line->units_freq, &ug,
+                               &(gui->line->freq), &x, &y);
+  
   gtk_widget_show (table);
 }
 
@@ -524,7 +315,10 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;
-  wc_units_gui *ug;
+  wc_units_gui *ug=NULL, *depth_ug=NULL;
+
+  int x = 0;
+  int y = 0;
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -533,9 +327,79 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
 
-  table = gtk_table_new (5, 8, FALSE);
+  table = gtk_table_new (6, 8, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
+  /* ---------------- delay -------------- */
+  wc_table_add_label_new_units(table, gui, _("Delay"),
+                               &(gui->label_delay), gui->line->units_delay, &ug,
+                               &(gui->line->delay), &x, &y);
+  
+  /* ---------------- total loss -------------- */
+  wc_table_add_label_new_units(table, gui, _("Loss"),
+                               &(gui->label_loss), gui->line->units_loss, &ug,
+                               &(gui->line->loss), &x, &y);
+
+  /* ---------------- total loss / length -------------- */
+  wc_table_add_label_new_units(table, gui, _("Loss/Length"),
+                               &(gui->label_losslen), gui->line->units_losslen, &ug,
+                               &(gui->line->losslen), &x, &y);
+
+  /* ----------------  Skin Depth in Metal -------------- */
+  wc_table_add_label_new_units(table, gui, _("Metal Skin Depth"),
+                               &(gui->label_met_depth), gui->line->units_depth, &depth_ug,
+                               &(gui->line->met_skindepth), &x, &y);
+
+  /* ----------------  Skin Depth in Substrate -------------- */
+  wc_table_add_label_new_units(table, gui, _("Substrate Skin Depth"),
+                               &(gui->label_subs_depth), gui->line->units_depth, &depth_ug,
+                               &(gui->line->subs_skindepth), &x, &y);
+
+
+  /* ----------------  Effective dielectric constant -------------- */
+  wc_table_add_label_no_units(table, gui, _("Keff"),
+                               &(gui->label_keff),
+                               &x, &y);
+
+  /* ---------------- new column -------------- */
+  x = 4;
+  y = 0;
+
+  /* spacer between columns */
+  text = gtk_label_new( "                " );
+  gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1,
+                   GTK_EXPAND|GTK_FILL, 0,
+                   WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
+
+
+  /* ---------------- L -------------- */
+  wc_table_add_label_new_units(table, gui, "L",
+                               &(gui->label_Lmis), gui->line->units_L, &ug,
+                               &(gui->line->Lmis), &x, &y);
+
+  /* ---------------- R -------------- */
+  wc_table_add_label_new_units(table, gui, "R",
+                               &(gui->label_Rmis), gui->line->units_R, &ug,
+                               &(gui->line->Rmis), &x, &y);
+
+  /* ---------------- C -------------- */
+  wc_table_add_label_new_units(table, gui, "C",
+                               &(gui->label_Cmis), gui->line->units_C, &ug,
+                               &(gui->line->Cmis), &x, &y);
+
+  /* ---------------- G -------------- */
+  wc_table_add_label_new_units(table, gui, "G",
+                               &(gui->label_Gmis), gui->line->units_G, &ug,
+                               &(gui->line->Gmis), &x, &y);
+
+  /* ---------------- G -------------- */
+  wc_table_add_label_fixed_units(table, gui, "Z0", "Ohms",
+                                 &(gui->label_z0),
+                                 &x, &y);
+
+
+  #ifdef notdef
   /* ---------------- Delay -------------- */
   text = gtk_label_new( "Delay" );
   gtk_table_attach(GTK_TABLE(table), text, 0, 1, 0, 1,
@@ -731,59 +595,12 @@ static void outputs_init(ic_microstrip_gui *gui, GtkWidget *parent)
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
-
+#endif
+  
   gtk_widget_show(table);
 
 }
 
-
-
-
-#include "pixmaps/ic_microstrip.xpm"
-
-static void picture_init(ic_microstrip_gui *gui, GtkWidget *window,GtkWidget *parent)
-{
-  GtkWidget *my_hbox;
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_hbox);
-  gtk_widget_show (my_hbox);
-
-
-
-  /* now for the pixmap from gdk */
-  style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) ic_microstrip);
-
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
-
-  WC_WCALC(gui)->text_status = gtk_label_new( "Values Out Of Sync" );
-  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (WC_WCALC(gui)->text_status);
-
-
-}
 
 static void analyze( GtkWidget *w, gpointer data )
 {
@@ -1059,26 +876,23 @@ static void update_display(ic_microstrip_gui *gui)
 
 static void tooltip_init(ic_microstrip_gui *gui)
 {
-  GtkTooltips *tips;
 
-  tips = gtk_tooltips_new();
+  gtk_widget_set_tooltip_text( gui->text_w, "Width of metal trace" );
+  gtk_widget_set_tooltip_text( gui->text_l, "Length of metal trace" );
+  gtk_widget_set_tooltip_text( gui->text_h, "Substrate thickness" );
+  gtk_widget_set_tooltip_text( gui->text_es, "Substrate relative"
+		       " dielectric constant" );
+  gtk_widget_set_tooltip_text( gui->text_sigmas, "Substrate conductivity" );
+  gtk_widget_set_tooltip_text( gui->text_eox, "Oxide relative"
+		       " dielectric constant" );
+  gtk_widget_set_tooltip_text( gui->text_tox, "Oxide thickness" );
 
-  gtk_tooltips_set_tip(tips, gui->text_w, "Width of metal trace", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l, "Length of metal trace", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_h, "Substrate thickness", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_es, "Substrate relative"
-		       " dielectric constant",NULL);
-  gtk_tooltips_set_tip(tips, gui->text_sigmas, "Substrate conductivity", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_eox, "Oxide relative"
-		       " dielectric constant",NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tox, "Oxide thickness", NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_Ro, "Characteristic impedance", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_elen, "Electrical length", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_tmet, "Thickness of the metal trace", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rho, "Metal resistivity", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_rough, "Metal surface roughness", NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, "Frequency of operation", NULL);
+  gtk_widget_set_tooltip_text( gui->text_Ro, "Characteristic impedance" );
+  gtk_widget_set_tooltip_text( gui->text_elen, "Electrical length" );
+  gtk_widget_set_tooltip_text( gui->text_tmet, "Thickness of the metal trace" );
+  gtk_widget_set_tooltip_text( gui->text_rho, "Metal resistivity" );
+  gtk_widget_set_tooltip_text( gui->text_rough, "Metal surface roughness" );
+  gtk_widget_set_tooltip_text( gui->text_freq, "Frequency of operation" );
 
 }
 
@@ -1103,54 +917,54 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     figure_ic_microstrip_init();
-  } {
-    // FIXME -- free the old list first!!!!
+  } else {
+    g_list_free_full(list, (GDestroyNotify) wc_print_value_free);
     list = NULL;
-    list = wc_print_add_cairo(figure_ic_microstrip_render[0], figure_ic_microstrip_width[0],
-			      figure_ic_microstrip_height[0], list);
-
-    list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
-    list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
-
-    list = wc_print_add_double("Oxide thickness (t<sub>ox</sub>)", l->subs->tox, l->units_lwht, list);
-    list = wc_print_add_double("Oxide relative dielectric contant ("
-			       WC_SYM_EPSILON_LC "<sub>ox</sub>)", l->subs->eox, NULL, list);
-
-    list = wc_print_add_double("Substrate thickness (h)", l->subs->h, l->units_lwht, list);
-    list = wc_print_add_double("Substrate relative dielectric contant ("
-			       WC_SYM_EPSILON_LC "<sub>s</sub>)",
-			       l->subs->es, NULL, list);
-    list = wc_print_add_double("Substrate conductivity ("
-			       WC_SYM_SIGMA_LC "<sub>s</sub>)",
-			       l->subs->sigmas, l->units_sigmas, list);
-
-    list = wc_print_add_double("Metal thickness (t<sub>met</sub>)", l->subs->tmet, l->units_lwht, list);
-    list = wc_print_add_double("Metal resistivity ("
-			       WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
-    list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough,
-			       l->units_rough, list);
-
-    list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
-
-    list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
-    list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
-    list = wc_print_add_double("Electrical length", l->len, NULL, list);
-    list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
-
-
-    list = wc_print_add_double("Metal skin depth", l->met_skindepth, l->units_depth, list);
-    list = wc_print_add_double("Substrate skin depth", l->subs_skindepth, l->units_depth, list);
-
-    list = wc_print_add_double("Total loss", l->loss, l->units_loss, list);
-    list = wc_print_add_double("Total loss per length", l->losslen, l->units_losslen, list);
-    list = wc_print_add_double("Total loss per wavelength", l->losslambda, NULL, list);
-
-    list = wc_print_add_double("Incremental Inductance", l->Lmis, l->units_L, list);
-    list = wc_print_add_double("Incremental Capacitance", l->Cmis, l->units_C, list);
-    list = wc_print_add_double("Incremental Resistance", l->Rmis, l->units_R, list);
-    list = wc_print_add_double("Incremental Conductance", l->Gmis, l->units_G, list);
-
   }
+
+  list = wc_print_add_cairo(figure_ic_microstrip_render[0], figure_ic_microstrip_width[0],
+                            figure_ic_microstrip_height[0], list);
+
+  list = wc_print_add_double("Width of line (w)", l->w, l->units_lwht, list);
+  list = wc_print_add_double("Length of line (l)", l->l, l->units_lwht, list);
+
+  list = wc_print_add_double("Oxide thickness (t<sub>ox</sub>)", l->subs->tox, l->units_lwht, list);
+  list = wc_print_add_double("Oxide relative dielectric contant ("
+                             WC_SYM_EPSILON_LC "<sub>ox</sub>)", l->subs->eox, NULL, list);
+
+  list = wc_print_add_double("Substrate thickness (h)", l->subs->h, l->units_lwht, list);
+  list = wc_print_add_double("Substrate relative dielectric contant ("
+                             WC_SYM_EPSILON_LC "<sub>s</sub>)",
+                             l->subs->es, NULL, list);
+  list = wc_print_add_double("Substrate conductivity ("
+                             WC_SYM_SIGMA_LC "<sub>s</sub>)",
+                             l->subs->sigmas, l->units_sigmas, list);
+
+  list = wc_print_add_double("Metal thickness (t<sub>met</sub>)", l->subs->tmet, l->units_lwht, list);
+  list = wc_print_add_double("Metal resistivity ("
+                             WC_SYM_RHO_LC ")", l->subs->rho, l->units_rho, list);
+  list = wc_print_add_double("Metal surface roughness (rough)", l->subs->rough,
+                             l->units_rough, list);
+
+  list = wc_print_add_double("Analysis Frequency", l->freq, l->units_freq, list);
+
+  list = wc_print_add_double("Characteristic Impedance (real part)", l->Ro, NULL, list);
+  list = wc_print_add_double("Characteristic Impedance (imaginary part)", l->Xo, NULL, list);
+  list = wc_print_add_double("Electrical length", l->len, NULL, list);
+  list = wc_print_add_double("Delay", l->delay, l->units_delay, list);
+
+
+  list = wc_print_add_double("Metal skin depth", l->met_skindepth, l->units_depth, list);
+  list = wc_print_add_double("Substrate skin depth", l->subs_skindepth, l->units_depth, list);
+
+  list = wc_print_add_double("Total loss", l->loss, l->units_loss, list);
+  list = wc_print_add_double("Total loss per length", l->losslen, l->units_losslen, list);
+  list = wc_print_add_double("Total loss per wavelength", l->losslambda, NULL, list);
+
+  list = wc_print_add_double("Incremental Inductance", l->Lmis, l->units_L, list);
+  list = wc_print_add_double("Incremental Capacitance", l->Cmis, l->units_C, list);
+  list = wc_print_add_double("Incremental Resistance", l->Rmis, l->units_R, list);
+  list = wc_print_add_double("Incremental Conductance", l->Gmis, l->units_G, list);
 
   return list;
 }

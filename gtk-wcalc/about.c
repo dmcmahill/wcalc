@@ -51,10 +51,9 @@ VER \
 "A transmission line calculator.\n" \
 "\n" \
 "Written by,\n" \
-"Dan McMahill, <mcmahill@alum.mit.edu>\n" \
+"Dan McMahill, mcmahill at alum.mit.edu\n" \
 "\n" \
-"Wcalc is copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, \n" \
-"2007, 2008, 2009, 2010, 2011, 2012, 2020 Dan McMahill."
+"Wcalc is copyright (C) 1999-2021 Dan McMahill."
 
 
 static void ok_pressed (GtkWidget *w, GtkWidget *window)
@@ -85,18 +84,19 @@ void about_popup(void)
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
-		     GTK_OBJECT(window));
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(ok_pressed),
+                    GTK_OBJECT(window) );
+
+  gtk_box_pack_start ( GTK_BOX (gtk_dialog_get_action_area(GTK_DIALOG (window))),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
 
 
   /* add the text to the window */
   label = gtk_label_new (ABOUT_TEXT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+  gtk_box_pack_start ( GTK_BOX( gtk_dialog_get_content_area(GTK_DIALOG (window))),
 		      label, TRUE, TRUE, 0);
   gtk_widget_show (label);
 
@@ -107,8 +107,7 @@ void about_popup(void)
 #define COPYRIGHT_TEXT \
 "Wcalc\n" \
 "\n" \
-"Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,\n" \
-"2007, 2008, 2009, 2010, 2011, 2012 Dan McMahill\n" \
+"Copyright (C) 1999-2021 Dan McMahill\n" \
 "All rights reserved.\n" \
 "\n" \
 "This program is free software; you can redistribute it and/or modify\n" \
@@ -142,11 +141,11 @@ void copyright_popup(void)
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
-		     GTK_OBJECT(window));
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(ok_pressed),
+                    GTK_OBJECT(window) );
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+  gtk_box_pack_start ( GTK_BOX (gtk_dialog_get_action_area(GTK_DIALOG (window))),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
 
@@ -154,7 +153,7 @@ void copyright_popup(void)
   /* add the text to the window */
   label = gtk_label_new (COPYRIGHT_TEXT);
   gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+  gtk_box_pack_start ( GTK_BOX (gtk_dialog_get_content_area(GTK_DIALOG (window))),
 		      label, TRUE, TRUE, 0);
   gtk_widget_show (label);
 
@@ -178,11 +177,11 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
-		     GTK_OBJECT(window));
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(ok_pressed),
+                    GTK_OBJECT(window) );
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+  gtk_box_pack_start ( GTK_BOX (gtk_dialog_get_action_area(GTK_DIALOG (window))),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
 
@@ -190,7 +189,7 @@ void asciitab_popup(GtkWidget * (*table_fn)(void), const char *title)
   /* add the text to the window */
   tab = table_fn();
   gtk_widget_set_size_request (GTK_WIDGET(tab), ASCII_POPUP_X, ASCII_POPUP_Y);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox),
+  gtk_box_pack_start ( GTK_BOX (gtk_dialog_get_content_area(GTK_DIALOG (window))),
 		      tab, TRUE, TRUE, 0);
   gtk_widget_show (tab);
 

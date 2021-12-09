@@ -40,6 +40,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "pixmaps/bars_fig.xpm"
 #include "pixmaps/figure_bars_fig.h"
 #include "bars.h"
 #include "bars_gui.h"
@@ -65,9 +66,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void values_init(bars_gui *gui, GtkWidget *parent);
 static void outputs_init(bars_gui *gui, GtkWidget *parent);
-static void picture_init(bars_gui *gui,
-			 GtkWidget *window,
-			 GtkWidget *parent);
 static void tooltip_init(bars_gui *gui);
 
 
@@ -166,7 +164,7 @@ void bars_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 
   values_init(gui,values_vbox);
   outputs_init(gui,outputs_vbox);
-  picture_init(gui,wcalc->window,picture_vbox);
+  wc_picture_init(wcalc, picture_vbox, (const char **) bars_fig);
 
   tooltip_init(gui);
 
@@ -193,15 +191,12 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
   GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
-  GtkTooltips *tips;
 
   wc_units_gui *xy_ug = NULL, *freq_ug = NULL;
 
   /* keeps track of current table position */
   int y = 0;
   int x = 0;
-
-  tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -238,17 +233,12 @@ static void values_init(bars_gui *gui, GtkWidget *parent)
 
   /* Analyze button */
   button = gtk_button_new_with_label (_("Analyze"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze), (gpointer)
-		      gui);
+  wc_button_connect( button, analyze, gui);
   gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
 		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
+  gtk_widget_set_tooltip_text( button,
 		       _("Calculate electrical characteristics "
-		       "from physical parameters"),
-		       NULL);
+                         "from physical parameters"));
   y++;
 
 
@@ -331,53 +321,6 @@ static void outputs_init(bars_gui *gui, GtkWidget *parent)
   gtk_widget_show(text);
 
   gtk_widget_show(table);
-
-}
-
-
-#include "pixmaps/bars_fig.xpm"
-
-static void picture_init(bars_gui *gui, GtkWidget *window,GtkWidget *parent)
-{
-  GtkWidget *my_hbox;
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_hbox);
-  gtk_widget_show (my_hbox);
-
-
-
-  /* now for the pixmap from gdk */
-  style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) bars_fig);
-
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
-
-  WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
-  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (WC_WCALC(gui)->text_status);
-
 
 }
 
@@ -525,24 +468,21 @@ static void update_display(bars_gui *gui)
 
 static void tooltip_init(bars_gui *gui)
 {
-  GtkTooltips *tips;
 
-  tips = gtk_tooltips_new();
+  gtk_widget_set_tooltip_text( gui->text_a, _("Width of bar #1"));
 
-  gtk_tooltips_set_tip(tips, gui->text_a, _("Width of bar #1"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_b, _("Thickness of bar #1"));
+  gtk_widget_set_tooltip_text( gui->text_l1, _("Length of bar #1"));
 
-  gtk_tooltips_set_tip(tips, gui->text_b, _("Thickness of bar #1"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l1, _("Length of bar #1"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_d, _("Width of bar #2"));
+  gtk_widget_set_tooltip_text( gui->text_c, _("Thickness of bar #2"));
+  gtk_widget_set_tooltip_text( gui->text_l2, _("Length of bar #2"));
 
-  gtk_tooltips_set_tip(tips, gui->text_d, _("Width of bar #2"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_c, _("Thickness of bar #2"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l2, _("Length of bar #2"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_E, _("Offset position of bar #2 in the width direction"));
+  gtk_widget_set_tooltip_text( gui->text_P, _("Offset position of bar #2 in the vertical direction"));
+  gtk_widget_set_tooltip_text( gui->text_l3, _("Offset position of bar #2 in the length direction"));
 
-  gtk_tooltips_set_tip(tips, gui->text_E, _("Offset position of bar #2 in the width direction"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_P, _("Offset position of bar #2 in the vertical direction"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l3, _("Offset position of bar #2 in the length direction"), NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_freq, _("Frequency of operation"));
 
 }
 
@@ -564,34 +504,33 @@ static GList * dump_values(Wcalc *wcalc)
   gui = WC_BARS_GUI(wcalc);
   b = gui->b;
 
-  /* Initialize the graphics */
   if( list == NULL ) {
     figure_bars_fig_init();
-  }  {
-    // FIXME -- free the old list first!!!!
+  } else {
+    g_list_free_full(list, (GDestroyNotify) wc_print_value_free);
     list = NULL;
-    list = wc_print_add_cairo(figure_bars_fig_render[0], figure_bars_fig_width[0],
-			      figure_bars_fig_height[0], list);
-
-    list = wc_print_add_double("Width of bar #1 (a)", b->a, b->units_xy, list);
-    list = wc_print_add_double("Thickness of bar #1 (b)", b->b, b->units_xy, list);
-    list = wc_print_add_double("Length of bar #1 (l1)", b->l1, b->units_xy, list);
-
-    list = wc_print_add_double("Width of bar #2 (d)", b->d, b->units_xy, list);
-    list = wc_print_add_double("Thickness of bar #2 (c)", b->c, b->units_xy, list);
-    list = wc_print_add_double("Length of bar #2 (l2)", b->l2, b->units_xy, list);
-
-
-    list = wc_print_add_double("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
-    list = wc_print_add_double("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
-    list = wc_print_add_double("Bar #2 position in the length direction (l3)", b->l3, b->units_xy, list);
-
-    list = wc_print_add_double("Bar #1 Self Inductance (L1)", b->L1, b->units_L, list);
-    list = wc_print_add_double("Bar #2 Self Inductance (L2)", b->L2, b->units_L, list);
-    list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
-    list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
-
   }
+
+  list = wc_print_add_cairo(figure_bars_fig_render[0], figure_bars_fig_width[0],
+                            figure_bars_fig_height[0], list);
+
+  list = wc_print_add_double("Width of bar #1 (a)", b->a, b->units_xy, list);
+  list = wc_print_add_double("Thickness of bar #1 (b)", b->b, b->units_xy, list);
+  list = wc_print_add_double("Length of bar #1 (l1)", b->l1, b->units_xy, list);
+
+  list = wc_print_add_double("Width of bar #2 (d)", b->d, b->units_xy, list);
+  list = wc_print_add_double("Thickness of bar #2 (c)", b->c, b->units_xy, list);
+  list = wc_print_add_double("Length of bar #2 (l2)", b->l2, b->units_xy, list);
+
+
+  list = wc_print_add_double("Bar #2 position in the width direction (E)", b->E, b->units_xy, list);
+  list = wc_print_add_double("Bar #2 position in the thickness direction (P)", b->P, b->units_xy, list);
+  list = wc_print_add_double("Bar #2 position in the length direction (l3)", b->l3, b->units_xy, list);
+
+  list = wc_print_add_double("Bar #1 Self Inductance (L1)", b->L1, b->units_L, list);
+  list = wc_print_add_double("Bar #2 Self Inductance (L2)", b->L2, b->units_L, list);
+  list = wc_print_add_double("Mutual Inductance (M)", b->M, b->units_L, list);
+  list = wc_print_add_double("Coupling Coefficient (k)", b->k, NULL, list);
 
   return list;
 }

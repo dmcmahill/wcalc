@@ -36,6 +36,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "pixmaps/air_coil.xpm"
 #include "pixmaps/figure_air_coil.h"
 #include "air_coil.h"
 #include "air_coil_gui.h"
@@ -45,6 +46,7 @@
 
 #include "symbols.h"
 #include "gtk-units.h"
+#include "utils.h"
 #include "wcalc.h"
 
 #ifdef DMALLOC
@@ -71,9 +73,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 static void values_init(air_coil_gui *gui,
 			GtkWidget *value_parent,
 			GtkWidget *output_parent);
-static void picture_init(air_coil_gui *gui,
-			 GtkWidget *window,
-			 GtkWidget *parent);
 static void tooltip_init(air_coil_gui *gui);
 
 static char *name="Air Core Inductor Analysis/Synthesis";
@@ -178,7 +177,7 @@ void air_coil_gui_init(Wcalc *wcalc, GtkWidget *main_vbox,FILE *fp)
     g_print(_("air_coil_gui.c:air_coil_gui_init():  calling values init\n"));
 #endif
   values_init(gui, values_vbox, outputs_vbox);
-  picture_init(gui,wcalc->window,picture_vbox);
+  wc_picture_init(wcalc, picture_vbox, (const char **) air_coil);
 
   tooltip_init(gui);
 
@@ -213,8 +212,8 @@ static void values_init(air_coil_gui *gui,
   GtkWidget *text;
   GtkWidget *frame;
   wc_units_gui *ug;
-  wc_units_gui *f_ug;
-  wc_units_gui *L_ug;
+  wc_units_gui *f_ug = NULL;
+  wc_units_gui *L_ug = NULL;
 
   /* the "Len/Fill" radio button group */
   GSList *len_group;
@@ -225,7 +224,8 @@ static void values_init(air_coil_gui *gui,
   /* x,y position in the form */
   int x = 0;
   int y = 0;
-
+  int xb = 3;
+  
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(value_parent), frame);
   gtk_frame_set_label( GTK_FRAME(frame), _("Analysis/Synthesis Values") );
@@ -240,118 +240,56 @@ static void values_init(air_coil_gui *gui,
 
 
   /* Analyze button */
-  gui->button_analyze = gtk_button_new_with_label (_("Analyze->"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_analyze), "clicked",
-		      GTK_SIGNAL_FUNC (analyze), (gpointer)
-		      gui);
+  gui->button_analyze = gtk_button_new_with_label (_("Analyze"));
+  wc_button_connect( gui->button_analyze, analyze, gui);
+
   gtk_table_attach(GTK_TABLE(table), gui->button_analyze, 4, 5, 0, 4,
 		   0, GTK_EXPAND|GTK_FILL, WC_XPAD, WC_YPAD);
   gtk_widget_show (gui->button_analyze);
 
 
   /* ---------------- Number of Turns -------------- */
+  wc_table_add_entry_no_units(table, gui, _("N"),
+			       &(gui->text_Nf),
+			       &(gui->coil->wire_diameter), &x, &y);
 
-  text = gtk_label_new( "N" );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_Nf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_entry_set_text(GTK_ENTRY(gui->text_Nf),"      ");
-  gtk_table_attach (GTK_TABLE(table), gui->text_Nf, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_Nf),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_Nf), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_Nf);
-
-
-  /* ---------------- Synthesize Number of Turns Button -------------- */
-
-  gui->button_synth_N = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_N), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_N), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_N, x+3, x+4, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show (gui->button_synth_N);
-
-  y++;
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Find minimum number of turns and length to meet the specified inductance"),
+                      synthesize_N, gui, xb, y-1);
 
   /* ---------------- Coil Diameter -------------- */
-  text = gtk_label_new( "I.D." );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
 
-  gui->text_dia = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_dia, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_dia),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_dia), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_dia);
+  wc_table_add_entry_new_units(table, gui, _("I.D."),
+			       &(gui->text_dia), gui->coil->units_dia, &ug,
+			       &(gui->coil->wire_diameter), &x, &y);
 
-  text = wc_units_menu_new(gui->coil->units_dia, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-  /* synthesize I.D. button */
-  gui->button_synth_ID = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_ID), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_dia), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_ID, x+3, x+4, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_sensitive (gui->button_synth_ID, FALSE);
-  gtk_widget_show (gui->button_synth_ID);
-  y++;
-
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Find the inside diameter the specified inductance using the specified number of turns and length"),
+                      synthesize_dia, gui, xb, y-1);
 
   /* ----------------  Coil Length  -------------- */
-  /* the 2 text entries */
-  gui->text_len = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_len, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_len),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_len), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_len);
-
-  gui->text_fill = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_fill, x+1, x+2, y+1, y+2,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_fill),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_fill), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_fill);
-
-  /* length/fill radio buttons*/
   button = gtk_radio_button_new_with_label (NULL, _("Len."));
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(use_len_pressed),
-		     gui);
+  wc_table_add_wentry_new_units(table, gui, button,
+                                &(gui->text_len), gui->coil->units_len, &ug, 
+                                &(gui->coil->len), &x, &y);
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(use_len_pressed),
+                    gui);
   gui->len_button = button;
   gtk_widget_show (button);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+  len_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 
-  len_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
-  button = gtk_radio_button_new_with_label(len_group, "Fill");
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y+1, y+2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(use_fill_pressed),
-		     gui);
+  button = gtk_radio_button_new_with_label (len_group, _("Fill"));
+  wc_table_add_wentry_no_units(table, gui, button,
+                                &(gui->text_fill),
+                                &(gui->coil->fill), &x, &y);
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(use_fill_pressed),
+                    gui);
   gui->fill_button = button;
   gtk_widget_show (button);
-
+  
   if(gui->coil->use_fill){
     gtk_widget_set_sensitive (gui->text_len, FALSE);
     gtk_widget_set_sensitive (gui->text_fill, TRUE);
@@ -362,22 +300,9 @@ static void values_init(air_coil_gui *gui,
     gtk_widget_set_sensitive (gui->text_fill, FALSE);
   }
 
-  text = wc_units_menu_new(gui->coil->units_len, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-
-  /* Synthesize Length button */
-  gui->button_synth_L = gtk_button_new_with_label (_("<-Synthesize"));
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->button_synth_L), "clicked",
-		      GTK_SIGNAL_FUNC (synthesize_len), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), gui->button_synth_L, x+3, x+4, y, y+2,
-		   0, GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_widget_show (gui->button_synth_L);
+  wc_table_add_button(table, _("<-Synthesize"),
+                      _("Find length to meet specified inductance with the specified number of turns"),
+                      synthesize_len, gui, xb, y-1);
 
   /* ---------------- Start 2nd Column  of entries -----------------*/
   y = 0;
@@ -385,51 +310,30 @@ static void values_init(air_coil_gui *gui,
 
   /* ---------------- Wire Size  -------------- */
 
+  /* wire diameter - AWG */
 
-  gui->text_AWGf = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_AWGf, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_AWGf),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_AWGf), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_AWGf);
-
-  hbox = gtk_hbox_new(FALSE,1);
-  gtk_table_attach(GTK_TABLE(table), hbox, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(hbox);
-  text = gtk_label_new( _("AWG") );
-  gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-  gtk_widget_show(text);
-
-  gui->text_wire_diameter = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_wire_diameter, x+1, x+2, y+1, y+2,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_wire_diameter),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_wire_diameter), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_wire_diameter), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_wire_diameter);
-
-
-  /* AWG/wire diamter radio buttons*/
   button = gtk_radio_button_new_with_label (NULL, _("AWG"));
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(use_awg_pressed),
-		     gui);
+  wc_table_add_wentry_fixed_units(table, gui, button, "AWG",
+                                  &(gui->text_AWGf),
+                                  &(gui->coil->AWGf), &x, &y);
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(use_awg_pressed),
+                    gui);
   gui->awg_button = button;
   gtk_widget_show (button);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+  wire_size_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 
-  wire_size_group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
-  button = gtk_radio_button_new_with_label(wire_size_group, "Wire Dia.");
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y+1, y+2, 0,0,WC_XPAD,WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(use_wire_diameter_pressed),
-		     gui);
-  gui->wire_diameter_button = button;
+  /* wire diameter - diameter */
+  
+  button = gtk_radio_button_new_with_label (wire_size_group, _("Wire Dia."));
+  wc_table_add_wentry_new_units(table, gui, button,
+                                &(gui->text_wire_diameter), gui->coil->units_len, &ug, 
+                                &(gui->coil->wire_diameter), &x, &y);
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(use_wire_diameter_pressed),
+                    gui);
+  gui->fill_button = button;
   gtk_widget_show (button);
 
   if(gui->coil->use_wire_diameter){
@@ -442,79 +346,22 @@ static void values_init(air_coil_gui *gui,
     gtk_widget_set_sensitive (gui->text_wire_diameter, FALSE);
   }
 
-  text = wc_units_menu_new(gui->coil->units_wire_diameter, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y+1, y+2,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-
-  y++;
-  y++;
-
+  
   /* ---------------- Resistivity  -------------- */
-
-  text = gtk_label_new( _("Resistivity") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_rho = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_rho,
-		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_rho),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_rho), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_rho);
-
-  text = wc_units_menu_new(gui->coil->units_rho, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  y++;
+  wc_table_add_entry_new_units(table, gui, _("Resistivity"),
+			       &(gui->text_rho), gui->coil->units_rho, &ug,
+			       &(gui->coil->rho), &x, &y);
 
   /* ----------------  Inductance  -------------- */
 
-  text = gtk_label_new( _("Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->text_L = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_L, x+1, x+2, y, y+1,0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_L),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_L), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_L);
-
-
-  text = wc_units_menu_new(gui->coil->units_L, WC_WCALC(gui), &L_ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  y++;
+  wc_table_add_entry_new_units(table, gui, _("Inductance"),
+			       &(gui->text_L), gui->coil->units_L, &L_ug,
+			       &(gui->coil->L), &x, &y);
 
   /* ----------------  Frequency  -------------- */
-
-  text = gtk_label_new( _("Frequency") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-
-  gui->text_freq = gtk_entry_new_with_max_length( WC_ENTRYLENGTH );
-  gtk_table_attach (GTK_TABLE(table), gui->text_freq,
-		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_set_usize(GTK_WIDGET(gui->text_freq),WC_WIDTH,0);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (gui->text_freq), "changed",
-		      GTK_SIGNAL_FUNC (vals_changedCB), gui);
-  gtk_widget_show(gui->text_freq);
-
-
-  text = wc_units_menu_new(gui->coil->units_freq, WC_WCALC(gui), &f_ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
+  wc_table_add_entry_new_units(table, gui, _("Frequency"),
+			       &(gui->text_freq), gui->coil->units_freq, &f_ug,
+			       &(gui->coil->freq), &x, &y);
 
   /* ----------------  empty text to allow the dialog to expand nicely  -------------- */
 
@@ -524,18 +371,7 @@ static void values_init(air_coil_gui *gui,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
-
-  /* ----------------  put in some default values into the entries  -------------- */
-
-
-  gtk_entry_set_text( GTK_ENTRY(gui->text_Nf),"10" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_dia),"0.25" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_len),"1.0" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_AWGf),"22" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_wire_diameter),"10" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_rho),"1" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_L),"50" );
-  gtk_entry_set_text( GTK_ENTRY(gui->text_freq),"10" );
+  /* ----------------  done with inputs section -------------- */
 
   gtk_widget_show (table);
 
@@ -549,7 +385,7 @@ static void values_init(air_coil_gui *gui,
   gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
   gtk_widget_show(frame);
 
-  table = gtk_table_new (2, 7, FALSE);
+  table = gtk_table_new (3, 7, FALSE);
   gtk_container_add (GTK_CONTAINER (frame), table);
 
   x = 0;
@@ -575,119 +411,31 @@ static void values_init(air_coil_gui *gui,
   y++;
 
   /* ---------------- Self resonant freq.  -------------- */
-  text = gtk_label_new( _("Self Resonant Freq.") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
+  wc_table_add_label_new_units(table, gui, _("Self Resonant Freq."),
+			       &(gui->label_SRF), gui->coil->units_SRF, &ug,
+			       &(gui->coil->SRF), &x, &y);
 
-  gui->label_SRF = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_SRF,
-		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_SRF);
-
-  text = wc_units_menu_new(gui->coil->units_SRF, WC_WCALC(gui), &ug);
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-
-  wc_units_attach_label(ug, gui->label_SRF, &(gui->coil->SRF), NULL, NULL, WC_FMT_G, 1);
-
+  /* new column */
   x = 4;
   y = 0;
 
-  /* ---------------- closewound inductance -------------- */
-
-  text = gtk_label_new( _("Closewound Inductance") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-  gui->label_Lmax = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_Lmax,
-		    x+1, x+2, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(gui->label_Lmax);
-
-  text = gtk_label_new( "" );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1,
-		   GTK_EXPAND|GTK_FILL, 0, WC_XPAD, WC_YPAD);
-  gtk_widget_show(text);
-  gtk_misc_set_alignment(GTK_MISC(text), 0, 0);
-  wc_units_attach_units_label(L_ug, text);
-  wc_units_attach_label(L_ug, gui->label_Lmax, &(gui->coil->Lmax), NULL, NULL, WC_FMT_G, 1);
-
-  y++;
-
-  /* ---------------- Fill factor -------------- */
-
-  text = gtk_label_new( _("Len/Closewound Len") );
-  gtk_table_attach(GTK_TABLE(table), text, x, x+1, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-
-
-  gui->label_fill = gtk_label_new( WC_OUTPUT_TEXT );
-  gtk_table_attach (GTK_TABLE(table), gui->label_fill, x+1, x+2, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(gui->label_fill);
-
-  /* no units for fill */
-  text = gtk_label_new( " " );
-  gtk_table_attach(GTK_TABLE(table), text, x+2, x+3, y, y+1, 0,0,WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
-
-
-  /* spacer */
+  /* spacer between columns */
   text = gtk_label_new( "                " );
   gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1,
 		   GTK_EXPAND|GTK_FILL, 0,
 		   WC_XPAD,WC_YPAD);
   gtk_widget_show(text);
 
+  /* ---------------- closewound inductance -------------- */
+  wc_table_add_label_attach_units(table, gui, _("Closewound Inductance"),
+			       &(gui->label_Lmax), gui->coil->units_L, &L_ug,
+			       &(gui->coil->Lmax), &x, &y);
+
+  /* ---------------- Fill factor -------------- */
+  wc_table_add_label_no_units(table, gui, _("Len/Closewound Len"),
+                              &(gui->label_fill), &x, &y);
+
   gtk_widget_show(table);
-
-
-}
-
-
-
-#include "pixmaps/air_coil.xpm"
-
-static void picture_init(air_coil_gui *gui, GtkWidget *window,GtkWidget *parent)
-{
-  GtkWidget *my_hbox;
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_hbox);
-  gtk_widget_show (my_hbox);
-
-
-
-  /* now for the pixmap from gdk */
-  style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) air_coil);
-
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
-
-  WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
-  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (WC_WCALC(gui)->text_status);
 
 
 }
@@ -891,25 +639,21 @@ static void update_display(air_coil_gui *gui)
 
 static void tooltip_init(air_coil_gui *gui)
 {
-  GtkTooltips *tips;
 
-  tips = gtk_tooltips_new();
+  gtk_widget_set_tooltip_text(gui->text_Nf, _("Number of turns"));
+  gtk_widget_set_tooltip_text(gui->text_dia, _("Inside diameter of the coil"));
+  gtk_widget_set_tooltip_text(gui->text_len, _("Length of the coil"));
+  gtk_widget_set_tooltip_text(gui->text_fill, _("Ratio of the length of the coil to the length of a closewound coil"));
+  gtk_widget_set_tooltip_text(gui->text_AWGf, _("Wire diameter"));
 
-  gtk_tooltips_set_tip(tips, gui->text_Nf, _("Number of turns"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_dia, _("Inside diameter of the coil"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_len, _("Length of the coil"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_fill, _("Ratio of the length of the coil"
-		       " to the length of a closewound coil"),NULL);
-  gtk_tooltips_set_tip(tips, gui->text_AWGf, _("Wire diameter"), NULL);
+  gtk_widget_set_tooltip_text(gui->text_rho, _("Resistivity of the wire"));
+  gtk_widget_set_tooltip_text(gui->text_L, _("Inductance of the coil"));
+  gtk_widget_set_tooltip_text(gui->text_freq, _("Frequency of operation"));
 
-  gtk_tooltips_set_tip(tips, gui->text_rho, _("Resistivity of the wire"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_L, _("Inductance of the coil"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
-
-  gtk_tooltips_set_tip(tips, gui->button_analyze, _("Analyze the electrical characteristics from the specified dimensions"), NULL);
-  gtk_tooltips_set_tip(tips, gui->button_synth_ID, _("Find the inside diameter the specified inductance using the specified number of turns and length"), NULL);
-  gtk_tooltips_set_tip(tips, gui->button_synth_N, _("Find minimum number of turns and length to meet the specified inductance"), NULL);
-  gtk_tooltips_set_tip(tips, gui->button_synth_L, _("Find length to meet specified inductance with the specified number of turns"), NULL);
+  gtk_widget_set_tooltip_text(gui->button_analyze, _("Analyze the electrical characteristics from the specified dimensions"));
+  //gtk_widget_set_tooltip_text(gui->button_synth_ID, _("Find the inside diameter the specified inductance using the specified number of turns and length"));
+  //gtk_widget_set_tooltip_text(gui->button_synth_N, _("Find minimum number of turns and length to meet the specified inductance"));
+  //gtk_widget_set_tooltip_text(gui->button_synth_L, _("Find length to meet specified inductance with the specified number of turns"));
 }
 
 static void use_len_pressed(GtkWidget *widget, gpointer data )
@@ -974,35 +718,35 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     figure_air_coil_init();
-  }  {
-    // FIXME -- free the old list first!!!!
+  } else {
+    g_list_free_full(list, (GDestroyNotify) wc_print_value_free);
     list = NULL;
-    list = wc_print_add_cairo(figure_air_coil_render[0],
-			      figure_air_coil_width[0], figure_air_coil_height[0], list);
-
-    list = wc_print_add_double("Number of turns (N)", c->Nf, NULL, list);
-    list = wc_print_add_double("Length of coil (Len)", c->len, c->units_len, list);
-    list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
-    list = wc_print_add_double("Wire diameter (wire_diameter)", c->wire_diameter, c->units_wire_diameter, list);
-
-    list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
-
-    list = wc_print_add_double("Wire resistivity ("
-			       WC_SYM_RHO_LC ")", c->rho, c->units_rho, list);
-
-    list = wc_print_add_double("Inside diameter of coil (I.D.)", c->dia, c->units_dia, list);
-
-
-    list = wc_print_add_double("Coil inductance (L)", c->L, c->units_L, list);
-    list = wc_print_add_double("Coil maximum (closewound) inductance (Lmax)", c->Lmax,
-			       c->units_L, list);
-
-    list = wc_print_add_double("Analysis frequency", c->freq, c->units_freq, list);
-    list = wc_print_add_double("Coil quality factor (Q)", c->Q, NULL, list);
-    list = wc_print_add_double("Self resonant frequency", c->SRF, c->units_SRF, list);
-
-
   }
+
+  list = wc_print_add_cairo(figure_air_coil_render[0],
+                            figure_air_coil_width[0], figure_air_coil_height[0], list);
+
+  list = wc_print_add_double("Number of turns (N)", c->Nf, NULL, list);
+  list = wc_print_add_double("Length of coil (Len)", c->len, c->units_len, list);
+  list = wc_print_add_double("Wire gauge (AWG)", c->AWGf, NULL, list);
+  list = wc_print_add_double("Wire diameter (wire_diameter)", c->wire_diameter, c->units_wire_diameter, list);
+
+  list = wc_print_add_double("Fill (ratio of length to minimum length)", c->fill, NULL, list);
+
+  list = wc_print_add_double("Wire resistivity ("
+                             WC_SYM_RHO_LC ")", c->rho, c->units_rho, list);
+
+  list = wc_print_add_double("Inside diameter of coil (I.D.)", c->dia, c->units_dia, list);
+
+
+  list = wc_print_add_double("Coil inductance (L)", c->L, c->units_L, list);
+  list = wc_print_add_double("Coil maximum (closewound) inductance (Lmax)", c->Lmax,
+                             c->units_L, list);
+
+  list = wc_print_add_double("Analysis frequency", c->freq, c->units_freq, list);
+  list = wc_print_add_double("Coil quality factor (Q)", c->Q, NULL, list);
+  list = wc_print_add_double("Self resonant frequency", c->SRF, c->units_SRF, list);
+
   return list;
 }
 
