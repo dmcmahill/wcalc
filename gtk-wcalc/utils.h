@@ -154,6 +154,10 @@ void wc_picture_init(Wcalc *wcalc, GtkWidget *parent, const char **xpm);
 /*
  * used to create/attach things like the analyze or synthesize buttons
  */
-void wc_table_add_button(GtkWidget *table, const char *text, const char *tip, gpointer cb, gpointer data, int x, int y);
- 
+void wc_table_add_button_wh(GtkWidget *table, const char *text, const char *tip, gpointer cb, gpointer data, int x, int w, int y, int h, GtkWidget **button);
+
+#define wc_table_add_button(table, text, tip, cb, data, x, y) \
+  (wc_table_add_button_wh( (table), (text), (tip), (cb), (data), (x), (1), (y), \
+                 (1), NULL))
+
 #endif /* __UTILS_H__ */

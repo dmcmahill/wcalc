@@ -46,15 +46,25 @@
 #include <dmalloc.h>
 #endif
 
-void wc_table_add_button(GtkWidget *table, const char *text, const char *tip, gpointer cb, gpointer data, int x, int y)
+/*
+ * This adds a button to our table
+ */
+void wc_table_add_button_wh(GtkWidget *table, const char *text, const char *tip, gpointer cb, gpointer data, int x, int w, int y, int h, GtkWidget **b)
 {
   GtkWidget *button;
-  
+
   button = gtk_button_new_with_label (text);
   gtk_widget_set_tooltip_text( button, tip);
   wc_button_connect( button, cb, data);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0, 0, WC_XPAD, WC_YPAD);
+  gtk_table_attach(GTK_TABLE(table), button, x, x+w, y, y+h,
+                   0,
+                   GTK_EXPAND|GTK_FILL,
+                   WC_XPAD, WC_YPAD);
   gtk_widget_show(button);
+
+  if(b != NULL) {
+    *(b) = button;
+  }
 }
 
 void wc_table_add(GtkWidget *table, void * gui, const char *text,
