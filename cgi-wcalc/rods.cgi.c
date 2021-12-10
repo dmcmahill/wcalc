@@ -129,9 +129,8 @@ int cgiMain(void){
   cgi_units_attach_entry(menu_L, "entry_M");
   cgi_units_attach_entry(menu_R, "entry_R2");
 
-  /* force d2 = d1 and l2 = l1 */
-  cgi_sync_entry("d1", "d2");
-  cgi_sync_entry("d2", "d1");
+  /* force l2 = l1 */
+  cgi_sync_entry("l1", "l2");
 
   /* flags to the program: */
   if(cgiFormStringNoNewlines("analyze",str_action,ACTION_LEN) ==
