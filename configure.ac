@@ -1308,7 +1308,6 @@ AC_SUBST(LIBWALC_LDFLAGS)
 
 AC_OUTPUT(
 	Makefile 
-	doc/Makefile
 	include/Makefile
 	intl/Makefile
 	m4/Makefile
