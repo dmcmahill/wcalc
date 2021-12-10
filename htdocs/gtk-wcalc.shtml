@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- Copyright (c) 2001, 2002, 2004
+<!-- Copyright (c) 2001, 2002, 2004, 2021
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -39,9 +39,9 @@ stripline synthesis,
     The <a href="http://www.gtk.org">GTK+</a> frontend to Wcalc
     provides a simple and easy to use standalone program for analysis
     and synthesis.  The GTK+ frontend runs on most major Unix-like
-    operating systems as well as WIN32.  Gtk-wcalc is primarily
-    developed using gtk+-2.10.0 and newer but it should build with
-    older versions in the 2.x series as well as 1.2.x
+    operating systems as well as WIN32.  The current version of Gtk-wcalc
+    uses the final release of gtk2 (gtk+-2.24.x).  Porting to gtk3
+    and gtk4 is on the roadmap.
     The following screen shots
     (which are probably out of date )show examples of the
     Wcalc GTK+ interface.
