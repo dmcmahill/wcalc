@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- Copyright (c) 2004, 2006
+<!-- Copyright (c) 2004, 2006, 2021
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -36,6 +36,16 @@ stripline synthesis,
     <br>
     <br>
     </center>
+
+    <HR>
+    <H2><A NAME="github">Wcalc has moved to github!</A></H2>
+    <P>
+    After nearly 2 decades of living in a private CVS repository, the
+    primary sources have been moved into git on a public github repo.
+    I hope this more open development environment encourages some patch
+    or feature contributions.  In addition, a basic level of CI has
+    been added.
+    </P>
 
     <HR>
     <H2><A NAME="wcalc-1.1">wcalc-1.1 released</A></H2>
