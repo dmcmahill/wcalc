@@ -348,12 +348,34 @@ static void global_model_init()
 					FILE_STRIPLINE);
 }
 
+/*
 void wcalc_setup_cb (gpointer data,
 		     guint action,
 		     GtkWidget *widget)
+*/
+void wcalc_setup_cb (GtkAction *action, gpointer data)
 {
+  guint ind, c;
+  const gchar *name;
+  GList *l;
 
-  wcalc_setup(NULL, action, widget);
+  name = gtk_action_get_name(action);
+  c = 0;
+  ind = -1;
+  for (l = global_model_names; l != NULL; l = l->next) {
+    if (g_strcmp0(l->data, name) == 0) {
+      ind = c;
+    }
+    c++;
+  }
+
+  //g_print("%s():  action = \"%s\", ind = %d, data = %p\n", __FUNCTION__, name, ind, data);
+  if( ind == -1) {
+    g_critical("%s():  Failed to find \"%s\" in global_model_names\n", __FUNCTION__, name);
+    alert("%s():  Failed to find \"%s\" in global_model_names\n", __FUNCTION__, name);
+  } else {
+    wcalc_setup(NULL, ind, NULL);
+  }
 }
 
 void wcalc_setup (gpointer data,

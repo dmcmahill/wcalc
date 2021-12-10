@@ -175,9 +175,7 @@ void wcalc_setup(gpointer data,
 		 guint action,
 		 GtkWidget *widget);
 
-void wcalc_setup_cb(gpointer data,
-		    guint action,
-		    GtkWidget *widget);
+void wcalc_setup_cb (GtkAction *action, gpointer data);
 
 Wcalc *Wcalc_new(void);
 void Wcalc_init(Wcalc *new);
