@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- Copyright (c) 2005
+<!-- Copyright (c) 2005, 2021
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@users.sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -56,9 +56,10 @@ stripline synthesis,
 	chosen so they approach known analytic solutions in extreme cases.  These 
 	models are typically much much to complex for manually applying with a hand
 	calculator but are trivially simple for a modern or even not so modern computer
-	to solve.  This makes Wcalc be very fast.  In many cases the error in the
+	to solve.  Since the analysis routines do not involve any sort of iterative solver,
+        Wcalc is very fast.  In many cases the error in the
 	approximation is less than the error due to physical tolerances.  However,
-	one should heed any warnings issued to Wcalc when physical dimensions are
+	one should heed any warnings issued by Wcalc when physical dimensions are
 	outside the usual range for accuracy.
     </P>
     
@@ -120,9 +121,9 @@ stripline synthesis,
       this effect.  If you are designing circuits where you plan on
       doing things like using a short (compared to 1/4 wavelength)
       line as an inductor, you must be concerned with this effect.
-      The good news is that the quality factor of the inductance
-      formed by a line at low frequencies is usually low enough to
-      discourage its use anyway.
+      The good news is that the low quality factor of the inductance
+      formed by a line at low frequencies along with physically large
+      required sizes is usually discourage its use anyway.
     </P>
 
     <font face="helvetica, arial">

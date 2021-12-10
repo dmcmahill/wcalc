@@ -103,7 +103,7 @@ mutual inductance of parallel rods
                   <TD>Diameter of Wire #1 (d1)</TD>
                   <TD><INPUT TYPE="TEXT" SIZE=10 NAME="d1" 
                        VALUE="<@g@rod->d1/rod->units_xy->sf@>"
-                       onChange="changed_wc_sync_entry_d1(); valsChanged()"></TD>
+                       onChange="valsChanged()"></TD>
                   <TD>
                     <!-- xy units menu -->
                     <@s@cgi_units_menu_display(menu_xy)@>
@@ -124,7 +124,7 @@ mutual inductance of parallel rods
 
 <TR>
 <TD>Diameter of Wire #2 (d2)</TD>
-<TD><INPUT TYPE="TEXT" readonly="readonly" SIZE=10 NAME="d2" 
+<TD><INPUT TYPE="TEXT" SIZE=10 NAME="d2"
      VALUE="<@g@rod->d2/rod->units_xy->sf@>"
         onChange="valsChanged()"></TD>
 <TD>

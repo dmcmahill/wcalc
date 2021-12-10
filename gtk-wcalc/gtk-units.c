@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2002, 2003, 2004 Dan McMahill
+ * Copyright (C) 2002, 2003, 2004, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -59,19 +58,38 @@ static wc_units_menu_data *wc_units_menu_data_new(int ind);
 static void wc_units_menu_init1(void * item, void * data);
 static void wc_units_menu_init2(void * item, void * data);
 
+static void wc_print_glist(void * item, void * data)
+{
+  fprintf(stderr, "       item (combo) = %p, data (ug) = %p\n", item, data);
+}
+
+/*
+ * this is called at the end of creating and initializing a gui.
+ * At this point we have already created all of the wc_units_gui's
+ */
 void wc_units_menu_init(Wcalc *wc)
 {
 
+  /*
+   * Iterate over *all* units menus in the GUI.  This is a list of
+   *    pointers to wc_units_gui's
+   */
   g_list_foreach( wc->units_menu_list,
 		  (GFunc) wc_units_menu_init1,
 		  NULL );
 }
 
-void wc_units_menu_init1(void * item, void * data)
+
+/*
+ * This processes a wc_units_gui.
+ * item - pointer to a wc_units_gui
+ * data - NULL
+ */
+static void wc_units_menu_init1(void * item, void * data)
 {
   wc_units_gui *ug;
 
-  ug = (wc_units_gui *) item;
+  ug = WC_UNITS_GUI (item);
 
 #ifdef DEBUG
   printf("wc_units_menu_init1():  ug = %p\n", ug);
@@ -79,65 +97,62 @@ void wc_units_menu_init1(void * item, void * data)
 
   /*
    * iterate over each of the options menus for the various terms in
-   * the units menu.
-  */
+   * the units menu.  In this case we are letting each element in the
+   * units gui know who the wc_units_gui is by passing in item.
+   */
+
+  /* terms in the numerator */
   g_list_foreach( ug->menu_num,
 		  (GFunc) wc_units_menu_init2,
 		  item );
 
+  /* terms in the denominator */
   g_list_foreach( ug->menu_den,
 		  (GFunc) wc_units_menu_init2,
 		  item );
 }
 
-void wc_units_menu_init2(void * item, void * data)
+static void wc_units_menu_init2(void * item, void * data)
 {
   GtkWidget *w;
-  GtkWidget *m;
-  GtkWidget *menu_item;
   wc_units_gui *ug;
 
   assert( item != NULL );
   assert( data != NULL );
 
-  ug = (wc_units_gui *) data;
-#ifdef DEBUG
-  printf("wc_units_menu_init2():  ug = %p\n", ug);
-  printf("wc_units_menu_init2():  item = %p\n", item);
-  printf("wc_units_menu_init2():  data = %p\n", data);
-#endif
-
+  ug = WC_UNITS_GUI (data);
   w = GTK_WIDGET( item );
-#ifdef DEBUG
-  g_print("wc_units_menu_init2():  w = %p\n", w);
-#endif
-
-  /* pick out the menu */
-  m = gtk_option_menu_get_menu(GTK_OPTION_MENU(w));
-#ifdef DEBUG
-  g_print("wc_units_menu_init2():  m = %p\n", m);
-#endif
-
-  /* figure out which one is active */
-  menu_item = gtk_menu_get_active(GTK_MENU( m ));
-#ifdef DEBUG
-  g_print("wc_units_menu_init2():  menu_item = %p\n", menu_item);
-#endif
 
 #ifdef DEBUG
-  g_print("wc_units_menu_init2():  Running calback.  "
-	  "item = %p, data = %p, m = %p, "
-	  "menu_item = %p\n",
-	  item, data, m, menu_item);
+  g_print("%s():  ug = %p\n", __FUNCTION__, ug);
+  g_print("%s():  item = %p\n", __FUNCTION__, item);
+  g_print("%s():  data = %p\n", __FUNCTION__, data);
+  g_print("%s():  w = %p\n", __FUNCTION__, w);
 #endif
 
   /* run the callback */
-  wc_units_menu_changed( menu_item, (gpointer) ug);
+  wc_units_menu_changed( w, (gpointer) ug);
+
+  return;
 
 }
 
 /*
  * wc_units_menu_new()
+ *
+ * This creates a new units menu for the GUI and adds to the
+ * list of menus that the GUI maintains.
+ *
+ * units - is a libwcalc wc_units pointer.  This has the info about
+ *         what the units are.
+ *
+ * gui - the GUI we are adding a units menu to.
+ *
+ * ug - pointer to a pointer to a units gui.  *ug will be modified
+ *      to point to our new wc_units_gui.
+ *
+ * Returns the GtkWidget that should be added to the gui in some
+ * spot.
  *
  */
 GtkWidget *wc_units_menu_new(wc_units *units,
@@ -173,11 +188,25 @@ GtkWidget *wc_units_menu_new(wc_units *units,
 
   /* Create the numerator menus */
   if (units->nnum == 0) {
-      item = gtk_label_new("1");
-      gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
-  }
-  else {
+    /*
+     * nothing in the numerator so this should be something like
+     * 1/Ohms  when we are done.  That is why we are adding a "1"
+     * in the numerator.
+     */
+#ifdef DEBUG
+    g_print("%s():  Adding 1 to the numerator\n", __FUNCTION__);
+#endif
+    item = gtk_label_new("1");
+    gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
+  } else {
+    /*
+     * there is something in the numerator so build up each part
+     * for things like uOhm-mm
+     */
     for ( i = 0; i < units->nnum; i++) {
+#ifdef DEBUG
+      g_print("%s():  Adding %p index %d to the numerator\n", __FUNCTION__, units->num[i], units->numi[i]);
+#endif
       item = wc_units_submenu_new(gui, units->num[i], units->numi[i], (*ug),
 				  wc_units_menu_changed);
 
@@ -199,11 +228,15 @@ GtkWidget *wc_units_menu_new(wc_units *units,
     }
   }
 
+  /* Create the denominator menus */
   if (units->nden > 0) {
       item = gtk_label_new("/");
       gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
 
       for (i=0; i<units->nden; i++) {
+#ifdef DEBUG
+      g_print("%s():  Adding %p index %d to the denominator\n", __FUNCTION__, units->den[i], units->deni[i]);
+#endif
 	item = wc_units_submenu_new(gui, units->den[i], units->deni[i], (*ug),
 				    wc_units_menu_changed);
 	gtk_box_pack_start (GTK_BOX (hbox), item, 0, 0, 0);
@@ -227,6 +260,13 @@ GtkWidget *wc_units_menu_new(wc_units *units,
 }
 
 
+/*
+ * w - the GtkComboBoxText that corresponds to the individual
+ *     component (like "Henry") of a units GUI
+ *
+ * data - the units gui
+ */
+
 void wc_units_menu_changed( GtkWidget *w, gpointer data)
 {
   int which, ind;
@@ -235,42 +275,60 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   guint i;
   wc_units_update_item *up_item;
 
-  /* XXX there must be a better way than fixing this size... */
+  /*
+   * FIXME
+   * there must be a better way than fixing this size.  At a
+   * minimum need to use a limited prinf
+   */
   char str[80];
   double sf;
   static char *units_str = NULL;
 
-  ug = (wc_units_gui *) data;
-  /* gui = WC_COAX_GUI(data);
-     g_list_nth_data(ug->menu_num,action); */
-  menu_data = WC_UNITS_MENU_DATA(gtk_object_get_user_data(GTK_OBJECT(w)));
-  which = menu_data->ind;
+  assert(w != NULL);
+  assert(data != NULL);
+
+  ug = WC_UNITS_GUI (data);
+  which = gtk_combo_box_get_active( GTK_COMBO_BOX(w));
 
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug = %p\n", ug);
-    g_print("wc_units_menu_changed():  ug->units = %p\n", ug->units);
+  g_print("\n\n%s(widget for the component = %p, units_gui = %p) which selected = %d\n", __FUNCTION__, w, data, which);
+  g_print("%s():  ug = %p\n", __FUNCTION__, ug);
+  g_print("%s():  ug->units = %p\n", __FUNCTION__, ug->units);
 #endif
 
-  if ( (ind = g_list_index(ug->menu_num,menu_data->opt_menu)) != -1) {
+    /*
+     * here we try to figure out if the combo box (w) is part of the
+     * numerator and if so, which position in the numerator
+     */
+    if ( (ind = g_list_index(ug->menu_num, w)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed numerator[%d] units to %d\n",
-	    ug, ind,which);
-    g_print("wc_units_menu_changed():  ug->units->numi[%d] = %d\n",
-	    ind, ug->units->numi[ind]);
+      g_print("%s():  ug %p changed numerator[%d] units to %d\n",
+              __FUNCTION__, ug, ind, which);
+      g_print("%s():  Previously: ug->units->numi[%d] = %d\n",
+              __FUNCTION__, ind, ug->units->numi[ind]);
 #endif
-    ug->units->numi[ind] = which;
-  }
-  else if ( (ind = g_list_index(ug->menu_den,menu_data->opt_menu)) != -1) {
+      ug->units->numi[ind] = which;
+    } else if ( (ind = g_list_index(ug->menu_den, w)) != -1) {
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():  ug %p changed denominator[%d] units\n",
-	    ug, ind);
+    g_print("%s():  ug %p changed denominator[%d] units to %d\n",
+	    __FUNCTION__, ug, ind, which);
+    g_print("%s():  Previously: ug->units->deni[%d] = %d\n",
+            __FUNCTION__, ind, ug->units->deni[ind]);
 #endif
     ug->units->deni[ind] = which;
-  }
-  else {
-    fprintf(stderr,"wc_units_menu_changed():  ug %p could not locate menu\n",
-	    (void *) ug);
-    exit(1);
+  } else {
+      /*
+       * this seems to happen right at startup, ignore until I figure
+       * out why
+       */
+
+      /*
+        fprintf(stderr,"%s():  ug %p could not locate combo %p\n",
+        __FUNCTION__, (void *) ug, w);
+        exit(1);
+      */
+
+    return;
   }
 
   sf = wc_units_to_sf(ug->units);
@@ -285,8 +343,8 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
   ug->units->name = wc_units_to_str(ug->units);
 
 #ifdef DEBUG
-  g_print("wc_units_menu_changed():  Units string = \"%s\", scale factor = %g\n",
-	  units_str, sf);
+  g_print("%s():  Units string = \"%s\", scale factor = %g\n",
+	  __FUNCTION__, units_str, sf);
 #endif
 
   /*
@@ -298,50 +356,49 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
     up_item = (wc_units_update_item *) g_list_nth_data(ug->update_list,i);
 
 #ifdef DEBUG
-    g_print("wc_units_menu_changed():      processing item %u, type %d\n",
-	    i,up_item->type);
+    g_print("%s():      processing item %u, type %d\n",
+	    __FUNCTION__, i, up_item->type);
 #endif
 
     /* update the scale factor and units string for this item */
     if (up_item->sf != NULL)
       *(up_item->sf)=sf;
+
     if (up_item->units_str != NULL)
       *(up_item->units_str) = strdup(units_str);
 
     /* only update the displayed widget if the update flag is set */
     if( (up_item->update) && (up_item->widget != NULL) ) {
 #ifdef DEBUG
-      g_print("wc_units_menu_changed():    Updating widget\n");
+      g_print("%s():    Updating widget\n", __FUNCTION__);
 #endif
       if(up_item->fmt_string != NULL) {
 	sprintf(str, up_item->fmt_string, (*(up_item->mks_val))/sf);
-      }
-      else {
-	sprintf(str,"--ERR--");
+      } else {
+	sprintf(str, "--ERR--");
       }
 
       switch( up_item->type ) {
       case LABEL:
-	gtk_label_set_text(GTK_LABEL(up_item->widget),str);
+	gtk_label_set_text(GTK_LABEL(up_item->widget), str);
 	break ;
 
       case ENTRY:
-	gtk_entry_set_text(GTK_ENTRY(up_item->widget),str);
+	gtk_entry_set_text(GTK_ENTRY(up_item->widget), str);
       break ;
 
       case UNITS_LABEL:
-	gtk_label_set_text(GTK_LABEL(up_item->widget),units_str);
+	gtk_label_set_text(GTK_LABEL(up_item->widget), units_str);
       break ;
 
       default:
-	fprintf(stderr,"wc_units_menu_changed():  invalid up_item->type = %d\n",
-		up_item->type);
+	fprintf(stderr,"%s():  invalid up_item->type = %d\n",
+		__FUNCTION__, up_item->type);
 	exit(1);
       }
-    }
-    else {
+    } else {
 #ifdef DEBUG
-      g_print("wc_units_menu_changed():    not updating widget\n");
+      g_print("%s():    not updating widget\n", __FUNCTION__);
 #endif
     }
 
@@ -363,69 +420,64 @@ static wc_units_menu_data *wc_units_menu_data_new(int ind)
   return data;
 }
 
+/*
+ * This function is used to create a single component of a units gui.
+ * For example if we had units of Henry/meter, this function would
+ * be called once for the "Henry" part and once for the "meter" part.
+ *
+ * wcgui - the main dialog gui (e.g. all of a microstrip gui)
+ *
+ * units - our units structure
+ *
+ * initial - index into which item in units is currently to be
+ * selected
+ *
+ * gui - the units gui
+ *
+ * callback - the callback function for updating whatever the units
+ * gui needed
+ *
+ */
 static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
 				       const wc_units_data *units,
 				       int initial,
 				       gpointer gui,
 				       void (*callback)(GtkWidget *, gpointer))
 {
-  GtkWidget *opt_menu;
-  GtkWidget *menu;
-  GtkWidget *item;
-  wc_units_menu_data *data;
-
+  GtkWidget *combo;
   int i;
 
-  opt_menu = gtk_option_menu_new();
-  menu = gtk_menu_new();
 
-#ifdef DEBUG
-  g_print("wc_units_submenu_new():  opt_menu = %p\n", opt_menu);
-  g_print("wc_units_submenu_new():  menu     = %p\n", menu);
-  g_print("wc_units_submenu_new():  gui      = %p\n", gui);
-#endif
+  combo = gtk_combo_box_text_new();
+
+  g_signal_connect (G_OBJECT(combo), "changed",
+                    G_CALLBACK (wcalc_save_needed),
+                    wcgui);
+
+  g_signal_connect(G_OBJECT(combo), "changed",
+                   G_CALLBACK(callback),
+                   gui);
+
+  g_signal_connect (GTK_OBJECT (combo), "changed",
+                    G_CALLBACK (vals_changedCB),
+                    wcgui);
+
 
   i=0;
   while (units[i].name != NULL) {
-    item = gtk_menu_item_new_with_label(units[i].name);
 #ifdef DEBUG
-    /*    g_print("wc_units_submenu_new():  item[%d] = %p\n",i,item); */
+    g_print("%s():    Add %s to the combo\n", __FUNCTION__, units[i].name);
 #endif
-    /*
-     * XXX would be nice to only have the wcalc_save_needed get
-     * tickled if the menu actually changes instead of selecting the
-     * same choice again
-     */
-    gtk_signal_connect (GTK_OBJECT(item),
-			"activate",
-			GTK_SIGNAL_FUNC (wcalc_save_needed),
-			(gpointer) wcgui);
-    gtk_signal_connect(GTK_OBJECT(item), "activate",
-		       GTK_SIGNAL_FUNC(callback),
-		       (gpointer) gui);
-    gtk_signal_connect (GTK_OBJECT (item), "activate",
-			GTK_SIGNAL_FUNC (vals_changedCB), wcgui);
 
-    data = wc_units_menu_data_new(i);
-    data->opt_menu = opt_menu;
-    gtk_object_set_user_data(GTK_OBJECT(item),(gpointer *) data);
-
-    /* `menu' becomes the parent of each `item' */
-    gtk_menu_append(GTK_MENU(menu), item);
-    gtk_widget_show(item);
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (combo), units[i].name);
 
     i++;
   }
 
-  /* attach our new menu to the options menu */
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(opt_menu), menu);
-
   /* pick the default (initial) selection */
-  gtk_option_menu_set_history(GTK_OPTION_MENU(opt_menu), initial);
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), initial);
 
-  gtk_widget_show_all(opt_menu);
-
-  return opt_menu;
+  return combo;
 }
 
 /*

@@ -91,7 +91,7 @@ static gint alert_delete_event( GtkWidget *widget,
 				gpointer data )
 {
 
-  gtk_widget_hide_all(alert_window);
+  gtk_widget_hide(alert_window);
   return TRUE;
 }
 
@@ -100,7 +100,7 @@ static gint alert_destroy_event (GtkWidget *widget,
 				 gpointer data)
 {
 
-  gtk_widget_hide_all(alert_window);
+  gtk_widget_hide(alert_window);
   return TRUE;
 }
 
@@ -108,7 +108,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
 {
 
   /* hide the window */
-  gtk_widget_hide_all(window);
+  gtk_widget_hide(window);
 }
 
 #define MAX_MSG 511
@@ -120,10 +120,8 @@ static gint alert_window_create()
   GtkWidget *hbox;
 
   /* stuff for the picture */
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
+  GdkPixbuf *pixbuf;
+  GtkWidget *image;
 
   GtkTextBuffer *buffer;
 
@@ -131,14 +129,14 @@ static gint alert_window_create()
   alert_window = gtk_dialog_new();
 
   /* Window Manager "delete" */
-  gtk_signal_connect (GTK_OBJECT (alert_window), "delete_event",
-		      GTK_SIGNAL_FUNC (alert_delete_event),
-		      NULL);
+  g_signal_connect( G_OBJECT( alert_window ), "delete_event",
+                    G_CALLBACK(alert_delete_event),
+                    NULL);
 
   /* Window Manager  "destroy" */
-  gtk_signal_connect (GTK_OBJECT (alert_window), "destroy_event",
-		      GTK_SIGNAL_FUNC (alert_destroy_event),
-		      NULL);
+  g_signal_connect( G_OBJECT( alert_window ), "destroy_event",
+                    G_CALLBACK(alert_destroy_event),
+                    NULL);
 
   /* set other properties */
   gtk_window_set_title (GTK_WINDOW (alert_window), _("Wcalc:  Warning!"));
@@ -150,23 +148,15 @@ static gint alert_window_create()
 
   /* Make a hbox */
   hbox = gtk_hbox_new(FALSE, 10);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (alert_window)->vbox),
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area(GTK_DIALOG (alert_window))),
 		      hbox, TRUE, TRUE, 0);
   gtk_widget_show(hbox);
 
   /* add the picture */
-  gtk_widget_realize(alert_window);
-  style = gtk_widget_get_style( alert_window );
-  pixmap = gdk_pixmap_create_from_xpm_d( alert_window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) alert_fig);
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
+  pixbuf = gdk_pixbuf_new_from_xpm_data( (const char **) alert_fig);
+  image = gtk_image_new_from_pixbuf(pixbuf);
   gtk_box_pack_start (GTK_BOX (hbox),
-		      pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
+		      image, FALSE, FALSE, 0);
 
 
   /* add the text to the window */
@@ -193,11 +183,11 @@ static gint alert_window_create()
 
   /* Add the "OK" button and set its action */
   button = gtk_button_new_with_label (_("Ok"));
-  gtk_signal_connect(GTK_OBJECT(button), "clicked",
-		     GTK_SIGNAL_FUNC(ok_pressed),
-		     GTK_OBJECT(alert_window));
+  g_signal_connect( G_OBJECT( button ), "clicked",
+                    G_CALLBACK(ok_pressed),
+                    GTK_OBJECT(alert_window) );
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (alert_window)->action_area),
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_action_area(GTK_DIALOG (alert_window))),
 		      button, TRUE, FALSE, 0);
   gtk_widget_show (button);
   gtk_window_set_focus(GTK_WINDOW(alert_window),button);

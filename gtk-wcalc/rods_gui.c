@@ -39,6 +39,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "pixmaps/rods_fig.xpm"
 #include "pixmaps/figure_rods_fig.h"
 #include "rods.h"
 #include "rods_gui.h"
@@ -64,9 +65,6 @@ static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void values_init(rods_gui *gui, GtkWidget *parent);
 static void outputs_init(rods_gui *gui, GtkWidget *parent);
-static void picture_init(rods_gui *gui,
-			 GtkWidget *window,
-			 GtkWidget *parent);
 static void tooltip_init(rods_gui *gui);
 
 
@@ -164,7 +162,7 @@ void rods_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 
   values_init(gui,values_vbox);
   outputs_init(gui,outputs_vbox);
-  picture_init(gui,wcalc->window,picture_vbox);
+  wc_picture_init(wcalc, picture_vbox, (const char **) rods_fig);
 
   tooltip_init(gui);
 
@@ -198,15 +196,12 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
   GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
-  GtkTooltips *tips;
 
   wc_units_gui *xy_ug = NULL, *freq_ug = NULL, *rho_ug = NULL;
 
   /* keeps track of current table position */
   int y = 0;
   int x = 0;
-
-  tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -241,22 +236,12 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 			       &(gui->text_freq), gui->b->units_freq, &freq_ug,
 			       &(gui->b->freq), &x, &y);
 
-
-  /* Analyze button */
-  button = gtk_button_new_with_label (_("Analyze"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Calculate electrical characteristics "
-		       "from physical parameters"),
-		       NULL);
+  /* ---------------- Analyze Button -------------- */
+  wc_table_add_button(table, _("Analyze"),
+                      _("Calculate electrical characteristics "
+                        "from physical parameters"),
+                      analyze, gui, x, y);
   y++;
-
 
   /* Column #2 */
   x += 4;
@@ -272,8 +257,8 @@ static void values_init(rods_gui *gui, GtkWidget *parent)
 				  &(gui->b->l2), &x, &y);
   /* don't support l2 != l1 yet */
   gtk_widget_set_sensitive (gui->text_l2, FALSE);
-  gtk_signal_connect (GTK_OBJECT (gui->text_l1), "changed",
-		      GTK_SIGNAL_FUNC (sync_l2_to_l1), (gpointer) gui);
+  g_signal_connect( G_OBJECT( gui->text_l1 ), "changed",
+                    G_CALLBACK(sync_l2_to_l1), gui);
 
   /* ---------------- Wire 2, position  -------------- */
   wc_table_add_entry_attach_units(table, gui, "Radial Distance (distance)",
@@ -330,6 +315,12 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   x += 4;
   y = 0;
 
+  /* spacer between columns*/
+  text = gtk_label_new( "                " );
+  gtk_table_attach(GTK_TABLE(table), text, x-1, x, 0, 1,
+		   GTK_EXPAND|GTK_FILL, 0,
+		   WC_XPAD,WC_YPAD);
+  gtk_widget_show(text);
 
   wc_table_add_label_new_units(table, gui, "R1 (LF)",
 			       &(gui->label_R1), gui->b->units_R, &ug_R,
@@ -338,62 +329,9 @@ static void outputs_init(rods_gui *gui, GtkWidget *parent)
   wc_table_add_label_attach_units(table, gui, "R2 (LF)",
 				  &(gui->label_R2), gui->b->units_R, &ug_R,
 				  &(gui->b->R2), &x, &y);
-  /* spacer */
 
-  text = gtk_label_new( "                " );
-  gtk_table_attach(GTK_TABLE(table), text, 3, 4, 0, 1,
-		   GTK_EXPAND|GTK_FILL, 0,
-		   WC_XPAD,WC_YPAD);
-  gtk_widget_show(text);
 
   gtk_widget_show(table);
-
-}
-
-
-#include "pixmaps/rods_fig.xpm"
-
-static void picture_init(rods_gui *gui, GtkWidget *window,GtkWidget *parent)
-{
-  GtkWidget *my_hbox;
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_hbox);
-  gtk_widget_show (my_hbox);
-
-
-
-  /* now for the pixmap from gdk */
-  style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) rods_fig);
-
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
-
-  WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
-  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (WC_WCALC(gui)->text_status);
-
 
 }
 
@@ -538,21 +476,18 @@ static void update_display(rods_gui *gui)
 
 static void tooltip_init(rods_gui *gui)
 {
-  GtkTooltips *tips;
 
-  tips = gtk_tooltips_new();
+  gtk_widget_set_tooltip_text( gui->text_d1, _("Diameter of wire #1") );
+  gtk_widget_set_tooltip_text( gui->text_l1, _("Length of wire #1") );
 
-  gtk_tooltips_set_tip(tips, gui->text_d1, _("Diameter of wire #1"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l1, _("Length of wire #1"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_d2, _("Diameter of wire #2") );
+  gtk_widget_set_tooltip_text( gui->text_l2, _("Length of wire #2\nConstrained to be the same as wire #1 in this release.") );
 
-  gtk_tooltips_set_tip(tips, gui->text_d2, _("Diameter of wire #2"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_l2, _("Length of wire #2\nConstrained to be the same as wire #1 in this release."), NULL);
+  gtk_widget_set_tooltip_text( gui->text_distance, _("Offset position of wire #2 in the radial direction") );
+  gtk_widget_set_tooltip_text( gui->text_offset, _("Offset position of wire #2 in the axial direction.\nNot supported yet.") );
 
-  gtk_tooltips_set_tip(tips, gui->text_distance, _("Offset position of wire #2 in the radial direction"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_offset, _("Offset position of wire #2 in the axial direction.\nNot supported yet."), NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_rho, _("Bulk resistivity of wires"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_rho, _("Bulk resistivity of wires") );
+  gtk_widget_set_tooltip_text( gui->text_freq, _("Frequency of operation") );
 
 }
 
@@ -574,12 +509,13 @@ static GList * dump_values(Wcalc *wcalc)
   gui = WC_RODS_GUI(wcalc);
   b = gui->b;
 
-  /* Initialize the graphics */
   if( list == NULL ) {
     figure_rods_fig_init();
+  } else {
+    g_list_free_full(list, (GDestroyNotify) wc_print_value_free);
+    list = NULL;
   }
-  // FIXME -- free the old list first!!!!
-  list = NULL;
+
   list = wc_print_add_cairo(figure_rods_fig_render[0], figure_rods_fig_width[0],
                             figure_rods_fig_height[0], list);
 

@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2021 Dan McMahill
  * All rights reserved.
  *
  *
@@ -22,12 +21,8 @@
 #ifndef __FILES_H__
 #define __FILES_H__
 
-void wcalc_save_as(gpointer data,
-		   guint action,
-		   GtkWidget *widget);
-void wcalc_save(gpointer data,
-		guint action,
-		GtkWidget *widget);
+void wcalc_save_as(GtkAction *action, gpointer data);
+void wcalc_save(GtkAction *action, gpointer data);
 void wcalc_open(void);
 
 #endif /*__FILES_H__*/

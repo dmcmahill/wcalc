@@ -609,15 +609,11 @@ do_printing (GtkWidget *do_widget, Wcalc *wcalc, gchar *filename)
   return NULL;
 }
 
-
 /*
  * data is the Wcalc *
- * action is whats specified in menus.c
- * widget is the GtkMenuItem *
+ * action is from menus.c
  */
-void newprint_popup(gpointer data,
-		    guint action,
-		    GtkWidget *widget)
+void newprint_popup(GtkAction *action, gpointer data)
 {
   Wcalc * wcalc;
 
@@ -634,15 +630,11 @@ void newprint_popup(gpointer data,
   }
 }
 
-
 /*
  * data is the Wcalc *
- * action is whats specified in menus.c
- * widget is the GtkMenuItem *
+ * action is from menus.c
  */
-void newprint_pdf_popup(gpointer data,
-			guint action,
-			GtkWidget *widget)
+void newprint_pdf_popup(GtkAction *action, gpointer data)
 {
   Wcalc * wcalc;
   GtkWidget *dia;
@@ -704,17 +696,15 @@ void newprint_pdf_popup(gpointer data,
 
 /*
  * data is the Wcalc *
- * action is whats specified in menus.c
- * widget is the GtkMenuItem *
+ * action is from menus.c
  */
-void page_setup_popup(gpointer data,
-		      guint action,
-		      GtkWidget *widget)
+void page_setup_popup(GtkAction *action, gpointer data)
 {
   Wcalc * wcalc;
 
   wcalc = WC_WCALC(data);
 
+  //g_print("%s():  data=%p, action=%u\n", __FUNCTION__, data, action);
   do_page_setup(wcalc->window, wcalc);
 
 }

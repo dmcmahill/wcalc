@@ -39,6 +39,7 @@
 #include "misc.h"
 #include "units.h"
 
+#include "pixmaps/rl.xpm"
 #include "pixmaps/figure_rl.h"
 #include "parallel_rl.h"
 #include "parallel_rl_gui.h"
@@ -64,9 +65,6 @@ static void update_display( parallel_rl_gui *gui);
 static void gui_save(Wcalc *wcalc, FILE *fp, char *name);
 
 static void values_init(parallel_rl_gui *gui, GtkWidget *parent);
-static void picture_init(parallel_rl_gui *gui,
-			 GtkWidget *window,
-			 GtkWidget *parent);
 static void tooltip_init(parallel_rl_gui *gui);
 
 
@@ -158,7 +156,7 @@ void parallel_rl_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
   gtk_widget_show (picture_vbox);
 
   values_init(gui,values_vbox);
-  picture_init(gui,wcalc->window,picture_vbox);
+  wc_picture_init(wcalc, picture_vbox, (const char **) rl);
 
   tooltip_init(gui);
 
@@ -213,7 +211,6 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
   GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
-  GtkTooltips *tips;
 
   /* the use_Q radio button group */
   GSList *use_Q_group;
@@ -223,8 +220,6 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
   /* keeps track of current table position */
   int y = 0;
   int x = 0;
-
-  tips = gtk_tooltips_new();
 
   frame = gtk_frame_new(NULL);
   gtk_container_add(GTK_CONTAINER(parent), frame);
@@ -255,18 +250,10 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
 
 
   /* Series to Parallel Analyze button */
-  button = gtk_button_new_with_label (_("Series to Parallel"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze_s2p), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
+  wc_table_add_button(table, _("Series to Parallel"),
 		       _("Calculate equivalent parallel circuit "
-		       "from given series circuit"),
-		       NULL);
+                         "from given series circuit"),
+                      analyze_s2p, gui, x, y);
   y++;
 
   /* ---------------- Frequency -------------- */
@@ -296,18 +283,10 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
 
 
   /* Parallel to Series button */
-  button = gtk_button_new_with_label (_("Parallel to Series"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (wcalc_save_needed), gui);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (analyze_p2s), (gpointer)
-		      gui);
-  gtk_table_attach(GTK_TABLE(table), button, x, x+1, y, y+1, 0,
-		   GTK_EXPAND|GTK_FILL,WC_XPAD,WC_YPAD);
-  gtk_tooltips_set_tip(tips, button,
-		       _("Calculate equivalent series circuit "
-		       "from given parallel circuit"),
-		       NULL);
+  wc_table_add_button(table, _("Parallel to Series"),
+                      _("Calculate equivalent series circuit "
+                        "from given parallel circuit"),
+                      analyze_p2s, gui, x, y);
   y++;
 
 
@@ -329,20 +308,20 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
   gui->button_use_Q = gtk_radio_button_new_with_label (NULL, _("Q/L"));
   gtk_table_attach(GTK_TABLE(table), gui->button_use_Q, x+1, x+2, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(gui->button_use_Q), "clicked",
-		     GTK_SIGNAL_FUNC(use_Q_pressed),
-		     gui);
+  g_signal_connect( G_OBJECT( gui->button_use_Q ), "clicked",
+                    G_CALLBACK(use_Q_pressed),
+                    gui);
   gtk_widget_show (gui->button_use_Q);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->button_use_Q), TRUE);
-  use_Q_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gui->button_use_Q));
+  use_Q_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (gui->button_use_Q));
 
   /* RL button */
   gui->button_use_R = gtk_radio_button_new_with_label (use_Q_group, _("R/L"));
   gtk_table_attach(GTK_TABLE(table), gui->button_use_R, x+2, x+3, y, y+1,
 		   0, 0, WC_XPAD, WC_YPAD);
-  gtk_signal_connect(GTK_OBJECT(gui->button_use_R), "clicked",
-		     GTK_SIGNAL_FUNC(use_R_pressed),
-		     gui);
+  g_signal_connect( G_OBJECT( gui->button_use_R ), "clicked",
+                    G_CALLBACK(use_R_pressed),
+                    gui);
   if (gui->b->use_Q == 0) {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->button_use_R), TRUE);
   }
@@ -353,53 +332,6 @@ static void values_init(parallel_rl_gui *gui, GtkWidget *parent)
   gtk_widget_show(table);
 
 }
-
-#include "pixmaps/rl.xpm"
-
-static void picture_init(parallel_rl_gui *gui, GtkWidget *window,GtkWidget *parent)
-{
-  GtkWidget *my_hbox;
-  GtkWidget *pixmapwid;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle *style;
-  GtkWidget *frame;
-
-  frame = gtk_frame_new(NULL);
-  gtk_container_add(GTK_CONTAINER(parent), frame);
-  gtk_frame_set_label_align( GTK_FRAME(frame), 1.0, 0.0);
-  gtk_frame_set_shadow_type( GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-  gtk_widget_show(frame);
-
-
-  my_hbox = gtk_hbox_new (FALSE, 1);
-  gtk_container_border_width (GTK_CONTAINER (my_hbox), 1);
-  gtk_container_add (GTK_CONTAINER (frame), my_hbox);
-  gtk_widget_show (my_hbox);
-
-
-
-  /* now for the pixmap from gdk */
-  style = gtk_widget_get_style( window );
-  pixmap = gdk_pixmap_create_from_xpm_d( window->window,
-					 &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) rl);
-
-
-  /* a pixmap widget to contain the pixmap */
-  pixmapwid = gtk_pixmap_new( pixmap , mask);
-  gtk_box_pack_start (GTK_BOX (my_hbox), pixmapwid, FALSE, FALSE, 0);
-  gtk_widget_show( pixmapwid );
-
-
-  WC_WCALC(gui)->text_status = gtk_label_new( _("Values Out Of Sync") );
-  gtk_box_pack_start (GTK_BOX (my_hbox), WC_WCALC(gui)->text_status, FALSE, FALSE, 0);
-  gtk_widget_show (WC_WCALC(gui)->text_status);
-
-
-}
-
 
 static void analyze_s2p( GtkWidget *w, gpointer data )
 {
@@ -556,20 +488,17 @@ static void update_display(parallel_rl_gui *gui)
 
 static void tooltip_init(parallel_rl_gui *gui)
 {
-  GtkTooltips *tips;
 
-  tips = gtk_tooltips_new();
+  gtk_widget_set_tooltip_text( gui->text_Ls, _("Series inductance") );
+  gtk_widget_set_tooltip_text( gui->text_Rs, _("Series resistance") );
+  gtk_widget_set_tooltip_text( gui->text_Qs, _("Series quality factor") );
 
-  gtk_tooltips_set_tip(tips, gui->text_Ls, _("Series inductance"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_Rs, _("Series resistance"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_Qs, _("Series quality factor"), NULL);
-
-  gtk_tooltips_set_tip(tips, gui->text_Lp, _("Parallel inductance"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_Rp, _("Parallel resistance"), NULL);
-  gtk_tooltips_set_tip(tips, gui->text_Qp, _("Parallel quality factor"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_Lp, _("Parallel inductance") );
+  gtk_widget_set_tooltip_text( gui->text_Rp, _("Parallel resistance") );
+  gtk_widget_set_tooltip_text( gui->text_Qp, _("Parallel quality factor") );
 
 
-  gtk_tooltips_set_tip(tips, gui->text_freq, _("Frequency of operation"), NULL);
+  gtk_widget_set_tooltip_text( gui->text_freq, _("Frequency of operation") );
 
 }
 
@@ -594,23 +523,23 @@ static GList * dump_values(Wcalc *wcalc)
   /* Initialize the graphics */
   if( list == NULL ) {
     figure_rl_init();
-  }  {
-    // FIXME -- free the old list first!!!!
+  } else {
+    g_list_free_full(list, (GDestroyNotify) wc_print_value_free);
     list = NULL;
-    list = wc_print_add_cairo(figure_rl_render[0], figure_rl_width[0],
-			      figure_rl_height[0], list);
-
-    list = wc_print_add_double("Series inductance (Ls)", b->Ls, b->units_L, list);
-    list = wc_print_add_double("Series resistance (Rs)", b->Rs, b->units_Rs, list);
-    list = wc_print_add_double("Series quality factor (Qs)", b->Qs, NULL, list);
-
-    list = wc_print_add_double("Parallel inductance (Lp)", b->Lp, b->units_L, list);
-    list = wc_print_add_double("Parallel resistance (Rp)", b->Rp, b->units_Rp, list);
-    list = wc_print_add_double("Parallel quality factor (Qp)", b->Qp, NULL, list);
-
-    list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
-
   }
+
+  list = wc_print_add_cairo(figure_rl_render[0], figure_rl_width[0],
+                            figure_rl_height[0], list);
+
+  list = wc_print_add_double("Series inductance (Ls)", b->Ls, b->units_L, list);
+  list = wc_print_add_double("Series resistance (Rs)", b->Rs, b->units_Rs, list);
+  list = wc_print_add_double("Series quality factor (Qs)", b->Qs, NULL, list);
+
+  list = wc_print_add_double("Parallel inductance (Lp)", b->Lp, b->units_L, list);
+  list = wc_print_add_double("Parallel resistance (Rp)", b->Rp, b->units_Rp, list);
+  list = wc_print_add_double("Parallel quality factor (Qp)", b->Qp, NULL, list);
+
+  list = wc_print_add_double("Operation frequency (freq)", b->freq, b->units_freq, list);
 
   return list;
 }

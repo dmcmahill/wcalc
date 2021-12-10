@@ -68,6 +68,7 @@ GList *global_model_defaults;
 /* with WC_GMT_G = %.4g, we might get "1.234e-11" which is 9 characters */
 #define WC_ENTRYLENGTH  9
 #define WC_WIDTH 70
+#define WC_HEIGHT 10
 
 /* Padding used in all the forms */
 #define WC_XPAD 2
@@ -174,9 +175,7 @@ void wcalc_setup(gpointer data,
 		 guint action,
 		 GtkWidget *widget);
 
-void wcalc_setup_cb(gpointer data,
-		    guint action,
-		    GtkWidget *widget);
+void wcalc_setup_cb (GtkAction *action, gpointer data);
 
 Wcalc *Wcalc_new(void);
 void Wcalc_init(Wcalc *new);

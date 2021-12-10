@@ -42,110 +42,6 @@
 #include <dmalloc.h>
 #endif
 
-static void file_ok_sel (GtkWidget *w, gpointer data[])
-{
-  const gchar *fname;
-  Wcalc *wcalc;
-  GtkFileSelection *fs;
-  struct stat sb;
-  FILE *fp;
-  wcalc = data[0];
-  fs = data[1];
-
-#ifdef DEBUG
-  g_print("files.c:file_ok_sel():  got cbdata[0] (wcalc) = %p\n",data[0]);
-  g_print("                        got cbdata[1] (filew) = %p\n",data[1]);
-#endif
-
-  fname = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
-
-#ifdef DEBUG
-  g_print ("files.c:file_ok_sel():  \"%s\" selected\n", fname);
-#endif
-
-  /*
-   * XXX should use open(2) with O_EXCL to avoid a race condition
-   * where we check for the file, but then it gets created before we
-   * open it.
-   */
-  /* see if the selected file already exists */
-  if( stat(fname, &sb)==0 ){
-    g_print("files.c:file_ok_sel():  warning: \"%s\" already exists\n", fname);
-  }
-
-  /* open the file */
-  if ( (fp = fopen(fname,"w")) == NULL){
-    g_print("files.c:file_ok_sel():  could not open \"%s\"\n", fname);
-    return;
-  }
-
-  /* store the filename in the wcalc */
-  wcalc->file_fullname = g_strdup(fname);
-
-  /* actually do the save (model dependent) */
-  if (wcalc->save != NULL){
-    wcalc->save(wcalc, fp, wcalc->file_fullname);
-  }
-  else{
-    g_print("files.c:file_ok_sel():  no ->save function available for"
-	    "this model");
-  }
-
-  /* close the file */
-  fclose(fp);
-
-  /* update the window title */
-  wcalc_set_title(wcalc);
-
-  /* close the print window */
-  gtk_grab_remove(GTK_WIDGET(fs));
-  gtk_widget_destroy(GTK_WIDGET(fs));
-}
-
-static void file_open_ok_sel (GtkWidget *w, gpointer data)
-{
-  char *fname;
-  const char *ret;
-  GtkFileSelection *fs;
-
-  fs = data;
-
-  ret = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
-  fname=strdup(ret);
-
-#ifdef DEBUG
-  g_print ("files.c:file_open_ok_sel():  \"%s\" selected\n", fname);
-#endif
-
-  /* close the print window */
-  gtk_grab_remove(GTK_WIDGET(fs));
-  gtk_widget_destroy(GTK_WIDGET(fs));
-
-  /* request a new wcalc window */
-#ifdef DEBUG
-  g_print ("files.c:file_open_ok_sel():  calling wcalc_setup(%p,-1,NULL)\n",
-	   fname);
-#endif
-  wcalc_setup(fname,-1,NULL);
-}
-
-static  void destroy (GtkWidget *widget, gpointer data)
-{
-  /* gtk_main_quit (); */
-}
-
-static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
-{
-  /* unmake it modal */
-  gtk_grab_remove(window);
-
-  /* blow away the window */
-  gtk_widget_destroy(window);
-
-  /* make sure we have the start window if nothing else exists */
-  if( wcalc_num_windows() == 0 ) start_popup();
-}
-
 
 /*
  * the "Save As..." dialog box
@@ -153,88 +49,100 @@ static void file_cancel_sel (GtkWidget *w, GtkWidget *window)
  * The data will point to the  (Wcalc *wcalc)
  */
 
-void wcalc_save_as(gpointer data,
-		   guint action,
-		   GtkWidget *widget)
+void wcalc_save_as(GtkAction *action, gpointer data)
 {
-  GtkWidget *filew;
   Wcalc *wcalc;
-  static gpointer cbdata[2];
+  GtkWidget *dialog;
+  struct stat sb;
+  FILE *fp;
 
   wcalc = WC_WCALC(data);
+  dialog = gtk_file_chooser_dialog_new ("Save File",
+                                        GTK_WINDOW(wcalc->window),
+                                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                        NULL);
+  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
-  /* Create a new file selection widget */
-  filew = gtk_file_selection_new ("Save As...");
+  if (wcalc->file_fullname == NULL)
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "Untitled document");
+  else
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), wcalc->file_fullname);
 
-  /* made it modal */
-  gtk_grab_add(filew);
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+      char *filename;
 
-  cbdata[0] = data;
-  cbdata[1] = filew;
+      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+      //save_to_file (filename);
+      g_print("%s:  save to %s\n", __FUNCTION__, filename);
 
-#ifdef DEBUG
-  g_print("files.c:wcalc_save_as():  set cbdata[0] (wcalc) = %p\n",cbdata[0]);
-  g_print("                          set cbdata[1] (filew) = %p\n",cbdata[1]);
-#endif
+      /*
+       * FIXME should use open(2) with O_EXCL to avoid a race condition
+       * where we check for the file, but then it gets created before we
+       * open it.
+       */
+      /* see if the selected file already exists */
+      if( stat(filename, &sb)==0 ){
+        g_print("%s:  warning: \"%s\" already exists\n", __FUNCTION__, filename);
+      }
 
-  /* Connect the ok_button to file_ok_sel function */
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-		      "clicked",
-		      (GtkSignalFunc) file_ok_sel,
-		      cbdata );
+      /* open the file */
+      if ( (fp = fopen(filename, "w")) == NULL){
+        g_print("%s:  could not open \"%s\"\n", __FUNCTION__, filename);
+        return;
+      }
 
-  /* Connect the cancel_button to destroy the widget */
-  gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked",
-		     (GtkSignalFunc) file_cancel_sel,
-		     filew);
+      /* store the filename in the wcalc */
+      wcalc->file_fullname = g_strdup(filename);
 
-  /*
-   * choose default filename.  XXX this should be extracted from
-   * the wcalc->filename.
-   */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew),
-				   "wcalc.wc");
+      /* actually do the save (model dependent) */
+      if (wcalc->save != NULL){
+        wcalc->save(wcalc, fp, wcalc->file_fullname);
+      }
+      else{
+        g_print("files.c:file_ok_sel():  no ->save function available for"
+                "this model");
+      }
 
-  gtk_widget_show(filew);
+      /* close the file */
+      fclose(fp);
+
+      /* update the window title */
+      wcalc_set_title(wcalc);
+
+      g_free (filename);
+    }
+
+  gtk_widget_destroy (dialog);
+  
 }
 
 void wcalc_open(void)
 {
-  GtkWidget *filew;
-
+  GtkWidget *dialog;
+  char *filename;
+  
   /* Create a new file selection widget */
-  filew = gtk_file_selection_new ("Open");
+  dialog = gtk_file_chooser_dialog_new (_("Open File"),
+                                        NULL,
+                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                        NULL);
 
-  /* made it modal */
-  gtk_grab_add(filew);
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+    wcalc_setup(filename, -1, NULL);
+    g_free (filename);
+  }
 
-  gtk_signal_connect (GTK_OBJECT (filew), "destroy",
-		      GTK_SIGNAL_FUNC (destroy),
-		      &filew);
-
-  /* Connect the ok_button to file_ok_sel function */
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-		      "clicked", (GtkSignalFunc) file_open_ok_sel, filew );
-
-  /* Connect the cancel_button to destroy the widget */
-  gtk_signal_connect(GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-		     "clicked",
-		     (GtkSignalFunc) file_cancel_sel,
-		     GTK_OBJECT (filew));
-
-  /* Lets set the filename, as if this were a save dialog, and we are giving
-     a default filename */
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew),
-				   "wcalc.wc");
-
-  gtk_widget_show(filew);
-
+  gtk_widget_destroy (dialog);
+  
 }
 
-void wcalc_save(gpointer data,
-		guint action,
-		GtkWidget *widget)
+void wcalc_save(GtkAction *action, gpointer data)
 {
   FILE *fp;
   Wcalc *wcalc;
@@ -243,7 +151,7 @@ void wcalc_save(gpointer data,
 
   /* if there is no filename stored, then do "Save As..." instead */
   if(wcalc->file_fullname == NULL){
-    wcalc_save_as(data, action, widget);
+    wcalc_save_as(action, data);
     return;
   }
 
