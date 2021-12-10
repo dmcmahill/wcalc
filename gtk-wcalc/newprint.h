@@ -48,18 +48,10 @@ GList * wc_print_add_cairo(cairo_t * (*fn)(cairo_surface_t *cs, cairo_t *cr),
 void wc_print_value_free(PrintValue * val);
 
 /* data should be a pointer to the current wcalc */
-void newprint_popup(gpointer data,
-		    guint action,
-		    GtkWidget *widget);
 
-void newprint_pdf_popup(gpointer data,
-			guint action,
-			GtkWidget *widget);
-
-void page_setup_popup(gpointer data,
-		      guint action,
-		      GtkWidget *widget);
-
+void newprint_popup(GtkAction *action, gpointer data);
+void newprint_pdf_popup(GtkAction *action, gpointer data);
+void page_setup_popup(GtkAction *action, gpointer data);
 
 #endif /*__NEWPRINT_H__*/
 

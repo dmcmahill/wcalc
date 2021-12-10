@@ -49,9 +49,7 @@
  * The data will point to the  (Wcalc *wcalc)
  */
 
-void wcalc_save_as(gpointer data,
-		   guint action,
-		   GtkWidget *widget)
+void wcalc_save_as(GtkAction *action, gpointer data)
 {
   Wcalc *wcalc;
   GtkWidget *dialog;
@@ -144,9 +142,7 @@ void wcalc_open(void)
   
 }
 
-void wcalc_save(gpointer data,
-		guint action,
-		GtkWidget *widget)
+void wcalc_save(GtkAction *action, gpointer data)
 {
   FILE *fp;
   Wcalc *wcalc;
@@ -155,7 +151,7 @@ void wcalc_save(gpointer data,
 
   /* if there is no filename stored, then do "Save As..." instead */
   if(wcalc->file_fullname == NULL){
-    wcalc_save_as(data, action, widget);
+    wcalc_save_as(action, data);
     return;
   }
 

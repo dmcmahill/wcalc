@@ -1,0 +1,33 @@
+<ui>
+  <menubar name='MainMenu'>
+    <menu name='File' action='FileMenu'>
+      <menu name='New' action='NewMenu'>
+        <placeholder name='ModelPlace'/>
+      </menu>
+      <menuitem action='Open'/>
+      <menuitem action='Save'/>
+      <menuitem action='SaveAs'/>
+      <separator/>
+      <menuitem action='Print'/>
+      <menuitem action='ExportToPDF'/>
+      <menuitem action='PageSetup'/>
+      <separator/>
+      <menuitem action='Close'/>
+      <separator/>
+      <menuitem  action='Exit'/>
+    </menu>
+    <separator expand='true'/>
+    
+    <menu name='Help' action='HelpMenu'>
+      <menuitem action='About'/>
+      <menuitem action='Copyright'/>
+      <menu name='Material Properties' action='MaterialsMenu'>
+        <menuitem action='Permeability'/>
+        <menuitem action='Permitivity'/>
+        <menuitem action='Resistivity'/>
+        <menuitem action='Units'/>
+        <menuitem action='WireSize'/>
+      </menu>
+    </menu>
+  </menubar>
+</ui>
