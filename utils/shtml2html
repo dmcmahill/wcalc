@@ -54,18 +54,18 @@ start==1 {
   
   line=$0;
 
-  if (line ~ /<\!--\#include.*-->/){
+  if (line ~ /<!--#include.*-->/){
 # print the part of the line before the #include
-    pre = gensub(/(.*)<\!--\#include.*-->/,"\\1",1,line);
+    pre = gensub(/(.*)<!--#include.*-->/,"\\1",1,line);
     pre = sf(pre);
     printf("%s", pre);
 
 # pick out just the <!--#include ...... --> part
-    cmd = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\2",1,line);
+    cmd = gensub(/(.*)(<!--#include.*-->)(.*)/,"\\2",1,line);
     #printf("processing directive \"%s\"\n",cmd) > "/dev/stderr";
 
 #figure out the included file name
-    file = gensub(/(.*)virtual=\"([^\"]*)\"(.*)/,"\\2",1,cmd);
+    file = gensub(/(.*)virtual="([^"]*)"(.*)/,"\\2",1,cmd);
 
     if ( file != cmd) {
 # make sure we can read the file
@@ -109,7 +109,7 @@ start==1 {
 
     #printf("\n") > "/dev/stderr";
 
-    post = gensub(/(.*)(<\!--\#include.*-->)(.*)/,"\\3",1,line);
+    post = gensub(/(.*)(<!--#include.*-->)(.*)/,"\\3",1,line);
     post = sf(post);
     printf("%s\n",post);
 
