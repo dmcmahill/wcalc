@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012, 2020 Dan McMahill
+ * Copyright (C) 2004, 2005, 2006, 2007, 2009, 2012, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -1133,7 +1133,7 @@ static void exec_rods_calc(double *args)
 }
 
 /* 
- * [z0,loss,deltal] = 
+ * [z0, elen, loss, L, R, C, G, lc, ld, deltal, depth] = 
  *   stripline_calc(w,h,l,tmet,rho,rough,er,tand,f);
  */
 static void exec_stripline_calc(double *args)
@@ -1159,7 +1159,13 @@ static void exec_stripline_calc(double *args)
     printf("%s", ERRMSG);
   } else { 
     /* print the outputs */
-    printf("%g %g %g\n", line->z0, line->loss, line->deltal);
+    printf("%g %g %g %g %g %g %g %g %g %g %g\n",
+           line->z0,
+           line->len, line->loss,
+           line->Ls, line->Rs, line->Cs, line->Gs,
+           line->lc/line->l, line->ld/line->l,
+           line->deltal,
+           line->skindepth);
   }
 
   /* clean up */
