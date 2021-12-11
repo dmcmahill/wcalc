@@ -184,7 +184,15 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     if( bt <= at ) {
       at = a;
       bt = b;
-      alert("Warning:  bt <= at so I am reverting to zero thickness equations\n");
+      alert("Warning:  bt <= at so I am reverting to zero thickness equations\n"
+            "bt is the thickness corrected version of width + 2*spacing\n"
+            "at is the thickness corrected version of width\n"
+            "See (3.4.1.8) and (3.4.1.9) in the Wadell book.\n"
+            "If the correction equations produce a case where bt <= at then\n"
+            "we essentially have a nonsense case and it indicates that the thickness\n"
+            "correction term is being used outside of the range of validity.  If this is\n"
+            "a thick metal relative to the width case then it is probably time to identify\n"
+            "some new formulations that are more appropriate for that regime.\n");
     }
 
     /* Wadell (3.4.1.6) */
