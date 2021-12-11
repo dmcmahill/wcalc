@@ -1,7 +1,5 @@
-
-
 /*
- * Copyright (C) 2001, 2002, 2004, 2006, 2007 Dan McMahill
+ * Copyright (C) 2001, 2002, 2004, 2006, 2007, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -245,8 +243,8 @@ void mexFunction(
     R[ind]    = line->Rs;
     C[ind]    = line->Cs;
     G[ind]    = line->Gs;
-    lc[ind]   = line->lc;
-    ld[ind]   = line->ld;
+    lc[ind]   = line->lc / line->l;
+    ld[ind]   = line->ld / line->l;
     deltal[ind]  = line->deltal;
     depth[ind]   = line->skindepth;
   }
