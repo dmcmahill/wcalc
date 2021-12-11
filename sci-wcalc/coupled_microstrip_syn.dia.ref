@@ -26,7 +26,7 @@ l=1100*sf;        // length
  
 tmet=1.4*sf;      // metal thickness
  
-rho=1.72e-8;      // resitivity relative to copper
+rho=1.72e-8;      // resistivity in ohm-meter
  
 rough=0.05*sf;    // metal surface roughness
  

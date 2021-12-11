@@ -1,4 +1,7 @@
 #
+# File:      ./gtk-wcalc/coplanar.wc
+# Modified:  Fri Dec 10 23:00:32 2021
+# Wcalc Version 1.1A
 
 [wcalc]
 wcalc_file_version = 0.1
@@ -7,7 +10,7 @@ model_name = coplanar
 
 [coplanar]
 
-# Coplanar file version
+# Coplanar waveguide file version
 file_version = 0.1
 
 # Length (meters)
@@ -19,13 +22,14 @@ W = 0.00127
 # Spacing (meters)
 S = 0.00127
 
+# Include the bottom side ground?
 WithGround = 1
 
 # Characteristic Impedance (ohms)
-Z0 = 32.85768569839
+Z0 = 70.256076299387
 
 # Electrical Length (degrees)
-Elen = 60.1420990751205
+Elen = 48.972825180986
 
 # Frequency of operation
 freq = 900000000
@@ -100,7 +104,7 @@ ER = 4.8
 # Metalization thickness (meters)
 TMET = 3.556e-05
 
-# Metalization resistivity relative to copper
+# Metalization resistivity (ohm-meters)
 RHO = 3e-08
 
 # Metalization surface roughness (meters-RMS)
