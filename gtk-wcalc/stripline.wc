@@ -1,7 +1,7 @@
 #
-# File:      /export/disk1/dan/wcalc/gtk-wcalc/stripline.wc
-# Modified:  Tue Jul 27 22:36:15 2004
-# Wcalc Version 0.5
+# File:      ./gtk-wcalc/stripline.wc
+# Modified:  Fri Dec 10 23:00:41 2021
+# Wcalc Version 1.1A
 
 [wcalc]
 wcalc_file_version = 0.1
@@ -23,7 +23,7 @@ W = 0.00127
 Z0 = 32.85768569839
 
 # Electrical Length (degrees)
-Elen = 60.1420990751205
+Elen = 60.1421075008433
 
 # Frequency of operation
 freq = 900000000
@@ -98,7 +98,7 @@ ER = 4.8
 # Metalization thickness (meters)
 TMET = 3.556e-05
 
-# Metalization resistivity relative to copper
+# Metalization resistivity (ohm-meters)
 RHO = 3e-08
 
 # Metalization surface roughness (meters-RMS)

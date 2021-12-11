@@ -1,7 +1,7 @@
 #
-# File:      /export/disk1/dan/wcalc/gtk-wcalc/microstrip.wc
-# Modified:  Tue Jul 28 22:15:09 2004
-# Wcalc Version 0.6
+# File:      ./gtk-wcalc/microstrip.wc
+# Modified:  Fri Dec 10 23:00:36 2021
+# Wcalc Version 1.1A
 
 [wcalc]
 wcalc_file_version = 0.1
@@ -20,10 +20,10 @@ L = 0.0254
 W = 0.00127
 
 # Characteristic Impedance (ohms)
-Z0 = 73.514678062948
+Z0 = 73.4855942305783
 
 # Electrical Length (degrees)
-Elen = 0.00126530488944957
+Elen = 49.8890003608736
 
 # Frequency of operation
 freq = 900000000
@@ -98,7 +98,7 @@ ER = 4.8
 # Metalization thickness (meters)
 TMET = 7.112e-05
 
-# Metalization resistivity relative to copper
+# Metalization resistivity (ohm-meters)
 RHO = 3e-08
 
 # Metalization surface roughness (meters-RMS)
