@@ -41,7 +41,7 @@
   <RHS name="h">substrate thickness (meters)</RHS>
   <RHS name="l">lentgh of ic_microstrip line (meters)</RHS>
   <RHS name="tmet">metal thickness (meters)</RHS>
-  <RHS name="rho">resistivity of wire (relative to copper)</RHS>
+  <RHS name="rho">resistivity of wire (ohm-meter)</RHS>
   <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
   <RHS name="er">substrate relative permitivitty</RHS>
   <RHS name="tand">substrate loss tangent</RHS>

@@ -42,7 +42,7 @@
   <RHS name="er">substrate relative permitivity</RHS>
   <RHS name="sigmas">substrate conductivity (1/ohm-m)</RHS>
   <RHS name="tmet">metal thickness (meters)</RHS>
-  <RHS name="rho">resistivity of wire (relative to copper)</RHS>
+  <RHS name="rho">resistivity of wire (ohm-meter)</RHS>
   <RHS name="rough">conductor surface roughness (meters-rms)</RHS>
   <RHS name="f">synthesis frequency (Hz)</RHS>
 

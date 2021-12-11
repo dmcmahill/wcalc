@@ -89,7 +89,7 @@ velocity).
   <SCIEX><SCICMD>h=15*sf;</SCICMD>      <COMMENT>height</COMMENT></SCIEX>
   <SCIEX><SCICMD>l=1100*sf;</SCICMD>    <COMMENT>length</COMMENT></SCIEX>
   <SCIEX><SCICMD>tmet=1.4*sf;</SCICMD>  <COMMENT>metal thickness</COMMENT></SCIEX>
-  <SCIEX><SCICMD>rho=1;</SCICMD>        <COMMENT>resitivity relative to copper</COMMENT></SCIEX>
+  <SCIEX><SCICMD>rho=1;</SCICMD>        <COMMENT>resitivity ohm-meter</COMMENT></SCIEX>
   <SCIEX><SCICMD>rough=0.05*sf;</SCICMD><COMMENT>metal surface roughness</COMMENT></SCIEX>
   <SCIEX><SCICMD>er=4.5;</SCICMD>       <COMMENT>relative dielectric constant</COMMENT></SCIEX>
   <SCIEX><SCICMD>tand=0.01;</SCICMD>    <COMMENT>loss tangent</COMMENT></SCIEX>
