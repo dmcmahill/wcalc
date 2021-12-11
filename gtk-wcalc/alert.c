@@ -111,7 +111,7 @@ static void ok_pressed (GtkWidget *w, GtkWidget *window)
   gtk_widget_hide(window);
 }
 
-#define MAX_MSG 511
+#define MAX_MSG 8192
 
 static gint alert_window_create()
 {
