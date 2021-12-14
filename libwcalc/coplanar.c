@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007, 2009, 2020 Dan McMahill
+ * Copyright (C) 2006, 2007, 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -82,6 +82,7 @@ int coplanar_calc(coplanar_line *line, double f)
   int rslt;
   
 #ifdef DEBUG_CALC
+
   printf("coplanar_calc(): --------------- Coplanar Analysis ------------\n");
   printf("coplanar_calc(): Metal width                 = %g m\n",line->w);
   printf("coplanar_calc():                             = %g %s\n",
@@ -141,6 +142,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /* complex characteristic impedance */
   complex z0_c;
   
+#ifdef DEBUG_CALC
+  double keff_tmp, z0_tmp;
+#endif
 
 #ifdef DEBUG_CALC
   printf("coplanar_calc_int(): --------------- Coplanar Analysis ------------\n");
@@ -192,7 +196,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
             "we essentially have a nonsense case and it indicates that the thickness\n"
             "correction term is being used outside of the range of validity.  If this is\n"
             "a thick metal relative to the width case then it is probably time to identify\n"
-            "some new formulations that are more appropriate for that regime.\n");
+            "some new formulations that are more appropriate for that regime.\n"
+            "See https://github.com/dmcmahill/wcalc/issues/16 for some ongoing discussion of\n"
+            "coplanar waveguide with thick metal.\n");
     }
 
     /* Wadell (3.4.1.6) */
@@ -230,6 +236,32 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     printf("%s():  eff   = %g\n", __FUNCTION__, eeff);
     printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
     printf("%s():  z0    = %g\n", __FUNCTION__, z0);
+
+    /*
+     * as an alternative consider the equations summarized in
+     * Michale Steer, "Microwave and RF Design: A Systems Approach, 2nd Edition," 2013 SciTech Publishing,
+     * Edison NJ.  pp. 301-302
+     *
+     * NOTE:  It is not all that clear in the text but the equations presented are indeed for the
+     * line *without* ground even though some comments might lead one to believe it is for the
+     * case with ground.  To make matters worse, the references seem to maybe be misnumbered or
+     * perhaps some of the text was copied from the updated Microstrip Circuits by Edwards with
+     * Steer and references got scrambled.  In any case, not all of the equations seemed to come
+     * from the cited references.  Comparison of numeric values shows decent agreement
+     * to this section of *without* bottom side ground.
+     *
+     * In the Steer text, he mentions that these equations are valid for h/s > 1, i.e. the gap
+     * is less than the dielectric height.  He then says otherwise you get microstrip although
+     * that would suggest that there is a bottom side ground.  Still, this makes me wonder what
+     * the limits on the equations in the Wadell book may be.
+     *
+     */
+    printf("%s():  Steer, (6.56) and (6.58)\n", __FUNCTION__);
+    keff_tmp = 0.5*(line->subs->er + 1.0) * ( tanh(1.785 * log(line->subs->h / line->s) + 1.75) +
+         (k*line->s/line->subs->h)*(0.04 - 0.7*k + 0.01*(1 - 0.1*line->subs->er)*(0.25 + k)) );
+    z0_tmp = 30.0 * M_PI / (sqrt(keff_tmp) * k_kp);
+    printf("%s():  keff_tmp = %g\n", __FUNCTION__, keff_tmp);
+    printf("%s():  z0_tmp   = %g\n", __FUNCTION__, z0_tmp);
 #endif
 
   } else {  
@@ -243,10 +275,41 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      * FIXME -- surely these are not accurate without accounting for
      * metal thickness...
      */
+
+    /*
+     * in https://github.com/dmcmahill/wcalc/issues/19 the question
+     * came up about how to compare this to a microstrip if s (the gap)
+     * is very large.
+     *
+     * as a starting point, let's see what expression we get from
+     * these equations for a very large s.
+     *
+     */
+
+    /* s->inf : k -> 0 */
     k = line->w / (line->w + 2.0*line->s);
+
+    /* s->inf : k1 -> tanh( pi*w/(4*h) ) */
     k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
       tanh(M_PI*(line->w + 2.0*line->s) / (4.0 * line->subs->h));
+
+    /*
+     * K(0) = pi/2, K(1) = +inf so K(0)/K'(0) -> 0.  However,
+     * K'() approaches +inf very slowly.  For example:
+     * K'(0.01) = 3.695
+     * K'(0.001) = 8.294
+     *
+     * Let's see what this means in practice.  Suppose we have a 15 mil line width,
+     * and a gap that is 7492.5 mil gap (i.e. nearly 7.5 inches away).  k = 0.001
+     * and K(0.001) is nearly equal to pi/2 and K(0.001)/K'(0.001) is 1.5708 / 8.29405
+     * or 0.189.  That is really not heading towards zero very fast!  So what if we are
+     * in a more moderate region with say a 5 mil gap.  Now we have k = 15/(15 + 2*5)
+     * or k = 15/25.  In this case K(15/25) / K'(15/25) is around 0.877438.
+     * This suggests we have to be somewhat careful about thinking we can truly get to the
+     * extreme case.
+     */
     k_kp = k_over_kp( k );
+
     k_kp1 = k_over_kp( k1 );
 
     line->keff = (1.0 + line->subs->er*k_kp1/k_kp) /
@@ -262,6 +325,17 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
     printf("%s():  z0    = %g\n", __FUNCTION__, z0);
 #endif
+
+
+#ifdef DEBUG_CALC
+    printf("%s():  Steer, (6.56) and (6.58)\n", __FUNCTION__);
+    keff_tmp = 0.5*(line->subs->er + 1.0) * ( tanh(1.785 * log(line->subs->h / line->s) + 1.75) +
+         (k*line->s/line->subs->h)*(0.04 - 0.7*k + 0.01*(1 - 0.1*line->subs->er)*(0.25 + k)) );
+    z0_tmp = 30.0 * M_PI / (sqrt(keff_tmp) * k_kp);
+    printf("%s():  keff_tmp = %g\n", __FUNCTION__, keff_tmp);
+    printf("%s():  z0_tmp   = %g\n", __FUNCTION__, z0_tmp);
+#endif
+
   }
 
 #ifdef DEBUG_CALC
