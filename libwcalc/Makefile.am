@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 
 ##
-## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009, 2017, 2020 Dan McMahill
+## Copyright (C) 2001, 2002, 2004, 2004, 2005, 2006, 2008, 2009, 2017, 2020, 2021 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -145,6 +145,8 @@ libwcalc_la_SOURCES = \
 	ic_microstrip_loadsave.h \
 	mathutil.c \
 	mathutil.h \
+	messages.c \
+	messages.h \
 	microstrip.c \
 	microstrip.h \
 	microstrip_loadsave.c \
