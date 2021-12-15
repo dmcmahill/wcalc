@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2004, 2006,
- * 2009, 2020 Dan McMahill
+ * 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -52,6 +52,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "stripline.h"
@@ -326,7 +327,8 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   tmp_line.subs->er = 1.0;
 	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
            if(rslt != 0) {
-             alert("failed step 1 of Wheeler's incremental inductance analysis\n");
+             alert("Failed step 1 of Wheeler's incremental inductance analysis\n");
+             alert_bug();
            }
 	   z1=tmp_line.z0;
 
@@ -335,7 +337,8 @@ static int stripline_calc_int(stripline_line *line, double f, int flag)
 	   tmp_line.subs->h = line->subs->h + line->skindepth;
 	   rslt = stripline_calc_int(&tmp_line,f,NOLOSS);
            if(rslt != 0) {
-             alert("failed step 2 of Wheeler's incremental inductance analysis\n");
+             alert("Failed step 2 of Wheeler's incremental inductance analysis\n");
+             alert_bug();
            }
 	   z2 = tmp_line.z0;
 	   free(tmp_line.subs);
@@ -609,8 +612,7 @@ int stripline_syn(stripline_line *line, double f, int flag)
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0){
-      alert("Could not bracket the solution.\n"
-	    "Synthesis failed.\n");
+      alert_bracket();
 #ifdef DEBUG_SYN
       printf("%s():  Failed to bracket the solution.\n", __FUNCTION__);
 #endif
@@ -695,8 +697,8 @@ int stripline_syn(stripline_line *line, double f, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      alert("Synthesis failed to converge in\n"
-	    "%d iterations\n", maxiters);
+      alert("Synthesis failed to converge in %d iterations\n", maxiters);
+      alert_bug();
       return -1;
     }
     

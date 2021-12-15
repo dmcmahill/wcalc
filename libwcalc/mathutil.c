@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2006 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2006, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -1694,7 +1693,8 @@ double k_over_kp(double k)
    * then the series does not converge because k = 1, kp = 0,
    * and kf = 2 for every iteration which means that r just doubles
    * each time around.  That makes sense because 
-   * K(k) -> infinity when k = 1
+   * K(k) -> infinity when k = 1.  Note:
+   * K(0) = pi/2, K(1) = +infinity
    */
 
   kp = sqrt(1.0-pow(k,2.0));
@@ -1705,7 +1705,7 @@ double k_over_kp(double k)
     k = 2.0*sqrt(k) / (1.0 + k);
     kp = 2.0*sqrt(kp) / (1.0 + kp);
     i++;
-  } while( (fabs(kf - 1.0) > 1e-15) && ( i < 20) );
+  } while( (fabs(kf - 1.0) > 1e-15) && ( i < 100) );
 
 /* alternate approach
   if( k < sqrt(0.5) ) {

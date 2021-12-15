@@ -44,6 +44,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "coplanar.h"
@@ -473,6 +474,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	rslt = coplanar_calc_int(&tmp_line, f, NOLOSS);
         if(rslt != 0) {
           alert("Calculation for step 1 (er=1) of Wheeler's incremental inductance failed\n");
+          alert_bug();
         }
 	z1 = tmp_line.z0;
 
@@ -488,6 +490,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 	rslt = coplanar_calc_int(&tmp_line,f,NOLOSS);
         if(rslt != 0) {
           alert("Calculation for step 2 (altered dimensions) of Wheeler's incremental inductance failed\n");
+          alert_bug();
         }
 	z2 = tmp_line.z0;
 	free(tmp_line.subs);
@@ -765,8 +768,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0) {
-      alert("Could not bracket the solution.\n"
-	    "Synthesis failed.\n");
+      alert_bracket();
       return -1;
     }
   
@@ -851,6 +853,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 	    "  min = %g\n"
 	    "  val = %g\n"
 	    "  max = %g\n", maxiters, varmin, var, varmax);
+      alert_bug();
       return -1;
     }
     

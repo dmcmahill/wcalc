@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2006, 2009, 
- *               2011, 2012, 2020 Dan McMahill
+ *               2011, 2012, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -34,6 +34,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
@@ -166,7 +167,8 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
   
     rslt = find_z0(&tmp_line);
     if(rslt != 0) {
-      alert("failed step 1 of Wheeler's incremental inductance analysis\n");
+      alert(_("Failed step 1 of Wheeler's incremental inductance analysis.\n"));
+      alert_bug();
     }
     z1e = tmp_line.z0e;
     z1o = tmp_line.z0o;
@@ -181,7 +183,8 @@ int coupled_stripline_calc(coupled_stripline_line *line, double f)
 
     rslt = find_z0(&tmp_line);
     if(rslt != 0) {
-      alert("failed step 2 of Wheeler's incremental inductance analysis\n");
+      alert(_("Failed step 2 of Wheeler's incremental inductance analysis.\n"));
+      alert_bug();
     }
 
     z2e = tmp_line.z0e;
@@ -453,7 +456,8 @@ int coupled_stripline_syn(coupled_stripline_line *line, double f)
 #endif
   rslt = stripline_syn(single, single->freq, SLISYN_W);
   if(rslt != 0) {
-    alert("Synthesis of a single stripline to use as an initial condition failed\n");
+    alert(_("Synthesis of a single stripline to use as an initial condition failed.\n"));
+    alert_bug();
   }
   w = single->w;
 #ifdef DEBUG_SYN
@@ -700,14 +704,16 @@ static int find_z0(coupled_stripline_line *line)
 
     rslt = stripline_calc(single, line->freq);
     if( rslt != 0 ) {
-      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__, rslt);
+      alert_bug();
     }
     z0s = single->z0;
 
     single->subs->tmet = 0.0;
     rslt = stripline_calc(single, line->freq);
     if( rslt != 0 ) {
-      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__);
+      alert ("%s():  stripline_calc failed (%d)", __FUNCTION__, rslt);
+      alert_bug();
     }
     z0s_0t = single->z0;
 

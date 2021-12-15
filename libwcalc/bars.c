@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2008, 2010 Dan McMahill
+ * Copyright (C) 2008, 2010, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -33,6 +32,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"

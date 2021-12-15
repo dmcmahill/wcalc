@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006,
- * 2009, 2020 Dan McMahill
+ * 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -31,6 +31,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "physconst.h"
 #include "microstrip.h"
 #include "microstrip_loadsave.h"
@@ -821,8 +822,7 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0){
-      alert("Could not bracket the solution.\n"
-	    "Synthesis failed.\n");
+      alert_bracket();
       return -1;
     }
   
@@ -897,8 +897,8 @@ int microstrip_syn(microstrip_line *line, double f, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      alert("Synthesis failed to converge in\n"
-	    "%d iterations\n", maxiters);
+      alert("Synthesis failed to converge in %d iterations\n", maxiters);
+      alert_bug();
       return -1;
     }
     
