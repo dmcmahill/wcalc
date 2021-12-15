@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2009 Dan McMahill
+ * Copyright (C) 2009, 2021 Dan McMahill
  * All rights reserved.
  *
  * 

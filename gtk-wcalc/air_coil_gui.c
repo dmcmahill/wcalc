@@ -207,7 +207,6 @@ static void values_init(air_coil_gui *gui,
 			GtkWidget *output_parent)
 {
   GtkWidget *button;
-  GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *text;
   GtkWidget *frame;

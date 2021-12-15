@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2020 Dan McMahill
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -69,6 +68,7 @@
 #include "coax_loadsave.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
@@ -168,8 +168,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   /* qualify the inputs some */
 
   if (line->b <= line->a ) {
-    alert("Error: b (%g) must be > a (%g)\r\n"
-	  "for a coax line\r\n");
+    alert("Error: b (%g) must be > a (%g) for a coax line\r\n");
     return -1;
   }
 
@@ -326,7 +325,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 #endif
     rslt = coax_calc_int(&tmp_line, line->freq, CALC_MIN);
     if(rslt != 0) {
-      alert("Calculation for step 1 (er=1) of Wheeler's incremental inductance failed\n");
+      alert("Calculation for step 1 (er=1) of Wheeler's incremental inductance failed.\n");
+      alert_bug();
     }
     z1 = tmp_line.z0;
     
@@ -359,7 +359,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
 #endif
     rslt = coax_calc_int(&tmp_line, tmp_line.freq, CALC_MIN);
     if(rslt != 0) {
-      alert("Calculation for step 2 of Wheeler's incremental inductance failed\n");
+      alert("Calculation for step 2 of Wheeler's incremental inductance failed.\n");
+      alert_bug();
     }
     z2 = tmp_line.z0;
 
@@ -695,8 +696,7 @@ int coax_syn(coax_line *line, double f, int flag)
 
     /* see if we've actually been able to bracket the solution */
     if (errmax*errmin > 0){
-      alert("Could not bracket the solution.\n"
-	    "Synthesis failed.\n");
+      alert_bracket();
       return -1;
     }
   
@@ -771,8 +771,8 @@ int coax_syn(coax_line *line, double f, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      alert("Synthesis failed to converge in\n"
-	    "%d iterations\n", maxiters);
+      alert("Synthesis failed to converge in %d iterations.\n");
+      alert_bug();
       return -1;
     }
     

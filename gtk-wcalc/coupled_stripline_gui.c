@@ -187,7 +187,6 @@ static void values_init(coupled_stripline_gui *gui, GtkWidget *parent)
 {
   GtkWidget *table;
   GtkWidget *text;
-  GtkWidget *lwht;
   GtkWidget *button;
   GtkWidget *frame;
   wc_units_gui *ug = NULL, *lwht_ug = NULL;

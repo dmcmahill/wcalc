@@ -193,7 +193,6 @@ static void sync_l2_to_l1(GtkWidget *widget, gpointer data)
 
 static void values_init(rods_gui *gui, GtkWidget *parent)
 {
-  GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
 

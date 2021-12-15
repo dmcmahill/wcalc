@@ -32,6 +32,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "misc.h"
 #include "physconst.h"
 #include "units.h"
@@ -187,7 +188,7 @@ static double Lself(double l, double R, double freq, double rho)
  */
 static double Lmutual(double R1, double l1, double R2, double l2, double d)
 {
-  double amd, amsd, gmd, l, M, M2, w, deltaM;
+  double amd, amsd, gmd, l, M, w, deltaM;
 
   /*
    * Rosa (12)
@@ -303,6 +304,17 @@ int rods_calc(rods *b, double freq)
 
     if(b->l1 <= 0 || b->l2 <= 0) {
 	alert(_("The rod lengths, l1 and l2, must be > 0"));
+	return -1;
+    }
+
+    if(b->l1 != b->l2) {
+	alert(_("The rod lengths, l1 and l2, must be equal in the current version."));
+	return -1;
+    }
+
+    if(b->offset != 0.0) {
+	alert(_("The axial offset must be 0 in the current version."));
+	return -1;
     }
 
     /* now see if the rods are touching. */

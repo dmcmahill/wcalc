@@ -34,6 +34,9 @@ AM_MAINTAINER_MODE
 
 AC_DEFINE(DEVEL_VERSION, 1, [Define if this is a development snapshot and we want to warn users about that])
 
+AC_DEFINE([WCALC_BUG_URL], ["https://github.com/dmcmahill/wcalc/issues"], [URL of bug tracker])
+AC_DEFINE([WCALC_GIT_URL], ["https://github.com/dmcmahill/wcalc"], [URL of git repo])
+
 dnl determine host type
 AC_CANONICAL_HOST
 AC_MSG_CHECKING(for windows)

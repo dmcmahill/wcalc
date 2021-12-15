@@ -188,7 +188,6 @@ void bars_gui_init(Wcalc *wcalc, GtkWidget *main_vbox, FILE *fp)
 
 static void values_init(bars_gui *gui, GtkWidget *parent)
 {
-  GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
 

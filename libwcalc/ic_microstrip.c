@@ -32,6 +32,7 @@
 #include "alert.h"
 #include "defaults.h"
 #include "mathutil.h"
+#include "messages.h"
 #include "physconst.h"
 #include "ic_microstrip.h"
 #include "ic_microstrip_loadsave.h"
@@ -702,8 +703,7 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 #ifdef DEBUG_SYN
     printf("Could not bracket solution\n");
 #endif
-    alert("Could not bracket the solution.\n"
-	  "Synthesis failed.\n");
+    alert_bracket();
     return -1;
   }
 #ifdef DEBUG_SYN
@@ -780,8 +780,8 @@ int ic_microstrip_syn(ic_microstrip_line *line, double freq, int flag)
 #endif
     }
     else if (iters >= maxiters){
-      alert("Synthesis failed to converge in\n"
-	    "%d iterations\n", maxiters);
+      alert("Synthesis failed to converge in %d iterations\n", maxiters);
+      alert_bug();
       return -1;
     }
     
