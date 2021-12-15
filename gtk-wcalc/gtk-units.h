@@ -69,20 +69,6 @@ typedef struct _WC_UNITS_GUI
 } wc_units_gui;
 #define WC_UNITS_GUI(x)      ((wc_units_gui *) (x))
 
-typedef struct _WC_UNITS_MENU_DATA
-{
-  /* Index into the units array indicating if this is, for example,
-   *   nH, uH, mH, etc.
-   */
-  int ind;
-
-  /* The options menu that this is part of */
-  GtkWidget *opt_menu;
-
-} wc_units_menu_data;
-
-#define WC_UNITS_MENU_DATA(x)      ((wc_units_menu_data *) (x))
-
 typedef struct _WC_UNITS_UPDATE_ITEM
 {
   /* pointer to the widget that need updating */

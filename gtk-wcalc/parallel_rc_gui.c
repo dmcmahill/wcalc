@@ -208,7 +208,6 @@ static void use_R_pressed(GtkWidget *widget, gpointer data )
 
 static void values_init(parallel_rc_gui *gui, GtkWidget *parent)
 {
-  GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
 

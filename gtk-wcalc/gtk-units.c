@@ -53,15 +53,8 @@ static GtkWidget *wc_units_submenu_new(Wcalc *wcgui,
 				       gpointer gui,
 				       void (*callback)(GtkWidget *, gpointer));
 
-static wc_units_menu_data *wc_units_menu_data_new(int ind);
-
 static void wc_units_menu_init1(void * item, void * data);
 static void wc_units_menu_init2(void * item, void * data);
-
-static void wc_print_glist(void * item, void * data)
-{
-  fprintf(stderr, "       item (combo) = %p, data (ug) = %p\n", item, data);
-}
 
 /*
  * this is called at the end of creating and initializing a gui.
@@ -271,7 +264,6 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
 {
   int which, ind;
   wc_units_gui *ug;
-  wc_units_menu_data *menu_data;
   guint i;
   wc_units_update_item *up_item;
 
@@ -404,20 +396,6 @@ void wc_units_menu_changed( GtkWidget *w, gpointer data)
 
   }
 
-}
-
-static wc_units_menu_data *wc_units_menu_data_new(int ind)
-{
-  wc_units_menu_data *data;
-
-  if ( (data = (wc_units_menu_data *) malloc(sizeof(wc_units_menu_data))) == NULL) {
-    fprintf(stderr,"wc_units_menu_data():  malloc() failed\n");
-    exit(1);
-  }
-
-  data->ind = ind;
-
-  return data;
 }
 
 /*
