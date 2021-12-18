@@ -1,5 +1,3 @@
-#
-
 This is the windows port of the wcalc transmission line analysis/synthesis
 calculator.  Please visit http://wcalc.sourceforge.net for more information
 about wcalc.
