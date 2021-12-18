@@ -1,0 +1,190 @@
+// *****************************
+// Coplanar Waveguide
+// *****************************
+
+include "utils.edp"
+
+// used with the adaptive meshing
+real errorinit = 0.1;
+real error = errorinit;
+
+// used to avoid placing the conductor boundary directly at the
+// dielectric interface.  Should revisit and see if we need
+// different boundary segments to avoid this need
+real delta = 0.01;
+
+
+// Metal thickness
+real Tmet = 1;
+
+// Trace width
+real W = 10;
+
+// Gap between line and coplanar ground
+real S = 5.;
+
+// Substrate thickness
+real H = 20;
+
+// Relative dielectric constant above the trace
+real eps1 = 1;
+
+// Relative dielectric constant of the substrate
+real eps2 = 4.8;
+
+// this is a trick with free-fem...the conductor must lie 
+// just a bit above the dielectric interface
+real hd3 = H + delta;
+
+int m = 500;            // meshing constant
+
+
+real Wtot = 700;        // total width of the problem (enclosure width)
+real Htot = 300;        // total height of the problem (enclosure height)
+
+// *****************************
+// Define the boundaries
+// *****************************
+
+// border defines a 2D border in parametric coordinates
+
+// dielectric discontinuity
+border discon(t=0., Wtot) {x = Wtot-t; y = H;}
+ 
+// Bottom side ground and also the ground that surrounds
+// the problem
+
+// Bottom side ground
+border ocbot(t=0,Wtot) {x = t; y = 0;}
+
+// Enclosure right side
+border ocrt1(t=0,H)  {x=Wtot; y=t;}
+border ocrt2(t=H,Htot)  {x=Wtot; y=t;}
+
+// Enclosure top side
+border octop(t=0,Wtot) {x=Wtot-t;y=Htot;}
+
+// Enclosure left side
+border oclt2(t=H, Htot)  {x=0; y=Htot + H - t;}
+border oclt1(t=0, H)  {x=0; y=H-t;}
+
+// left coplanar ground
+real cpgwidth = (Wtot - W - 2*S) / 2.0 - delta;
+
+border cpg1(t=0, 2*cpgwidth + 2*Tmet) {
+    if ( t<=cpgwidth ) {
+        x = t + delta;
+        y = hd3;
+    } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
+        x = cpgwidth + delta;
+        y = hd3 + (t - cpgwidth);
+    } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
+        x = cpgwidth + delta - (t - (cpgwidth + Tmet));
+        y = hd3 + Tmet;
+    } else {
+        x = delta;
+        y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
+    }
+}
+
+real ofs = 0.5*Wtot + 0.5*W + S - delta;
+ 
+border cpg2(t=0, 2*cpgwidth + 2*Tmet) {
+    if ( t<=cpgwidth ) {
+        x = ofs + t + delta;
+        y = hd3;
+    } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
+        x = ofs + cpgwidth + delta;
+        y = hd3 + (t - cpgwidth);
+    } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
+        x = ofs + cpgwidth + delta - (t - (cpgwidth + Tmet));
+        y = hd3 + Tmet;
+    } else {
+        x = ofs + delta;
+        y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
+    }
+}
+ 
+// center conductor
+border cc(t=0, 2*W+2*Tmet) {
+    if ( t<=W ) {
+        x = t+0.5*Wtot-0.5*W;  
+        y = hd3;
+    } else if ( ( t>W ) && ( t<=W  +Tmet ) ) {
+        x = 0.5*(W+Wtot);      
+        y = hd3+t-W;
+    } else if ( ( t>W + Tmet ) && ( t<=2*W+Tmet ) ) {
+        x = 2*W+Tmet-t+0.5*(Wtot-W);
+        y = hd3+Tmet;
+    } else {
+        x = 0.5*Wtot-0.5*W;    
+        y = 2*W+hd3+2*Tmet-t;
+    }
+}
+
+// *****************************
+// Mesh generation
+// *****************************
+
+// Build a 2D mesh using border elements
+// 
+mesh Th = buildmesh (cc(-m) + cpg1(-m) + cpg2(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
+plot(Th);
+
+
+// *****************************
+// FE-space and FE-function
+// *****************************
+fespace Uh(Th, P1);
+
+// *****************************
+// Mathematical Formula
+// *****************************
+
+// define the relative dielectric constant
+func epsi = 1. + (eps1-1)*(y>H) + (eps2-1)*(y<H);
+
+// *****************************
+// Weak Formulation
+// *****************************
+
+// Solve when the dielectric is all free space
+Uh u0;
+Uh v0;
+
+problem Laplace0(u0, v0)
+    = int2d(Th) (grad(u0)' * grad(v0))
+    + on(cc, u0=1.)
+    + on(cpg1, cpg2, ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u0=0.)
+    ;
+
+Laplace0;
+
+// Solve with the dielectric in place
+Uh u1;
+Uh v1;
+
+problem Laplace1(u1, v1)
+    = int2d(Th) (epsi*grad(u1)' * grad(v1))
+    + on(cc, u1=1.)
+    + on(cpg1, cpg2, ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u1=0.)
+    ;
+
+Laplace1;
+
+plot(u1);
+
+real energy0 = eps0 * int2d(Th) ( (dx(u0))*(dx(u0)) + (dy(u0))*(dy(u0)));
+cout << "energy = " << energy0 << endl;
+
+real energy1 = eps0* int2d(Th) ( epsi*(dx(u1))*(dx(u1)) + epsi*(dy(u1))*(dy(u1)));
+cout << "w/ dielectric energy = " << energy1 << endl;
+
+real epseff = energy1/energy0;
+real z0 = sqrt(epseff)/(c0 * energy1);
+real z0no = 1/(c0 * energy0);
+
+cout << "effective dielectric constant = " << epseff << endl;
+cout << "characteristic impedance = " << z0 << " Ohms" << endl;
+
+

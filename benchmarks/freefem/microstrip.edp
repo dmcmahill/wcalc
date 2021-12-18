@@ -1,0 +1,145 @@
+// FreeFEM microstrip analysis
+//
+// The starting point was an example from C Deibele on
+// https://www.freelists.org/post/si-list/microstrip-and-stripline-FREEFEM-examples
+// It appears that the syntax for FreeFEM must have changed so this file has been
+// modified to work with FreeFEM-4.10 with some notation changed to be consistent
+// with wcalc.
+//
+// Note that in microstrip a pure TEM mode is not possible so this analysis
+// ignores dispersion
+
+include "utils.edp"
+
+// used with the adaptive meshing
+real errorinit = 0.1;
+real error = errorinit;
+
+// width of the microstrip
+real W = 50;
+
+// metal thickness
+real Tmet = 0.7;
+
+// dielectric thickness
+real H = 62;
+
+// this is a trick with free-fem...the conductor must lie 
+// just a bit above the dielectric interface
+real hd3 = H + 0.01;
+
+// relative dielectric constant above the microstrip line
+real eps1 = 1;
+
+// relative dielectric constant of the substrate
+real eps2 = 4.8;
+
+// meshing constant
+int m = 500;
+
+// total height of the problem (enclosure height)
+real Htot = 300;
+
+
+// total width of the problem (enclosure width)
+real Wtot = 700;
+
+// *****************************
+// Define the boundaries
+// *****************************
+
+// border defines a 2D border in parametric coordinates
+
+// microstrip height dielectric discontinuity
+border discon(t=0., Wtot) {x = Wtot-t; y = H;}
+ 
+// outer conductor
+border ocbot(t=0,Wtot) {x = t; y = 0;}
+border ocrt1(t=0,H)  {x=Wtot; y=t;}
+border ocrt2(t=H,Htot)  {x=Wtot; y=t;}
+border octop(t=0,Wtot) {x=Wtot-t;y=Htot;}
+border oclt2(t=H,Htot)  {x=0;y=Htot+H-t;}
+border oclt1(t=0,H)  {x=0;y=H-t;}
+
+ 
+// center conductor
+border cc(t=0, 2*W + 2*Tmet) {
+    if ( t<=W ) {
+        x = t + 0.5*Wtot - 0.5*W;  
+        y = hd3;
+    } else if ( ( t>W ) && ( t<=W  +Tmet ) ) {
+        x = 0.5*(W + Wtot);      
+        y = hd3 + t - W;
+    } else if ( ( t>W + Tmet ) && ( t<=2*W + Tmet ) ) {
+        x = 2*W + Tmet - t + 0.5*(Wtot - W);
+        y = hd3 + Tmet;
+    } else {
+        x = 0.5*Wtot - 0.5*W;    
+        y = 2*W + hd3 + 2*Tmet - t;
+    }
+}
+
+// *****************************
+// Mesh generation
+// *****************************
+
+// Build's a 2D mesh using border elements
+// 
+mesh Th = buildmesh (cc(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
+plot(Th);
+
+
+// *****************************
+// FE-space and FE-function
+// *****************************
+fespace Uh(Th, P1);
+
+// *****************************
+// Mathematical Formula
+// *****************************
+
+// define the relative dielectric constant
+func epsi = 1. + (eps1-1)*(y>H) + (eps2-1)*(y<H);
+
+// *****************************
+// Weak Formulation
+// *****************************
+
+// Solve when the dielectric is all free space
+Uh u0;
+Uh v0;
+
+problem Laplace0(u0, v0)
+    = int2d(Th) (grad(u0)' * grad(v0))
+    + on(cc, u0=1.)
+    + on(ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u0=0.)
+    ;
+
+Laplace0;
+
+// Solve with the dielectric in place
+Uh u1;
+Uh v1;
+
+problem Laplace1(u1, v1)
+    = int2d(Th) (epsi * grad(u1)' * grad(v1))
+    + on(cc, u1=1.)
+    + on(ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u1=0.)
+    ;
+
+Laplace1;
+
+
+real energy0 = eps0 * int2d(Th) ( (dx(u0))*(dx(u0)) + (dy(u0))*(dy(u0)));
+cout << "energy = " << energy0 << endl;
+
+real energy1 = eps0* int2d(Th) ( epsi*(dx(u1))*(dx(u1)) + epsi*(dy(u1))*(dy(u1)));
+cout << "w/ dielectric energy = " << energy1 << endl;
+
+real epseff = energy1/energy0;
+real z0 = sqrt(epseff)/(c0 * energy1);
+real z0no = 1/(c0 * energy0);
+
+cout << "effective dielectric constant = " << epseff << endl;
+cout << "characteristic impedance = " << z0 << " Ohms" << endl;
+

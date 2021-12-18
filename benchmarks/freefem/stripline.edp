@@ -1,0 +1,179 @@
+// FreeFEM stripline analysis
+//
+// The starting point was an example from C Deibele on
+// https://www.freelists.org/post/si-list/microstrip-and-stripline-FREEFEM-examples
+// It appears that the syntax for FreeFEM must have changed so this file has been
+// modified to work with FreeFEM-4.10 with some notation changed to be consistent
+// with wcalc.  In addition, the borders are constructed in a way that is a little
+// simpler and it seems to preserve corners during meshing.
+//
+// With stripline we have a true TEM propagation mode and aside from providing some
+// additional checkpoint data, the FreeFEM analysis can help identify limits on
+// the metal thickness correction.  It could also be used to help validate
+// stripline that is offset in one direction or the other.
+
+include "utils.edp"
+
+// used with the adaptive meshing
+real errorinit = 0.1;
+real error = errorinit;
+
+
+// Trace width
+real W = 25.0 ;
+
+// Total substrate thickness
+real H = 62.0 ;
+
+// Metal thickness
+real Tmet = 0.7;
+
+// height of the strip above the bottom ground
+// this will be updated later in the Tmet loop
+// This could be used for an offset conductor
+// if desired
+real hd = 0.5*H - 0.5*Tmet;
+
+// relative dielectric constant of the substrate
+real er = 4.8;
+
+// meshing constant
+int m = 70;
+int mgndTB = 3*m;
+int mgndLR = 20;
+int useAdaptMesh = 0;
+
+// min/max/count for sweeping metal thickness
+real TmetMin = 0.1;
+real TmetMax = 0.3*H;
+int numTmet = 10;
+//numTmet = 1;
+
+// Total width of the problem
+//
+// The sides are enclosed in this formulation so we need to make sure
+// this is far enough away to avoid causing issues but not so far as to make
+// it take a long long time to simulate.
+//
+// For this we are picking 5x the substrate thickness away on each side
+real Wtot = W + 2.0 * 5.0 * H;
+
+// output data file
+ofstream logf("stripline.txt");
+
+for (int i = 0; i < numTmet ; i=i+1) {
+    if(numTmet > 1) {
+        Tmet = TmetMin + i*(TmetMax - TmetMin)/(numTmet - 1);
+    }
+    hd = 0.5*H - 0.5*Tmet;
+
+    // *****************************
+    // Define the boundaries
+    // *****************************
+
+    // outer conductor -- clockwise
+    border occB(t=0, 1) {
+        x = Wtot*t;
+        y = 0;
+    }
+
+    border occR(t=0, 1) {
+        x = Wtot;
+        y = H*t;
+    }
+
+    border occT(t=0, 1) {
+        x = Wtot*(1-t);
+        y = H;
+    }
+
+    border occL(t=0, 1) {
+        x = 0;
+        y = H*(1 - t);
+    }
+ 
+    // center conductor -- also clockwise
+    border ccB(t=0, 1) {
+        x = 0.5*Wtot - 0.5*W + W*t;
+        y = hd;
+    }
+
+    border ccR(t=0, 1) {
+        x = 0.5*Wtot + 0.5*W;
+        y = hd + Tmet*t;
+    }
+
+    border ccT(t=0, 1) {
+        x = 0.5*Wtot + 0.5*W - W*t;
+        y = hd + Tmet;
+    }
+
+    border ccL(t=0, 1) {
+        x = 0.5*Wtot - 0.5*W;
+        y = hd + Tmet*(1 - t);
+    }
+
+    // *****************************
+    // Mesh generation
+    // *****************************
+
+    mesh Th;
+    // a minus sign in the border argument defines the direction.
+    Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + occB(mgndTB) + occR(mgndLR) + occT(mgndTB) + occL(mgndLR));
+    plot(Th, fill=false);
+
+    // *****************************
+    // FE-space and FE-function
+    // *****************************
+    fespace Uh(Th, P1);
+
+    // *****************************
+    // Mathematical Formula
+    // *****************************
+
+    // *****************************
+    // Weak Formulation
+    // *****************************
+
+    Uh u;
+    Uh v;
+
+    problem Laplace(u, v)
+        = int2d(Th) (grad(u)' * grad(v))
+        + on(occL, occR, occT, occB, u=0.)
+        + on(ccL, ccR, ccT, ccB, u=1.)
+        ;
+
+    // Adaptmesh loop
+    if(useAdaptMesh == 1) {
+        error = errorinit;
+        for (int j = 0; j < 4 ; j++){
+            Laplace;
+            Th = adaptmesh(Th, u, err=error);
+            plot(Th, fill=false);
+            error = error/2;
+        }
+    }
+    Laplace;
+
+    real energy = eps0 * er * int2d(Th) ( (dx(u))*(dx(u)) + (dy(u))*(dy(u)));
+    cout << "energy = " << energy << endl;
+
+
+    real impenerg = sqrt(er) /(c0 * energy);
+    cout << "Impedance calculated from energy = " << impenerg << " Ohms" << endl;
+
+    logf << Tmet << " " << impenerg << endl;
+}
+
+cout << "Lightspeed  = " << c0 << " m/s" << endl;
+cout << "mu0         = " << mu0 << " H/m" << endl;
+cout << "eps0        = " << eps0 << " F/m" << endl;
+cout << "freespaceZ0 = " << freespaceZ0 << " Ohms" << endl;
+cout << "W           = " << W << endl;
+cout << "H           = " << H << endl;
+cout << "Tmet        = " << Tmet << endl;
+cout << "Wtot        = " << Wtot << endl;
+cout << "er          = " << er << endl;
+cout << "hd          = " << hd << endl;
+
