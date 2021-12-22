@@ -110,6 +110,11 @@ if MISSING_TGIF
 	@echo "          will be ignored."
 else
 	$(TGIF) $(TGIF_FLAGS) -eps $*.obj
+	@echo "Canonicalize $@"
+	mv $*.eps $*.eps.bak
+	sed -e 's/CreationDate:.*/CreationDate: today/g' \
+		-e 's/Tgif-[0-9.]*/Tgif/g' $*.eps.bak > $*.eps
+	rm $*.eps.bak
 endif
 
 .obj.gif :
