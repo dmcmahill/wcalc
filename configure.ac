@@ -43,12 +43,6 @@ dnl determine host type
 AC_CANONICAL_HOST
 AC_MSG_CHECKING(for windows)
 case $host in
-	*-*-cygwin* )
-		WIN32=yes
-		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS}"
-		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS}"
-		;;
-
 	*-*-mingw* )
 		WIN32=yes
 		CFLAGS="$CFLAGS ${MINGW_CFLAGS:--mms-bitfields -mwindows}"
