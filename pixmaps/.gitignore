@@ -2,9 +2,3 @@
 Makefile.in
 Makefile
 *.o
-*.eps
-*png
-*.gif
-*.xpm
-*.c
-*.h
