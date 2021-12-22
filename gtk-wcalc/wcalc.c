@@ -67,6 +67,18 @@
 #include <dmalloc.h>
 #endif
 
+/* Global list of the names of the various models */
+GList *global_model_names;
+
+/* Global list of pointers to the _new() functions for each model */
+GList *global_model_new;
+
+/* Global list of menu paths for the models */
+GList *global_model_menus;
+
+/* Global list of default file names for the models */
+GList *global_model_defaults;
+
 static gint wcalc_delete_event( GtkWidget *widget,
 				GdkEvent *event,
 				gpointer data );
