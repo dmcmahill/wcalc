@@ -7,3 +7,8 @@ Makefile
 BUGS.txt
 COPYING.txt
 license_include.nsh
+lic_inst/
+run_install.bat
+test_wcalc.bat
+wcalc.nsi
+wcalc_inst/
