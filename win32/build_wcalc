@@ -1,10 +1,27 @@
 #!/bin/sh
 #
+
+
+# BUGS:
+#   - use
+#          cygcheck -c | grep mingw
+#     to  get a list of mingw packages installed.  See about
+#     extracting a runtime subset of the required ones because
+#     we really don't want to have a ton of extra stuff get in
+#     our installer.  Maybe also use cygcheck to get versions
+#     and see if we know what license those are under.
 #
+#  -  we don't have to do all the downloading of stuff here!
+#     cygwin has the packages we need already.
+
 
 # error out on failed commands whose return code wasn't explicitly
 # checked
 set -e
+
+AWK=${AWK:-awk}
+MAKE=${MAKE:-make}
+HOST="i686-w64-mingw32"
 
 usage() {
 cat << EOF
@@ -18,18 +35,27 @@ Supported options:
 
   --debug         - Omits the compiler flag which prevents
                     a command window from being opened.  This
-                    is useful when trying to use debug printf's.
-                    If listed twice then --enable-debug is passed
-                    down to the configure script which enables 
-                    a good bit of debug output.
+                    is useful when trying to use debug printf's
+
+  --distcheck     - Run with --force-autogen and then build the
+                    distcheck target and exit.  This is generally
+                    only of interest for developers.
+
+  --enable-check  - enable the 'check' target after building.
 
   --help          - Show this message and exit.
+
+  --host <host>   - Sets the host target.  [$HOST]
 
   --force-autogen - Force running ./autogen.sh.  Normally this is
                     only done if the configure script is not present.
 
+  --install-only  - Only run the install step.
+
   --nsis-only     - Only run NSIS to create the installer.  This is
                     shorthand for all of the following --skip-* options.
+
+  --skip-all      - Skip all steps of the process.
 
   --skip-build    - Skip the "make" step of the process.
 
@@ -37,12 +63,32 @@ Supported options:
 
   --skip-config   - Skip the "./configure" step of the process.
 
+  --skip-deps     - Skip the processing of library dependencies (license extraction).
+
   --skip-install  - Skip the "make install" step of the process.
+
+  --skip-dllinstall - Skip the step after "make install" that copies
+                    the run time DLLs to the staging area.
+
+  --stop-after <stage>
+                  - exit this script after the named stage.  Allowed
+                    stages are:
+EOF
+awk '/^check_stop / {printf("                      - %s\n", $2)}' $0
+
+cat << EOF
+
+  --with-make <gmake>
+		  - Set MAKE to the listed GNU make program
+
+  --with-tex      - Set TEX=tex
+
+  --with-etex     - set TEX=etex
 
 For the $0 script to work, you must have the gtk_win32 files
 as well as gdlib installed on your system in very specific
 locations.  Edit $0 to change these.  While you are at it, feel
-free to provide a patch to improve the documentation about 
+free to provide a patch to improve the documentation about
 those libraries.
 
 EOF
@@ -52,16 +98,39 @@ debug=no
 do_autogen=no
 do_config=yes
 do_build=yes
+do_check=no
 do_clean=yes
+do_deps=yes
+do_distcheck=no
 do_install=yes
+do_dllinstall=yes
+do_nsis=yes
+stop_after=none
 config_args=""
+tex_flag="TEX=tex"
 while test $# -ne 0 ; do
 	case $1 in
 		--debug)
-			if test "X${debug}" = "Xyes" ; then
-				config_args="${config_args} --enable-debug"
-			fi
 			debug=yes
+			shift
+			;;
+
+		--distcheck)
+			do_autogen=yes
+			do_build=no
+			do_check=no
+			do_clean=no
+			do_config=no
+			do_deps=no
+			do_distcheck=yes
+			do_install=no
+			do_dllinstall=no
+			do_nsis=no
+			shift
+			;;
+
+		--enable-check)
+			do_check=yes
 			shift
 			;;
 
@@ -75,16 +144,53 @@ while test $# -ne 0 ; do
 			shift
 			;;
 
+		--host)
+			HOST=$2
+			shift 2
+			;;
+
+		--install-only)
+			do_build=no
+			do_clean=no
+			do_config=no
+			do_deps=no
+			do_install=yes
+			do_nsis=no
+			shift
+			;;
+
 		--nsis-only)
 			do_build=no
 			do_clean=no
 			do_config=no
+			do_deps=no
 			do_install=no
+			do_dllinstall=no
+			do_nsis=yes
+			shift
+			;;
+
+		--skip-all)
+			do_autogen=no
+			do_build=no
+			do_check=no
+			do_clean=no
+			do_config=no
+			do_deps=no
+			do_distcheck=no
+			do_install=no
+			do_dllinstall=no
+			do_nsis=no
 			shift
 			;;
 
 		--skip-build)
 			do_build=no
+			shift
+			;;
+
+		--skip-check)
+			do_check=no
 			shift
 			;;
 
@@ -98,8 +204,43 @@ while test $# -ne 0 ; do
 			shift
 			;;
 
+		--skip-deps)
+			do_deps=no
+			shift
+			;;
+
+		--skip-dllinstall)
+			do_dllinstall=no
+			shift
+			;;
+
 		--skip-install)
 			do_install=no
+			shift
+			;;
+
+		--skip-nsis)
+			do_nsis=no
+			shift
+			;;
+
+		--stop-after)
+			stop_after=$2
+			shift 2
+			;;
+
+		--with-etex)
+			tex_flag="TEX=etex"
+			shift
+			;;
+
+		--with-make)
+			MAKE="$2"
+			shift 2
+			;;
+
+		--with-tex)
+			tex_flag="TEX=tex"
 			shift
 			;;
 
@@ -115,28 +256,116 @@ while test $# -ne 0 ; do
 	esac
 done
 
-if test ! -f win32/build_wcalc ; then
-	echo "$0:  ERROR.  This script must be run from the top level of the wcalc source tree."
-	exit 1
-fi
-
-# Run this under cygwin to build wcalc and create a windows installer for
-# it.  Thanks to Bob Paddock for pointing me to NSIS and answering some 
-# beginner windows questions.
-
-# where gtk_win32 is installed
-gtk_win32=c:\\cygwin\\home\\${USER}\\gtk_win32
-
 # where only the runtime components are installed
-gtk_win32_runtime=c:\\\\cygwin\\\\home\\\\${USER}\\\\gtk_win32_runtime
+# oh, the joy of escaping...  \\ gets processed into \ by the
+# shell.  \\\\ gets processed into \\ by the shell and sed then
+# turns it into \.  So the big craziness is just to convert
+# a single \ into double \\ so when it later is stubstituted into
+# the wcalc.nsi file we have single \.
+
+win32_runtime="/usr/$HOST/sys-root/mingw"
+win32_runtime_dos="`cygpath --windows ${win32_runtime} | sed 's;\\\\;\\\\\\\\;g'`"
+
 
 # wcalc version
 
-wcalc_version=`awk '/AC_INIT/ {gsub(/.*,[ \t]*\[/, ""); gsub(/\]\).*/, ""); print}' configure.ac`
-echo "wcalc_version=${wcalc_version}"
+if grep -q 'AC_INIT.*m4_esyscmd' ../configure.ac ; then
+	cat << EOF
+
+You appear to be building from git sources.  You may want to verify that
+the version extraction command in $0 matches the m4_esyscmd in the AC_INIT
+line of ../configure.ac.  They are shown here:
+EOF
+	grep 'AC_INIT.*m4_esyscmd' ../configure.ac /dev/null
+	awk '/git describe/ {if(p>0) {print} else { p = 1}}' $0 /dev/null
+	wcalc_version=`git describe --abbrev=8 --always --tags | awk -F'-' '{printf "%s-%s", $1, $3}'`
+	slp=10
+else
+	wcalc_version=`${AWK} '/AC_INIT/ {gsub(/.*,[ \t]*\[/, ""); gsub(/\]\).*/, ""); print}' ../configure.ac`
+	slp=0
+fi
+echo "wcalc_version extracted from configure.ac = ${wcalc_version}"
 
 # location of the NSIS makensis executible (see http://nsis.sourceforge.net)
-makensis="/cygdrive/c/Program Files/NSIS/makensis.exe"
+MAKENSIS="/cygdrive/c/Program Files (x86)/NSIS/makensis.exe"
+
+# where to install wcalc
+wcalc_inst=`pwd`/wcalc_inst
+
+
+# DOS version
+wcalc_inst_dos="`cygpath --windows ${wcalc_inst} | sed 's;\\\\;\\\\\\\\;g'`"
+
+
+lic_inst=`pwd`/lic_inst
+lic_inst_dos="`cygpath --windows ${lic_inst}`"
+
+tmpdir="./tmpdir"
+mkdir -p -m 0700 $tmpdir
+rc=$?
+if test $rc -ne 0 ; then
+	echo "Couldn't generate secure temp directory"
+	exit 1
+fi
+tmp_sh="${tmpdir}/tmp.sh"
+${MAKE} -f wcalc-win32-deps.mk DEPMK= config-variables > "${tmp_sh}"
+chmod 755 "${tmp_sh}"
+. "${tmp_sh}"
+rm "${tmp_sh}"
+
+
+
+if test "X${do_deps}" = "Xyes" ; then
+    lic="${tmpdir}/license.tmp.1"
+    lic2="${tmpdir}/license.tmp.2"
+    if test -d "${lic_inst}" ; then
+        rm -fr "${lic_inst}"
+    fi
+    mkdir -p "${lic_inst}"
+
+    echo "" > "${lic}"
+    for f in setup/*.mk ; do
+        echo "Process $f"
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f fetch
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f checksum
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f extract
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f configure
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f build
+        #${MAKE} -f wcalc-win32-deps.mk DEPMK=$f install
+        ${MAKE} -f wcalc-win32-deps.mk DEPMK=$f show-license >> "${lic}"
+    done
+
+    sort "${lic}" > "${lic2}"
+
+    lic_nsh=license_include.nsh
+    echo "" > "${lic_nsh}"
+
+    for l in `${AWK} '{print $1}' "${lic2}" | sort -u` ; do
+        lout="${lic_inst}/LICENSE-${l}"
+        echo "Creating ${lout}"
+        cat << EOF > "${lout}"
+The following libraries are covered by the $l license:
+
+EOF
+        ${AWK} '$1==lic {print $2}' lic=$l "${lic2}" >> "${lout}"
+        cat << EOF >> "${lout}"
+
+-------------------------------------------------------------------
+EOF
+        cat licenses/LICENSE-${l} >> ${lout}
+cat << EOF >> ${lic_nsh}
+  !insertmacro MUI_PAGE_LICENSE "${lic_inst_dos}\LICENSE-${l}"
+EOF
+
+    done
+fi
+
+
+if test ! -f ./build_wcalc ; then
+	echo "$0:  ERROR.  This script must be run from the win32 level of the wcalc source tree."
+	exit 1
+fi
+
 
 
 # ########################################################################
@@ -145,34 +374,35 @@ makensis="/cygdrive/c/Program Files/NSIS/makensis.exe"
 #
 # ########################################################################
 
+check_stop() {
+	if test "X${stop_after}" = "X$1" ; then
+		echo "Exiting build because stop_after = ${stop_after}"
+		exit 0
+	fi
+}
 
-if test ! -f configure -o $do_autogen = yes ; then
-	echo "Bootstrapping autotools"
-	ACLOCAL_FLAGS="-I ${gtk_win32}\\share\\aclocal" ./autogen.sh
-fi
 
 # source directory
-srcdir=`pwd.exe`/win32
+srcdir=`pwd.exe`
 top_srcdir=${srcdir}/..
 
-src_dir=c:\\\\cygwin`echo ${srcdir} | sed 's;/;\\\\\\\\;g'`
-top_src_dir=c:\\\\cygwin`echo ${top_srcdir} | sed 's;/;\\\\\\\\;g'`
+if test ! -f ../configure -o $do_autogen = yes ; then
+	echo "Bootstrapping autotools"
+	(cd .. && ./autogen.sh)
+fi
+check_stop autogen
 
 
-# where to install wcalc
-wcalc_inst=`pwd`/wcalc_inst
+PKG_CONFIG=${HOST}-pkg-config
 
-# DOS version
-wcalc_inst_dir=c:\\\\cygwin`echo ${wcalc_inst} | sed 's;/;\\\\\\\\;g'`
+#echo "Showing packages known to pkg-config (${PKG_CONFIG}:"
+#${PKG_CONFIG} --list-all
 
-PKG_CONFIG_PATH=${gtk_win32}\\lib\\pkgconfig
-export PKG_CONFIG_PATH
 
-PATH=${gtk_win32}\\bin:${gd_win32}:${PATH}
-export PATH
-
-echo "Showing packages known to pkg-config:"
-pkg-config --list-all
+# do not try and build the tk based QFP footprint
+# builder
+WISH=/usr/bin/true
+export WISH
 
 # add the gcc options to produce a native windows binary that
 # does not need cygwin to run
@@ -180,103 +410,251 @@ if test "x${debug}" = "xno" ; then
 	EXTRA_FLAGS="-mwindows"
 fi
 
-CYGWIN_CFLAGS="-mms-bitfields -mno-cygwin ${EXTRA_FLAGS}"
+CYGWIN_CFLAGS="-mms-bitfields ${EXTRA_FLAGS}"
 export CYGWIN_CFLAGS
 
-CYGWIN_CPPFLAGS="-mms-bitfields -mno-cygwin ${EXTRA_FLAGS}"
+CYGWIN_CPPFLAGS="-mms-bitfields ${EXTRA_FLAGS}"
 export CYGWIN_CPPFLAGS
+
+cat << EOF
+
+PKG_CONFIG       =  ${PKG_CONFIG}
+PKG_CONFIG_PATH  =  ${PKG_CONFIG_PATH}
+
+EOF
+
+if test "$do_distcheck" = "yes" ; then
+	DISTCHECK_CONFIGURE_FLAGS="ac_cv_func_gdImageGif=yes ac_cv_func_gdImageJpeg=yes ac_cv_func_gdImagePng=yes"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --disable-dependency-tracking"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --disable-nls"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --host ${HOST}"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} CPPFLAGS=-DWIN32_LEAN_AND_MEAN"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} WIN32=yes"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} PCB_MAGIC_TEST_SKIP=yes"
+	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} GERBV=/bin/true"
+	export DISTCHECK_CONFIGURE_FLAGS
+	WIN32=yes
+	export WIN32
+	PCB_MAGIC_TEST_SKIP=yes
+	export PCB_MAGIC_TEST_SKIP
+	echo "Distcheck for cygwin"
+	cd ${top_srcdir}
+	( ( ( \
+		${MAKE} distcheck
+		2>&1 ; echo $? >&4 ) | tee distcheck.log 1>&3) 4>&1 | (read a ; exit $a)) 3>&1
+
+	if test $? -ne 0 ; then
+		echo "**** ERROR **** Distcheck failed. See log in distcheck.log"
+		exit 1
+	fi
+
+	echo "Finished with distcheck, exiting."
+	exit 0
+fi
+
 
 # setting WIN32=yes will make sure that the desktop icon
 # gets compiled in
 if test "$do_config" = "yes" ; then
-rm -fr src/.deps
-echo "Configuring for cygwin"
-( ( ( env WIN32=yes \
-	./configure \
-	--prefix=${wcalc_inst} \
-	--disable-dependency-tracking \
-	--disable-htdocs \
-	--disable-cgi \
-	--disable-stdio \
-	--disable-nls \
-	--disable-update-desktop-database \
-	--disable-update-mime-database \
-	${config_args} \
-	WIN32=yes \
-	2>&1 ; echo $? >&4 ) | tee c.log 1>&3) 4>&1 | (read a ; exit $a)) 3>&1
+	cd ${top_srcdir}
 
-if test $? -ne 0 ; then
-	echo "**** ERROR **** Configure failed. See log in c.log"
-	exit 1
+	rm -fr src/.deps
+	echo "Configuring for cygwin"
+	( ( ( env WIN32=yes \
+		./configure \
+		--prefix=${wcalc_inst} \
+		--docdir=${wcalc_inst}/doc \
+		--pdfdir=${wcalc_inst}/doc/pdf \
+		--htmldir=${wcalc_inst}/doc/html \
+		--datadir=${wcalc_inst}/share \
+		ac_cv_func_gdImageGif="yes" \
+		ac_cv_func_gdImageJpeg="yes" \
+		ac_cv_func_gdImagePng="yes" \
+		--disable-dependency-tracking \
+		--disable-nls \
+		--host ${HOST} \
+		--disable-cgi \
+		--disable-htdocs \
+		--disable-stdio \
+		${config_args} \
+		CPPFLAGS="-DWIN32_LEAN_AND_MEAN" \
+		WIN32=yes \
+		2>&1 ; echo $? >&4 ) | tee c.log 1>&3) 4>&1 | (read a ; exit $a)) 3>&1
+
+	if test $? -ne 0 ; then
+		echo "**** ERROR **** Configure failed. See log in c.log"
+		exit 1
+	fi
+	check_stop config
+
+
+	if test "$do_clean" = "yes" ; then
+		cd ${top_srcdir}
+		echo "Cleaning"
+		( ( ( ${MAKE} clean 2>&1 ; echo $? >&4) | tee clean.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+		if test $? -ne 0 ; then
+			echo "**** ERROR **** Clean failed. See log in clean.log"
+			exit 1
+		fi
+	fi
+	check_stop clean
 fi
-
-# If the win32 pkg-config is used, then you end up with spurious CR's
-# in the generated Makefile's and we need to get rid of them.
-
-echo "Removing spurious carriage returns in the Makefiles..."
-for f in `find . -name Makefile -print` ; do
-	mv $f $f.bak
-	cat $f.bak | tr '\r' ' ' > $f
-	rm $f.bak
-done
-
-fi
-
-if test "$do_clean" = "yes" ; then
-echo "Cleaning"
-( ( ( make clean 2>&1 ; echo $? >&4) | tee clean.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
-if test $? -ne 0 ; then
-	echo "**** ERROR **** Clean failed. See log in clean.log"
-	exit 1
-fi
-fi
+check_stop config
+check_stop clean
 
 if test "$do_build" = "yes" ; then
-echo "Building for cygwin"
-( ( ( make 2>&1 ; echo $? >&4) | tee m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
-if test $? -ne 0 ; then
-	echo "**** ERROR **** Build failed. See log in m.log"
-	exit 1
+	cd ${top_srcdir}
+	echo "Building for cygwin"
+	( ( ( ${MAKE} $tex_flag PCB="../src/wcalctest.bat"  2>&1 ; echo $? >&4) | tee m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+	if test $? -ne 0 ; then
+		echo "**** ERROR **** Build failed. See log in m.log"
+		exit 1
+	fi
 fi
+check_stop build
+
+if test "$do_check" = "yes" ; then
+	cd ${top_srcdir}
+	echo "Building for cygwin"
+	( ( ( ${MAKE} check PCB="../../src/wcalctest.bat"  2>&1 ; echo $? >&4) | tee check.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+	if test $? -ne 0 ; then
+		echo "**** ERROR **** Build failed. See log in check.log"
+		exit 1
+	fi
 fi
+check_stop check
 
 if test "$do_install" = "yes" ; then
-echo "Installing for cygwin"
-# first clean out the installation directory to make sure
-# we don't have old junk lying around.
-if test -d ${wcalc_inst} ; then
-	rm -fr ${wcalc_inst}
+	cd ${top_srcdir}
+	echo "Installing for cygwin"
+	# first clean out the installation directory to make sure
+	# we don't have old junk lying around.
+	if test -d ${wcalc_inst} ; then
+		rm -fr ${wcalc_inst}
+	fi
+	( ( ( ${MAKE} install 2>&1 ; echo $? >&4) | tee -a m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+	if test $? -ne 0 ; then
+		echo "**** ERROR **** Build failed. See log in m.log"
+		exit 1
+	fi
+	echo "Finished with install target.  Proceeding to runtime DLL install".
 fi
-( ( ( make install 2>&1 ; echo $? >&4) | tee -a m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
-if test $? -ne 0 ; then
-	echo "**** ERROR **** Build failed. See log in m.log"
-	exit 1
+check_stop install
+
+if test "$do_dllinstall" = "yes" ; then
+	cd ${srcdir}
+
+	# $ cygcheck -l mingw64-i686-jasper | grep "mingw/bin"
+	# /usr/i686-w64-mingw32/sys-root/mingw/bin/libjasper.dll
+
+	echo "Extracting runtime DLL list."
+	dll_list=""
+	for pkg in `${AWK} '/^[ \t]*$/ {next} /^[ \t]*#/ {next} {print $1}' mingw_required_pkgs` ; do
+		# grep won't always find something and this script has 'set -e'
+		# which will cause the script to quit if grep doesn't find anything
+		dll_add=`cygcheck -l ${pkg} | grep 'bin/.*\.dll$' || true`
+		bin_add=`cygcheck -l ${pkg} | grep 'bin/gdk-pixbuf-query-loaders.exe$' || true`
+		if test -n "${dll_add}"  -o -n "${bin_add}" ; then
+			for dll in ${dll_add} ${bin_add} ; do
+				dll_base="`basename ${dll}`"
+				dll_list="${dll_list} ${dll_base}"
+			done
+		fi
+	done
+
+	echo "Copying runtime libraries to staging area"
+	for f in ${dll_list} ; do
+		echo "${win32_runtime}/bin/${f} > ${wcalc_inst}/bin/${f}"
+		cp "${win32_runtime}/bin/${f}" "${wcalc_inst}/bin/${f}"
+	done
+
+	mkdir -p "${wcalc_inst}/lib${wcalc_inst}/lib"
+	cp -r "${win32_runtime}/lib/gdk-pixbuf-2.0"  "${wcalc_inst}/lib/"
 fi
-fi
+check_stop dllinstall
 
-echo "Creating NSIS script"
-echo "srcdir = ${srcdir}"
-echo "src_dir = ${src_dir}"
-echo "top_srcdir = ${top_srcdir}"
-echo "top_src_dir = ${top_src_dir}"
+##########################################################################
+#
+# Create DOS batch file wrapper to allow running
+# the staged program before running the installer
+#
 
-sed \
-	-e "s;@wcalc_version@;${wcalc_version};g" \
-	-e "s;@wcalc_prefix@;${wcalc_inst_dir};g" \
-	-e "s;@wcalc_srcdir@;${top_src_dir};g" \
-	-e "s;@gtk_win32_runtime@;${gtk_win32_runtime};g" \
-	${srcdir}/wcalc.nsi.in > ${srcdir}/wcalc.nsi
-
-echo "Creating windows installer"
-"${makensis}" ${src_dir}/wcalc.nsi
-
-
-echo "Windows installer left in ${srcdir}:"
-ls -l ${srcdir}/*.exe
-
-bat=run_install.bat
-
+bat=test_wcalc.bat
 cat << EOF
+
+Creating DOS batch file wrapper to test the built
+wcalc which has been installed into the staging
+area ${wcalc_inst}.
+
+To test wcalc before installing:
+
+./${bat}
+
+EOF
+
+win32_runtime_dos1="`cygpath --windows ${win32_runtime}`"
+
+cat > ${bat} << EOF
+
+% #PATH=${win32_runtime_dos1}\bin:%PATH%
+PATH=$(cygpath --windows ${wcalc_inst}/bin)
+
+EOF
+
+cygpath --windows ${wcalc_inst}/bin/wcalc >> ${bat}
+
+chmod 755 ${bat}
+
+##########################################################################
+#
+# Build the installer
+#
+
+if test "$do_nsis" = "yes" ; then
+	cat << EOF
+
+Creating NSIS script
+
+srcdir = ${srcdir}
+src_dir = ${src_dir}
+top_srcdir = ${top_srcdir}
+top_src_dir = ${top_src_dir}
+
+win32_runtime     = ${win32_runtime}
+win32_runtime_dos = ${win32_runtime_dos}
+
+wcalc_inst              = ${wcalc_inst}
+wcalc_inst_dos          = ${wcalc_inst_dos}
+
+EOF
+
+	docdir="${wcalc_inst}/doc"
+	readme="${docdir}/Readme.txt"
+	# git doesn't seem to appreciate a CRLF terminated file so build the
+	# DOS version on the fly
+	test -d "${docdir}" || mkdir -p "${docdir}"
+	${AWK} '{printf("%s\r\n", $0)}' Readme.txt > "${readme}"
+
+	sed \
+		-e "s;@wcalc_version@;${wcalc_version};g" \
+		-e "s;@wcalc_prefix@;${wcalc_inst_dos};g" \
+		-e "s;@wcalc_srcdir@;${top_src_dir};g" \
+		-e "s;@gtk_win32_runtime_dos@;${win32_runtime_dos};g" \
+		${srcdir}/wcalc.nsi.in > ${srcdir}/wcalc.nsi
+
+	echo "Creating windows installer"
+	"${MAKENSIS}" wcalc.nsi
+
+	echo "Windows installer left in ${srcdir}:"
+	ls -l ${srcdir}/*.exe
+
+##########################################################################
+#
+# Create DOS batch file wrapper around the installer
+#
+	bat=run_install.bat
+
+	cat << EOF
 
 Creating DOS batch file wrapper for the installer.
 If you have just built this under cygwin on Vista,
@@ -288,10 +666,22 @@ the cygwin shell with
 
 EOF
 
-cat > ${bat} << EOF
+	cat > ${bat} << EOF
 
-.\win32\wcalcinst-${wcalc_version}.exe
+.\wcalcinst-${wcalc_version}.exe
 
 EOF
-chmod 755 ${bat}
 
+	chmod 755 ${bat}
+
+fi
+
+
+##########################################################################
+#
+# Cleanup and exit
+#
+
+if test -d "${tmpdir}" ; then
+	rm -fr "${tmpdir}"
+fi

@@ -50,16 +50,16 @@
 #include "misc.h"
 
 /* Global list of the names of the various models */
-GList *global_model_names;
+extern GList *global_model_names;
 
 /* Global list of pointers to the _new() functions for each model */
-GList *global_model_new;
+extern GList *global_model_new;
 
 /* Global list of menu paths for the models */
-GList *global_model_menus;
+extern GList *global_model_menus;
 
 /* Global list of default file names for the models */
-GList *global_model_defaults;
+extern GList *global_model_defaults;
 
 /* Format string used by many forms and postscript output */
 #define WC_FMT_G "%.4g"

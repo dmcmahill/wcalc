@@ -20,7 +20,7 @@
 
 EXTRA_DIST= build_wcalc wcalc.nsi.in Readme.txt \
 	${TGIF_OBJS} ${XPMS} ${PPMS_16} ${PPMS_256} ${ICONS} \
-	registerExtension.nsh extract_gtk_win32
+	registerExtension.nsh
 
 TGIF_OBJS=	wcalc_icon_big.obj wcalc_icon_med.obj wcalc_icon_sml.obj
 XPMS=		${TGIF_OBJS:.obj=.xpm}

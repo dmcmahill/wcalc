@@ -67,6 +67,18 @@
 #include <dmalloc.h>
 #endif
 
+/* Global list of the names of the various models */
+GList *global_model_names;
+
+/* Global list of pointers to the _new() functions for each model */
+GList *global_model_new;
+
+/* Global list of menu paths for the models */
+GList *global_model_menus;
+
+/* Global list of default file names for the models */
+GList *global_model_defaults;
+
 static gint wcalc_delete_event( GtkWidget *widget,
 				GdkEvent *event,
 				gpointer data );
@@ -195,7 +207,7 @@ int main( int   argc,
 
   char * tmps;
 
-  tmps = g_win32_get_package_installation_directory(PACKAGE "-" VERSION, NULL);
+  tmps = g_win32_get_package_installation_directory_of_module( NULL );
 #define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE "-" VERSION
   rcdir = (char *) malloc(strlen(tmps) +
 			  strlen(REST_OF_PATH) +

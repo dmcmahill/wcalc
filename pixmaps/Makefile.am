@@ -1,7 +1,7 @@
 ## -*- makefile -*-
 ##
 
-## Copyright (C) 2001, 2002, 2005, 2006, 2008, 2009, 2020 Dan McMahill
+## Copyright (C) 2001, 2002, 2005, 2006, 2008, 2009, 2020, 2021 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -31,8 +31,6 @@ pkgimgdata_DATA= ${PNGS}
 pkgdatadir=	${datadir}/${PACKAGE}-${VERSION}
 pkgdata_DATA=	${EPSS}
 
-EPS2C  = ${AWK} -f $(top_srcdir)/utils/eps2c
-
 TGIF_SRCS=	\
 		air_coil.obj \
 		alert_fig.obj \
@@ -59,8 +57,6 @@ XPMS=	${TGIF_SRCS:.obj=.xpm}
 GIFS=	${TGIF_SRCS:.obj=.gif}
 PNGS=	${TGIF_SRCS:.obj=.png}
 EPSS=	${TGIF_SRCS:.obj=.eps}
-EPSC=	${TGIF_SRCS:.obj=.c}
-OFILES=	${TGIF_SRCS:.obj=.o}
 TGIF_NAMES=	${TGIF_SRCS:.obj=}
 
 CAIRO_C=	$(patsubst %.obj, figure_%.c, ${TGIF_SRCS})
@@ -99,15 +95,12 @@ show-var:
 TGIF=		XENVIRONMENT=$(srcdir)/Xdefaults.tgif @TGIF@
 TGIF_FLAGS=	-print -color
 
-BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${EPSC} ${CAIRO_SRC}
+BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${CAIRO_SRC}
 EXTRA_DIST=	Xdefaults.tgif ${TGIF_SRCS} ${BUILT_SOURCES}
 
 # All the new suffix rules
 
-SUFFIXES = .obj .xpm .xbm .gif .png .eps .c
-
-.eps.c :
-	$(EPS2C) fname=$*_eps $*.eps > $*.c
+SUFFIXES = .obj .xpm .xbm .gif .png .eps
 
 .obj.eps :
 if MISSING_TGIF
@@ -117,6 +110,11 @@ if MISSING_TGIF
 	@echo "          will be ignored."
 else
 	$(TGIF) $(TGIF_FLAGS) -eps $*.obj
+	@echo "Canonicalize $@"
+	mv $*.eps $*.eps.bak
+	sed -e 's/CreationDate:.*/CreationDate: today/g' \
+		-e 's/Tgif-[0-9.]*/Tgif/g' $*.eps.bak > $*.eps
+	rm $*.eps.bak
 endif
 
 .obj.gif :

@@ -6,4 +6,9 @@ Makefile.in
 Makefile
 BUGS.txt
 COPYING.txt
-wcalc_icon.ico
+license_include.nsh
+lic_inst/
+run_install.bat
+test_wcalc.bat
+wcalc.nsi
+wcalc_inst/

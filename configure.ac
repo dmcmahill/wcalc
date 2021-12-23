@@ -33,20 +33,16 @@ dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
 AC_DEFINE(DEVEL_VERSION, 1, [Define if this is a development snapshot and we want to warn users about that])
-
 AC_DEFINE([WCALC_BUG_URL], ["https://github.com/dmcmahill/wcalc/issues"], [URL of bug tracker])
 AC_DEFINE([WCALC_GIT_URL], ["https://github.com/dmcmahill/wcalc"], [URL of git repo])
+
+m4_pattern_allow(PKG_CONFIG_MIN_VERSION)
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl determine host type
 AC_CANONICAL_HOST
 AC_MSG_CHECKING(for windows)
 case $host in
-	*-*-cygwin* )
-		WIN32=yes
-		CFLAGS="$CFLAGS ${CYGWIN_CFLAGS}"
-		CPPFLAGS="$CPPFLAGS ${CYGWIN_CPPFLAGS}"
-		;;
-
 	*-*-mingw* )
 		WIN32=yes
 		CFLAGS="$CFLAGS ${MINGW_CFLAGS:--mms-bitfields -mwindows}"
@@ -262,6 +258,7 @@ AC_MSG_RESULT([yes])
 wc_libwcalc_yesno=yes
 ])
 
+PKG_PROG_PKG_CONFIG()
 
 if test "X$wc_libwcalc_yesno" = "Xno" ; then
 PKG_CHECK_MODULES(WCALC, wcalc = ${VERSION}, 

@@ -15,3 +15,6 @@ resistivity.c
 runwcalc
 units.c
 *.pdf
+
+# this is copied from ../win32 during a win32 build
+wcalc_icon.ico

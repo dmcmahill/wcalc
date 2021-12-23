@@ -142,7 +142,7 @@ documentation.
 To build and install everything use:
 
 ./configure \
-        --enable-gtk2 \
+        --enable-gtk \
         --enable-htdocs \
         --enable-stdio \
         --with-matlab \
@@ -151,8 +151,6 @@ To build and install everything use:
         --enable-cgi \
         --enable-cgistatic 
 
-to use gtk1 instead of gtk2, use --enable-gtk1 instead of
---enable-gtk1.
 
 Users such as the debian packaging system who do not wish to
 have the runtime library path added to the binaries may use
