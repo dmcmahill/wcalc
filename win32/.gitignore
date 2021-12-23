@@ -6,5 +6,4 @@ Makefile.in
 Makefile
 BUGS.txt
 COPYING.txt
-wcalc_icon.ico
 license_include.nsh
