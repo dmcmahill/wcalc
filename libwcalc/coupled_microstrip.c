@@ -19,7 +19,7 @@
  */
 
 /* #define DEBUG_SYN  */ /* debug coupled_microstrip_syn()  */
-/* #define DEBUG_CALC */ /* debug coupled_microstrip_calc() */
+/* #define DEBUG_CALC */
 
 #include <math.h>
 #include <stdio.h>
@@ -303,17 +303,21 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
     printf("%s():  deltau   = %g \n", __FUNCTION__, deltau);
     printf("%s():  deltau_e = %g \n", __FUNCTION__, deltau_e);
     printf("%s():  deltau_o = %g \n", __FUNCTION__, deltau_o);
-    printf("%s():  t/h    = %g \n", __FUNCTIONS__, T);
+    printf("%s():  t/h    = %g \n", __FUNCTION__, T);
 #endif
   }
   else {
     deltau = 0.0;
+    deltat = 0.0;
     deltau_e = 0.0;
     deltau_o = 0.0;
   }
 
   u_e = u + deltau_e;
   u_o = u + deltau_o;
+#ifdef DEBUG_CALC
+  printf("%s():  deltau_e/u = %g %%, deltau_o/u = %g %%, deltat/u = %g %%\n", __FUNCTION__, 100.0*deltau_e/u, 100.0*deltau_o/u, 100.0*deltat/u);
+#endif 
 
   /*
    * static even mode relative permittivity (f=0)
@@ -832,15 +836,27 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
 	  tmp_line = *line;
 	  tmp_line.subs = microstrip_subs_new();
 	  *(tmp_line.subs) = *(line->subs);
-	   
+
+	  /* impedance with er = 1 */
+#ifdef DEBUG_CALC
+	  printf("%s():  Wheelers incremental inductance rule step 1, er=1.\n", __FUNCTION__);
+#endif
 	  tmp_line.subs->er = 1.0;
 	  rslt = coupled_microstrip_calc_int(&tmp_line, f, 0);
 	  z1e = tmp_line.z0e;
 	  z1o = tmp_line.z0o;
 	  
+	  /* impedance with er = 1 modify dimensions via skin depth */ 
+#ifdef DEBUG_CALC
+	  printf("%s():  Wheelers incremental inductance rule step 2, er=1, modified dimensions.\n", __FUNCTION__);
+#endif
 	  tmp_line.w = line->w - depth;
 	  tmp_line.s = line->s + depth;
 	  tmp_line.subs->tmet = line->subs->tmet - depth;
+	  /* we should never let tmet become negative! */
+	  if( tmp_line.subs->tmet < 0.0 ) {
+              tmp_line.subs->tmet = 0.0;
+	  }
 	  tmp_line.subs->h = line->subs->h + depth;
 	  rslt = coupled_microstrip_calc_int(&tmp_line, f, 0);
 	  z2e = tmp_line.z0e;
