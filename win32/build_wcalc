@@ -2,7 +2,7 @@
 #
 
 
-# BUGS:
+# NOTES
 #   - use
 #          cygcheck -c | grep mingw
 #     to  get a list of mingw packages installed.  See about
@@ -11,8 +11,6 @@
 #     our installer.  Maybe also use cygcheck to get versions
 #     and see if we know what license those are under.
 #
-#  -  we don't have to do all the downloading of stuff here!
-#     cygwin has the packages we need already.
 
 
 # error out on failed commands whose return code wasn't explicitly
@@ -424,19 +422,14 @@ PKG_CONFIG_PATH  =  ${PKG_CONFIG_PATH}
 EOF
 
 if test "$do_distcheck" = "yes" ; then
-	DISTCHECK_CONFIGURE_FLAGS="ac_cv_func_gdImageGif=yes ac_cv_func_gdImageJpeg=yes ac_cv_func_gdImagePng=yes"
 	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --disable-dependency-tracking"
 	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --disable-nls"
 	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} --host ${HOST}"
 	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} CPPFLAGS=-DWIN32_LEAN_AND_MEAN"
 	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} WIN32=yes"
-	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} PCB_MAGIC_TEST_SKIP=yes"
-	DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_CONFIGURE_FLAGS} GERBV=/bin/true"
 	export DISTCHECK_CONFIGURE_FLAGS
 	WIN32=yes
 	export WIN32
-	PCB_MAGIC_TEST_SKIP=yes
-	export PCB_MAGIC_TEST_SKIP
 	echo "Distcheck for cygwin"
 	cd ${top_srcdir}
 	( ( ( \
@@ -467,9 +460,6 @@ if test "$do_config" = "yes" ; then
 		--pdfdir=${wcalc_inst}/doc/pdf \
 		--htmldir=${wcalc_inst}/doc/html \
 		--datadir=${wcalc_inst}/share \
-		ac_cv_func_gdImageGif="yes" \
-		ac_cv_func_gdImageJpeg="yes" \
-		ac_cv_func_gdImagePng="yes" \
 		--disable-dependency-tracking \
 		--disable-nls \
 		--host ${HOST} \
@@ -505,7 +495,7 @@ check_stop clean
 if test "$do_build" = "yes" ; then
 	cd ${top_srcdir}
 	echo "Building for cygwin"
-	( ( ( ${MAKE} $tex_flag PCB="../src/wcalctest.bat"  2>&1 ; echo $? >&4) | tee m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+	( ( ( ${MAKE} $tex_flag 2>&1 ; echo $? >&4) | tee m.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
 	if test $? -ne 0 ; then
 		echo "**** ERROR **** Build failed. See log in m.log"
 		exit 1
@@ -516,7 +506,7 @@ check_stop build
 if test "$do_check" = "yes" ; then
 	cd ${top_srcdir}
 	echo "Building for cygwin"
-	( ( ( ${MAKE} check PCB="../../src/wcalctest.bat"  2>&1 ; echo $? >&4) | tee check.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
+	( ( ( ${MAKE} check 2>&1 ; echo $? >&4) | tee check.log 1>&3) 4>&1 | (read a ; exit $a) ) 3>&1
 	if test $? -ne 0 ; then
 		echo "**** ERROR **** Build failed. See log in check.log"
 		exit 1
@@ -657,9 +647,9 @@ EOF
 	cat << EOF
 
 Creating DOS batch file wrapper for the installer.
-If you have just built this under cygwin on Vista,
+If you have just built this under cygwin,
 you will need to either run the installer from
-the Vista start menu, Windows explorer or directly from
+the start menu, Windows explorer or directly from
 the cygwin shell with
 
 ./${bat}
