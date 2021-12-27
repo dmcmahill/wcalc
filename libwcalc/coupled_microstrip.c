@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2007, 2009 Dan McMahill
+ * Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2007, 2009, 2021 Dan McMahill
  * All rights reserved.
  *
  * 
@@ -116,6 +115,11 @@ static double z0_HandJ(double u);
  *  The dielectric losses use the standard dielectric fill factors
  *  calculated from the even and odd mode effective dielectric constants.
  *
+ *  Metal thickness correction from
+ *    Rolf Jansen, "High-Speed Computation of Single and Coupled Microstrip
+ *    Parameters Including Dispersion, High Order Modes, Loss and Finite
+ *    Strip Thickness," IEEE Transactions on Microwave Theory and Techniques,
+ *    Vol. MTT-26, No. 2, February 1978 pp. 75-82.
  *
  *  I must acknowledge the transcalc project,
  *  http://transcalc.sourceforge.net
@@ -135,7 +139,8 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   /* substrate parameters */
   double h, er, rho, tand, t, rough;
 
-  double u,g,deltau,deltau1,deltaur,T,V,EFE0,EF,AO,BO,CO,DO;
+  double u, u_e, u_o, g, deltaw, deltau, deltat, deltau_e, deltau_o;
+  double T,V,EFE0,EF,AO,BO,CO,DO;
   double EFO0,fn;
   double P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12,P13,P14,P15;
   double FEF,FOF,EFEF,EFOF,ZL0;
@@ -246,35 +251,76 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   }
   
   if(t>0.0) {
+    /*
+     * Kirschning and Jansen (MTT) do not give a metal thickness correction but
+     * suggest the approach of Jansen and caution that the Hammersted and Jensen
+     * approach exaggerates the effect of strip thickness.  Unfortunately the
+     * references are not explicit about when to include the modified widths and
+     * when to not use the modified widths.  transcalc appears to just use the modified
+     * values for the static effective dielectric constant and static characteristic
+     * impedance calculations and does not use the modified values in the dispersion
+     * calculations.  Until I have a better way, take the same approach.
+     */
+
     /* find normalized metal thickness */
     T = t/h;
-    
-    /* (6) from Hammerstad and Jensen */
-    deltau1 = (T/M_PI)*log(1.0 + 4.0*exp(1.0)/(T*pow(coth(sqrt(6.517*u)),2.0)));
-    
-    /* (7) from Hammerstad and Jensen */
-    deltaur = 0.5*(1.0 + 1.0/cosh(sqrt(er-1.0)))*deltau1;
-    
-    deltau = deltaur;
-    
+
+    /*
+     * Jansen (8) (reported as coming from Hammerstad and Bekkadal)
+     */
+    if(u > 1.0 / (2.0 * M_PI)) {
+        if(t > h/(4.0 * M_PI)) {
+            alert(_("The metal thickness is greater than the range where the equations maintain accuracy.\n"
+                    "For best accuracy, Tmet/H (%g) should be < 1/(4*pi) = %g.\n"), T, 0.25/M_PI);
+	}
+	deltaw = t*(1.0 + log(2.0*h/t))/M_PI;
+    } else {
+        if(t > w/2.0) {
+            alert(_("The metal thickness is greater than the range where the equations maintain accuracy.\n"
+                    "For best accuracy, Tmet/W (%g) should be < 1/2.\n"), t/w);
+	}
+	deltaw = t*(1.0 + log(4.0*M_PI*w/t))/M_PI;
+    }
+    deltau = deltaw / h;
+
+    /*
+     * Jansen (9)
+     * has delta_t = t*d*eps2 / ( s * eps1 )
+     * and in that paper, t = metal thickness,
+     * the gap is 2*s and d is the substrate thickness.  eps2 = the air
+     * dielectric above the line and eps1 is the substrate dielectric constant.
+     * Be careful that in their equation "s" is *half* of the space between
+     * the traces.  In our notation we will normalize to use deltau instead
+     * of deltaw and so our deltat has been normalized.
+     */
+    deltat = t /(0.5*s*er);
+
+    /* Jansen (9) */
+    deltau_e = deltau * (1.0 - 0.5 * exp(-0.69 * deltau / deltat));
+    deltau_o = deltau_e + deltat;
 #ifdef DEBUG_CALC
-    printf("coupled_microstrip.c: coupled_microstrip_calc():  deltau1 = %g \n",deltau1);
-    printf("                                                  deltaur = %g \n",deltaur);
-    printf("                                                  t/h     = %g \n",T);
+    printf("%s():  deltat   = %g \n", __FUNCTION__, deltat);
+    printf("%s():  deltau   = %g \n", __FUNCTION__, deltau);
+    printf("%s():  deltau_e = %g \n", __FUNCTION__, deltau_e);
+    printf("%s():  deltau_o = %g \n", __FUNCTION__, deltau_o);
+    printf("%s():  t/h    = %g \n", __FUNCTIONS__, T);
 #endif
   }
   else {
     deltau = 0.0;
-    deltau1 = 0.0;
-    deltaur = 0.0;
+    deltau_e = 0.0;
+    deltau_o = 0.0;
   }
+
+  u_e = u + deltau_e;
+  u_o = u + deltau_o;
 
   /*
    * static even mode relative permittivity (f=0)
    * (3) from Kirschning and Jansen (MTT).  Accurate to 0.7 % over
    * "accurate" range
    */
-  V = u*(20.0 + pow(g,2.0))/(10.0 + pow(g,2.0)) + g*exp(-g);
+  V = u_e*(20.0 + pow(g,2.0))/(10.0 + pow(g,2.0)) + g*exp(-g);
   /*
    * note:  The equations listed in (3) in Kirschning and Jansen (MTT)
    * are the same as in Hammerstad and Jensen but with u in H&J
@@ -284,8 +330,9 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
 
 
   /*
-   * static single strip, T=0, relative permittivity (f=0), width=w
-   * This is from Hammerstad and Jensen.  
+   * static (f=0) single strip, T=0, relative permittivity, width=w
+   * This is from Hammerstad and Jensen.  See text right after Kirschning
+   * and Jansen (4).
    */
   EF = ee_HandJ(u,er);
 
@@ -295,10 +342,10 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
    * static odd mode relative permittivity (f=0)
    * This is (4) from Kirschning and Jansen (MTT).  Accurate to 0.5%.
    */
-  AO = 0.7287*(EF - (er+1.0)/2.0)*(1.0 - exp(-0.179*u));
+  AO = 0.7287*(EF - (er+1.0)/2.0)*(1.0 - exp(-0.179*u_o));
   BO = 0.747*er/(0.15 + er);
-  CO = BO - (BO - 0.207) * exp(-0.414*u);
-  DO = 0.593 + 0.694*exp(-0.562*u);
+  CO = BO - (BO - 0.207) * exp(-0.414*u_o);
+  DO = 0.593 + 0.694*exp(-0.562*u_o);
 
   /*
    * Note, this includes the published correction
@@ -384,11 +431,11 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
    * (8) from Kirschning and Jansen (MTT)
    * 0.6% accurate
    */
-  Q1 = 0.8695*(pow(u,0.194));
+  Q1 = 0.8695*(pow(u_e,0.194));
   Q2 = 1.0 + 0.7519*g + 0.189*(pow(g,2.31));
   Q3 = 0.1975 + pow((16.6 + pow((8.4/g),6.0)),-0.387) 
     + log((pow(g,10.0))/(1.0 + pow((g/3.4),10.0)))/241.0;
-  Q4 = (2.0*Q1/Q2)/(exp(-g)*(pow(u,Q3)) + (2.0 - exp(-g))*(pow(u,-Q3)));
+  Q4 = (2.0*Q1/Q2)/(exp(-g)*(pow(u_e,Q3)) + (2.0 - exp(-g))*(pow(u_e,-Q3)));
   z0e0 = ZL0 * sqrt(EF/EFE0) / (1.0 - (ZL0/377.0)*sqrt(EF)*Q4);
 
 
@@ -397,6 +444,7 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
    * (9) from Kirschning and Jansen (MTT)
    * 0.6% accurate
    */
+  Q1 = 0.8695*(pow(u_o,0.194));
   Q5 = 1.794 + 1.14*log(1.0 + 0.638/(g + 0.517*(pow(g,2.43))));
   Q6 = 0.2305 
     + log((pow(g,10.0))/(1.0 + pow((g/5.8),10.0)))/281.3 
@@ -404,7 +452,7 @@ static int coupled_microstrip_calc_int(coupled_microstrip_line *line, double f, 
   Q7 = (10.0 + 190.0*g*g)/(1.0 + 82.3*pow(g,3.0));
   Q8 = exp(-6.5 - 0.95*log(g) - pow((g/0.15),5.0));
   Q9 = log(Q7)*(Q8 + 1.0/16.5);
-  Q10 = (Q2*Q4 - Q5*exp(log(u)*Q6*(pow(u,-Q9))))/Q2;
+  Q10 = (Q2*Q4 - Q5*exp(log(u_o)*Q6*(pow(u_o,-Q9))))/Q2;
   z0o0 = ZL0 * sqrt(EF/EFO0) / (1.0 - (ZL0/377.0)*sqrt(EF)*Q10);
 
 #ifdef DEBUG_CALC
