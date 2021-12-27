@@ -460,9 +460,6 @@ if test "$do_config" = "yes" ; then
 		--pdfdir=${wcalc_inst}/doc/pdf \
 		--htmldir=${wcalc_inst}/doc/html \
 		--datadir=${wcalc_inst}/share \
-		ac_cv_func_gdImageGif="yes" \
-		ac_cv_func_gdImageJpeg="yes" \
-		ac_cv_func_gdImagePng="yes" \
 		--disable-dependency-tracking \
 		--disable-nls \
 		--host ${HOST} \
