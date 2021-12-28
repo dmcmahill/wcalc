@@ -26,11 +26,13 @@ to model here.
 
 ## Linux
 ```
-FreeFem++ -wg -f stripline.edp
+FreeFem++ -f stripline.edp
 ```
 
 ## MacOS
 ```
+FreeFem++ -f stripline.edp
+# or (why CoCoa?) can run
 FreeFem++-CoCoa -wg -f stripline.edp
 ```
 
