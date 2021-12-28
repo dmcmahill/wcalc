@@ -1,0 +1,364 @@
+// FreeFEM coupled_microstrip analysis
+//
+
+/*
+ * Copyright (C) 2021 Dan McMahill
+ * All rights reserved.
+ *
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ */
+
+// The starting point was an example from C Deibele on
+// https://www.freelists.org/post/si-list/coupled_microstrip-and-stripline-FREEFEM-examples
+// There have been numerous changes to use notation more similar to wcalc,
+// and support data files.
+
+// Usage:
+//   # basic example:
+//   FreeFem++ -f coupled_microstrip.edp
+//
+//   # read from a data file
+//   FreeFem++ -f coupled_microstrip.edp -df coupled_microstrip.dat
+//
+
+include "getARGV.idp"
+include "utils.edp"
+
+string df = getARGV("-df", "");
+cout << "df = " << df << endl;
+
+
+// set to true to pause after each plot
+bool debug = false;
+debug = true;
+
+
+// used with the adaptive meshing
+real errorinit = 0.001;
+real error = errorinit;
+
+// width of the coupled_microstrip
+real W = 50;
+
+// space between the lines
+real S = 15.0;
+
+// metal thickness
+real Tmet = 0.7;
+
+// dielectric thickness
+real H = 62;
+
+
+// relative dielectric constant above the coupled_microstrip line
+real eps1 = 1;
+
+// relative dielectric constant of the substrate
+real er = 4.8;
+
+// meshing constant
+int m = 500;
+int mgndTB = m;
+int mgndLR = 50;
+bool useAdaptMesh = false;
+//useAdaptMesh = true;
+
+// define labels for our borders
+int gnd=3, linep=4, linem=5, interface=6;
+
+ofstream logf("coupled_microstrip.txt");
+logf << "* W     S    H       Tmet       Er  :  Keff   Z0" << endl;
+
+// if no data file is given, create one with the default values
+if( df.length == 0) {
+    df = "coupled_microstrip.tmp";
+    ofstream data(df);
+    data << "* W     S     H       Tmet       Er" << endl;
+    data << W << "    " << S << "    " << H << "    " << Tmet << "    " << er << endl;
+}
+ifstream data(df);
+
+cout << "Processing input data from " << df << endl;
+
+while(1) {
+    // Width, Height, Metal Thickness, Dielectric Constant
+    skipcomment(data);
+    if (!data.good()) break;
+
+    data >> W;
+    data >> S;
+    data >> H;
+    data >> Tmet;
+    data >> er;
+
+
+    // this is a trick with free-fem...the conductor must lie 
+    // just a bit above the dielectric interface
+    real hd3 = H + 0.01*Tmet;
+
+    // total height of the problem (enclosure height)
+    real Htot = H*10.0;
+
+
+    // total width of the problem (enclosure width)
+    real Wtot = 2*W + S + 2*10*H;
+
+    // *****************************
+    // Define the boundaries
+    // *****************************
+
+    // border defines a 2D border in parametric coordinates
+
+    // coupled_microstrip height dielectric discontinuity
+    border discon(t=0., Wtot) {x = Wtot-t; y = H; label=interface;}
+ 
+    // outer conductor
+    border ocbot(t=0,Wtot) {x = t; y = 0; label=gnd;}
+    border ocrt1(t=0,H)  {x=Wtot; y=t; label=gnd;}
+    border ocrt2(t=H,Htot)  {x=Wtot; y=t; label=gnd;}
+    border octop(t=0,Wtot) {x=Wtot-t;y=Htot; label=gnd;}
+    border oclt2(t=H,Htot)  {x=0;y=Htot+H-t; label=gnd;}
+    border oclt1(t=0,H)  {x=0;y=H-t; label=gnd;}
+
+ 
+
+    // center conductor -- also clockwise
+    border ccB(t=0, 1) {
+        x = 0.5*Wtot - 0.5*S - W + W*t;
+        y = hd3;
+        label = linep;
+    }
+
+    border ccR(t=0, 1) {
+        x = 0.5*Wtot - 0.5*S;
+        y = hd3 + Tmet*t;
+        label = linep;
+    }
+
+    border ccT(t=0, 1) {
+        x = 0.5*Wtot - 0.5*S - W*t;
+        y = hd3 + Tmet;
+        label = linep;
+    }
+
+    border ccL(t=0, 1) {
+        x = 0.5*Wtot - 0.5*S - W;
+        y = hd3 + Tmet*(1 - t);
+        label = linep;
+    }
+
+    border ccBm(t=0, 1) {
+        x = 0.5*Wtot + 0.5*S + W*t;
+        y = hd3;
+        label = linem;
+    }
+
+    border ccRm(t=0, 1) {
+        x = 0.5*Wtot + 0.5*S + W;
+        y = hd3 + Tmet*t;
+        label = linem;
+    }
+
+    border ccTm(t=0, 1) {
+        x = 0.5*Wtot + 0.5*S + W -  W*t;
+        y = hd3 + Tmet;
+        label = linem;
+    }
+
+    border ccLm(t=0, 1) {
+        x = 0.5*Wtot + 0.5*S;
+        y = hd3 + Tmet*(1 - t);
+        label = linem;
+    }
+
+// *****************************
+// Mesh generation
+// *****************************
+
+// Build's a 2D mesh using border elements
+// 
+mesh Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + ccLm(-m) + ccRm(-m) + ccTm(-m) + ccBm(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
+plot(Th, cmm="Mesh", wait=debug);
+
+
+// *****************************
+// FE-space and FE-function
+// *****************************
+fespace Uh(Th, P1); // piecewise linear polynomials
+fespace Ph(Th,P0);  // constant polynomials
+
+// *****************************
+// Mathematical Formula
+// *****************************
+
+// define the relative dielectric constant
+func epsi = 1. + (eps1-1)*(y>H) + (er-1)*(y<H);
+
+// *****************************
+// Weak Formulation
+// *****************************
+
+// Solve when the dielectric is all free space
+Uh u0, u0c, u0d;
+Uh v0, v0c, v0d;
+
+problem Laplace0c(u0c, v0c)
+    = int2d(Th) (grad(u0c)' * grad(v0c))
+    + on(linep, u0c=1.)
+    + on(linem, u0c=1.)
+    + on(gnd, u0c=0.)
+    ;
+
+problem Laplace0d(u0d, v0d)
+    = int2d(Th) (grad(u0d)' * grad(v0d))
+    + on(linep, u0d=0.5)
+    + on(linem, u0d=-0.5)
+    + on(gnd, u0d=0.)
+    ;
+
+// Adaptmesh loop
+if(useAdaptMesh) {
+    error = errorinit;
+    for (int j = 0; j < 4 ; j++){
+        Laplace0c;
+        Laplace0d;
+        Th = adaptmesh(Th, u0d, err=error);
+        plot(Th, fill=false, cmm="adaptive mesh - free space", wait=debug);
+        error = error/2;
+    }
+}
+Laplace0c;
+Laplace0d;
+plot(u0c, cmm="Even Mode Freespace Electric Potential", wait=debug);
+plot(u0d, cmm="Odd Mode Freespace Electric Potential", wait=debug);
+
+// Solve with the dielectric in place
+Uh u1, u1c, u1d;
+Uh v1, v1c, v1d;
+
+problem Laplace1c(u1c, v1c)
+    = int2d(Th) (epsi * grad(u1c)' * grad(v1c))
+    + on(linep, u1c=1.)
+    + on(linem, u1c=1.)
+    + on(gnd, u1c=0.)
+    ;
+
+problem Laplace1d(u1d, v1d)
+    = int2d(Th) (epsi * grad(u1d)' * grad(v1d))
+    + on(linep, u1d=0.5)
+    + on(linem, u1d=-0.5)
+    + on(gnd, u1d=0.)
+    ;
+
+// Adaptmesh loop
+if(useAdaptMesh) {
+    error = errorinit;
+    for (int j = 0; j < 4 ; j++){
+        Laplace1c;
+        Laplace1d;
+        Th = adaptmesh(Th, u1d, err=error);
+        plot(Th, fill=false, cmm="adaptive mesh - with dielectric", wait=debug);
+        error = error/2;
+    }
+}
+Laplace1c;
+Laplace1d;
+plot(u1c, cmm="Even Mode Electric Potential with Dielectric(s) in Place", wait=debug);
+plot(u1d, cmm="Odd Mode Electric Potential with Dielectric(s) in Place", wait=debug);
+
+if(debug) {
+    Ph Exc = dx(u1c);   // Vx =du/dx is a P0 function
+    Ph Eyc = dy(u1c);   // Vy =du/dy is a P0 function
+    Ph Exd = dx(u1d);
+    Ph Eyd = dy(u1d);
+
+    plot([Exc,Eyc], cmm="Even Mode Electric field vectors", wait=debug) ;
+    plot([Exd,Eyd], cmm="Odd Mode Electric field vectors", wait=debug) ;
+
+    // not sure what I'm doing wrong, charge should be proportional
+    // to capacitance and also the ratio should scale with with
+    // effective dielectric constant.  However, I get a ratio
+    // that varies a lot with meshing.  Maybe it is simply an accuracy
+    // issue?  Is the energy integration more accurate being a volume
+    // measurement instead of just the boundary?
+    //real charge0 =  int1d(Th,line)( grad(u0)'*[N.x,N.y]) ;
+    //real charge1 =  int1d(Th,line)( epsi*grad(u1)'*[N.x,N.y]) ;
+    //cout << "charge0 = " <<  charge0 << endl;
+    //cout << "charge1 = " <<  charge1 << endl;
+    //cout << "charge1 / charge0 " << charge1/charge0 << endl;
+}
+
+
+// find total stored energy in the free space case
+real energy0c = eps0 * energy2d(Th, 1, u0c);
+real energy0d = eps0 * energy2d(Th, 1, u0d);
+
+// find total stored energy in the case with the dielectric in place
+real energy1c = eps0 * energy2d(Th, epsi, u1c);
+real energy1d = eps0 * energy2d(Th, epsi, u1d);
+
+cout << "common mode energy in free space         = " << energy0c << endl;
+cout << "common mode energy with dielectric       = " << energy1c << endl;
+
+cout << "differential mode energy in free space   = " << energy0d << endl;
+cout << "differential mode energy with dielectric = " << energy1d << endl;
+
+// energy = 0.5*C*(V*V) and since we have applied a unit potential
+// energy is proportional to capacitance and so the ratio of energies
+// gives the effective relative dielectric constant
+real keffEven = energy1c/energy0c;
+real keffOdd = energy1d/energy0d;
+
+// z0 = sqrt(L/C); velocity = 1/sqrt(LC)
+// L = 1/(velocity*velocity*C)
+// z0 = sqrt(1/(velocity*velocity*C*C)) = 1/(velocity*C)
+// velocity = c0/sqrt(keff)
+// energy = 0.5*C*V*V but V=1 so C = 2*energy
+//
+real z0even = 2.0*sqrt(keffEven)/(c0 * energy1c);
+real z0odd = 0.5*sqrt(keffOdd)/(c0 * energy1d);
+real z0 = sqrt(z0even*z0odd);
+real k = (z0even - z0odd)/(z0even + z0odd);
+real kdb = 20.0*log10(k);
+
+real z0evenFree = 2.0/(c0 * energy0c);
+real z0oddFree = 0.5/(c0 * energy0d);
+
+cout << "even mode effective dielectric constant = " << keffEven << endl;
+cout << "odd mode effective dielectric constant  = " << keffOdd << endl;
+cout << "even mode characteristic impedance      = " << z0even << " Ohms" << endl;
+cout << "odd mode characteristic impedance       = " << z0odd << " Ohms" << endl;
+cout << "characteristic impedance                = " << z0 << " Ohms" << endl;
+cout << "coupling factor                         = " << k << endl;
+cout << "coupling factor  (dB)                   = " << kdb << endl;
+
+
+cout << "Lightspeed  = " << c0 << " m/s" << endl;
+cout << "mu0         = " << mu0 << " H/m" << endl;
+cout << "eps0        = " << eps0 << " F/m" << endl;
+cout << "freespace even mode Z0 = " << z0evenFree << " Ohms" << endl;
+cout << "freespace odd mode Z0 = " << z0oddFree << " Ohms" << endl;
+cout << "W           = " << W << endl;
+cout << "S           = " << S << endl;
+cout << "H           = " << H << endl;
+cout << "Tmet        = " << Tmet << endl;
+cout << "Wtot        = " << Wtot << endl;
+cout << "er          = " << er << endl;
+
+// Width, Height, Metal Thickness, Dielectric Constant, : , effective dielectric constant, z0
+logf << W << " " << S << " " << H << " " << Tmet << " " << er << " : " << keffEven << " " << keffOdd << " " << z0even << " " << z0odd << endl;
+}
+

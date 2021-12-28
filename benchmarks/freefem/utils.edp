@@ -63,6 +63,8 @@ macro M2INCH(x)  (x/25.4e-3) //
 
 macro grad(u) [dx(u), dy(u)] //
 
+macro energy2d(Th, eps, phi) (int2d(Th) ( (eps)*(dx(phi))*(dx(phi)) + (eps)*(dy(phi))*(dy(phi))) ) //
+
 // *****************************
 // I/O utility functions
 // *****************************
