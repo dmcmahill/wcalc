@@ -1,0 +1,55 @@
+* width height metal_thickness dielectric_constant
+
+* Basic microstrip calculation
+* W     H       Tmet       Er
+3.000   3.000   0.03556    4.800
+
+*************** Table 6.5 From Rosloniec ************
+*
+* W     H     Tmet   Er
+
+* Z0 = 30 Ohms, Keff = 2.228
+5.678   1.0   0.03   2.55
+
+* Z0 = 30 Ohms, Keff = 2.299
+5.558   1.0   0.03   2.55
+
+* Z0 = 30 Ohms, Keff = 7.042
+2.395   1.0   0.03   9.60
+
+* Z0 = 30 Ohms, Keff = 7.772
+2.201   1.0   0.03   9.60
+
+* Z0 = 50 Ohms, Keff = 2.122
+2.762   1.0   0.03   2.55
+
+* Z0 = 50 Ohms, Keff = 2.177
+2.705   1.0   0.03   2.55
+
+* Z0 = 50 Ohms, Keff = 6.448
+0.961   1.0   0.03   9.60
+
+* Z0 = 50 Ohms, Keff = 6.972
+0.877   1.0   0.03   9.60
+
+* Z0 = 75 Ohms, Keff = 2.033
+1.379   1.0   0.03   2.55
+
+* Z0 = 75 Ohms, Keff = 2.073
+1.352   1.0   0.03   2.55
+
+* Z0 = 75 Ohms, Keff = 6.067
+0.339   1.0   0.03   9.60
+
+* Z0 = 75 Ohms, Keff = 6.431
+0.307   1.0   0.03   9.60
+
+** From LineCalc
+* w=0.6mm, L=100mm, H=0.6mm, Tmet=0.025mm, rough=25.4e-6mm
+* Line Calc gives
+* Z0=48.08720336054 E_EFF=305.9271827158
+* K_EFF=6.490417898558 A_DB=0.621663265207 Skin depth=0.002485570190
+
+* W     H       Tmet       Er
+0.600   0.600   0.025      9.90
+

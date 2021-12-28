@@ -1,19 +1,50 @@
 // FreeFEM microstrip analysis
 //
+
+/*
+ * Copyright (C) 2021 Dan McMahill
+ * All rights reserved.
+ *
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ */
+
 // The starting point was an example from C Deibele on
 // https://www.freelists.org/post/si-list/microstrip-and-stripline-FREEFEM-examples
-// It appears that the syntax for FreeFEM must have changed so this file has been
-// modified to work with FreeFEM-4.10 with some notation changed to be consistent
-// with wcalc.
-//
-// Note that in microstrip a pure TEM mode is not possible so this analysis
-// ignores dispersion
+// There have been numerous changes to use notation more similar to wcalc,
+// and support data files.
 
+// Usage:
+//   # basic example:
+//   FreeFem++ -f microstrip.edp
+//
+//   # read from a data file
+//   FreeFem++ -f microstrip.edp -df microstrip.dat
+//
+
+include "getARGV.idp"
 include "utils.edp"
+
+string df = getARGV("-df", "");
+cout << "df = " << df << endl;
+
 
 // set to true to pause after each plot
 bool debug = false;
 //debug = true;
+
 
 // used with the adaptive meshing
 real errorinit = 0.001;
@@ -28,9 +59,6 @@ real Tmet = 0.7;
 // dielectric thickness
 real H = 62;
 
-// this is a trick with free-fem...the conductor must lie 
-// just a bit above the dielectric interface
-real hd3 = H + 0.01;
 
 // relative dielectric constant above the microstrip line
 real eps1 = 1;
@@ -41,31 +69,60 @@ real er = 4.8;
 // meshing constant
 int m = 200;
 int mgndTB = m;
-int mgndLR = 20;
+int mgndLR = 50;
 bool useAdaptMesh = false;
 //useAdaptMesh = true;
-
-// total height of the problem (enclosure height)
-real Htot = H*20/er;
-
-
-// total width of the problem (enclosure width)
-real Wtot = W + 2*10*H;
 
 // define labels for our borders
 int gnd=3, line=4, interface=5;
 
-// *****************************
-// Define the boundaries
-// *****************************
+ofstream logf("microstrip.txt");
+logf << "* W     H       Tmet       Er  :  Keff   Z0" << endl;
 
-// border defines a 2D border in parametric coordinates
+// if no data file is given, create one with the default values
+if( df.length == 0) {
+    df = "microstrip.tmp";
+    ofstream data(df);
+    data << "* W     H       Tmet       Er" << endl;
+    data << W << " " << H << " " << Tmet << " " << er << endl;
+}
+ifstream data(df);
 
-// microstrip height dielectric discontinuity
-border discon(t=0., Wtot) {x = Wtot-t; y = H; label=interface;}
+cout << "Processing input data from " << df << endl;
+
+while(1) {
+    // Width, Height, Metal Thickness, Dielectric Constant
+    skipcomment(data);
+    if (!data.good()) break;
+
+    data >> W;
+    data >> H;
+    data >> Tmet;
+    data >> er;
+
+
+    // this is a trick with free-fem...the conductor must lie 
+    // just a bit above the dielectric interface
+    real hd3 = H + 0.01;
+
+    // total height of the problem (enclosure height)
+    real Htot = H*10.0;
+
+
+    // total width of the problem (enclosure width)
+    real Wtot = W + 2*10*H;
+
+    // *****************************
+    // Define the boundaries
+    // *****************************
+
+    // border defines a 2D border in parametric coordinates
+
+    // microstrip height dielectric discontinuity
+    border discon(t=0., Wtot) {x = Wtot-t; y = H; label=interface;}
  
-// outer conductor
-border ocbot(t=0,Wtot) {x = t; y = 0; label=gnd;}
+    // outer conductor
+    border ocbot(t=0,Wtot) {x = t; y = 0; label=gnd;}
 border ocrt1(t=0,H)  {x=Wtot; y=t; label=gnd;}
 border ocrt2(t=H,Htot)  {x=Wtot; y=t; label=gnd;}
 border octop(t=0,Wtot) {x=Wtot-t;y=Htot; label=gnd;}
@@ -244,7 +301,7 @@ cout << "Tmet        = " << Tmet << endl;
 cout << "Wtot        = " << Wtot << endl;
 cout << "er          = " << er << endl;
 
-ofstream logf("microstrip.txt");
 // Width, Height, Metal Thickness, Dielectric Constant, : , effective dielectric constant, z0
 logf << W << " " << H << " " << Tmet << " " << er << " : " << keff << " " << z0 << endl;
+}
 

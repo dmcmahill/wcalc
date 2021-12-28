@@ -63,3 +63,35 @@ macro M2INCH(x)  (x/25.4e-3) //
 
 macro grad(u) [dx(u), dy(u)] //
 
+// *****************************
+// I/O utility functions
+// *****************************
+
+//Function to skip comment starting with * in a file
+func ifstream skipcomment(ifstream &ff){
+    while(1) {
+        // store file position
+        int where = ff.tellg();
+
+        string comment;
+
+        // this reads the next string but it strips leading whitespace
+        // which helps us!
+        try {
+            ff >> comment;
+        }
+        catch(...) { cout << "end of file" << endl; }
+
+        if (!ff.good()) break;
+
+        if (comment(0:0) == "*"){
+            getline(ff, comment);
+            cout << " -- *" << comment << endl;
+        } else {
+            ff.seekg(where); //restore file position
+            break;
+        }
+    }
+    return ff;
+}
+
