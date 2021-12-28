@@ -14,8 +14,12 @@
 
 include "utils.edp"
 
+// set to true to pause after each plot
+bool debug = false;
+//debug = true;
+
 // used with the adaptive meshing
-real errorinit = 0.1;
+real errorinit = 0.01;
 real error = errorinit;
 
 
@@ -41,7 +45,8 @@ real er = 4.8;
 int m = 70;
 int mgndTB = 3*m;
 int mgndLR = 20;
-int useAdaptMesh = 0;
+bool useAdaptMesh = false;
+useAdaptMesh = true;
 
 // min/max/count for sweeping metal thickness
 real TmetMin = 0.1;
@@ -55,8 +60,11 @@ int numTmet = 10;
 // this is far enough away to avoid causing issues but not so far as to make
 // it take a long long time to simulate.
 //
-// For this we are picking 5x the substrate thickness away on each side
-real Wtot = W + 2.0 * 5.0 * H;
+// For this we are picking 10x the substrate thickness away on each side
+real Wtot = W + 2.0 * 10.0 * H;
+
+// define labels for our borders
+int gnd=3, line=4;
 
 // output data file
 ofstream logf("stripline.txt");
@@ -75,42 +83,50 @@ for (int i = 0; i < numTmet ; i=i+1) {
     border occB(t=0, 1) {
         x = Wtot*t;
         y = 0;
+        label = gnd;
     }
 
     border occR(t=0, 1) {
         x = Wtot;
         y = H*t;
+        label = gnd;
     }
 
     border occT(t=0, 1) {
         x = Wtot*(1-t);
         y = H;
+        label = gnd;
     }
 
     border occL(t=0, 1) {
         x = 0;
         y = H*(1 - t);
+        label = gnd;
     }
  
     // center conductor -- also clockwise
     border ccB(t=0, 1) {
         x = 0.5*Wtot - 0.5*W + W*t;
         y = hd;
+        label = line;
     }
 
     border ccR(t=0, 1) {
         x = 0.5*Wtot + 0.5*W;
         y = hd + Tmet*t;
+        label = line;
     }
 
     border ccT(t=0, 1) {
         x = 0.5*Wtot + 0.5*W - W*t;
         y = hd + Tmet;
+        label = line;
     }
 
     border ccL(t=0, 1) {
         x = 0.5*Wtot - 0.5*W;
         y = hd + Tmet*(1 - t);
+        label = line;
     }
 
     // *****************************
@@ -120,7 +136,7 @@ for (int i = 0; i < numTmet ; i=i+1) {
     mesh Th;
     // a minus sign in the border argument defines the direction.
     Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + occB(mgndTB) + occR(mgndLR) + occT(mgndTB) + occL(mgndLR));
-    plot(Th, fill=false);
+    plot(Th, fill=false, wait=debug);
 
     // *****************************
     // FE-space and FE-function
@@ -140,17 +156,17 @@ for (int i = 0; i < numTmet ; i=i+1) {
 
     problem Laplace(u, v)
         = int2d(Th) (grad(u)' * grad(v))
-        + on(occL, occR, occT, occB, u=0.)
-        + on(ccL, ccR, ccT, ccB, u=1.)
+        + on(gnd, u=0.)
+        + on(line, u=1.)
         ;
 
     // Adaptmesh loop
-    if(useAdaptMesh == 1) {
+    if(useAdaptMesh) {
         error = errorinit;
         for (int j = 0; j < 4 ; j++){
             Laplace;
             Th = adaptmesh(Th, u, err=error);
-            plot(Th, fill=false);
+            plot(Th, fill=false, wait=debug);
             error = error/2;
         }
     }
