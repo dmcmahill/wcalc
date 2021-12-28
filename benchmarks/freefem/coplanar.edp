@@ -5,7 +5,7 @@
 include "utils.edp"
 
 // used with the adaptive meshing
-real errorinit = 0.1;
+real errorinit = 0.01;
 real error = errorinit;
 
 // used to avoid placing the conductor boundary directly at the
@@ -42,6 +42,9 @@ int m = 500;            // meshing constant
 real Wtot = 700;        // total width of the problem (enclosure width)
 real Htot = 300;        // total height of the problem (enclosure height)
 
+// define labels for our borders
+int gnd=3, line=4, interface=5;
+
 // *****************************
 // Define the boundaries
 // *****************************
@@ -49,24 +52,24 @@ real Htot = 300;        // total height of the problem (enclosure height)
 // border defines a 2D border in parametric coordinates
 
 // dielectric discontinuity
-border discon(t=0., Wtot) {x = Wtot-t; y = H;}
+border discon(t=0., Wtot) {x = Wtot-t; y = H; label = interface;}
  
 // Bottom side ground and also the ground that surrounds
 // the problem
 
 // Bottom side ground
-border ocbot(t=0,Wtot) {x = t; y = 0;}
+border ocbot(t=0,Wtot) {x = t; y = 0; label = gnd;}
 
 // Enclosure right side
-border ocrt1(t=0,H)  {x=Wtot; y=t;}
-border ocrt2(t=H,Htot)  {x=Wtot; y=t;}
+border ocrt1(t=0,H)  {x=Wtot; y=t; label = gnd;}
+border ocrt2(t=H,Htot)  {x=Wtot; y=t; label = gnd;}
 
 // Enclosure top side
-border octop(t=0,Wtot) {x=Wtot-t;y=Htot;}
+border octop(t=0,Wtot) {x=Wtot-t;y=Htot; label = gnd;}
 
 // Enclosure left side
-border oclt2(t=H, Htot)  {x=0; y=Htot + H - t;}
-border oclt1(t=0, H)  {x=0; y=H-t;}
+border oclt2(t=H, Htot)  {x=0; y=Htot + H - t; label = gnd;}
+border oclt1(t=0, H)  {x=0; y=H-t; label = gnd;}
 
 // left coplanar ground
 real cpgwidth = (Wtot - W - 2*S) / 2.0 - delta;
@@ -85,6 +88,7 @@ border cpg1(t=0, 2*cpgwidth + 2*Tmet) {
         x = delta;
         y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
     }
+ label = gnd;
 }
 
 real ofs = 0.5*Wtot + 0.5*W + S - delta;
@@ -103,6 +107,7 @@ border cpg2(t=0, 2*cpgwidth + 2*Tmet) {
         x = ofs + delta;
         y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
     }
+ label = gnd;
 }
  
 // center conductor
@@ -120,6 +125,7 @@ border cc(t=0, 2*W+2*Tmet) {
         x = 0.5*Wtot-0.5*W;    
         y = 2*W+hd3+2*Tmet-t;
     }
+ label = line;
 }
 
 // *****************************
@@ -154,8 +160,8 @@ Uh v0;
 
 problem Laplace0(u0, v0)
     = int2d(Th) (grad(u0)' * grad(v0))
-    + on(cc, u0=1.)
-    + on(cpg1, cpg2, ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u0=0.)
+    + on(line, u0=1.)
+    + on(gnd, u0=0.)
     ;
 
 Laplace0;
@@ -166,8 +172,8 @@ Uh v1;
 
 problem Laplace1(u1, v1)
     = int2d(Th) (epsi*grad(u1)' * grad(v1))
-    + on(cc, u1=1.)
-    + on(cpg1, cpg2, ocbot, ocrt1, ocrt2, octop, oclt1, oclt2, u1=0.)
+    + on(line, u1=1.)
+    + on(gnd, u1=0.)
     ;
 
 Laplace1;
