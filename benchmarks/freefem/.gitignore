@@ -2,3 +2,7 @@
 coplanar.txt
 microstrip.txt
 stripline.txt
+
+# temp files
+*.tmp
+
