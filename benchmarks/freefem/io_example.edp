@@ -1,0 +1,67 @@
+
+// example of writing to an output file
+//  question:  Is there an fclose or other similar?
+// For now, just enclose in {} because variables exist until
+// their current block ends so the stream will be closed automatically.
+{
+    ofstream logf("output.log");
+    logf << "* This is an output log" << endl;
+    logf << "* This is a comment" << endl;
+    logf << " * This is also a comment" << endl;
+    logf << "12.3 4.5   678.9" << endl;
+    logf << "2.1   3  65.4" << endl;
+    logf << "* A blank line follows" << endl << endl;
+    logf << "* More data next" << endl;
+    logf << "1 2 3" << endl;
+    //logf.close();
+}
+
+//Function to skip comment starting with * in a file
+func ifstream skipcomment(ifstream &ff){
+    while(1) {
+        // store file position
+        int where = ff.tellg();
+
+        string comment;
+
+        // this reads the next string but it strips leading whitespace
+        // which helps us!
+        ff >> comment;
+
+        if (!ff.good()) break;
+
+        if (comment(0:0) == "*"){
+            getline(ff, comment);
+            cout << " -- *" << comment << endl;
+        } else {
+            ff.seekg(where); //restore file position
+            break;
+        }
+    }
+    return ff;
+}
+ 
+
+string s;
+ifstream data("output.log");
+
+
+getline(data, s);
+cout << "With getline() read:  X" << s << "X" << endl << endl;
+cout << "Now with >>" << endl;
+
+while(data.good()) {
+    real x, y, z;
+    skipcomment(data);
+    if (!data.good()) break;
+
+    data >> x;
+    data >> y;
+    data >> z;
+
+    cout << "x = " << x << endl;
+    cout << "y = " << y << endl;
+    cout << "z = " << z << endl;
+    cout << endl << endl;
+}
+
