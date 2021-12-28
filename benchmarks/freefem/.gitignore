@@ -1,0 +1,4 @@
+# output data files from the FreeFEM scripts
+coplanar.txt
+microstrip.txt
+stripline.txt
