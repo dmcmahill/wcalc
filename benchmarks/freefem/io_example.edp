@@ -1,10 +1,23 @@
+include "getARGV.idp"
+real a = getARGV("-a", 1.);
+real b = getARGV("-b", 1.);
+string fnm = getARGV("-fnm", "");
+if( fnm.length == 0) { fnm = "output.log"; }
+
+cout << "Command line:" << endl << endl;
+cout << "    a : " << a << endl;
+cout << "    b : " << b << endl;
+cout << "  fnm : " << fnm << endl;
 
 // example of writing to an output file
 //  question:  Is there an fclose or other similar?
 // For now, just enclose in {} because variables exist until
 // their current block ends so the stream will be closed automatically.
 {
-    ofstream logf("output.log");
+    ofstream logf(fnm);
+    // to append, use:
+    //ofstream logf(fnm, append);
+
     logf << "* This is an output log" << endl;
     logf << "* This is a comment" << endl;
     logf << " * This is also a comment" << endl;
@@ -26,7 +39,10 @@ func ifstream skipcomment(ifstream &ff){
 
         // this reads the next string but it strips leading whitespace
         // which helps us!
-        ff >> comment;
+        try {
+            ff >> comment;
+        }
+        catch(...) { cout << "end of file" << endl; }
 
         if (!ff.good()) break;
 
@@ -43,7 +59,7 @@ func ifstream skipcomment(ifstream &ff){
  
 
 string s;
-ifstream data("output.log");
+ifstream data(fnm);
 
 
 getline(data, s);
@@ -51,17 +67,19 @@ cout << "With getline() read:  X" << s << "X" << endl << endl;
 cout << "Now with >>" << endl;
 
 while(data.good()) {
-    real x, y, z;
+    real xx, yy, zz;
     skipcomment(data);
     if (!data.good()) break;
 
-    data >> x;
-    data >> y;
-    data >> z;
+    data >> xx;
+    data >> yy;
+    data >> zz;
 
-    cout << "x = " << x << endl;
-    cout << "y = " << y << endl;
-    cout << "z = " << z << endl;
+    cout << "xx = " << xx << endl;
+    cout << "yy = " << yy << endl;
+    cout << "zz = " << zz << endl;
     cout << endl << endl;
 }
+
+cout << "All done!" << endl;
 
