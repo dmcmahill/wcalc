@@ -67,7 +67,7 @@ bool withGnd = true;
 //withGnd = false;
 
 int m = 500;            // meshing constant
-int mgndLR = 20;
+int mgndLR = 200;
 int mgndTB = 200;
 
 // define labels for our borders
@@ -82,7 +82,9 @@ if( df.length == 0) {
     df = "coplanar.tmp";
     ofstream data(df);
     data << "* W     S    H       Tmet       Er    gnd" << endl;
-    data << W << sp << S << sp << H << sp << Tmet << sp << er << sp << withGnd << endl;
+    for(int i=0; i<=1 ; i++) {
+        data << W << sp << S << sp << H << sp << Tmet << sp << er << sp << i << endl;
+    }
 }
 ifstream data(df);
 
@@ -105,7 +107,8 @@ while(1) {
     cout << "S           = " << S << endl;
     cout << "H           = " << H << endl;
     cout << "Tmet        = " << Tmet << endl;
-    if(Tmet == 0.0) {
+    real TmetMin = 0.001*H;
+    if(Tmet < TmetMin) {
         Tmet = 0.001*H;
         cout << "Tmet       -> " << Tmet << endl;
     }
@@ -123,6 +126,7 @@ while(1) {
     // dielectric interface.  Should revisit and see if we need
     // different boundary segments to avoid this need
     real delta = 0.01*Tmet;
+    real deltaLR = 0.001*Wtot;
 
     // this is a trick with free-fem...the conductor must lie
     // just a bit above the dielectric interface
@@ -167,35 +171,35 @@ while(1) {
 
     border cpg1(t=0, 2*cpgwidth + 2*Tmet) {
         if ( t<=cpgwidth ) {
-            x = t + delta;
+            x = t + deltaLR;
             y = hd3;
         } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
-            x = cpgwidth + delta;
+            x = cpgwidth + deltaLR;
             y = hd3 + (t - cpgwidth);
         } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
-            x = cpgwidth + delta - (t - (cpgwidth + Tmet));
+            x = cpgwidth + deltaLR - (t - (cpgwidth + Tmet));
             y = hd3 + Tmet;
         } else {
-            x = delta;
+            x = deltaLR;
             y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
         }
         label = gnd;
     }
 
-    real ofs = 0.5*Wtot + 0.5*W + S - delta;
+    real ofs = 0.5*Wtot + 0.5*W + S - deltaLR;
 
     border cpg2(t=0, 2*cpgwidth + 2*Tmet) {
         if ( t<=cpgwidth ) {
-            x = ofs + t + delta;
+            x = ofs + t + deltaLR;
             y = hd3;
         } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
-            x = ofs + cpgwidth + delta;
+            x = ofs + cpgwidth + deltaLR;
             y = hd3 + (t - cpgwidth);
         } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
-            x = ofs + cpgwidth + delta - (t - (cpgwidth + Tmet));
+            x = ofs + cpgwidth + deltaLR - (t - (cpgwidth + Tmet));
             y = hd3 + Tmet;
         } else {
-            x = ofs + delta;
+            x = ofs + deltaLR;
             y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
         }
         label = gnd;
