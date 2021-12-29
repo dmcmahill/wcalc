@@ -101,6 +101,15 @@ while(1) {
     data >> Tmet;
     data >> er;
 
+    cout << "Starting on:" << endl;
+    cout << "W           = " << W << endl;
+    cout << "H           = " << H << endl;
+    cout << "Tmet        = " << Tmet << endl;
+    if(Tmet == 0.0) {
+        Tmet = 0.001*H;
+        cout << "Tmet       -> " << Tmet << endl;
+    }
+    cout << "er          = " << er << endl;
 
     // height of the strip above the bottom ground
     // This could be used for an offset conductor
