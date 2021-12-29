@@ -40,6 +40,11 @@ cout << "df = " << df << endl;
 bool debug = false;
 //debug = true;
 
+// set to true to zoom in on the active area.  This messes up accuracy but can
+// help check some of the shapes and do sanity checks
+bool zoom = false;
+//zoom = true;
+
 // used with the adaptive meshing
 real errorinit = 0.01;
 real error = errorinit;
@@ -66,8 +71,9 @@ real er = 4.8;
 bool withGnd = true;
 //withGnd = false;
 
-int m = 500;            // meshing constant
-int mgndLR = 200;
+// meshing constant
+int m = 200;
+int mgndLR = 50;
 int mgndTB = 200;
 
 // define labels for our borders
@@ -92,7 +98,7 @@ cout << "Processing input data from " << df << endl;
 
 while(1) {
     // Width, Space, Height, Metal Thickness, Dielectric Constant
-    skipcomment(data);
+    skipcomment(data, logf);
     if (!data.good()) break;
 
     data >> W;
@@ -118,10 +124,15 @@ while(1) {
     // total height of the problem (enclosure height)
     real Htot = H*10.0;
     real Hbot = H*10;
+    if(zoom) {
+        Htot = 2*H;
+        Hbot = H;
+    }
 
     // total width of the problem (enclosure width)
     real Wtot = W + 2*S + 2*10*H;
-
+    if(zoom) {Wtot = W + 2*S + 2*W;}
+    
     // used to avoid placing the conductor boundary directly at the
     // dielectric interface.  Should revisit and see if we need
     // different boundary segments to avoid this need
@@ -167,44 +178,57 @@ while(1) {
     border oclt1g(t=0, Hbot)  {x=0; y=-t; label = gnd;}
 
     // left coplanar ground
-    real cpgwidth = (Wtot - W - 2*S) / 2.0 - delta;
+    real cpgwidth = (Wtot - W - 2*S) / 2.0 - deltaLR;
 
-    border cpg1(t=0, 2*cpgwidth + 2*Tmet) {
-        if ( t<=cpgwidth ) {
-            x = t + deltaLR;
-            y = hd3;
-        } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
-            x = cpgwidth + deltaLR;
-            y = hd3 + (t - cpgwidth);
-        } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
-            x = cpgwidth + deltaLR - (t - (cpgwidth + Tmet));
-            y = hd3 + Tmet;
-        } else {
-            x = deltaLR;
-            y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
-        }
+    border cpg1B(t=0, 1) {
+        x = deltaLR + cpgwidth*t;
+        y = hd3;
         label = gnd;
     }
 
-    real ofs = 0.5*Wtot + 0.5*W + S - deltaLR;
-
-    border cpg2(t=0, 2*cpgwidth + 2*Tmet) {
-        if ( t<=cpgwidth ) {
-            x = ofs + t + deltaLR;
-            y = hd3;
-        } else if ( ( t>cpgwidth ) && ( t<=cpgwidth  + Tmet ) ) {
-            x = ofs + cpgwidth + deltaLR;
-            y = hd3 + (t - cpgwidth);
-        } else if ( ( t>cpgwidth + Tmet ) && ( t<=2*cpgwidth+Tmet ) ) {
-            x = ofs + cpgwidth + deltaLR - (t - (cpgwidth + Tmet));
-            y = hd3 + Tmet;
-        } else {
-            x = ofs + deltaLR;
-            y = hd3 + Tmet - (t - (2*cpgwidth + Tmet));
-        }
+    border cpg1R(t=0, 1) {
+        x = deltaLR + cpgwidth;
+        y = hd3 + Tmet*t;
         label = gnd;
     }
 
+    border cpg1T(t=0, 1) {
+        x = deltaLR + cpgwidth*(1-t);
+        y = hd3 + Tmet;
+        label = gnd;
+    }
+
+    border cpg1L(t=0, 1) {
+        x = deltaLR;
+        y = hd3 + Tmet*(1 - t);
+        label = gnd;
+    }
+
+    // right coplanar ground
+    real ofs = 0.5*Wtot + 0.5*W + S;
+    border cpg2B(t=0, 1) {
+        x = ofs + cpgwidth*t;
+        y = hd3;
+        label = gnd;
+    }
+
+    border cpg2R(t=0, 1) {
+        x = ofs + cpgwidth;
+        y = hd3 + Tmet*t;
+        label = gnd;
+    }
+
+    border cpg2T(t=0, 1) {
+        x = ofs + cpgwidth*(1-t);
+        y = hd3 + Tmet;
+        label = gnd;
+    }
+
+    border cpg2L(t=0, 1) {
+        x = ofs;
+        y = hd3 + Tmet*(1 - t);
+        label = gnd;
+    }
 
     // center conductor -- also clockwise
     border ccB(t=0, 1) {
@@ -240,9 +264,29 @@ while(1) {
     //
     mesh Th;
     if(withGnd) {
-        Th = buildmesh (ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) + cpg1(-m) + cpg2(-m) + ocbot(mgndTB) + ocrt1(mgndLR) + ocrt2(mgndLR) + octop(mgndTB) + oclt2(mgndLR) + oclt1(mgndLR) + discon(m*2));
+        Th = buildmesh (
+           ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) +
+           cpg1L(-m) + cpg1R(-m) + cpg1T(-m) + cpg1B(-m) +
+           cpg2L(-m) + cpg2R(-m) + cpg2T(-m) + cpg2B(-m) +
+           ocbot(mgndTB) +
+           ocrt1(mgndLR) + ocrt2(mgndLR) +
+           octop(mgndTB) +
+           oclt2(mgndLR) + oclt1(mgndLR) +
+           discon(m*2)
+           );
     } else {
-        Th = buildmesh (ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) + cpg1(-m) + cpg2(-m) + ocbot(mgndTB) + ocrt1g(mgndLR) + ocrt1(mgndLR) + ocrt2(mgndLR) + octop(mgndTB) + oclt2(mgndLR) + oclt1(mgndLR) + oclt1g(mgndLR) + discon(m*2) + disconBot(m*2));
+        Th = buildmesh (
+           ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) +
+           cpg1L(-m) + cpg1R(-m) + cpg1T(-m) + cpg1B(-m) +
+           cpg2L(-m) + cpg2R(-m) + cpg2T(-m) + cpg2B(-m) +
+           ocbot(mgndTB) +
+           ocrt1(mgndLR) + ocrt2(mgndLR) +
+           octop(mgndTB) +
+           oclt2(mgndLR) + oclt1(mgndLR) +
+           discon(m*2) +
+           // add this for the no bottom side ground case
+           ocrt1g(mgndLR) +  oclt1g(mgndLR) + disconBot(m*2)
+           );
     }
     plot(Th, cmm="Mesh", wait=debug);
 
@@ -314,6 +358,7 @@ while(1) {
     cout << "Z0, freespace                 = " << z0no << " Ohms" << endl;
     cout << "Z0, with dielectric           = " << z0 << " Ohms" << endl;
 
+    // Width, Space, Height, Metal Thickness, Dielectric Constant, : Effective dielectric constant,  z0
+    logf << W << sp << S << sp << H << sp << Tmet << sp << er << sp << withGnd << " : " << keff << sp << z0 << endl;
 
 }
-
