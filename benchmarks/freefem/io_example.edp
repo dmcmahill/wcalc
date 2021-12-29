@@ -56,7 +56,7 @@ func ifstream skipcomment(ifstream &ff){
     }
     return ff;
 }
- 
+
 
 string s;
 ifstream data(fnm);

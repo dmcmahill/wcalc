@@ -5,20 +5,20 @@
  * Copyright (C) 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 // The starting point was an example from C Deibele on
@@ -105,7 +105,7 @@ while(1) {
     data >> er;
 
 
-    // this is a trick with free-fem...the conductor must lie 
+    // this is a trick with free-fem...the conductor must lie
     // just a bit above the dielectric interface
     real hd3 = H + 0.01*Tmet;
 
@@ -124,7 +124,7 @@ while(1) {
 
     // coupled_microstrip height dielectric discontinuity
     border discon(t=0., Wtot) {x = Wtot-t; y = H; label=interface;}
- 
+
     // outer conductor
     border ocbot(t=0,Wtot) {x = t; y = 0; label=gnd;}
     border ocrt1(t=0,H)  {x=Wtot; y=t; label=gnd;}
@@ -133,7 +133,7 @@ while(1) {
     border oclt2(t=H,Htot)  {x=0;y=Htot+H-t; label=gnd;}
     border oclt1(t=0,H)  {x=0;y=H-t; label=gnd;}
 
- 
+
 
     // center conductor -- also clockwise
     border ccB(t=0, 1) {
@@ -189,7 +189,7 @@ while(1) {
 // *****************************
 
 // Build's a 2D mesh using border elements
-// 
+//
 mesh Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + ccLm(-m) + ccRm(-m) + ccTm(-m) + ccBm(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
 plot(Th, cmm="Mesh", wait=debug);
 

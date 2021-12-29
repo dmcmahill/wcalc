@@ -2,36 +2,36 @@
  * Copyright (C) 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 // *****************************
 // physical constants
 // *****************************
 
-// free space speed of light, meters/second 
+// free space speed of light, meters/second
 real c0 = 2.99792458e8;
 
-// free space permitivitty (Henries/meter) 
+// free space permitivitty (Henries/meter)
 real mu0 = (4.0 * pi * 1.0e-7);
 
 // free space permitivitty (Farads/meter)
 real eps0 (1.0 / (c0 * c0 * mu0) );
 
-// free space impedance, Ohms 
+// free space impedance, Ohms
 real freespaceZ0 = (mu0 * c0);
 
 // *****************************
