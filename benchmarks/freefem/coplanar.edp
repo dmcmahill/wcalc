@@ -95,6 +95,17 @@ while(1) {
     data >> Tmet;
     data >> er;
 
+    cout << "Starting on:" << endl;
+    cout << "W           = " << W << endl;
+    cout << "S           = " << S << endl;
+    cout << "H           = " << H << endl;
+    cout << "Tmet        = " << Tmet << endl;
+    if(Tmet == 0.0) {
+        Tmet = 0.001*H;
+        cout << "Tmet       -> " << Tmet << endl;
+    }
+    cout << "er          = " << er << endl;
+
     // total height of the problem (enclosure height)
     real Htot = H*10.0;
 
