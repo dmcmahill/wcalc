@@ -44,8 +44,6 @@ bool debug = false;
 real errorinit = 0.01;
 real error = errorinit;
 
-
-
 // Metal thickness
 real Tmet = 1.0;
 
@@ -64,21 +62,27 @@ real eps1 = 1;
 // Relative dielectric constant of the substrate
 real er = 4.8;
 
-int m = 500;            // meshing constant
+// with bottom side ground
+bool withGnd = true;
+//withGnd = false;
 
+int m = 500;            // meshing constant
+int mgndLR = 20;
+int mgndTB = 200;
 
 // define labels for our borders
 int gnd=3, line=4, interface=5;
 
 ofstream logf("coplanar.txt");
-logf << "* W     S    H       Tmet       Er  :  Keff   Z0" << endl;
+logf << "* W     S    H       Tmet       Er  gnd :  Keff   Z0" << endl;
+string sp = "    ";
 
 // if no data file is given, create one with the default values
 if( df.length == 0) {
     df = "coplanar.tmp";
     ofstream data(df);
-    data << "* W     S    H       Tmet       Er" << endl;
-    data << W << " " << S << " " << H << " " << Tmet << " " << er << endl;
+    data << "* W     S    H       Tmet       Er    gnd" << endl;
+    data << W << sp << S << sp << H << sp << Tmet << sp << er << sp << withGnd << endl;
 }
 ifstream data(df);
 
@@ -94,6 +98,7 @@ while(1) {
     data >> H;
     data >> Tmet;
     data >> er;
+    data >> withGnd;
 
     cout << "Starting on:" << endl;
     cout << "W           = " << W << endl;
@@ -105,9 +110,11 @@ while(1) {
         cout << "Tmet       -> " << Tmet << endl;
     }
     cout << "er          = " << er << endl;
+    cout << "bottom gnd  = " << withGnd << endl;
 
     // total height of the problem (enclosure height)
     real Htot = H*10.0;
+    real Hbot = H*10;
 
     // total width of the problem (enclosure width)
     real Wtot = W + 2*S + 2*10*H;
@@ -121,7 +128,6 @@ while(1) {
     // just a bit above the dielectric interface
     real hd3 = H + delta;
 
-
     // *****************************
     // Define the boundaries
     // *****************************
@@ -130,14 +136,21 @@ while(1) {
 
     // dielectric discontinuity
     border discon(t=0., Wtot) {x = Wtot-t; y = H; label = interface;}
+    border disconBot(t=0., Wtot) {x = Wtot-t; y = 0; label = interface;}
 
     // Bottom side ground and also the ground that surrounds
     // the problem
 
     // Bottom side ground
-    border ocbot(t=0,Wtot) {x = t; y = 0; label = gnd;}
+    border ocbot(t=0,Wtot) {
+        x = t;
+        if(withGnd) { y = 0; }
+        else { y = -Hbot; }
+        label = gnd;
+    }
 
     // Enclosure right side
+    border ocrt1g(t=-Hbot,0)  {x=Wtot; y=t; label = gnd;}
     border ocrt1(t=0,H)  {x=Wtot; y=t; label = gnd;}
     border ocrt2(t=H,Htot)  {x=Wtot; y=t; label = gnd;}
 
@@ -147,6 +160,7 @@ while(1) {
     // Enclosure left side
     border oclt2(t=H, Htot)  {x=0; y=Htot + H - t; label = gnd;}
     border oclt1(t=0, H)  {x=0; y=H-t; label = gnd;}
+    border oclt1g(t=0, Hbot)  {x=0; y=-t; label = gnd;}
 
     // left coplanar ground
     real cpgwidth = (Wtot - W - 2*S) / 2.0 - delta;
@@ -220,7 +234,12 @@ while(1) {
 
     // Build a 2D mesh using border elements
     //
-    mesh Th = buildmesh (ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) + cpg1(-m) + cpg2(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
+    mesh Th;
+    if(withGnd) {
+        Th = buildmesh (ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) + cpg1(-m) + cpg2(-m) + ocbot(mgndTB) + ocrt1(mgndLR) + ocrt2(mgndLR) + octop(mgndTB) + oclt2(mgndLR) + oclt1(mgndLR) + discon(m*2));
+    } else {
+        Th = buildmesh (ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) + cpg1(-m) + cpg2(-m) + ocbot(mgndTB) + ocrt1g(mgndLR) + ocrt1(mgndLR) + ocrt2(mgndLR) + octop(mgndTB) + oclt2(mgndLR) + oclt1(mgndLR) + oclt1g(mgndLR) + discon(m*2) + disconBot(m*2));
+    }
     plot(Th, cmm="Mesh", wait=debug);
 
 
@@ -234,7 +253,7 @@ while(1) {
     // *****************************
 
     // define the relative dielectric constant
-    func epsi = 1. + (eps1-1)*(y>H) + (er-1)*(y<H);
+    func epsi = 1. + (eps1-1)*(y>H || y<0) + (er-1)*(y<H && y>0);
 
     // *****************************
     // Weak Formulation
