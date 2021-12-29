@@ -1,27 +1,57 @@
 // FreeFEM stripline analysis
 //
+
+/*
+ * Copyright (C) 2021 Dan McMahill
+ * All rights reserved.
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
 // The starting point was an example from C Deibele on
 // https://www.freelists.org/post/si-list/microstrip-and-stripline-FREEFEM-examples
-// It appears that the syntax for FreeFEM must have changed so this file has been
-// modified to work with FreeFEM-4.10 with some notation changed to be consistent
-// with wcalc.  In addition, the borders are constructed in a way that is a little
-// simpler and it seems to preserve corners during meshing.
+// Many updates have been made since to align with the wcalc notation, set up for
+// sweeps, etc.
 //
 // With stripline we have a true TEM propagation mode and aside from providing some
 // additional checkpoint data, the FreeFEM analysis can help identify limits on
 // the metal thickness correction.  It could also be used to help validate
 // stripline that is offset in one direction or the other.
 
+// Usage:
+//   # basic example:
+//   FreeFem++ -f microstrip.edp
+//
+//   # read from a data file
+//   FreeFem++ -f stripline.edp -df stripline.dat
+//
+
+include "getARGV.idp"
 include "utils.edp"
+
+string df = getARGV("-df", "");
+cout << "df = " << df << endl;
 
 // set to true to pause after each plot
 bool debug = false;
 //debug = true;
 
 // used with the adaptive meshing
-real errorinit = 0.01;
+real errorinit = 0.001;
 real error = errorinit;
-
 
 // Trace width
 real W = 25.0 ;
@@ -32,12 +62,6 @@ real H = 62.0 ;
 // Metal thickness
 real Tmet = 0.7;
 
-// height of the strip above the bottom ground
-// this will be updated later in the Tmet loop
-// This could be used for an offset conductor
-// if desired
-real hd = 0.5*H - 0.5*Tmet;
-
 // relative dielectric constant of the substrate
 real er = 4.8;
 
@@ -46,34 +70,52 @@ int m = 70;
 int mgndTB = 3*m;
 int mgndLR = 20;
 bool useAdaptMesh = false;
-useAdaptMesh = true;
+//useAdaptMesh = true;
 
-// min/max/count for sweeping metal thickness
-real TmetMin = 0.1;
-real TmetMax = 0.3*H;
-int numTmet = 10;
-//numTmet = 1;
-
-// Total width of the problem
-//
-// The sides are enclosed in this formulation so we need to make sure
-// this is far enough away to avoid causing issues but not so far as to make
-// it take a long long time to simulate.
-//
-// For this we are picking 10x the substrate thickness away on each side
-real Wtot = W + 2.0 * 10.0 * H;
 
 // define labels for our borders
 int gnd=3, line=4;
 
 // output data file
 ofstream logf("stripline.txt");
+logf << "* W     H       Tmet       Er  :  Z0" << endl;
 
-for (int i = 0; i < numTmet ; i=i+1) {
-    if(numTmet > 1) {
-        Tmet = TmetMin + i*(TmetMax - TmetMin)/(numTmet - 1);
-    }
-    hd = 0.5*H - 0.5*Tmet;
+// if no data file is given, create one with the default values
+if( df.length == 0) {
+    df = "stripline.tmp";
+    ofstream data(df);
+    data << "* W     H       Tmet       Er" << endl;
+    data << W << " " << H << " " << Tmet << " " << er << endl;
+}
+ifstream data(df);
+
+cout << "Processing input data from " << df << endl;
+
+while(1) {
+    // Width, Height, Metal Thickness, Dielectric Constant
+    skipcomment(data);
+    if (!data.good()) break;
+
+    data >> W;
+    data >> H;
+    data >> Tmet;
+    data >> er;
+
+
+    // height of the strip above the bottom ground
+    // This could be used for an offset conductor
+    // if desired
+    real hd = 0.5*H - 0.5*Tmet;
+
+    // Total width of the problem
+    //
+    // The sides are enclosed in this formulation so we need to make sure
+    // this is far enough away to avoid causing issues but not so far as to make
+    // it take a long long time to simulate.
+    //
+    // For this we are picking 10x the substrate thickness away on each side
+    real Wtot = W + 2.0 * 10.0 * H;
+
 
     // *****************************
     // Define the boundaries
@@ -103,7 +145,7 @@ for (int i = 0; i < numTmet ; i=i+1) {
         y = H*(1 - t);
         label = gnd;
     }
- 
+
     // center conductor -- also clockwise
     border ccB(t=0, 1) {
         x = 0.5*Wtot - 0.5*W + W*t;
@@ -136,7 +178,7 @@ for (int i = 0; i < numTmet ; i=i+1) {
     mesh Th;
     // a minus sign in the border argument defines the direction.
     Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + occB(mgndTB) + occR(mgndLR) + occT(mgndTB) + occL(mgndLR));
-    plot(Th, fill=false, wait=debug);
+    plot(Th, cmm="Mesh", wait=debug);
 
     // *****************************
     // FE-space and FE-function
@@ -166,30 +208,35 @@ for (int i = 0; i < numTmet ; i=i+1) {
         for (int j = 0; j < 4 ; j++){
             Laplace;
             Th = adaptmesh(Th, u, err=error);
-            plot(Th, fill=false, wait=debug);
+            plot(Th, fill=false, cmm="adaptive mesh - mesh", wait=debug);
+            plot(u, fill=false, cmm="adaptive mesh - electric quasi-static potential", wait=debug);
             error = error/2;
         }
     }
     Laplace;
+    plot(u, cmm="Electric Potential", wait=debug);
 
-    real energy = eps0 * er * int2d(Th) ( (dx(u))*(dx(u)) + (dy(u))*(dy(u)));
+    real energy = eps0 * energy2d(Th, er, u);
     cout << "energy = " << energy << endl;
 
 
-    real impenerg = sqrt(er) /(c0 * energy);
-    cout << "Impedance calculated from energy = " << impenerg << " Ohms" << endl;
+    real z0 = sqrt(er) /(c0 * energy);
 
-    logf << Tmet << " " << impenerg << endl;
+    cout << "Lightspeed  = " << c0 << " m/s" << endl;
+    cout << "mu0         = " << mu0 << " H/m" << endl;
+    cout << "eps0        = " << eps0 << " F/m" << endl;
+    cout << "W           = " << W << endl;
+    cout << "H           = " << H << endl;
+    cout << "Tmet        = " << Tmet << endl;
+    cout << "Wtot        = " << Wtot << endl;
+    cout << "er          = " << er << endl;
+    cout << "energy      = " << energy << endl;
+    cout << "Z0          = " << z0 << " Ohms" << endl;
+
+
+    // Width, Height, Metal Thickness, Dielectric Constant, :  z0
+    logf << W << " " << H << " " << Tmet << " " << er << " : " << z0 << endl;
+
 }
 
-cout << "Lightspeed  = " << c0 << " m/s" << endl;
-cout << "mu0         = " << mu0 << " H/m" << endl;
-cout << "eps0        = " << eps0 << " F/m" << endl;
-cout << "freespaceZ0 = " << freespaceZ0 << " Ohms" << endl;
-cout << "W           = " << W << endl;
-cout << "H           = " << H << endl;
-cout << "Tmet        = " << Tmet << endl;
-cout << "Wtot        = " << Wtot << endl;
-cout << "er          = " << er << endl;
-cout << "hd          = " << hd << endl;
 
