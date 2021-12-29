@@ -70,7 +70,7 @@ macro energy2d(Th, eps, phi) (int2d(Th) ( (eps)*(dx(phi))*(dx(phi)) + (eps)*(dy(
 // *****************************
 
 //Function to skip comment starting with * in a file
-func ifstream skipcomment(ifstream &ff){
+func ifstream skipcomment(ifstream &ff, ofstream &logf){
     while(1) {
         // store file position
         int where = ff.tellg();
@@ -88,7 +88,7 @@ func ifstream skipcomment(ifstream &ff){
 
         if (comment(0:0) == "*"){
             getline(ff, comment);
-            cout << " -- *" << comment << endl;
+            logf << "* " << comment << endl;
         } else {
             ff.seekg(where); //restore file position
             break;

@@ -95,7 +95,7 @@ cout << "Processing input data from " << df << endl;
 
 while(1) {
     // Width, Height, Metal Thickness, Dielectric Constant
-    skipcomment(data);
+    skipcomment(data, logf);
     if (!data.good()) break;
 
     data >> W;
