@@ -102,8 +102,9 @@ while(1) {
     cout << "W           = " << W << endl;
     cout << "H           = " << H << endl;
     cout << "Tmet        = " << Tmet << endl;
-    if(Tmet == 0.0) {
-        Tmet = 0.001*H;
+    real TmetMin = 0.001*H;
+    if(Tmet < TmetMin) {
+        Tmet = TmetMin;
         cout << "Tmet       -> " << Tmet << endl;
     }
     cout << "er          = " << er << endl;
