@@ -125,7 +125,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /* calculation variables */
   double k, k1, kt, z0, v, loss;
   double k_kp, k_kp1, k_kpt;
-  double a, at, b, bt, eeff;
+  double deltat, a, at, b, bt, eeff;
 
   /* loss variables*/
   double lambdag, q;
@@ -174,33 +174,36 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
     /* Wadell (3.4.1.8), (3.4.1.9) but avoid issues with tmet = 0 */
     if( line->subs->tmet > 0.0) {
-      at = a + (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
-      bt = b - (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+      deltat = (1.25*line->subs->tmet / M_PI)*(1.0 + log( 4.0 * M_PI * a / line->subs->tmet));
+      /*
+       * depending on the reference, we may also see this as
+       * We = W + deltat,
+       * Se = S - deltat,
+       * and so We + 2*Se = W + deltat + 2*(S - deltat) = W + 2*S - deltat
+       *
+       * Note that Bad Things happen if we try to carry this too far.  In particular if deltat
+       * ever exceeds S then we have closed the gap completely.  For now, let's take the approach
+       * of clamping deltat to half the gap.
+       */
+       if( deltat > 0.5*line->s ) {
+         deltat = 0.5*line->s;
+         alert("Warning:  The metal thickness correction term is outside of the valid range\n"
+            "In particular, the delta term that reduces the gap exceeds half of the gap\n"
+            "and can cause incorrec results.  The applied correction will be limited to half of the gap.\n"
+            "See (3.4.1.8) and (3.4.1.9) in the Wadell book.\n"
+            "If this is a thick metal relative to the width case then it is probably time to identify\n"
+            "some new formulations that are more appropriate for that regime.\n"
+            "See https://github.com/dmcmahill/wcalc/issues/16 for some ongoing discussion of\n"
+            "coplanar waveguide with thick metal.\n");
+      }
+      
+      at = a + deltat;
+      bt = b - deltat;
     } else {
       at = a;
       bt = b;
     }
 
-    /*
-     * we have to be a bit careful here.  If we're not careful, we can
-     * end up with b < a which is nonsense and it will cause the
-     * calculation of the elliptic integral ratios to produce NaN
-     */
-    if( bt <= at ) {
-      at = a;
-      bt = b;
-      alert("Warning:  bt <= at so I am reverting to zero thickness equations\n"
-            "bt is the thickness corrected version of width + 2*spacing\n"
-            "at is the thickness corrected version of width\n"
-            "See (3.4.1.8) and (3.4.1.9) in the Wadell book.\n"
-            "If the correction equations produce a case where bt <= at then\n"
-            "we essentially have a nonsense case and it indicates that the thickness\n"
-            "correction term is being used outside of the range of validity.  If this is\n"
-            "a thick metal relative to the width case then it is probably time to identify\n"
-            "some new formulations that are more appropriate for that regime.\n"
-            "See https://github.com/dmcmahill/wcalc/issues/16 for some ongoing discussion of\n"
-            "coplanar waveguide with thick metal.\n");
-    }
 
     /* Wadell (3.4.1.6) */
     k1 = sinh(M_PI * at / (4.0 * line->subs->h)) / sinh(M_PI * bt / (4.0 * line->subs->h));
@@ -213,12 +216,12 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     k_kp1 = k_over_kp( k1 );
     k_kpt = k_over_kp( kt );
 
-    /* Wadell (3.4.1.3) */
+    /* Wadell (3.4.1.3) - zero thickness effective dielectric constant */
     eeff = 1.0 + 0.5*(line->subs->er - 1.0)*k_kp1/k_kp;
 
-    /* Wadell (3.4.1.2) */
+    /* Wadell (3.4.1.2) - thickness corrected effective dielectric constant */
     line->keff = eeff - (eeff - 1.0) / ( (0.5*(b - a)/(0.7 * line->subs->tmet))*k_kp + 1.0);
-
+ 
     /* for coplanar waveguide (ground signal ground) */
     z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kpt);
 
