@@ -115,7 +115,7 @@ while(1) {
     cout << "Tmet        = " << Tmet << endl;
     real TmetMin = 0.001*H;
     if(Tmet < TmetMin) {
-        Tmet = 0.001*H;
+        Tmet = TmetMin;
         cout << "Tmet       -> " << Tmet << endl;
     }
     cout << "er          = " << er << endl;
