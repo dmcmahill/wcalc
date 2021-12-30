@@ -79,3 +79,11 @@ is found.  Then the process is repeated with the true dielectrics in place.  The
 effective dielectric constant is just the ratio of energies.  With the relative
 dielectric constant we obtain the velocity of propagation and proceed to find
 the impedance as in the single dielectric case.
+
+# Status
+
+## stripline
+The stripline equations should be exact as this ie one of the relatively few structures
+where we have an analytic solution available.  The FreeFEM results show a great
+match.  This also helps validate how FreeFEM is being used.
+
