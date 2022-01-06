@@ -128,6 +128,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
   double RcHF, RsHF;
   double delta_c=1.0;
   double delta_s=1.0;
+  double delta_tmp = 0.01;
   double omega;
   double db_per_np;
 
@@ -349,10 +350,10 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      * pick a new analysis frequency that gives a skin depth which is
      * 1/10 the radius
      */
-    tmp_line.freq = (2.0 * line->rho_a ) / (pow(0.01*line->a,2.0) * mu0);
+    tmp_line.freq = (2.0 * line->rho_a ) / (pow(delta_tmp*line->a,2.0) * mu0);
     tmp_line.freq = tmp_line.freq / (2.0 * M_PI);
 
-    tmp_line.a = line->a - 0.5*0.01*line->a;
+    tmp_line.a = line->a - (0.5 * delta_tmp * line->a);
 #ifdef DEBUG_CALC
     printf("\ncoax_calc_int():  "
 	   "********** Starting Wheelers Incremental Inductance #2 (modify center) **********\n");
@@ -390,10 +391,10 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     tmp_line.b = line->b + 0.5*delta_s;
     */
 
-    tmp_line.freq = (2.0 * line->rho_b ) / (pow(0.01*line->b,2.0) * mu0);
+    tmp_line.freq = (2.0 * line->rho_b ) / (pow(delta_tmp*line->b,2.0) * mu0);
     tmp_line.freq = tmp_line.freq / (2.0 * M_PI);
 
-    tmp_line.b = line->b + 0.5*0.01*line->b;
+    tmp_line.b = line->b + (0.5 * delta_tmp * line->b);
 #ifdef DEBUG_CALC
     printf("\ncoax_calc_int():  "
 	   "********** Starting Wheelers Incremental Inductance #3 (modify shield) **********\n");
@@ -407,7 +408,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
     RsHF = lc*2*line->z0;
 #ifdef DEBUG_CALC
     printf("\ncoax_calc_int():  Found RsHF = %g Ohms which will be "
-	   "scaled by %g\n", RsHF, 0.01*line->b/delta_s);
+	   "scaled by %g\n", RsHF, delta_tmp*line->b/delta_s);
 #endif
     /*
     } else {
@@ -426,7 +427,7 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      *
      * To this end, we assume the resistance has the form:
      *
-     * Rtot = Rdc  +  Rhf * ( (0.001*a_or_b)/skindepth )
+     * Rtot = Rdc  +  Rhf * ( (0.01*a_or_b)/skindepth )
      *
      * where Rdc = DC resistance and Rhf is the high frequency
      * resistance you would get if the skindepth were equal to 0.01*a
@@ -438,8 +439,8 @@ static int coax_calc_int(coax_line *line, double freq, int flag)
      */
 
     if (omega > 0) {
-      Rc_delta = RcHF * 0.01*line->a / delta_c ;
-      Rs_delta = RsHF * 0.01*line->b / delta_s ;
+      Rc_delta = RcHF * delta_tmp*line->a / delta_c ;
+      Rs_delta = RsHF * delta_tmp*line->b / delta_s ;
     } else {
       Rc_delta = 0.0;
       Rs_delta = 0.0;
