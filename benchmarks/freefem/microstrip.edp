@@ -66,8 +66,12 @@ real er = 4.8;
 
 // meshing constant
 int m = 200;
-int mgndTB = m;
+
+int mgndTB = 200;
 int mgndLR = 50;
+
+int msigLR = 20;
+int msigTB = 100;
 bool useAdaptMesh = false;
 //useAdaptMesh = true;
 
@@ -126,7 +130,9 @@ while(1) {
     // border defines a 2D border in parametric coordinates
 
     // microstrip height dielectric discontinuity
-    border discon(t=0., Wtot) {x = Wtot-t; y = H; label=interface;}
+    border disconL(t=0., 1) { x = (0.5*Wtot - 0.5*W)*(1 - t); y = H; label=interface;}
+    border disconC(t=0., 1) {x = (0.5*Wtot + 0.5*W) - W*(1-t); y = H; label=interface;}
+    border disconR(t=0., 1) {x = Wtot - (0.5*Wtot - 0.5*W)*(1-t); y = H; label=interface;}
 
     // outer conductor
     border ocbot(t=0,Wtot) {x = t; y = 0; label=gnd;}
@@ -168,7 +174,14 @@ while(1) {
 
     // Build's a 2D mesh using border elements
     //
-    mesh Th = buildmesh (ccL(-m) + ccR(-m) + ccT(-m) + ccB(-m) + ocbot(m) + ocrt1(m) + ocrt2(m) + octop(m) + oclt2(m) + oclt1(m) + discon(m*2));
+    mesh Th = buildmesh (ccL(-msigLR) + ccR(-msigLR) + ccT(-msigTB) + ccB(-msigTB) +
+        ocbot(mgndTB) + 
+        ocrt1(mgndLR) + ocrt2(mgndLR) +
+        octop(mgndTB) +
+        oclt2(mgndLR) + oclt1(mgndLR) +
+        disconL(m) +
+        disconC(msigTB) +
+        disconR(m));
     plot(Th, cmm="Mesh", wait=debug);
 
 
