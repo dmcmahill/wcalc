@@ -38,7 +38,7 @@ cout << "df = " << df << endl;
 
 // set to true to pause after each plot
 bool debug = false;
-//debug = true;
+debug = true;
 
 // set to true to zoom in on the active area.  This messes up accuracy but can
 // help check some of the shapes and do sanity checks
@@ -71,10 +71,19 @@ real er = 4.8;
 bool withGnd = true;
 //withGnd = false;
 
-// meshing constant
+// meshing constants
 int m = 200;
+
+int mgndTB = m;
 int mgndLR = 50;
-int mgndTB = 200;
+
+int mCpwGndTB = 20;
+int mCpwGndLR = 100;
+
+int msigLR = 20;
+int msigTB = 100;
+
+int mGap = 50;
 
 // define labels for our borders
 int gnd=3, line=4, interface=5;
@@ -143,14 +152,34 @@ while(1) {
     // just a bit above the dielectric interface
     real hd3 = H + delta;
 
+    // total width of the coplanar ground
+    real disconWT = (Wtot - W - 2*S) / 2.0;
+    real cpgwidthT = disconWT - deltaLR;
+
+    // higher mesh region near the signal trace
+    real cpgwidthB = 2*H;
+    real disconWB = cpgwidthB;
+
+    // lower mesh region further from the signal trace
+    real cpgwidthA = cpgwidthT - cpgwidthB;
+    real disconWA = disconWT - disconWB;
+
     // *****************************
     // Define the boundaries
     // *****************************
 
     // border defines a 2D border in parametric coordinates
 
-    // dielectric discontinuity
-    border discon(t=0., Wtot) {x = Wtot-t; y = H; label = interface;}
+    // microstrip height dielectric discontinuity
+    border disconLa(t=0., 1) { x = disconWA*(1 - t); y = H; label=interface;}
+    border disconLb(t=0., 1) { x = disconWA + disconWB*(1 - t); y = H; label=interface;}
+    border disconLG(t=0., 1) { x = (0.5*Wtot - 0.5*W) - S*t; y = H; label=interface;}
+    border disconC(t=0., 1) {x = (0.5*Wtot + 0.5*W) - W*(1-t); y = H; label=interface;}
+    border disconRG(t=0., 1) {x = 0.5*Wtot + 0.5*W + S*(1-t); y = H; label=interface;}
+    border disconRa(t=0., 1) {x = Wtot - disconWA*(1-t); y = H; label=interface;}
+    border disconRb(t=0., 1) {x = Wtot - disconWA - disconWB*(1-t); y = H; label=interface;}
+
+    // discontinuity at bottom of substrate to air underneath
     border disconBot(t=0., Wtot) {x = Wtot-t; y = 0; label = interface;}
 
     // Bottom side ground and also the ground that surrounds
@@ -178,22 +207,32 @@ while(1) {
     border oclt1g(t=0, Hbot)  {x=0; y=-t; label = gnd;}
 
     // left coplanar ground
-    real cpgwidth = (Wtot - W - 2*S) / 2.0 - deltaLR;
+    border cpg1Ba(t=0, 1) {
+        x = deltaLR + cpgwidthA*t;
+        y = hd3;
+        label = gnd;
+    }
 
-    border cpg1B(t=0, 1) {
-        x = deltaLR + cpgwidth*t;
+    border cpg1Bb(t=0, 1) {
+        x = deltaLR + cpgwidthA + cpgwidthB*t;
         y = hd3;
         label = gnd;
     }
 
     border cpg1R(t=0, 1) {
-        x = deltaLR + cpgwidth;
+        x = deltaLR + cpgwidthT;
         y = hd3 + Tmet*t;
         label = gnd;
     }
 
-    border cpg1T(t=0, 1) {
-        x = deltaLR + cpgwidth*(1-t);
+    border cpg1Ta(t=0, 1) {
+        x = deltaLR + cpgwidthA*(1-t);
+        y = hd3 + Tmet;
+        label = gnd;
+    }
+
+    border cpg1Tb(t=0, 1) {
+        x = deltaLR + cpgwidthA + cpgwidthB*(1-t);
         y = hd3 + Tmet;
         label = gnd;
     }
@@ -206,20 +245,32 @@ while(1) {
 
     // right coplanar ground
     real ofs = 0.5*Wtot + 0.5*W + S;
-    border cpg2B(t=0, 1) {
-        x = ofs + cpgwidth*t;
+    border cpg2Ba(t=0, 1) {
+        x = ofs + cpgwidthB + cpgwidthA*t;
+        y = hd3;
+        label = gnd;
+    }
+
+    border cpg2Bb(t=0, 1) {
+        x = ofs + cpgwidthB*t;
         y = hd3;
         label = gnd;
     }
 
     border cpg2R(t=0, 1) {
-        x = ofs + cpgwidth;
+        x = ofs + cpgwidthT;
         y = hd3 + Tmet*t;
         label = gnd;
     }
 
-    border cpg2T(t=0, 1) {
-        x = ofs + cpgwidth*(1-t);
+    border cpg2Tb(t=0, 1) {
+        x = ofs + cpgwidthB*(1-t);
+        y = hd3 + Tmet;
+        label = gnd;
+    }
+
+    border cpg2Ta(t=0, 1) {
+        x = ofs + cpgwidthB + cpgwidthA*(1-t);
         y = hd3 + Tmet;
         label = gnd;
     }
@@ -265,27 +316,35 @@ while(1) {
     mesh Th;
     if(withGnd) {
         Th = buildmesh (
-           ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) +
-           cpg1L(-m) + cpg1R(-m) + cpg1T(-m) + cpg1B(-m) +
-           cpg2L(-m) + cpg2R(-m) + cpg2T(-m) + cpg2B(-m) +
+           ccT(-msigTB) + ccB(-msigTB) + ccL(-msigLR) + ccR(-msigLR) +
+           cpg1L(-mCpwGndLR) + cpg1R(-mCpwGndLR) + cpg1Ta(-mCpwGndTB) + cpg1Tb(-msigTB) + cpg1Ba(-mCpwGndTB) + cpg1Bb(-msigTB) +
+           cpg2L(-mCpwGndLR) + cpg2R(-mCpwGndLR) + cpg2Ta(-mCpwGndTB) + cpg2Tb(-msigTB) + cpg2Ba(-mCpwGndTB) + cpg2Bb(-msigTB) +
            ocbot(mgndTB) +
            ocrt1(mgndLR) + ocrt2(mgndLR) +
            octop(mgndTB) +
            oclt2(mgndLR) + oclt1(mgndLR) +
-           discon(m*2)
+           disconLa(mCpwGndTB) + disconLb(msigTB) +
+           disconLG(mGap) +
+           disconC(msigTB) +
+           disconRG(mGap) +
+           disconRa(mCpwGndTB) + disconRb(msigTB)
            );
     } else {
         Th = buildmesh (
-           ccT(-m) + ccB(-m) + ccL(-m) + ccR(-m) +
-           cpg1L(-m) + cpg1R(-m) + cpg1T(-m) + cpg1B(-m) +
-           cpg2L(-m) + cpg2R(-m) + cpg2T(-m) + cpg2B(-m) +
+           ccT(-msigTB) + ccB(-msigTB) + ccL(-msigLR) + ccR(-msigLR) +
+           cpg1L(-mCpwGndLR) + cpg1R(-mCpwGndLR) + cpg1Ta(-mCpwGndTB) + cpg1Tb(-msigTB) + cpg1Ba(-mCpwGndTB) + cpg1Bb(-msigTB) +
+           cpg2L(-mCpwGndLR) + cpg2R(-mCpwGndLR) + cpg2Ta(-mCpwGndTB) + cpg2Tb(-msigTB) + cpg2Ba(-mCpwGndTB) + cpg2Bb(-msigTB) +
            ocbot(mgndTB) +
            ocrt1(mgndLR) + ocrt2(mgndLR) +
            octop(mgndTB) +
            oclt2(mgndLR) + oclt1(mgndLR) +
-           discon(m*2) +
+           disconLa(mCpwGndTB) + disconLb(msigTB) +
+           disconLG(mGap) +
+           disconC(msigTB) +
+           disconRG(mGap) +
+           disconRa(mCpwGndTB) + disconRb(msigTB)
            // add this for the no bottom side ground case
-           ocrt1g(mgndLR) +  oclt1g(mgndLR) + disconBot(m*2)
+           + ocrt1g(mgndLR) +  oclt1g(mgndLR) + disconBot(m*2)
            );
     }
     plot(Th, cmm="Mesh", wait=debug);
