@@ -2,20 +2,20 @@
  * Copyright (C) 2006, 2007, 2009, 2020, 2021 Dan McMahill
  * All rights reserved.
  *
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  */
 
 /*
@@ -49,6 +49,7 @@
 #include "physconst.h"
 #include "coplanar.h"
 #include "coplanar_loadsave.h"
+#include "microstrip.h"
 #include "units.h"
 
 #ifdef DMALLOC
@@ -74,14 +75,14 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag);
  *  (                                     \|/                              (
  *   -----------------------------------------------------------------------
  *   ////////////////////////////// ground /////////////////////////////////
- * 
+ *
  *
  */
 
 int coplanar_calc(coplanar_line *line, double f)
 {
   int rslt;
-  
+
 #ifdef DEBUG_CALC
 
   printf("coplanar_calc(): --------------- Coplanar Analysis ------------\n");
@@ -110,7 +111,7 @@ int coplanar_calc(coplanar_line *line, double f)
   printf("coplanar_calc(): Substrate loss tangent      = %g \n",
 	 line->subs->tand);
   printf("coplanar_calc(): Frequency                   = %g MHz\n",
-	 f/1e6); 
+	 f/1e6);
   printf("coplanar_calc():                             = %g %s\n",
 	 f/line->units_freq->sf, line->units_freq->name);
   printf("coplanar_calc(): -------------- --------------------- ----------\n");
@@ -127,6 +128,20 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   double k_kp, k_kp1, k_kpt;
   double deltat, a, at, b, bt, eeff;
 
+  /* for interpolation between the cpw and microstrip cases */
+  double sv[3], keff[3], z0v[3];
+  double s, z0ms, keffms;
+
+  /*
+   * what factor we will offset S (gap) by for smoothing in the
+   * CPW to microstrip region.  The interpolation will use a spline
+   * from a gap of (1 + interp_delta)*gap to (1 - interp_delta)*gap.
+   * A bigger number here expands the transition region.  This is
+   * something that ideally would get optimized based on curve fitting.
+   */
+  double interp_delta = 0.05;
+  int i;
+
   /* loss variables*/
   double lambdag, q;
   double z1,z2,lc,ld,delta;
@@ -142,7 +157,10 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
   /* complex characteristic impedance */
   complex z0_c;
-  
+
+  /* for large gap we will use microstrip as a limiting case */
+  microstrip_line *msline;
+
 #ifdef DEBUG_CALC
   double keff_tmp, z0_tmp;
 #endif
@@ -165,7 +183,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
   if( line->with_ground == 0) {
     /*
+     * ***********************************************************
      * These equations are _without_ the bottom side ground plane.
+     * ***********************************************************
      */
 
     /* match the notation in Wadell */
@@ -196,7 +216,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
             "See https://github.com/dmcmahill/wcalc/issues/16 for some ongoing discussion of\n"
             "coplanar waveguide with thick metal.\n");
       }
-      
+
       at = a + deltat;
       bt = b - deltat;
     } else {
@@ -221,7 +241,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
     /* Wadell (3.4.1.2) - thickness corrected effective dielectric constant */
     line->keff = eeff - (eeff - 1.0) / ( (0.5*(b - a)/(0.7 * line->subs->tmet))*k_kp + 1.0);
- 
+
     /* for coplanar waveguide (ground signal ground) */
     z0 = FREESPACEZ0 / (4.0 * sqrt(line->keff) * k_kpt);
 
@@ -268,17 +288,40 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     printf("%s():  z0_tmp   = %g\n", __FUNCTION__, z0_tmp);
 #endif
 
-  } else {  
+  } else {
     /*
+     * ***********************************************************
      * These equations are _with_ the bottom side ground plane.
+     * ***********************************************************
      *
      * See Wadell, eq 3.4.3.1 through 3.4.3.6 on p. 79
      */
 
+    /* find the limiting microstrip case (very large gap) */
+    msline = microstrip_line_new();
+    msline->subs->h = line->subs->h;
+    msline->subs->er = line->subs->er;
+    msline->subs->tmet = line->subs->tmet;
+    msline->subs->rho = line->subs->rho;
+    msline->subs->rough = line->subs->rough;
+    msline->subs->tand = line->subs->tand;
+
+    msline->w = line->w;
+    msline->l = line->l;
+    msline->freq = line->freq;
+    rslt = microstrip_calc(msline, line->freq);
+    if(rslt != 0) {
+      alert("Failed to analyze limiting microstrip case.");
+      return rslt;
+    }
+    z0ms = msline->z0;
+    keffms = msline->keff;
+
     /*
      * FIXME -- surely these are not accurate without accounting for
-     * metal thickness...
+     * metal thickness, especially in the narrow gap case.
      */
+
 
     /*
      * in https://github.com/dmcmahill/wcalc/issues/19 the question
@@ -290,62 +333,140 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      *
      */
 
-    /* s->inf : k -> 0 */
-    k = line->w / (line->w + 2.0*line->s);
+    sv[0] = (1 - interp_delta)*line->s;
+    sv[1] = line->s;
+    sv[2] = (1.0 + interp_delta)*line->s;
 
-    /* s->inf : k1 -> tanh( pi*w/(4*h) ) */
-    k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) / 
-      tanh(M_PI*(line->w + 2.0*line->s) / (4.0 * line->subs->h));
+    for(i=0; i<=2 ; i++) {
+      s = sv[i];
+
+      /* s->inf : k -> 0 */
+      k = line->w / (line->w + 2.0*s);
+
+      /* s->inf : k1 -> tanh( pi*w/(4*h) ) */
+      k1 = tanh(M_PI*line->w / (4.0*line->subs->h)) /
+        tanh(M_PI*(line->w + 2.0*s) / (4.0 * line->subs->h));
+
+      /*
+       * K(0) = pi/2, K(1) = +inf so K(0)/K'(0) -> 0.  However,
+       * K'() approaches +inf very slowly.  For example:
+       * K'(0.01) = 3.695
+       * K'(0.001) = 8.294
+       *
+       * Let's see what this means in practice.  Suppose we have a 15 mil line width,
+       * and a gap that is 7492.5 mil gap (i.e. nearly 7.5 inches away).  k = 0.001
+       * and K(0.001) is nearly equal to pi/2 and K(0.001)/K'(0.001) is 1.5708 / 8.29405
+       * or 0.189.  That is really not heading towards zero very fast!  So what if we are
+       * in a more moderate region with say a 5 mil gap.  Now we have k = 15/(15 + 2*5)
+       * or k = 15/25.  In this case K(15/25) / K'(15/25) is around 0.877438.
+       * This suggests we have to be somewhat careful about thinking we can truly get to the
+       * extreme case.
+       */
+      k_kp = k_over_kp( k );
+
+      k_kp1 = k_over_kp( k1 );
+
+      keff[i] = (1.0 + line->subs->er*k_kp1/k_kp) /
+        (1.0 + k_kp1/k_kp);
+
+      z0v[i] = (FREESPACEZ0 / (2.0 * sqrt(keff[i]))) / (k_kp + k_kp1);
+#ifdef DEBUG_CALC
+      printf("%s():  using the equations with ground plane, i = %d\n", __FUNCTION__, i);
+      printf("%s():  k     = %g\n", __FUNCTION__, k);
+      printf("%s():  k1    = %g\n", __FUNCTION__, k1);
+      printf("%s():  k_kp  = %g\n", __FUNCTION__, k_kp);
+      printf("%s():  k_kp1 = %g\n", __FUNCTION__, k_kp1);
+      printf("%s():  keff  = %g\n", __FUNCTION__, keff[i]);
+      printf("%s():  z0    = %g\n", __FUNCTION__, z0v[i]);
+#endif
+
+
+#ifdef DEBUG_CALC
+      /*
+       * although the text seems to suggest this is for coplanar with
+       * ground it appears that it is actually for coplanar without ground.
+       */
+
+      printf("%s():  Steer, (6.56) and (6.58)\n", __FUNCTION__);
+      keff_tmp = 0.5*(line->subs->er + 1.0) * ( tanh(1.785 * log(line->subs->h / s) + 1.75) +
+                                                (k*s/line->subs->h)*(0.04 - 0.7*k + 0.01*(1 - 0.1*line->subs->er)*(0.25 + k)) );
+      z0_tmp = 30.0 * M_PI / (sqrt(keff_tmp) * k_kp);
+      printf("%s():  keff_tmp = %g\n", __FUNCTION__, keff_tmp);
+      printf("%s():  z0_tmp   = %g\n", __FUNCTION__, z0_tmp);
+#endif
+
+    }
 
     /*
-     * K(0) = pi/2, K(1) = +inf so K(0)/K'(0) -> 0.  However,
-     * K'() approaches +inf very slowly.  For example:
-     * K'(0.01) = 3.695
-     * K'(0.001) = 8.294
+     * Now do the interpolation between these results and the microstrip
+     * case.  A question here is what is a good interpolation function?
+     * Some considerations are:
      *
-     * Let's see what this means in practice.  Suppose we have a 15 mil line width,
-     * and a gap that is 7492.5 mil gap (i.e. nearly 7.5 inches away).  k = 0.001
-     * and K(0.001) is nearly equal to pi/2 and K(0.001)/K'(0.001) is 1.5708 / 8.29405
-     * or 0.189.  That is really not heading towards zero very fast!  So what if we are
-     * in a more moderate region with say a 5 mil gap.  Now we have k = 15/(15 + 2*5)
-     * or k = 15/25.  In this case K(15/25) / K'(15/25) is around 0.877438.
-     * This suggests we have to be somewhat careful about thinking we can truly get to the
-     * extreme case.
+     * - the impedance should never be higher than the microstrip case
+     *
+     * - for narrow gaps we should fully use the coplanar equations
+     *
+     * - how to smoothly transition from one to the other?
+     *
+     * - what about keff?  For a very small gap, thick substrate, and
+     *   thin metal, it seems like we should have essentially the same
+     *   solution to Laplaces equation for the static case in the
+     *   substrate as we do in the air.  For in between cases though,
+     *   the result will be different.
+     *
+     * The solution is we look at 3 different spacings, lower gap,
+     * nominal gap, and higher gap.  Then look at how the calculated
+     * characteristic impedances land relative to the microstrip case.
+     * - If all 3 are above the microstip case then use the microstip case.
+     * - If all 3 are below the microstrip case then use the CPW case.
+     * - Else interpolate between the lower value that is in the CPW
+     *   region and the microstrip case.  Currently this is a linear
+     *   interpolation between the two.  This could be re-examined with
+     *   more E&M data but we probably need to get the metal thickness
+     *   correction going first.
+     *
+     * the 3 values we have are for lower gap, nominal gap, higher gap
      */
-    k_kp = k_over_kp( k );
+    if(z0v[2] < z0ms) {
+      /*
+       * all 3 values are below the microstrip limit
+       * -> no interpolation, use CPW equations.
+       */
+      z0 = z0v[1];
+    } else if(z0v[0] > z0ms) {
+      /*
+       * all 3 values are above the microstrip limit
+       * -> no interpolation, use MS equations.
+       */
+      z0 = z0ms;
+    } else {
+      /* interpolate between the two */
+      z0 = 0.5*(z0v[0] + z0ms);
+    }
 
-    k_kp1 = k_over_kp( k1 );
-
-    line->keff = (1.0 + line->subs->er*k_kp1/k_kp) /
-      (1.0 + k_kp1/k_kp);
-
-    z0 = (FREESPACEZ0 / (2.0 * sqrt(line->keff))) / (k_kp + k_kp1);
-#ifdef DEBUG_CALC
-    printf("%s():  using the equations with ground plane\n", __FUNCTION__);
-    printf("%s():  k     = %g\n", __FUNCTION__, k);
-    printf("%s():  k1    = %g\n", __FUNCTION__, k1);
-    printf("%s():  k_kp  = %g\n", __FUNCTION__, k_kp);
-    printf("%s():  k_kp1 = %g\n", __FUNCTION__, k_kp1);
-    printf("%s():  keff  = %g\n", __FUNCTION__, line->keff);
-    printf("%s():  z0    = %g\n", __FUNCTION__, z0);
-#endif
-
-
-#ifdef DEBUG_CALC
-    printf("%s():  Steer, (6.56) and (6.58)\n", __FUNCTION__);
-    keff_tmp = 0.5*(line->subs->er + 1.0) * ( tanh(1.785 * log(line->subs->h / line->s) + 1.75) +
-         (k*line->s/line->subs->h)*(0.04 - 0.7*k + 0.01*(1 - 0.1*line->subs->er)*(0.25 + k)) );
-    z0_tmp = 30.0 * M_PI / (sqrt(keff_tmp) * k_kp);
-    printf("%s():  keff_tmp = %g\n", __FUNCTION__, keff_tmp);
-    printf("%s():  z0_tmp   = %g\n", __FUNCTION__, z0_tmp);
-#endif
+    if(keff[2] < keffms) {
+      /*
+       * all 3 values are below the microstrip limit
+       * -> no interpolation, use CPW equations.
+       */
+      line->keff = keff[1];
+    } else if(keff[0] > keffms) {
+      /*
+       * all 3 values are above the microstrip limit
+       * -> no interpolation, use MS equations.
+       */
+      line->keff = msline->keff;
+    } else {
+      /* interpolate between the two */
+      line->keff = 0.5*(keff[0] + keffms);
+    }
 
   }
 
 #ifdef DEBUG_CALC
   printf("%s():  z0 = %g ohms\n", __FUNCTION__, z0);
 #endif
-	
+
   /*
    * Electrical Length
    */
@@ -353,29 +474,29 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   /* propagation velocity (meters/sec) */
   v = LIGHTSPEED / sqrt(line->keff);
   line->len = 360*line->l*f/v;
-  
+
   /*
-   * delay on line 
+   * delay on line
    */
   delay = line->l / v;
-  
+
 
   /* FIXME - need open circuit end correction for coplanar */
   deltal = 0;
 
   /* find the incremental circuit model */
-  
+
   /*
    * find L and C from the impedance and velocity
-   * 
+   *
    * z0 = sqrt(L/C), v = 1/sqrt(LC)
-   * 
+   *
    * this gives the result below
    */
-   
+
   L = z0/v;
   C = 1.0/(z0*v);
-  
+
   /* resistance and conductance will be updated below */
   R = 0.0;
   G = 2*M_PI*f*C*line->subs->tand;
@@ -411,7 +532,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     else
       q = (line->keff - 1.0) / (line->keff  - line->keff / line->subs->er);
 
-    /* 
+    /*
      * loss from Wadell (3.4.1.10).  Note that (3.4.1.10) seems to be
      * missing a factor of pi.
      */
@@ -422,25 +543,25 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 
     /* loss in dB/meter */
     ld = 20.0*log10(exp(1.0)) * ld;
-    
+
     /* loss in dB */
     ld = ld * line->l;
 
-  
+
     /*
      * Conduction Losses
      */
-       
+
     /* calculate skin depth */
 
     /* permeability of free space */
     mu = 4.0*M_PI*1e-7;
-   
+
     /* skin depth in meters */
     line->skindepth = sqrt(line->subs->rho/(M_PI*f*mu));
 
     delta = line->skindepth;
-       
+
     /* make a copy, we'll want it  later */
     depth = delta;
 
@@ -462,7 +583,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
      */
     if(line->skindepth < line->subs->tmet/3.0)
       {
-   
+
 	/* Use Wheelers "incremental inductance" approach */
 
 	/* clone the line */
@@ -481,7 +602,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
         }
 	z1 = tmp_line.z0;
 
-	/* 
+	/*
 	 * er = 1.0 impedance with dimensions modified by
 	 * 1/2 the skin depth on all conductors.  Note that
 	 * this means reduce width by 1/2 the skin depth on both sides
@@ -512,8 +633,8 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     else if(line->subs->tmet > 0.0 && line->subs->rho > 0.0)
       {
 	/* resistance per meter = 1/(Area*conductivity) */
-	R = line->subs->rho/(line->w*line->subs->tmet);  
-  
+	R = line->subs->rho/(line->w*line->subs->tmet);
+
 	/* conduction losses, nepers per meter */
 	lc = R/(2.0*z0);
 
@@ -537,28 +658,28 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
 #endif
       }
 
- 
+
     /* loss in dB/meter */
     lc = 20.0*log10(exp(1.0)) * lc;
-   
+
     /* loss in dB */
     lc = lc * line->l;
-   
+
     /* factor due to surface roughness
-     * note that the equation in Fooks and Zakarevicius is slightly 
-     * errored.   
-     * the correct equation is penciled in my copy and was 
+     * note that the equation in Fooks and Zakarevicius is slightly
+     * errored.
+     * the correct equation is penciled in my copy and was
      * found in Hammerstad and Bekkadal
      */
     if( lc > 0.0 )
       lc = lc * (1.0 + (2.0/M_PI)*atan(1.4*pow((line->subs->rough/delta),2.0)));
-   
+
     /*
      * Total Loss
      */
-   
+
     loss = ld + lc;
-   
+
   } /* if (flag == WITHLOSS ) */
   else {
     lc = 0.0;
@@ -566,7 +687,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
     loss = 0.0;
   }
 
-   
+
   /*  store results */
   line->z0 = z0;
 
@@ -581,10 +702,10 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   line->delay = delay;
 
   line->Ls = L;
-  line->Rs = R; 
+  line->Rs = R;
   line->Cs = C;
   line->Gs = G;
-  
+
   /* XXX FIXME
    * Ro + j Xo = sqrt((jwL + R) / (jwC + G))
    * but need to take a pass through and fix
@@ -595,7 +716,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   z0_c = c_sqrt(c_div(c_complex(R, omega*L), c_complex(G, omega*C)));
   line->Ro = REAL(z0_c);
   line->Xo = IMAG(z0_c);
-  
+
   line->Ro = z0;
   line->Xo = 0.0;
 
@@ -626,7 +747,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
   /* the optimization variables, current, min/max, and previous values */
   double var = 0, varmax = 0, varmin = 0, varold = 0;
-  
+
   /* errors due to the above values for the optimization variable */
   double err = 0, errmax = 0, errmin = 0, errold = 0;
 
@@ -642,14 +763,14 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
   /* number of iterations so far, and max number allowed */
   int iters = 0;
   int maxiters = 100;
-  
+
   /* convergence parameters */
   double abstol = 0.1e-6;
   double reltol = 0.01e-6;
-  
+
   /* flag to end optimization */
   int done = 0;
-  
+
   /*
    * figure out what parameter we're synthesizing and set up the
    * various optimization parameters.
@@ -730,7 +851,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 	 line->subs->h/line->units_lwht->sf, line->units_lwht->name);
   printf("coplanar_syn(): Substrate dielectric const. = %g \n",line->subs->er);
   printf("coplanar_syn(): Substrate loss tangent      = %g \n",line->subs->tand);
-  printf("coplanar_syn(): Frequency                   = %g MHz\n",f/1e6); 
+  printf("coplanar_syn(): Frequency                   = %g MHz\n",f/1e6);
   printf("coplanar_syn():                             = %g %s\n",
 	 line->freq/line->units_freq->sf, line->units_freq->name);
   printf("coplanar_syn(): -------------- --------------------- ----------\n");
@@ -774,7 +895,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
       alert_bracket();
       return -1;
     }
-  
+
     /* figure out the slope of the error vs variable */
     if (errmax > 0)
       sign =  1.0;
@@ -788,12 +909,12 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
   while (!done) {
     /* update the interation count */
     iters = iters + 1;
-    
+
     /* calculate an estimate of the derivative */
     deriv = (err - errold) / (var - varold);
 
 #ifdef DEBUG_SYN
-    printf("Iteration #%d:  varmin = %g, var = %g, varold = %g, varmax = %g, err = %g, errold = %g, deriv = %g\n", 
+    printf("Iteration #%d:  varmin = %g, var = %g, varold = %g, varmax = %g, err = %g, errold = %g, deriv = %g\n",
 	   iters, varmin, var, varold, varmax, err, errold, deriv);
 #endif
     /* copy over the current estimate to the previous one */
@@ -802,8 +923,8 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
     /* try a quasi-newton iteration */
     var = var - err / deriv;
-  
-    
+
+
     /*
      * see if the new guess is within our bracketed range.  If so,
      * accept the new estimate.  If not, toss it out and do a
@@ -834,7 +955,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
     else
       varmin = var;
 
- 
+
     /* check to see if we've converged */
     if (fabs(err) < abstol){
       done = 1;
@@ -859,7 +980,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
       alert_bug();
       return -1;
     }
-    
+
 
 #ifdef DEBUG_SYN
       printf("coplanar_syn(): iteration #%d:  var = %g\terr = %g\n", iters, var, err);
@@ -877,7 +998,7 @@ int coplanar_syn(coplanar_line *line, double f, int flag)
 
   /* recalculate using real length to find loss  */
   coplanar_calc(line,f);
-  
+
 #ifdef DEBUG_SYN
   printf("synthesis for Z0=%g [ohms] and len=%g [deg]\n", line->z0, line->len);
   printf("produced:\n");
