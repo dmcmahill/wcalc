@@ -7,3 +7,6 @@ stripline.txt
 # temp files
 *.tmp
 
+# python notebook temp area
+.ipynb_checkpoints/
+
