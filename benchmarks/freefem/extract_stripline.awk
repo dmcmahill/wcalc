@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# Copyright (c) 2021 Dan McMahill
+# Copyright (c) 2021, 2022 Dan McMahill
 # All rights reserved.
 # 
 # This program is free software; you can redistribute it and/or modify
