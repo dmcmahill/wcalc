@@ -8,10 +8,11 @@ in wcalc.
 a few consequences to keep in mind:
 
 1. Dispersion is *not* modeled.  For transmission lines that support true TEM propagation
-mode, coax and stripline for example both support TEM mode, this is not an issue.
+mode this is not an issue.  Coax and stripline for example, both support TEM mode.
 Microstrip however has a quasi-TEM mode.  TEM cannot be supported in microstrip because
 the velocity of propagation above and below the line is different and the boundary
-conditions cannot be satisified by true TEM.  Still, this is a helpful check, especially
+conditions cannot be satisified by true TEM.  Still, this electro static approach
+is a helpful check, especially
 in cases where we may be exceeding limits in the original equations.  Thick metal
 coplanar waveguide or coplanar waveguide with ground and a gap that is more than the
 dielectric thickness are a few problem areas that FreeFEM can help with.
@@ -22,7 +23,19 @@ with finite conductance because we need some electric field in the direction of 
 to cause current to flow in the lossy conductors.  Again, that is not an effect we're trying
 to model here.
 
+3. This is not a consequence of the 2-D Laplace's equation solution but rather a
+general pitfall of field solvers.  It is easy to view a field solver solution as
+the final answer but end up accidentally finding the answer to the wrong question.
+For example thick coplanar waveguide with narrow gap is not well modeled by the
+closed form equations.  However, the FreeFEM model here assumes that the conductor
+sidewalls are perfectly vertical and that there is no dielectric coating such as
+the soldermask used in a typical printed circuit board flow.  A soldermask thickness
+of around 0.8 mil (1 mil = 1/1000 inch) and a dielectric constant of 3.4 is not
+uncommon. 
+
 # Running the tests
+See the individual .edp files for more options.  Many of them already have a way
+to read parameters from an input file and run multiple analyses.
 
 ## Linux
 ```
@@ -35,6 +48,12 @@ FreeFem++ -f stripline.edp
 # or (why CoCoa?) can run
 FreeFem++-CoCoa -wg -f stripline.edp
 ```
+
+# Python Notebook
+The start of a python notebook is included that assists in comparing FreeFEM results
+against wcalc results.  The notebook is in `wcalc_vs_freefem.ipynb`.  Until a python
+interface is added, this notebook just uses `stdio-wcalc` to access the wcalc
+routines.
 
 # Roadmap
 A primary goal is to eventually let FreeFEM run for a long time and generate a lot of
@@ -53,15 +72,15 @@ was started.
 The problem statement for Laplace's equation in these files may look a little different
 from the form that students are first introduced to.  For further reading look for
 a text that talks about ajoint operators, Green's functions, and also variational
-methods for PDE's.
+methods for partial differential equations (PDE's).
 
-The big picture ideal though is that these models all just solve Laplaces equation for
+The big picture idea is that these models all just solve Laplace's equation for
 electro quasi-static potential subject to boundary conditions imposed by the signal
-and ground conductors.  The region is bounded by putting a boundary around the entire
-problem.  For cases such as coax, we already have this outer boundary as part of the
-problem.  For cases such as microstrip, we end up putting the structure inside of a
-metal box and have to size the box large enough to not affect the operation of the
-transmission line.
+and ground conductors.  The region is bounded (made finite) by placing a boundary
+around the entire problem.  For cases such as coax, we already have this outer
+boundary as part of the problem.  For cases such as microstrip, we end up putting
+the structure inside of a metal box and have to size the box large enough to not
+affect the operation of the transmission line.
 
 In mixed-dielectric cases such as microstrip, an additional border is placed at the
 dielectric interface to cause additional meshing.
@@ -86,4 +105,17 @@ the impedance as in the single dielectric case.
 The stripline equations should be exact as this ie one of the relatively few structures
 where we have an analytic solution available.  The FreeFEM results show a great
 match.  This also helps validate how FreeFEM is being used.
+
+## microstrip
+This appears to be working.
+
+## coplanar waveguide
+This appears to be working.
+
+## coupled microstrip
+The meshing should be updated to be more like the microstrip or coplanar waveguide.
+In particular, care should be taken for matching the meshing of the boundary between
+dielectrics and the meshing of the metal to avoid numeric issues.  If this is not
+taken care of one symptom may be some non-monotonic behavior in plots of impedance
+or other parameter versus some physical dimension.
 
