@@ -53,9 +53,8 @@ msgid "/File/_Export to PDF"
 msgstr ""
 
 #: gtk-wcalc/menus.c:87
-#, fuzzy
 msgid "/File/Page Set_up"
-msgstr "/Archivo/Salvar como"
+msgstr ""
 
 #: gtk-wcalc/menus.c:91
 msgid "/File/sep3"
