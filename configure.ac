@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007, 2008, 2009, 2017, 2020 Dan McMahill
+dnl 2007, 2008, 2009, 2017, 2020, 2022 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl 
@@ -1308,6 +1308,8 @@ AC_SUBST(LIBWALC_LDFLAGS)
 
 AC_OUTPUT(
 	Makefile 
+	benchmarks/Makefile 
+	benchmarks/freefem/Makefile 
 	include/Makefile
 	intl/Makefile
 	m4/Makefile

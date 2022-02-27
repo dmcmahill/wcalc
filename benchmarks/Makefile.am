@@ -1,5 +1,4 @@
-##
-## Copyright (C) 2001, 2002, 2003, 2004, 2017, 2020, 2021, 2022 Dan McMahill
+## Copyright (C) 2022 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -18,21 +17,5 @@
 ## 
 
 SUBDIRS= \
-	benchmarks \
-	m4 include intl po @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
-		@GTK_WCALC@ @CGI_WCALC@ \
-		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils win32
-
-DIST_SUBDIRS= benchmarks m4 include intl po libwcalc pixmaps stdio-wcalc gtk-wcalc \
-		cgi-wcalc octave-wcalc sci-wcalc mex-wcalc htdocs utils win32
-
-ACLOCAL_AMFLAGS=	-I m4
-
-EXTRA_DIST= config.rpath \
-	gettext.h \
-	ltcf-c.sh \
-	AUTHORS \
-	README.newmodel \
-	README.win32 \
-	TODO
+	freefem
 
