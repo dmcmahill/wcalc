@@ -27,7 +27,7 @@ dnl AM_INIT_AUTOMAKE([1.9 no-dependencies])
 AM_INIT_AUTOMAKE([1.9])
 
 dnl Create a configuration header
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
