@@ -1,0 +1,85 @@
+include "getARGV.idp"
+real a = getARGV("-a", 1.);
+real b = getARGV("-b", 1.);
+string fnm = getARGV("-fnm", "");
+if( fnm.length == 0) { fnm = "output.log"; }
+
+cout << "Command line:" << endl << endl;
+cout << "    a : " << a << endl;
+cout << "    b : " << b << endl;
+cout << "  fnm : " << fnm << endl;
+
+// example of writing to an output file
+//  question:  Is there an fclose or other similar?
+// For now, just enclose in {} because variables exist until
+// their current block ends so the stream will be closed automatically.
+{
+    ofstream logf(fnm);
+    // to append, use:
+    //ofstream logf(fnm, append);
+
+    logf << "* This is an output log" << endl;
+    logf << "* This is a comment" << endl;
+    logf << " * This is also a comment" << endl;
+    logf << "12.3 4.5   678.9" << endl;
+    logf << "2.1   3  65.4" << endl;
+    logf << "* A blank line follows" << endl << endl;
+    logf << "* More data next" << endl;
+    logf << "1 2 3" << endl;
+    //logf.close();
+}
+
+//Function to skip comment starting with * in a file
+func ifstream skipcomment(ifstream &ff){
+    while(1) {
+        // store file position
+        int where = ff.tellg();
+
+        string comment;
+
+        // this reads the next string but it strips leading whitespace
+        // which helps us!
+        try {
+            ff >> comment;
+        }
+        catch(...) { cout << "end of file" << endl; }
+
+        if (!ff.good()) break;
+
+        if (comment(0:0) == "*"){
+            getline(ff, comment);
+            cout << " -- *" << comment << endl;
+        } else {
+            ff.seekg(where); //restore file position
+            break;
+        }
+    }
+    return ff;
+}
+
+
+string s;
+ifstream data(fnm);
+
+
+getline(data, s);
+cout << "With getline() read:  X" << s << "X" << endl << endl;
+cout << "Now with >>" << endl;
+
+while(data.good()) {
+    real xx, yy, zz;
+    skipcomment(data);
+    if (!data.good()) break;
+
+    data >> xx;
+    data >> yy;
+    data >> zz;
+
+    cout << "xx = " << xx << endl;
+    cout << "yy = " << yy << endl;
+    cout << "zz = " << zz << endl;
+    cout << endl << endl;
+}
+
+cout << "All done!" << endl;
+

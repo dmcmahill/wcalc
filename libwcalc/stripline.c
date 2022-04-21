@@ -35,6 +35,11 @@
  *    H. A. Wheeler, "Formulas for the skin effect", Proc. IRE,
  *    Vol. 30, No. 9, September 1942, pp. 412-4124
  *
+ *
+ * Notes:
+ *   2-D solution of Laplace's equation with the FreeFEM++ tool shows essentially
+ *   perfect match for 0.1 < W/H < 10.0 with metal thickness up to half of the total
+ *   substrate height.
  */
 
 /* debug stripline_syn()  */

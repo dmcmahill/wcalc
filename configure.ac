@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl
 dnl Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-dnl 2007, 2008, 2009, 2017, 2020 Dan McMahill
+dnl 2007, 2008, 2009, 2017, 2020, 2022 Dan McMahill
 dnl All rights reserved.
 dnl
 dnl 
@@ -20,14 +20,14 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 dnl 
 
-AC_INIT([wcalc], [1.1A])
+AC_INIT([wcalc],[1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
-AC_PREREQ([2.68])
+AC_PREREQ([2.71])
 dnl AM_INIT_AUTOMAKE([1.9 no-dependencies])
-AM_INIT_AUTOMAKE([1.9])
+AM_INIT_AUTOMAKE([1.9 subdir-objects])
 
 dnl Create a configuration header
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
@@ -101,7 +101,7 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
-AC_PROG_LIBTOOL
+LT_INIT
 
 if test "x$WIN32" = "xyes" ; then
 	AC_CHECK_TOOL([WINDRES], [windres], [no])
@@ -272,7 +272,7 @@ PKG_CHECK_MODULES(WCALC, wcalc = ${VERSION},
 
 	PIXMAPS=
 ,
-	AC_ERROR([Unable to locate an installed libwcalc-${VERSION}])
+	AC_MSG_ERROR(Unable to locate an installed libwcalc-${VERSION})
 )
 
 fi
@@ -306,7 +306,7 @@ if test "X$with_scilab" = "Xno" ; then
 elif test "X$with_scilab" = "Xyes" ; then
 	AC_PATH_PROG(SCILAB, scilab, no)
 	if test "X$SCILAB" = "Xno" ; then
-		AC_ERROR([No scilab installation could be found])
+		AC_MSG_ERROR(No scilab installation could be found)
 	fi
 
 	AC_MSG_CHECKING([for the scilab base directory])
@@ -314,7 +314,7 @@ elif test "X$with_scilab" = "Xyes" ; then
 	AC_MSG_RESULT([$SCI])
 
 	if test "X$SCI" = "X" ; then
-		AC_ERROR([Scilab base directory could not be found])
+		AC_MSG_ERROR(Scilab base directory could not be found)
 	fi
 
 	SCI_WCALC=sci-wcalc
@@ -323,7 +323,7 @@ else
 	SCI=$with_scilab
 	AC_PATH_PROG(SCILAB, scilab, no, [$SCI/bin:$PATH])
 	if test "X$SCILAB" = "Xno" ; then
-		AC_ERROR([No scilab installation could be found])
+		AC_MSG_ERROR(No scilab installation could be found)
 	fi
 
 	SCI_WCALC=sci-wcalc
@@ -339,8 +339,8 @@ if test "X$SCI_WCALC" != "X"; then
 		AC_MSG_RESULT([$SCISTACK])
 	else
 		AC_MSG_RESULT([no])
-		AC_ERROR([The directory $SCI does not appear to be the root
-of a complete (and working) scilab installation.])
+		AC_MSG_ERROR(The directory $SCI does not appear to be the root
+of a complete (and working) scilab installation.)
 	fi
 fi
 
@@ -357,7 +357,7 @@ if test "X$SCI_WCALC" != "X"; then
 	fi
 	AC_MSG_RESULT([$SCI_VER])
 	if test "X$SCI_VER" = "X" ; then
-		AC_ERROR([Could not extract the scilab version])
+		AC_MSG_ERROR(Could not extract the scilab version)
 	fi
 else
 	SCI_VER=""
@@ -408,7 +408,7 @@ if test "X$wc_oct_wcalc_yesno" = "Xyes"; then
 
 	AC_PATH_PROG([OCTAVE], [octave], no, [$OCT_PATH])
 	if test "X$OCTAVE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
+		AC_MSG_ERROR(No octave installation could be found)
 	fi
 
    	################################################
@@ -418,7 +418,7 @@ if test "X$wc_oct_wcalc_yesno" = "Xyes"; then
 
 	AC_PATH_PROG([OCTAVE_CONFIG], [octave-config], no, [$OCT_PATH])
 	if test "X$OCTAVE_CONFIG" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
+		AC_MSG_ERROR(No octave installation could be found)
 	fi
 
    	################################################
@@ -428,7 +428,7 @@ if test "X$wc_oct_wcalc_yesno" = "Xyes"; then
 
 	AC_PATH_PROG([MKOCTFILE], [mkoctfile], no, [$OCT_PATH])
 	if test "X$MKOCTFILE" = "Xno" ; then
-		AC_ERROR([No octave installation could be found])
+		AC_MSG_ERROR(No octave installation could be found)
 	fi
 
    	################################################
@@ -492,7 +492,7 @@ void mexFunction(
 
 	AC_PATH_PROG([OCTMEX], [mex], no, [$OCT_PATH])
 	if test "X$OCTMEX" = "Xno" ; then
-		AC_ERROR([No octave mex could be found])
+		AC_MSG_ERROR(No octave mex could be found)
 	fi
 
 
@@ -524,7 +524,7 @@ void mexFunction(
 ])],
 	AC_MSG_RESULT([yes])
 ,
-	AC_ERROR([$OCTMEX is either broken or is not octave mex])
+	AC_MSG_ERROR($OCTMEX is either broken or is not octave mex)
 )
 	# restore the language settings
 	ac_exeext=$save_ac_exeext
@@ -607,7 +607,7 @@ if test "X$OCT_WCALC" != "X"; then
 	[  --with-siteoct=[siteoct]    Override the default octave site oct directory.],
 	[
 		if test "X$with_siteoct" = "Xno" ; then
-			AC_ERROR([--without-siteoct is not allowed])
+			AC_MSG_ERROR(--without-siteoct is not allowed)
 		else
 			MYSITEOCT="$with_siteoct"
 		fi
@@ -622,7 +622,7 @@ if test "X$OCT_WCALC" != "X"; then
 	[  --with-siteoctm=[siteoctm]    Override the default octave site oct m directory.],
 	[
 		if test "X$with_siteoctm" = "Xno" ; then
-			AC_ERROR([--without-siteoctm is not allowed])
+			AC_MSG_ERROR(--without-siteoctm is not allowed)
 		else
 			MYSITEOCT="$with_siteoctm"
 		fi
@@ -819,7 +819,7 @@ AC_ARG_WITH([cgibin],
                           directory.  [default = libexecdir/cgi-bin]],
 [
 if test "X$with_cgibin" = "Xno" ; then
-	AC_ERROR([--without-cgibin is not allowed])
+	AC_MSG_ERROR(--without-cgibin is not allowed)
 else
 	CGIBINDIR=$with_cgibin
 fi
@@ -838,7 +838,7 @@ AC_ARG_WITH([cgipath],
                           the CGI programs. [default = /cgi-bin/]],
 [
 if test "X$with_cgipath" = "Xno" ; then
-	AC_ERROR([--without-cgipath is not allowed])
+	AC_MSG_ERROR(--without-cgipath is not allowed)
 else
 	CGIPATH=$with_cgipath
 fi
@@ -860,7 +860,7 @@ AC_ARG_WITH([htmldir],
                           [default = pkgdatadir]],
 [
 if test "X$with_htmldir" = "Xno" ; then
-	AC_ERROR([--without-htmldir is not allowed])
+	AC_MSG_ERROR(--without-htmldir is not allowed)
 else
 	HTMLDIR=$with_htmldir
 fi
@@ -881,7 +881,7 @@ AC_ARG_WITH([htmlpath],
                           [default = /wcalc/]],
 [
 if test "X$with_htmlpath" = "Xno" ; then
-	AC_ERROR([--without-htmlpath is not allowed])
+	AC_MSG_ERROR(--without-htmlpath is not allowed)
 else
 	HTMLPATH=$with_htmlpath
 fi
@@ -914,7 +914,7 @@ if test "X$with_matlab" = "Xno" ; then
 elif test "X$with_matlab" = "Xyes" ; then
 	AC_PATH_PROG(MEX, mex, no)
 	if test "X$MEX" = "Xno" ; then
-		AC_ERROR([No matlab mex could be found])
+		AC_MSG_ERROR(No matlab mex could be found)
 	fi
 
 	MEX_WCALC=mex-wcalc
@@ -924,7 +924,7 @@ else
 
 	AC_PATH_PROG(MEX, mex, no, [$MATLAB_DIR/bin:$PATH])
 	if test "X$MEX" = "Xno" ; then
-		AC_ERROR([No matlab mex could be found])
+		AC_MSG_ERROR(No matlab mex could be found)
 	fi
 
 	MEX_WCALC=mex-wcalc
@@ -1094,7 +1094,7 @@ void mexFunction(
 ])],
 	AC_MSG_RESULT([yes])
 ,
-	AC_ERROR([$MEX is either broken or is not matlab mex])
+	AC_MSG_ERROR($MEX is either broken or is not matlab mex)
 )
 
 if test "X${_use_rpath}" = "Xyes" ; then
@@ -1189,7 +1189,8 @@ wc_gensub_yesno=no
 AM_CONDITIONAL(AWK_GENSUB, test x$wc_gensub_yesno = xyes)
 
 dnl check for headers
-AC_HEADER_STDC
+AC_PROG_EGREP
+
 AC_CHECK_HEADERS(locale.h string.h)
 
 dnl check for libc functions
@@ -1306,8 +1307,9 @@ if test "x$GCC" = "xyes"; then
 fi
 AC_SUBST(LIBWALC_LDFLAGS)
 
-AC_OUTPUT(
-	Makefile 
+AC_CONFIG_FILES([Makefile 
+	benchmarks/Makefile 
+	benchmarks/freefem/Makefile 
 	include/Makefile
 	intl/Makefile
 	m4/Makefile
@@ -1330,7 +1332,8 @@ AC_OUTPUT(
 	pixmaps/Makefile
 	utils/Makefile
 	win32/Makefile
-)
+])
+AC_OUTPUT
 
 
 # print a summary of paths and such since there are a bunch

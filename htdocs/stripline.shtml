@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<!-- Copyright (c) 2001, 2002, 2004, 2006
+<!-- Copyright (c) 2001, 2002, 2004, 2006, 2021
 	Dan McMahill  ALL RIGHTS RESERVED. -->
 <link rev="made" href="mailto:danmc@sourceforge.net">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -59,7 +59,12 @@ stripline synthesis,
       </LI>
       
     </OL>
-    
+   
+   <H2><A NAME="Comments">Comments</A></H2>
+   <P>
+      The stripline characteristic impedance results have been validated using
+      <a href="http://freefem.org">FreeFem</a>.
+   </P> 
   </font>
     
   </td>

@@ -1,5 +1,5 @@
 ##
-## Copyright (C) 2001, 2002, 2003, 2004, 2017, 2020, 2021, 2022 Dan McMahill
+## Copyright (C) 2022 Dan McMahill
 ## All rights reserved.
 ##
 ## 
@@ -17,22 +17,24 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ## 
 
-SUBDIRS= \
-	benchmarks \
-	m4 include intl po @LIB_WCALC@ @PIXMAPS@ @STDIO_WCALC@ \
-		@GTK_WCALC@ @CGI_WCALC@ \
-		@OCT_WCALC@ @SCI_WCALC@ @MEX_WCALC@ @HTDOCS@ utils win32
+DAT_FILES= \
+	coplanar.dat \
+	microstrip.dat \
+	stripline.dat
 
-DIST_SUBDIRS= benchmarks m4 include intl po libwcalc pixmaps stdio-wcalc gtk-wcalc \
-		cgi-wcalc octave-wcalc sci-wcalc mex-wcalc htdocs utils win32
+EDP_FILES= \
+	coplanar.edp \
+	coupled_microstrip.edp \
+	io_example.edp \
+	microstrip.edp \
+	stripline.edp \
+	utils.edp
 
-ACLOCAL_AMFLAGS=	-I m4
-
-EXTRA_DIST= config.rpath \
-	gettext.h \
-	ltcf-c.sh \
-	AUTHORS \
-	README.newmodel \
-	README.win32 \
-	TODO
+EXTRA_DIST= \
+	${DAT_FILES} \
+	${EDP_FILES} \
+	README.md \
+	extract_coplanar.awk \
+	extract_stripline.awk \
+	wcalc_vs_freefem.ipynb
 
