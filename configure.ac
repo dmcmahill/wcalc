@@ -24,7 +24,7 @@ AC_INIT([wcalc],[1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
 AC_PREREQ([2.71])
 dnl AM_INIT_AUTOMAKE([1.9 no-dependencies])
-AM_INIT_AUTOMAKE([1.9])
+AM_INIT_AUTOMAKE([1.9 subdir-objects])
 
 dnl Create a configuration header
 AC_CONFIG_HEADERS([config.h])
