@@ -20,6 +20,7 @@
 
 regen=no
 list_only=no
+show_diff=no
 
 # make sure we have the right paths when running this from inside the
 # source tree and also from outside the source tree.
@@ -31,8 +32,11 @@ rundir=${here}/run
 
 TESTLIST=${srcdir}/tests.list
 
+DIFF_PROG=${DIFF_PROG:-diff}
+DIFF_FLAGS=${DIFF_FLAGS:-"-U2"}
 
 usage() {
+cat << EOF
 
 $0 - Interact with the stdio-wcalc test suite
 
@@ -52,10 +56,21 @@ Command line options:
 		   caution and the resulting reference file should be checked very
 		   carefully.
 
+  -s|--show-diffs  On failures display the diff output instead of simply reporting
+                   a failure
+
 If no test name is given then $0 will run all of the tests which are 
 configured in ${TESTLIST}.  To run a single test or a subset of the complete tests,
 just list the test names on the $0 command line.
 
+Environment variables:
+  DIFF_PROG        The diff program.
+                   Currently "${DIFF_PROG}"
+
+  DIFF_FLAGS       The flags used when displaying diff output.
+                   Currently "${DIFF_FLAGS}"
+
+EOF
 } 
 
 while test -n "$1"
@@ -78,6 +93,11 @@ do
 	# regenerate the 'golden' output files.  Use this with caution.
 	# In particular, all differences should be noted and understood.
 	regen=yes
+	shift
+	;;
+
+    -s|--show-diffs)
+	show_diff=yes
 	shift
 	;;
 
@@ -151,6 +171,9 @@ for t in $all_tests ; do
 	else
 	    if [ "X$regen" != "Xyes" ]; then
 		echo "FAILED:  See diff ${srcdir}/${t}.ref ${here}/${t}.dia"
+		if [ "X${show_diff}" = "Xyes" ]; then
+                    ${DIFF_PROG} ${DIFF_FLAGS} "${srcdir}/${t}.ref" "${here}/${t}.dia"
+                fi
 	    else	       
 		mv ${here}/${t}.dia ${srcdir}/${t}.ref 
 		echo "Regenerated (changed)"
