@@ -71,9 +71,9 @@ if test $rc -ne 0 ; then
     exit 1
 fi
 lt_ver=`${LIBTOOLIZE} --version | awk '{print $NF; exit}'`
-lt_maj=`echo $lt_ver | sed 's;\..*;;g'`
-lt_min=`echo $lt_ver | sed -e 's;^[0-9]*\.;;g'  -e 's;\..*$;;g'`
-lt_teeny=`echo $lt_ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g'`
+lt_maj=`echo $lt_ver | sed 's;[.].*;;g'`
+lt_min=`echo $lt_ver | sed -e 's;^[0-9]*[.];;g'  -e 's;[.].*$;;g'`
+lt_teeny=`echo $lt_ver | sed -e 's;^[0-9]*[.][0-9]*[.];;g'`
 echo "    $lt_ver"
 
 case $lt_maj in
