@@ -22,7 +22,7 @@ dnl
 
 AC_INIT([wcalc],[1.1A])
 AC_CONFIG_SRCDIR([gtk-wcalc/wcalc.c])
-AC_PREREQ([2.71])
+AC_PREREQ([2.69])
 dnl AM_INIT_AUTOMAKE([1.9 no-dependencies])
 AM_INIT_AUTOMAKE([1.9 subdir-objects])
 
