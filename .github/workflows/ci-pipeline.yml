@@ -1,0 +1,93 @@
+name: Wcalc CI
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+  # Allows you to run this workflow manually from the Actions tab:
+  workflow_dispatch:
+
+jobs:
+  build-ubuntu:
+    # "ubuntu-latest" == ubuntu-20.04 ('focal'):
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out repository under $GITHUB_WORKSPACE:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: apt-get update
+        run: sudo apt-get update
+
+      - name: apt-get install
+        run: sudo apt-get install -y
+             guile-2.2-dev
+             autoconf
+             automake
+             autopoint
+             libgettextpo-dev
+             libgtk2.0-dev
+             netpbm
+             # need newer version
+             #pstoedit
+             w3m
+             xsltproc
+             # for tgif
+             libxmu-dev
+             xfonts-75dpi
+             gsfonts-x11
+             # for pstoedit
+             ghostscript
+             #gcc-8
+             #g++-8
+      # really should figure out how to cache this:
+      - name: install pstoedit
+        run: ./travis/install-pstoedit.sh
+        
+      - name: install tgif
+        run: ./travis/install-tgif.sh
+        
+      - name: autogen
+        run: ./autogen.sh
+        
+      - name: configure
+        run: ./configure PSTOEDIT=/usr/bin/pstoedit-3.75
+          
+      - name: build
+        run: make
+
+      - name: distcheck
+        run:  make distcheck
+
+build-macos:  
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          brew update
+          brew install --cask microsoft-edge
+          brew install autoconf
+          brew install automake
+          brew install autopoint
+          brew install libgettextpo-dev
+          brew install libgtk2.0-dev
+          brew install netpbm
+          brew install pstoedit
+          brew install tgif
+          brew install w3m
+          brew install xsltproc
+      - name: autogen
+        run: ./autogen.sh
+        
+      - name: configure
+        run: ./configure
+          
+      - name: build
+        run: make
+
+      - name: distcheck
+        run:  make distcheck
