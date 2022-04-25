@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #
-# Copyright (c) 2003, 2004, 2009 Dan McMahill
+# Copyright (c) 2003, 2004, 2009, 2022 Dan McMahill
 # All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,19 +20,24 @@
 
 regen=no
 list_only=no
+show_diff=no
 
 # make sure we have the right paths when running this from inside the
 # source tree and also from outside the source tree.
-here=`pwd`
+here="`pwd`"
 srcdir=${srcdir:-$here}
-srcdir=`cd $srcdir && pwd`
+srcdir=`cd "${srcdir}" && pwd`
 
-rundir=${here}/run
+rundir="${here}/run"
 
-TESTLIST=${srcdir}/tests.list
+TESTLIST="${srcdir}/tests.list"
 
+AWK=${AWK:-awk}
+DIFF_PROG=${DIFF_PROG:-diff}
+DIFF_FLAGS=${DIFF_FLAGS:-"-U2"}
 
 usage() {
+cat << EOF
 
 $0 - Interact with the stdio-wcalc test suite
 
@@ -52,10 +57,21 @@ Command line options:
 		   caution and the resulting reference file should be checked very
 		   carefully.
 
+  -s|--show-diffs  On failures display the diff output instead of simply reporting
+                   a failure
+
 If no test name is given then $0 will run all of the tests which are 
 configured in ${TESTLIST}.  To run a single test or a subset of the complete tests,
 just list the test names on the $0 command line.
 
+Environment variables:
+  DIFF_PROG        The diff program.
+                   Currently "${DIFF_PROG}"
+
+  DIFF_FLAGS       The flags used when displaying diff output.
+                   Currently "${DIFF_FLAGS}"
+
+EOF
 } 
 
 while test -n "$1"
@@ -81,6 +97,11 @@ do
 	shift
 	;;
 
+    -s|--show-diffs)
+	show_diff=yes
+	shift
+	;;
+
     -*)
 	echo "unknown option: $1"
 	usage
@@ -94,15 +115,15 @@ do
     esac
 done
 
-if [ "X$regen" = "Xyes" ]; then
+if [ "X${regen}" = "Xyes" ]; then
     sufx="ref"
 else
     sufx="log"
 fi
 
 
-if [ ! -f $TESTLIST ]; then
-    echo "ERROR: ($0)  Test list $TESTLIST does not exist"
+if [ ! -f "${TESTLIST}" ]; then
+    echo "ERROR: ($0)  Test list ${TESTLIST} does not exist"
     exit 1
 fi
 
@@ -113,77 +134,80 @@ skip=0
 tot=0
 
 if test -z "$1" ; then
-    all_tests=`awk 'BEGIN{FS="|"} /^#/{next} {print $1}' $TESTLIST | sed 's; ;;g'`
+    all_tests=`${AWK} 'BEGIN{FS="|"} /^#/{next} {print $1}' "${TESTLIST}" | sed 's; ;;g'`
 else
     all_tests=$*
 fi
 
-if test "x$list_only" = "xyes" ; then
+if test "X${list_only}" = "Xyes" ; then
 	echo "All tests:"
-	for t in $all_tests ; do
+	for t in ${all_tests} ; do
 		echo "  ${t}"
 	done
 	exit 0
 fi
 
-echo "Starting tests in $here."
-echo "Source directory is $srcdir"
+echo "Starting tests in ${here}."
+echo "Source directory is ${srcdir}"
 
-for t in $all_tests ; do
+for t in ${all_tests} ; do
 
-    dirs=`grep "^[ \t]*${t}[ \t]*|" $TESTLIST | awk 'BEGIN{FS="|"} {print $2}'`
-    files=`grep "^[ \t]*${t}[ \t]*|" $TESTLIST | awk 'BEGIN{FS="|"} {print $3}'`
-    args=`grep "^[ \t]*${t}[ \t]*|" $TESTLIST | awk 'BEGIN{FS="|"} {print $4}'`
+    dirs=`grep "^[ \t]*${t}[ \t]*|" "${TESTLIST}" | ${AWK} 'BEGIN{FS="|"} {print $2}'`
+    files=`grep "^[ \t]*${t}[ \t]*|" "${TESTLIST}" | ${AWK} 'BEGIN{FS="|"} {print $3}'`
+    args=`grep "^[ \t]*${t}[ \t]*|" "${TESTLIST}" | ${AWK} 'BEGIN{FS="|"} {print $4}'`
 
-    tot=`expr $tot + 1`
+    tot=`expr ${tot} + 1`
 
-    echo "Test:  $t"
-    ${here}/stdio-wcalc -v ${srcdir}/${t}.dat 2>/dev/null > ${here}/${t}.dia
+    echo "Test:  ${t}"
+    "${here}/stdio-wcalc" -v "${srcdir}/${t}.dat" 2>/dev/null > "${here}/${t}.dia"
 
-    if [ -f ${srcdir}/${t}.ref ]; then
-	if diff ${srcdir}/${t}.ref ${here}/${t}.dia >/dev/null ; then
-	    if [ "X$regen" != "Xyes" ]; then
+    if [ -f "${srcdir}/${t}.ref" ]; then
+	if "${DIFF_PROG}" "${srcdir}/${t}.ref" "${here}/${t}.dia" >/dev/null ; then
+	    if [ "X${regen}" != "Xyes" ]; then
 		echo "PASS"
 	    else
 		echo "Not regenerated (no change)"
 	    fi
-	    pass=`expr $pass + 1`
+	    pass=`expr ${pass} + 1`
 	else
-	    if [ "X$regen" != "Xyes" ]; then
-		echo "FAILED:  See diff ${srcdir}/${t}.ref ${here}/${t}.dia"
+	    if [ "X${regen}" != "Xyes" ]; then
+		echo "FAILED:  See ${DIFF_PROG} ${DIFF_FLAGS} ${srcdir}/${t}.ref ${here}/${t}.dia"
+		if [ "X${show_diff}" = "Xyes" ]; then
+                    "${DIFF_PROG}" ${DIFF_FLAGS} "${srcdir}/${t}.ref" "${here}/${t}.dia"
+                fi
 	    else	       
-		mv ${here}/${t}.dia ${srcdir}/${t}.ref 
+		mv "${here}/${t}.dia" "${srcdir}/${t}.ref"
 		echo "Regenerated (changed)"
 	    fi
-	    fail=`expr $fail + 1`
+	    fail=`expr ${fail} + 1`
 	fi
     else
-	if [ "X$regen" != "Xyes" ]; then
+	if [ "X${regen}" != "Xyes" ]; then
 	    echo "No reference file.  Skipping"
 	else	       
-	    mv ${here}/${t}.dia ${srcdir}/${t}.ref 
+	    mv "${here}/${t}.dia" "${srcdir}/${t}.ref"
 	    echo "Regenerated (created)"
 	fi
-	skip=`expr $skip + 1`
+	skip=`expr ${skip} + 1`
     fi
 
 
 done
 
-if [ "X$regen" != "Xyes" ]; then
+if [ "X${regen}" != "Xyes" ]; then
 
-    echo "Passed $pass, failed $fail, skipped $skip out of $tot tests."
+    echo "Passed ${pass}, failed ${fail}, skipped ${skip} out of ${tot} tests."
 
     rc=0
 
-    if [ $pass -ne $tot ]; then
-	rc=`expr $tot - $pass`
+    if [ ${pass} -ne ${tot} ]; then
+	rc=`expr ${tot} - ${pass}`
     fi
 
-    exit $rc
+    exit ${rc}
 else
 
-    echo "Created $skip, Regenerated $fail, Saved $pass out of $tot tests"
+    echo "Created ${skip}, Regenerated ${fail}, Saved ${pass} out of ${tot} tests"
 
     exit 0
 fi

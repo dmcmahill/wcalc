@@ -2,90 +2,153 @@ name: Wcalc CI
 
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
+      - 'dev-*'
+      - 'ci-*'
   pull_request:
     branches: [ develop ]
+  schedule:
+    # minute hour day month weekday
+    - cron: '15 1 1 * *'
   # Allows you to run this workflow manually from the Actions tab:
   workflow_dispatch:
 
 jobs:
-  build-ubuntu:
-    # "ubuntu-latest" == ubuntu-20.04 ('focal'):
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        # "ubuntu-latest" == ubuntu-20.04 ('focal'):
+        # windows-latest isn't really supported at this time by wcalc
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       # Checks-out repository under $GITHUB_WORKSPACE:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: apt-get update
+
+      - name: Install Dependencies - macOS
+        if: runner.os  == 'macOS'
+        run: |
+          brew update
+          brew install autoconf
+          brew install automake
+          brew install coreutils
+          brew install gawk
+          brew install gettext
+          brew install gtk+
+          brew install imagemagick
+          brew install netpbm
+          brew install pstoedit
+          brew install tgif
+          brew install util-linux
+          brew install w3m
+          brew install libxslt
+          brew install --cask xquartz
+          brew install xauth
+
+      - name: Homebrew netpbm workaround - macOS
+        if: runner.os  == 'macOS'
+        run: |
+          # this ships with netpbm but was giving
+          # some colors names in the ppmtoxpm output
+          # that
+          #   convert --colors 16 foo.xpm foo_16.ppm
+          # didn't like
+          #RGBDEF="$(brew list netpbm | grep rgb.txt)"
+          # but this one from XQuartz seems to work
+          RGBDEF=/opt/X11/share/X11/rgb.txt
+          echo "Setting: RGBDEF=${RGBDEF}"
+          echo "RGBDEF=${RGBDEF}" >> $GITHUB_ENV
+
+      - name: apt-get update - Linux
+        if: runner.os  == 'Linux'
         run: sudo apt-get update
-      - name: apt-get install
+
+      - name: Install dependencies - Linux
+        if: runner.os  == 'Linux'
         run: sudo apt-get install -y
              guile-2.2-dev
              autoconf
              automake
              autopoint
+             bison
+             imagemagick
              libgettextpo-dev
              libgtk2.0-dev
              netpbm
-             # need newer version
-             #pstoedit
              w3m
+             xauth
              xsltproc
-             # for tgif
+             xvfb
+
+      - name: Install tgif dependencies - Linux
+        if: runner.os  == 'Linux'
+        run: sudo apt-get install -y
              libxmu-dev
              xfonts-75dpi
              gsfonts-x11
-             # for pstoedit
+
+      # we need a newer pstoedit
+      - name: Install pstoedit dependencies - Linux
+        if: runner.os  == 'Linux'
+        run: sudo apt-get install -y
              ghostscript
-             #gcc-8
-             #g++-8
+ 
       # really should figure out how to cache this:
-      - name: install pstoedit
-        run: ./travis/install-pstoedit.sh
-        
-      - name: install tgif
-        run: ./travis/install-tgif.sh
-        
-      - name: autogen
-        run: ./autogen.sh
-        
-      - name: configure
-        run: ./configure PSTOEDIT=/usr/bin/pstoedit-3.75
-          
-      - name: build
-        run: make
-
-      - name: distcheck
-        run:  make distcheck
-
-build-macos:  
-    runs-on: macos-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install Dependencies
+      - name: Install pstoedit - Linux
+        if: runner.os  == 'Linux'
         run: |
-          brew update
-          brew install --cask microsoft-edge
-          brew install autoconf
-          brew install automake
-          brew install autopoint
-          brew install libgettextpo-dev
-          brew install libgtk2.0-dev
-          brew install netpbm
-          brew install pstoedit
-          brew install tgif
-          brew install w3m
-          brew install xsltproc
-      - name: autogen
+          ./ci-scripts/install-pstoedit.sh
+          echo "PSTOEDIT=/usr/bin/pstoedit-3.75" >> $GITHUB_ENV
+        
+      - name: Install tgif - Linux
+        if: runner.os  == 'Linux'
+        run: ./ci-scripts/install-tgif.sh
+        
+      - name: Autogen
         run: ./autogen.sh
         
-      - name: configure
-        run: ./configure
-          
-      - name: build
-        run: make
+      - name: Post-autogen workarounds
+        run: |
+          touch intl/ChangeLog
 
-      - name: distcheck
-        run:  make distcheck
+      - name: Configure
+        run: ./configure
+
+      - name: Default xvfb-run
+        run: echo "XVFB_RUN=" >> $GITHUB_ENV
+
+      - name: xvfb-run - Linux
+        if: runner.os == 'Linux'
+        run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
+          
+      - name: xvfb-run - macOS
+        if: runner.os == 'macOS'
+        run: |
+          echo "XVFB_RUN=ci-scripts/xvfb-run --auto-servernum  --error-file xvfb-run-errors.log" >> $GITHUB_ENV
+          echo "PATH=/opt/X11/bin:/usr/local/opt/util-linux/bin:${PATH}" >> $GITHUB_ENV
+
+          # Xvfb really wants this directory to exist and be owned by root
+          sudo mkdir -p -m1777 /tmp/.X11-unix
+
+      - name: Debug
+        run: |
+          bison --version
+          convert --version
+          ls -l $(which tgif)
+
+      - name: Build
+        run: |
+          echo "Running: $XVFB_RUN make"
+          $XVFB_RUN make
+
+      - name: Test stdio-wcalc
+        run: cd stdio-wcalc && ./run_tests.sh --show-diffs
+
+      - name: Distcheck
+        run:  |
+          echo "Running: $XVFB_RUN make distcheck"
+          $XVFB_RUN make distcheck
+
