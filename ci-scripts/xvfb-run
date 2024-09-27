@@ -157,7 +157,9 @@ if [ -z "$AUTHFILE" ]; then
 fi
 
 # Start Xvfb.
-MCOOKIE=$(mcookie)
+# workaround because mcookie can't be found for some reason
+#MCOOKIE=$(mcookie)
+MCOOKIE=$(dd if=/dev/urandom of=/dev/stdout bs=512 count=1 2>/dev/null | md5sum | awk '{print $1}')
 tries=10
 while [ $tries -gt 0 ]; do
     tries=$(( $tries - 1 ))
