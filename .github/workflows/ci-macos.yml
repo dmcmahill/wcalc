@@ -77,6 +77,9 @@ jobs:
           sudo mkdir -p -m1777 /tmp/.X11-unix
           echo 'export PATH="/opt/homebrew/opt/util-linux/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"' >> /Users/runner/.bash_profile
+          export LDFLAGS="-L/opt/homebrew/opt/util-linux/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/util-linux/include"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/util-linux/lib/pkgconfig"
 
       - name: Debug
         run: |
