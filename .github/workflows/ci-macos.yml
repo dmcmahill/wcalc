@@ -16,20 +16,14 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        # "ubuntu-latest" == ubuntu-20.04 ('focal'):
-        # windows-latest isn't really supported at this time by wcalc
-        os: [macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
 
     steps:
       # Checks-out repository under $GITHUB_WORKSPACE:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies - macOS
-        if: runner.os  == 'macOS'
+      - name: Install Dependencies
         run: |
           brew update
           brew install autoconf
@@ -48,8 +42,7 @@ jobs:
           brew install --cask xquartz
           brew install xauth
 
-      - name: Homebrew netpbm workaround - macOS
-        if: runner.os  == 'macOS'
+      - name: Homebrew netpbm workaround
         run: |
           # this ships with netpbm but was giving
           # some colors names in the ppmtoxpm output
@@ -61,41 +54,6 @@ jobs:
           RGBDEF=/opt/X11/share/X11/rgb.txt
           echo "Setting: RGBDEF=${RGBDEF}"
           echo "RGBDEF=${RGBDEF}" >> $GITHUB_ENV
-
-      - name: apt-get update - Linux
-        if: runner.os  == 'Linux'
-        run: sudo apt-get update
-
-      - name: Install dependencies - Linux
-        if: runner.os  == 'Linux'
-        run: sudo apt-get install -y
-             guile-2.2-dev
-             autoconf
-             automake
-             autopoint
-             bison
-             imagemagick
-             libgettextpo-dev
-             libgtk2.0-dev
-             netpbm
-             pstoedit
-             tgif
-             w3m
-             xauth
-             xsltproc
-             xvfb
-
-      - name: Install tgif dependencies - Linux
-        if: runner.os  == 'Linux'
-        run: sudo apt-get install -y
-             libxmu-dev
-             xfonts-75dpi
-             gsfonts-x11
-
-      - name: Install pstoedit dependencies - Linux
-        if: runner.os  == 'Linux'
-        run: sudo apt-get install -y
-             ghostscript
         
       - name: Autogen
         run: ./autogen.sh
@@ -109,13 +67,8 @@ jobs:
 
       - name: Default xvfb-run
         run: echo "XVFB_RUN=" >> $GITHUB_ENV
-
-      - name: xvfb-run - Linux
-        if: runner.os == 'Linux'
-        run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
           
-      - name: xvfb-run - macOS
-        if: runner.os == 'macOS'
+      - name: xvfb-run
         run: |
           echo "XVFB_RUN=ci-scripts/xvfb-run --auto-servernum  --error-file xvfb-run-errors.log" >> $GITHUB_ENV
           echo "PATH=/opt/X11/bin:/usr/local/opt/util-linux/bin:${PATH}" >> $GITHUB_ENV

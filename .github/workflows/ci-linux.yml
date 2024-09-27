@@ -1,0 +1,91 @@
+name: Wcalc CI
+
+on:
+  push:
+    branches:
+      - develop
+      - 'dev-*'
+      - 'ci-*'
+  pull_request:
+    branches: [ develop ]
+  schedule:
+    # minute hour day month weekday
+    - cron: '15 1 1 * *'
+  # Allows you to run this workflow manually from the Actions tab:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out repository under $GITHUB_WORKSPACE:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: apt-get update
+        run: sudo apt-get update
+
+      - name: Install dependencies
+        run: sudo apt-get install -y
+             guile-2.2-dev
+             autoconf
+             automake
+             autopoint
+             bison
+             imagemagick
+             libgettextpo-dev
+             libgtk2.0-dev
+             netpbm
+             pstoedit
+             tgif
+             w3m
+             xauth
+             xsltproc
+             xvfb
+
+      - name: Install tgif dependencies
+        run: sudo apt-get install -y
+             libxmu-dev
+             xfonts-75dpi
+             gsfonts-x11
+
+      - name: Install pstoedit dependencies
+        run: sudo apt-get install -y
+             ghostscript
+        
+      - name: Autogen
+        run: ./autogen.sh
+        
+      - name: Post-autogen workarounds
+        run: |
+          touch intl/ChangeLog
+
+      - name: Configure
+        run: ./configure
+
+      - name: Default xvfb-run
+        run: echo "XVFB_RUN=" >> $GITHUB_ENV
+
+      - name: xvfb-run
+        run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
+
+      - name: Debug
+        run: |
+          bison --version
+          convert --version
+          ls -l $(which tgif)
+
+      - name: Build
+        run: |
+          echo "Running: $XVFB_RUN make"
+          $XVFB_RUN make
+
+      - name: Test stdio-wcalc
+        run: cd stdio-wcalc && ./run_tests.sh --show-diffs
+
+      - name: Distcheck
+        run:  |
+          echo "Running: $XVFB_RUN make distcheck"
+          $XVFB_RUN make distcheck
+
