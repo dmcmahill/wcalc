@@ -78,6 +78,8 @@ jobs:
              libgettextpo-dev
              libgtk2.0-dev
              netpbm
+             pstoedit
+             tgif
              w3m
              xauth
              xsltproc
@@ -90,22 +92,10 @@ jobs:
              xfonts-75dpi
              gsfonts-x11
 
-      # we need a newer pstoedit
       - name: Install pstoedit dependencies - Linux
         if: runner.os  == 'Linux'
         run: sudo apt-get install -y
              ghostscript
- 
-      # really should figure out how to cache this:
-      # - name: Install pstoedit - Linux
-      #   if: runner.os  == 'Linux'
-      #   run: |
-      #     ./ci-scripts/install-pstoedit.sh
-      #     echo "PSTOEDIT=/usr/bin/pstoedit-3.75" >> $GITHUB_ENV
-        
-      - name: Install tgif - Linux
-        if: runner.os  == 'Linux'
-        run: ./ci-scripts/install-tgif.sh
         
       - name: Autogen
         run: ./autogen.sh
