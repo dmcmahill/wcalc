@@ -26,7 +26,7 @@ jobs:
     steps:
       # Checks-out repository under $GITHUB_WORKSPACE:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Dependencies - macOS
         if: runner.os  == 'macOS'
@@ -97,11 +97,11 @@ jobs:
              ghostscript
  
       # really should figure out how to cache this:
-      - name: Install pstoedit - Linux
-        if: runner.os  == 'Linux'
-        run: |
-          ./ci-scripts/install-pstoedit.sh
-          echo "PSTOEDIT=/usr/bin/pstoedit-3.75" >> $GITHUB_ENV
+      # - name: Install pstoedit - Linux
+      #   if: runner.os  == 'Linux'
+      #   run: |
+      #     ./ci-scripts/install-pstoedit.sh
+      #     echo "PSTOEDIT=/usr/bin/pstoedit-3.75" >> $GITHUB_ENV
         
       - name: Install tgif - Linux
         if: runner.os  == 'Linux'
