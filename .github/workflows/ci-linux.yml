@@ -1,4 +1,4 @@
-name: Wcalc CI
+name: Wcalc CI - Linux
 
 on:
   push:

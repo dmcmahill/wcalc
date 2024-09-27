@@ -1,4 +1,4 @@
-name: Wcalc CI
+name: Wcalc CI - MacOS
 
 on:
   push:
@@ -75,6 +75,8 @@ jobs:
 
           # Xvfb really wants this directory to exist and be owned by root
           sudo mkdir -p -m1777 /tmp/.X11-unix
+          echo 'export PATH="/opt/homebrew/opt/util-linux/bin:$PATH"' >> /Users/runner/.bash_profile
+          echo 'export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"' >> /Users/runner/.bash_profile
 
       - name: Debug
         run: |
