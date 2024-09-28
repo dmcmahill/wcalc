@@ -52,17 +52,7 @@ jobs:
           RGBDEF=/opt/X11/share/X11/rgb.txt
           echo "Setting: RGBDEF=${RGBDEF}"
           echo "RGBDEF=${RGBDEF}" >> $GITHUB_ENV
-        
-      - name: Autogen
-        run: ./autogen.sh
-        
-      - name: Post-autogen workarounds
-        run: |
-          touch intl/ChangeLog
 
-      - name: Configure
-        run: ./configure
-          
       - name: xvfb-run
         run: |
           echo "XVFB_RUN=ci-scripts/xvfb-run --auto-servernum  --error-file xvfb-run-errors.log" >> $GITHUB_ENV
@@ -70,6 +60,16 @@ jobs:
 
           # Xvfb really wants this directory to exist and be owned by root
           sudo mkdir -p -m1777 /tmp/.X11-unix
+
+      - name: Autogen
+        run: ./autogen.sh
+
+      - name: Post-autogen workarounds
+        run: |
+          touch intl/ChangeLog
+
+      - name: Configure
+        run: ./configure
 
       - name: Debug
         run: |
@@ -90,3 +90,5 @@ jobs:
           echo "Running: $XVFB_RUN make distcheck"
           $XVFB_RUN -- make distcheck
 
+      - name: Common
+        uses: ./.github/_ci-common.yml
