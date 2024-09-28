@@ -6,8 +6,12 @@ on:
       - develop
       - 'dev-*'
       - 'ci-*'
+    paths-ignore:
+      - .github/workflows/ci-linux.yml
   pull_request:
     branches: [ develop ]
+    paths-ignore:
+      - .github/workflows/ci-linux.yml
   # Allows you to run this workflow manually from the Actions tab:
   workflow_dispatch:
 
@@ -61,5 +65,5 @@ jobs:
           # Xvfb really wants this directory to exist and be owned by root
           sudo mkdir -p -m1777 /tmp/.X11-unix
 
-      - name: Common
+      - name: Build & Checks
         uses: ./.github/workflows/common
