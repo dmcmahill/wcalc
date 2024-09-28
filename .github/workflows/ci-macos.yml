@@ -33,7 +33,6 @@ jobs:
           brew install imagemagick
           brew install netpbm
           brew install pstoedit
-          brew install tbl
           brew install tgif
           brew install util-linux
           brew install w3m
