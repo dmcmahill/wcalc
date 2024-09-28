@@ -28,10 +28,13 @@ jobs:
           brew install coreutils
           brew install gawk
           brew install gettext
+          brew install groff
           brew install gtk+
           brew install imagemagick
+          brew install neqn
           brew install netpbm
           brew install pstoedit
+          brew install tbl
           brew install tgif
           brew install util-linux
           brew install w3m
