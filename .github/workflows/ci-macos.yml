@@ -31,7 +31,6 @@ jobs:
           brew install groff
           brew install gtk+
           brew install imagemagick
-          brew install neqn
           brew install netpbm
           brew install pstoedit
           brew install tbl
