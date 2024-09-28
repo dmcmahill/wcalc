@@ -8,9 +8,6 @@ on:
       - 'ci-*'
   pull_request:
     branches: [ develop ]
-  schedule:
-    # minute hour day month weekday
-    - cron: '15 1 1 * *'
   # Allows you to run this workflow manually from the Actions tab:
   workflow_dispatch:
 
@@ -64,9 +61,6 @@ jobs:
 
       - name: Configure
         run: ./configure
-
-      - name: Default xvfb-run
-        run: echo "XVFB_RUN=" >> $GITHUB_ENV
           
       - name: xvfb-run
         run: |
