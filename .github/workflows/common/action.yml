@@ -1,5 +1,5 @@
 name: Wcalc CI - Common
-
+shell: bash
 runs:
   using: "composite"
   steps:
