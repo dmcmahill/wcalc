@@ -61,34 +61,5 @@ jobs:
           # Xvfb really wants this directory to exist and be owned by root
           sudo mkdir -p -m1777 /tmp/.X11-unix
 
-      - name: Autogen
-        run: ./autogen.sh
-
-      - name: Post-autogen workarounds
-        run: |
-          touch intl/ChangeLog
-
-      - name: Configure
-        run: ./configure
-
-      - name: Debug
-        run: |
-          bison --version
-          convert --version
-          ls -l $(which tgif)
-
-      - name: Build
-        run: |
-          echo "Running: $XVFB_RUN make"
-          $XVFB_RUN -- make
-
-      - name: Test stdio-wcalc
-        run: cd stdio-wcalc && ./run_tests.sh --show-diffs
-
-      - name: Distcheck
-        run:  |
-          echo "Running: $XVFB_RUN make distcheck"
-          $XVFB_RUN -- make distcheck
-
       - name: Common
         uses: ./.github/workflows/common
