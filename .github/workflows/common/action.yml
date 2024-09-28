@@ -1,9 +1,10 @@
 name: Wcalc CI - Common
-shell: bash
+
 runs:
   using: "composite"
   steps:
     - name: Autogen
+      shell: bash
       run: ./autogen.sh
 
     - name: Post-autogen workarounds
@@ -11,23 +12,28 @@ runs:
         touch intl/ChangeLog
 
     - name: Configure
+      shell: bash
       run: ./configure
 
     - name: Debug
+      shell: bash
       run: |
         bison --version
         convert --version
         ls -l $(which tgif)
 
     - name: Build
+      shell: bash
       run: |
         echo "Running: $XVFB_RUN make"
         $XVFB_RUN -- make
 
     - name: Test stdio-wcalc
+      shell: bash
       run: cd stdio-wcalc && ./run_tests.sh --show-diffs
 
     - name: Distcheck
+      shell: bash
       run:  |
         echo "Running: $XVFB_RUN make distcheck"
         $XVFB_RUN -- make distcheck
