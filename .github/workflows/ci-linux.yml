@@ -55,4 +55,4 @@ jobs:
         run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
 
       - name: Common
-        uses: ./.github/workflows/_ci-common.yml
+        uses: ./.github/workflows/common

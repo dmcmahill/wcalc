@@ -91,4 +91,4 @@ jobs:
           $XVFB_RUN -- make distcheck
 
       - name: Common
-        uses: ./.github/_ci-common.yml
+        uses: ./.github/workflows/common
