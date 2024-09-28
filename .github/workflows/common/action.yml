@@ -1,4 +1,4 @@
-name: 'Wcalc CI - Common''
+name: Wcalc CI - Common
 
 runs:
   using: "composite"
