@@ -79,7 +79,7 @@ jobs:
       - name: Build
         run: |
           echo "Running: $XVFB_RUN make"
-          $XVFB_RUN make
+          $XVFB_RUN -- make
 
       - name: Test stdio-wcalc
         run: cd stdio-wcalc && ./run_tests.sh --show-diffs
@@ -87,5 +87,5 @@ jobs:
       - name: Distcheck
         run:  |
           echo "Running: $XVFB_RUN make distcheck"
-          $XVFB_RUN make distcheck
+          $XVFB_RUN -- make distcheck
 
