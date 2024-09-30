@@ -29,6 +29,7 @@ jobs:
           brew update
           brew install autoconf
           brew install automake
+          brew install bison
           brew install coreutils
           brew install gawk
           brew install gettext
