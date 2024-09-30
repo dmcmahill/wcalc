@@ -41,7 +41,7 @@ runs:
 
     - name: Upload Tarball
       shell: bash
-      uses: actions/artifact-upload@v4
+      uses: actions/upload-artifact@v4
       with:
         name: wcalc-1.1A
         path: wcalc-1.1A.tar.gz
