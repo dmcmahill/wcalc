@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    name: x64
     runs-on: ubuntu-latest
 
     steps:
@@ -60,3 +61,49 @@ jobs:
 
       - name: Build & Checks
         uses: ./.github/workflows/common
+  build-arm:
+    name: ARM64
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      # Checks-out repository under $GITHUB_WORKSPACE:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: apt-get update
+        run: sudo apt-get update
+
+      - name: Install dependencies
+        run: sudo apt-get install -y
+             guile-2.2-dev
+             autoconf
+             automake
+             autopoint
+             bison
+             imagemagick
+             libgettextpo-dev
+             libgtk2.0-dev
+             netpbm
+             pstoedit
+             tgif
+             w3m
+             xauth
+             xsltproc
+             xvfb
+
+      - name: Install tgif dependencies
+        run: sudo apt-get install -y
+             libxmu-dev
+             xfonts-75dpi
+             gsfonts-x11
+
+      - name: Install pstoedit dependencies
+        run: sudo apt-get install -y
+             ghostscript
+
+      - name: xvfb-run
+        run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
+
+      - name: Build & Checks
+        uses: ./.github/workflows/common
+
