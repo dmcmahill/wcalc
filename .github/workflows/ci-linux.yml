@@ -59,9 +59,6 @@ jobs:
       - name: xvfb-run
         run: echo "XVFB_RUN=xvfb-run --auto-servernum" >> $GITHUB_ENV
 
-      - name: Enable problem matcher
-        uses: ammaraskar/gcc-problem-matcher@master
-
       - name: Build & Checks
         uses: ./.github/workflows/common
   build-arm:
