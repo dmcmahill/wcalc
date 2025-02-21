@@ -326,7 +326,7 @@ static void values_init(air_coil_gui *gui,
 
   button = gtk_radio_button_new_with_label (wire_size_group, _("Wire Dia."));
   wc_table_add_wentry_new_units(table, gui, button,
-                                &(gui->text_wire_diameter), gui->coil->units_len, &ug,
+                                &(gui->text_wire_diameter), gui->coil->units_wire_diameter, &ug,
                                 &(gui->coil->wire_diameter), &x, &y);
   g_signal_connect( G_OBJECT( button ), "clicked",
                     G_CALLBACK(use_wire_diameter_pressed),
