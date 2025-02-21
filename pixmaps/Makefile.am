@@ -72,6 +72,7 @@ if MISSING_PSTOEDIT
 	@echo "          rebuilt from $*.eps.  Changes to $*.eps"
 	@echo "          will be ignored."
 else
+	test -f "$(1).eps" || cp "$(srcdir)/$(1).eps" .
 	${PSTOEDIT} ${PSTOEDIT_FLAGS} -f "cairo: -header figure_$(1).h -funcname figure_$(1)" $(1).eps figure_$(1).c
 endif
 # This rule forces a serialization of the jobs during a parallel make.  Note, the cairo driver creates
@@ -92,7 +93,7 @@ $(foreach __tmp__,$(TGIF_NAMES),$(eval $(call cairo_template,$(__tmp__))))
 show-var:
 	@${ECHO} ${${VARNAME}}
 
-TGIF=		XENVIRONMENT=$(srcdir)/Xdefaults.tgif @TGIF@
+TGIF=		XENVIRONMENT="$(srcdir)/Xdefaults.tgif" @TGIF@
 TGIF_FLAGS=	-print -color
 
 BUILT_SOURCES = ${PNGS} ${XPMS} ${EPSS} ${CAIRO_SRC}
@@ -109,7 +110,7 @@ if MISSING_TGIF
 	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
 	@echo "          will be ignored."
 else
-	$(TGIF) $(TGIF_FLAGS) -eps $*.obj
+	$(TGIF) $(TGIF_FLAGS) -o. -eps "$(srcdir)/$*.obj"
 	@echo "Canonicalize $@"
 	mv $*.eps $*.eps.bak
 	sed -e 's/CreationDate:.*/CreationDate: today/g' \
@@ -124,7 +125,7 @@ if MISSING_TGIF
 	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
 	@echo "          will be ignored."
 else
-	$(TGIF) $(TGIF_FLAGS) -gif $*.obj
+	$(TGIF) $(TGIF_FLAGS) -o. -gif "$(srcdir)/$*.obj"
 endif
 
 .obj.png :
@@ -134,7 +135,7 @@ if MISSING_TGIF
 	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
 	@echo "          will be ignored."
 else
-	$(TGIF) $(TGIF_FLAGS) -png $*.obj
+	$(TGIF) $(TGIF_FLAGS) -o. -png "$(srcdir)/$*.obj"
 endif
 
 .obj.xpm :
@@ -144,7 +145,7 @@ if MISSING_TGIF
 	@echo "          rebuilt from $*.obj.  Changes to $*.obj"
 	@echo "          will be ignored."
 else
-	$(TGIF) $(TGIF_FLAGS) -xpm $*.obj
+	$(TGIF) $(TGIF_FLAGS) -o. -xpm "$(srcdir)/$*.obj"
 endif
 
 
