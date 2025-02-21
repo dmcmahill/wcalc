@@ -52,3 +52,5 @@ stamp-h1
 
 intl/
 test-driver
+
+build/
