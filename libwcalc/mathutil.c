@@ -284,12 +284,12 @@ complex double cbessel_Y1(complex double x)
 
     /* the polynomial in (x/3)^2 */
     Y1 = 0.0027873 + 0.0i;
-    Y1 = (Y1 * x2) + (-0.0400976 , 0.0i);
-    Y1 = (Y1 * x2) + ( 0.3123951 , 0.0i);
-    Y1 = (Y1 * x2) + (-1.3164827 , 0.0i);
-    Y1 = (Y1 * x2) + ( 2.1682709 , 0.0i);
-    Y1 = (Y1 * x2) + ( 0.2212091 , 0.0i);
-    Y1 = (Y1 * x2) + (-0.6366198 , 0.0i);
+    Y1 = (Y1 * x2) + (-0.0400976 + 0.0i);
+    Y1 = (Y1 * x2) + ( 0.3123951 + 0.0i);
+    Y1 = (Y1 * x2) + (-1.3164827 + 0.0i);
+    Y1 = (Y1 * x2) + ( 2.1682709 + 0.0i);
+    Y1 = (Y1 * x2) + ( 0.2212091 + 0.0i);
+    Y1 = (Y1 * x2) + (-0.6366198 + 0.0i);
 
     /* the extra added term in front */
     x2 = (2.0 / M_PI) *x;
@@ -678,7 +678,7 @@ complex double chankel1_1(complex double x)
 }
 
 /* Type 2, order 1 Hankel function: J1(x) - j*Y1(x) */
-complex double c_hankel1_2(complex double x)
+complex double chankel1_2(complex double x)
 {
   complex double y;
   complex double j;

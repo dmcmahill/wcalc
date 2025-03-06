@@ -38,8 +38,7 @@ int main(int argc, char **argv)
 {
 
   double w,x,y,z;
-  complex_t a,b,c;
-  complex_t *ap=NULL, *bp=NULL, *cp=NULL;
+  complex double a,b,c;
 
   char *sep="---------------------------";
 
@@ -49,59 +48,26 @@ int main(int argc, char **argv)
   z=4.0;
 
   printf("%s c_div %s\n",sep,sep);
-  c=c_div(c_complex(w,x),c_complex(y,z));
-  ap = c_complex_p(w,x,ap);
-  bp = c_complex_p(y,z,bp);
-  cp = c_div_p(ap,bp,cp);
-  printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,REAL(c),IMAG(c));
-  printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,REAL_P(cp),IMAG_P(cp));
+  c = (w + x*I) / (y + z*I);
+  a = w + x*I;
+  b = y + z*I;
+  c = a / b;
+  printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,creal(c),cimag(c));
+  printf("(%g + %g i) / (%g + %g i) = (%g + %g i)\n",w,x,y,z,creal(c),cimag(c));
 
-  printf("%s c_bessel_* %s\n",sep,sep);
+  printf("%s cbessel_* %s\n",sep,sep);
   for(x = -10; x<10; x=x+0.05) {
-    a  = c_complex(x,0.0);
-    ap = c_complex_p(x,0.0,ap);
+    a  = x + 0.0i;
 
-    b  = c_bessel_J0(a);
-    bp = c_bessel_J0_p(ap,bp);
+    b  = cbessel_J0(a);
 
-    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
-      fprintf(stderr,"c_bessel_J0(%g + 0.0 i) != c_bessel_J0_p()\n",x);
-      exit(1);
-    }
+    b  = cbessel_Y0(a);
 
-    b  = c_bessel_Y0(a);
-    bp = c_bessel_Y0_p(ap,bp);
+    b  = cbessel_J1(a);
 
-    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
-      fprintf(stderr,"c_bessel_Y0(%g + 0.0 i) != c_bessel_Y0_p()\n",x);
-      exit(1);
-    }
-
-    b  = c_bessel_J1(a);
-    bp = c_bessel_J1_p(ap,bp);
-
-    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
-      fprintf(stderr,"c_bessel_J1(%g + 0.0 i) = %g + %g i !=",x,REAL(b),IMAG(b));
-      fprintf(stderr,"c_bessel_J1_p(%g + 0.0 i) = %g + %g i \n",x,bp->re,bp->im);
-      exit(1);
-    }
-
-
-    b  = c_bessel_Y1(a);
-    bp = c_bessel_Y1_p(ap,bp);
-
-    if( (REAL(b) != bp->re) || (IMAG(b) != bp->im) ) {
-      fprintf(stderr,"c_bessel_Y1(%g + 0.0 i) = %g + %g i !=",x,REAL(b),IMAG(b));
-      fprintf(stderr,"c_bessel_Y1_p(%g + 0.0 i) = %g + %g i \n",x,bp->re,bp->im);
-      exit(1);
-    }
-
+    b  = cbessel_Y1(a);
   }
   printf("Pass\n");
-
-  free(ap);
-  free(bp);
-  free(cp);
   return 0;
 }
 
