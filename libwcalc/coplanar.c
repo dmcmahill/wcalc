@@ -156,7 +156,7 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
   double omega;
 
   /* complex characteristic impedance */
-  complex z0_c;
+  complex double z0_c;
 
   /* for large gap we will use microstrip as a limiting case */
   microstrip_line *msline;
@@ -713,9 +713,9 @@ static int coplanar_calc_int(coplanar_line *line, double f, int flag)
    * used inconsistently.
    */
   omega = 2.0*M_PI*f;
-  z0_c = c_sqrt(c_div(c_complex(R, omega*L), c_complex(G, omega*C)));
-  line->Ro = REAL(z0_c);
-  line->Xo = IMAG(z0_c);
+  z0_c = csqrt((R + omega*L*I) / (G + omega*G*I));
+  line->Ro = creal(z0_c);
+  line->Xo = cimag(z0_c);
 
   line->Ro = z0;
   line->Xo = 0.0;

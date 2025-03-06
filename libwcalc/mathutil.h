@@ -23,6 +23,7 @@
 #define __MATHUTIL_H__
 
 #include <math.h>
+#include <complex.h>
 #include "config.h"
 
 #ifndef M_E
@@ -38,97 +39,11 @@ double coth(double x);
 #define rint(x)  (ceil((x) - 0.5))
 #endif
 
-typedef struct COMPLEX
-{
-  double re,im;
-} complex;
-
-#define REAL(x)     (x.re)
-#define IMAG(x)     (x.im)
-#define REAL_P(x)     (x->re)
-#define IMAG_P(x)     (x->im)
-
-/* addition (a+b) */
-complex c_add(complex a, complex b);
-complex * c_add_p(complex *a, complex *b, complex *c);
-
-/* subtraction (a-b) */
-complex c_sub(complex a, complex b);
-complex * c_sub_p(complex *a, complex *b, complex *c);
-
-/* multiplication (a*b) */
-complex c_mul(complex a, complex b);
-complex * c_mul_p(complex *a, complex *b, complex *c);
-
-/* multiplication by a real number (x*a)*/
-complex c_rmul(double x, complex a);
-complex * c_rmul_p(double x, complex *a, complex *b);
-
-/* division (x/y) */
-complex c_div(complex x, complex y);
-complex * c_div_p(complex *x, complex *y, complex *z);
-
-/* complex conjugate (a*) */
-complex c_conj(complex a);
-complex * c_conj_p(complex *a, complex *b);
-
-/* magnitude (|z|) */
-double  c_abs(complex a);
-double c_abs_p(complex *a);
-
-/* angle */
-double c_arg(complex x);
-double c_arg_p(complex *a);
-
-/* create complex number from its real and imaginary parts */
-complex c_complex(double real, double imag);
-complex * c_complex_p(double real, double imag, complex *z);
-
-/* create a new unititialized complex variable */
-complex * c_complex_new(void);
-
-/* square-root */
-complex c_sqrt(complex x);
-complex * c_sqrt_p(complex *a, complex *b);
-
-/* complex trig functions */
-complex c_cos(complex x);
-complex * c_cos_p(complex *a, complex *b);
-
-complex c_cosh(complex x);
-complex * c_cosh_p(complex *a, complex *b);
-
-complex c_sin(complex x);
-complex * c_sin_p(complex *a, complex *b);
-
-complex c_sinh(complex x);
-complex * c_sinh_p(complex *a, complex *b);
-
-complex c_tan(complex x);
-complex * c_tan_p(complex *a, complex *b);
-
-complex c_cot(complex x);
-complex * c_cot_p(complex *a, complex *b);
-
-complex c_tanh(complex x);
-complex * c_tanh_p(complex *a, complex *b);
-
-complex c_coth(complex x);
-complex * c_coth_p(complex *a, complex *b);
-
-/* logarithm */
-complex c_log(complex x);
-complex * c_log_p(complex *x, complex *z);
-
 /* Bessel functions of complex arguments */
-complex c_bessel_J0(complex x);
-complex * c_bessel_J0_p(complex *x, complex *J0);
-complex c_bessel_J1(complex x);
-complex * c_bessel_J1_p(complex *x, complex *J1);
-complex c_bessel_Y0(complex x);
-complex * c_bessel_Y0_p(complex *x, complex *Y0);
-complex c_bessel_Y1(complex x);
-complex * c_bessel_Y1_p(complex *x, complex *Y1);
+complex double cbessel_J0(complex double x);
+complex double cbessel_J1(complex double x);
+complex double cbessel_Y0(complex double x);
+complex double cbessel_Y1(complex double x);
 
 /* Bessel functions of real arguments */
 double bessel_J0(double x);
@@ -141,17 +56,13 @@ double bessel_J1p(double x);
 double bessel_Y1p(double x);
 
 /* Hankel functions */
-complex c_hankel0_1(complex x);
-complex * c_hankel0_1_p(complex *x, complex *H);
+complex double chankel0_1(complex double x);
 
-complex c_hankel0_2(complex x);
-complex * c_hankel0_2_p(complex *x, complex *H);
+complex double chankel0_2(complex double x);
 
-complex c_hankel1_1(complex x);
-complex * c_hankel1_1_p(complex *x, complex *H);
+complex double chankel1_1(complex double x);
 
-complex c_hankel1_2(complex x);
-complex * c_hankel1_2_p(complex *x, complex *H);
+complex double chankel1_2(complex double x);
 
  /*
   *  compute K(k)/K'(k) where

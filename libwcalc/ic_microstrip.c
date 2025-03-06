@@ -117,26 +117,26 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * total incremental shunt admittance and series impedance for the
    * MIS line 
    */
-  complex *Ytot=NULL;
-  complex *Ztot=NULL;
+  complex double Ytot;
+  complex double Ztot;
 
   /* the notation here matches the Tuncer and Neikirk paper */
   double a,b,k;
-  complex *Zsemi=NULL;
-  complex *betas=NULL;
-  complex *gammai=NULL;
+  complex double Zsemi;
+  complex double betas;
+  complex double gammai;
   double Zi;
 
   /* misc temp variables */
-  complex *jba=NULL, *jbb=NULL, *num=NULL, *den=NULL;
-  complex *tmpc1=NULL;
-  complex *tmpc2=NULL;
+  complex double jba, jbb, num, den;
+  complex double tmpc1;
+  complex double tmpc2;
 
   /* total transmission line variables */
   double Lmis, Rmis, Cmis, Gmis;
-  complex *Zo_mis=NULL;
+  complex double Zo_mis;
 
-  complex *gamma_mis=NULL;
+  complex double gamma_mis;
   double beta_mis;
   double lambda_mis;
 #ifdef DEBUG_CALC
@@ -236,9 +236,9 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   printf("                       Gsemi = %g\n",Gsemi);
   printf("                       omega*(Csemi + Cox) = %g\n",omega*(Csemi + Cox));
 #endif
-  num = c_complex_p(-omega*omega*Csemi*Cox,omega*Cox*Gsemi,num);
-  den = c_complex_p(Gsemi,omega*(Csemi + Cox),den);
-  Ytot = c_div_p(num,den,Ytot);
+  num = -omega*omega*Csemi*Cox + omega*Cox*Gsemi*I;
+  den = Gsemi + omega*(Csemi + Cox)*I;
+  Ytot = num / den;
 	       
 
 #ifdef DEBUG_CALC
@@ -270,10 +270,10 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * \/
    *
    */
-  num = c_complex_p(0.0,omega*mu0,num);
-  den = c_complex_p(line->subs->sigmas,omega*line->subs->es*e0,den);
-  Zsemi = c_div_p(num,den,Zsemi);
-  Zsemi = c_sqrt_p(Zsemi,Zsemi);
+  num = 0.0 + omega*mu0*I;
+  den = line->subs->sigmas + omega*line->subs->es*e0*I;
+  Zsemi = num / den;
+  Zsemi = csqrt(Zsemi);
 		       
 
   /* 
@@ -287,11 +287,11 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *             \/
    *
    */
-  den = c_complex_p(0.0,line->w,den);
-  Zsemi = c_div_p(Zsemi,den,Zsemi);
+  den = 0.0 + line->w*I;
+  Zsemi = Zsemi / den;
 
 #ifdef DEBUG_CALC
-  printf("ic_microstrip_calc():  Zsemi = %g + %gi\n",REAL_P(Zsemi),IMAG_P(Zsemi));
+  printf("ic_microstrip_calc():  Zsemi = %g + %gi\n",creal(Zsemi),cimag(Zsemi));
 #endif
   /*
    *               ----------------------------------------
@@ -300,23 +300,23 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *          \/                \                      /
    *
    */
-  betas = c_complex_p(-omega*omega*mu0*(line->subs->es)*e0,omega*mu0*(line->subs->sigmas),betas);
-  betas = c_sqrt_p(betas,betas);
+  betas = -omega*omega*mu0*(line->subs->es)*e0 + omega*mu0*(line->subs->sigmas)*I;
+  betas = csqrt(betas);
 
   /* j betas a */
-  jba = c_complex_p(0.0,1.0,jba);
-  jba = c_rmul_p(a,jba,jba);
-  jba = c_mul_p(jba,betas,jba);
+  jba = 0.0 + 1.0i;
+  jba = a * jba;
+  jba = jba / betas;
 
   /* j betas b */
-  jbb = c_complex_p(0.0,1.0,jbb);
-  jbb = c_rmul_p(b,jbb,jbb);
-  jbb = c_mul_p(jbb,betas,jbb);
+  jbb = 0.0 + 1.0i;
+  jbb = b * jbb;
+  jbb = jbb / betas;
 
 #ifdef DEBUG_CALC
-  printf("ic_microstrip_calc():  betas = %g + %gi\n",REAL_P(betas),IMAG_P(betas));
-  printf("ic_microstrip_calc():  jba   = %g + %gi\n",REAL_P(jba),IMAG_P(jbb));
-  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",REAL_P(jbb),IMAG_P(jbb));
+  printf("ic_microstrip_calc():  betas = %g + %gi\n",creal(betas),cimag(betas));
+  printf("ic_microstrip_calc():  jba   = %g + %gi\n",creal(jba),cimag(jbb));
+  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",creal(jbb),cimag(jbb));
 #endif
 
   /*
@@ -328,40 +328,40 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    *  H0,2(jbb) H1,1(jba)  -  H1,2(jba) H0,1(jbb)      den
    *
    */
-  tmpc1 = c_hankel0_2_p(jbb,tmpc1);
+  tmpc1 = chankel0_2(jbb);
 #ifdef DEBUG_CALC
-  printf("ic_microstrip_calc():  H0,2(jbb) = %g + %gi\n",REAL_P(tmpc1),IMAG_P(tmpc1));
-  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",REAL_P(jbb),IMAG_P(jbb));
+  printf("ic_microstrip_calc():  H0,2(jbb) = %g + %gi\n",creal(tmpc1),cimag(tmpc1));
+  printf("ic_microstrip_calc():  jbb   = %g + %gi\n",creal(jbb),cimag(jbb));
 #endif
-  tmpc2 = c_hankel0_1_p(jba,tmpc2);
-  num   = c_mul_p(tmpc1,tmpc2,num);
-  tmpc1 = c_hankel0_2_p(jba,tmpc1);
-  tmpc2 = c_hankel0_1_p(jbb,tmpc2);
-  tmpc1 = c_mul_p(tmpc1,tmpc2,tmpc1);
-  num   = c_sub_p(num,tmpc1,num);
+  tmpc2 = chankel0_1(jba);
+  num   = tmpc1 * tmpc2;
+  tmpc1 = chankel0_2(jba);
+  tmpc2 = chankel0_1(jbb);
+  tmpc1 = tmpc1 * tmpc2;
+  num   = num - tmpc1;
 
 
-  tmpc1 = c_hankel0_2_p(jbb,tmpc1);
-  tmpc2 = c_hankel1_1_p(jba,tmpc2);
-  den   = c_mul_p(tmpc1,tmpc2,den);
-  tmpc1 = c_hankel1_2_p(jba,tmpc1);
-  tmpc2 = c_hankel0_1_p(jbb,tmpc2);
-  tmpc1 = c_mul_p(tmpc1,tmpc2,tmpc1);
-  den   = c_sub_p(den,tmpc1,den);
+  tmpc1 = chankel0_2(jbb);
+  tmpc2 = chankel1_1(jba);
+  den   = tmpc1 * tmpc2;
+  tmpc1 = chankel1_2(jba);
+  tmpc2 = chankel0_1(jbb);
+  tmpc1 = tmpc1 * tmpc2;
+  den   = den - tmpc1;
 
 
   /* multiply into our expression for Zsemi.  This is the final answer */
 #ifdef DEBUG_CALC
-  printf("Zsemi (partial)= %g + i%g\n",REAL_P(Zsemi),IMAG_P(Zsemi));
-  printf("num = %g + i%g\n",REAL_P(num),IMAG_P(num));
-  printf("den = %g + i%g\n",REAL_P(den),IMAG_P(den));
+  printf("Zsemi (partial)= %g + i%g\n",creal(Zsemi),cimag(Zsemi));
+  printf("num = %g + i%g\n",creal(num),cimag(num));
+  printf("den = %g + i%g\n",creal(den),cimag(den));
 #endif
-  tmpc1 = c_div_p(num,den,tmpc1);
-  Zsemi = c_mul_p(Zsemi, tmpc1, Zsemi);
+  tmpc1 = num / den;
+  Zsemi = Zsemi * tmpc1;
 
   /* find the oxide impedance and propagation constant */
   Zi = sqrt(mu0/((line->subs->eox)*e0))/line->w;
-  gammai = c_complex_p(0.0,omega*sqrt(mu0*(line->subs->eox)*e0),gammai);
+  gammai = 0.0 + omega*sqrt(mu0*(line->subs->eox)*e0)*I;
 
   /* combine to find the total MIS incremental series impedance */
 
@@ -370,19 +370,19 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    * Ztot = Zi ---------------------------------
    *            Zi    + Zsemi  tanh(gammai tox)
    */
-  num = c_rmul_p(line->subs->tox,gammai,num);
-  num = c_tanh_p(num,num);
-  num = c_rmul_p(Zi, num, num);
-  num = c_add_p(Zsemi,num,num);
+  num = line->subs->tox * gammai;
+  num = ctanh(num);
+  num = Zi * num;
+  num = Zsemi + num;
 
-  den = c_rmul_p(line->subs->tox,gammai,den);
-  den = c_tanh_p(den,den);
-  den = c_mul_p(Zsemi, den, den);
-  tmpc1 = c_complex_p(Zi,0.0,tmpc1);
-  den = c_add_p(tmpc1,den,den);
+  den = line->subs->tox * gammai;
+  den = ctanh(den);
+  den = Zsemi * den;
+  tmpc1 = Zi + 0.0i;
+  den = tmpc1 + den;
   
-  Ztot = c_div_p(num,den,Ztot);
-  Ztot = c_rmul_p(Zi,Ztot,Ztot);
+  Ztot = num / den;
+  Ztot = Zi * Ztot;
 
 
   /* whew! */
@@ -405,16 +405,15 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 
 #ifdef DEBUG_CALC
   printf("Zi    = %g ohms/um\n",Zi*1e-6);
-  printf("Zsemi = %g + i%g\n",REAL_P(Zsemi),IMAG_P(Zsemi));
+  printf("Zsemi = %g + i%g\n",creal(Zsemi),cimag(Zsemi));
 #endif
 
   /*
    * Now add in metal incremental resistance to the incremental series
    * impedance.
    */
-  REAL_P(tmpc1) = Rmet;
-  IMAG_P(tmpc1) = 0.0;
-  Ztot = c_add_p(Ztot, tmpc1, Ztot);
+  tmpc1 = Rmet + 0.0i;
+  Ztot = tmpc1 + Ztot;
 
   /* 
    * now we have the incremental series impedance and shunt admittance
@@ -423,10 +422,10 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
    */
 
   /* elements in an incremental circuit model */
-  Rmis = REAL_P(Ztot);
-  Lmis = IMAG_P(Ztot)/omega;
-  Gmis = REAL_P(Ytot);
-  Cmis = IMAG_P(Ytot)/omega;
+  Rmis = creal(Ztot);
+  Lmis = cimag(Ztot) / omega;
+  Gmis = creal(Ytot);
+  Cmis = cimag(Ytot) / omega;
 
 
 #ifdef DEBUG_CALC
@@ -435,18 +434,18 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   printf("Rmis = %g ohm/um\n",Rmis*1e-6);
   printf("Gmis = %g s/um\n",Gmis*1e-6);
 
-  printf("Zmis = %g + i%g ohm/cm\n",REAL_P(Ztot)*1e-2,IMAG_P(Ztot)*1e-2);
-  printf("Zmis = %g + i%g ohm/um\n",REAL_P(Ztot)*1e-6,IMAG_P(Ztot)*1e-6);
+  printf("Zmis = %g + i%g ohm/cm\n",creal(*Ztot)*1e-2,cimag(*Ztot)*1e-2);
+  printf("Zmis = %g + i%g ohm/um\n",creal(*Ztot)*1e-6,cimag(*Ztot)*1e-6);
 #endif
 
   /* characteristic impedance */
-  Zo_mis = c_div_p(Ztot,Ytot,Zo_mis);
-  Zo_mis = c_sqrt_p(Zo_mis,Zo_mis);
+  Zo_mis = Ztot / Ytot;
+  Zo_mis = csqrt(Zo_mis);
 
   /* propagation constant */
-  gamma_mis = c_mul_p(Ztot,Ytot,gamma_mis);
-  gamma_mis = c_sqrt_p(gamma_mis,gamma_mis);
-  beta_mis  = IMAG_P(gamma_mis);
+  gamma_mis = Ztot * Ytot;
+  gamma_mis = csqrt(gamma_mis);
+  beta_mis  = cimag(gamma_mis);
 #ifdef DEBUG_CALC
   alpha_mis = REAL_P(gamma_mis);
   printf("gamma_mis = %g + i%g\n",alpha_mis,beta_mis);
@@ -467,7 +466,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* FIXME -- do something with this */
   loss_per_lambda_mis = alpha_mis*lambda_mis*8.68;
   
-  printf("Zo (ohms) = %g + j%g\n",REAL_P(Zo_mis),IMAG_P(Zo_mis));
+  printf("Zo (ohms) = %g + j%g\n",creal(Zo_mis),cimag(Zo_mis));
   printf("MIS wavelength           = %g mm\n",1e3*lambda_mis);
   printf("Free space wavelength    = %g mm\n",1e3*LIGHTSPEED/f);
   printf("Slow wave factor         = %g\n",slowwave);
@@ -479,8 +478,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   line->Rmis = Rmis;
   line->Cmis = Cmis;
   line->Gmis = Gmis;
-  line->Ro   = REAL_P(Zo_mis);
-  line->Xo   = IMAG_P(Zo_mis);
+  line->Ro   = creal(Zo_mis);
+  line->Xo   = cimag(Zo_mis);
 
   /* XXX I probably should avoid 'keff' unless I can show 'mueff' = 1
    */
@@ -503,20 +502,6 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 
   /* XXX double check thiss */
   line->delay = (line->l/lambda_mis)/line->freq;
-
-  free(Ytot);
-  free(Ztot);
-  free(Zsemi);
-  free(betas);
-  free(gammai);
-  free(jba);
-  free(jbb);
-  free(num);
-  free(den);
-  free(tmpc1);
-  free(tmpc2);
-  free(Zo_mis);
-  free(gamma_mis);
 
   return 0;
 }

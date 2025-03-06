@@ -38,8 +38,8 @@ int main(int argc, char **argv)
 {
 
   double w,x,y,z;
-  complex a,b,c;
-  complex *ap=NULL, *bp=NULL, *cp=NULL;
+  complex_t a,b,c;
+  complex_t *ap=NULL, *bp=NULL, *cp=NULL;
 
   char *sep="---------------------------";
 
