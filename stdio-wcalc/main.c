@@ -8,7 +8,7 @@
  * the Free Software Foundation; version 2 of the License.
  * 
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without even the implgitied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
@@ -187,9 +187,6 @@ static void execute_file(FILE *fp, char *fname)
     if( nl != NULL ) *nl = '\0';
 
     /* make a copy for later use */
-    if( tmps != NULL )
-      free(tmps);
-
     tmps = strdup(line);
 
     tok = strtok(line, " \t");
@@ -322,6 +319,7 @@ static void execute_file(FILE *fp, char *fname)
 
     lineno++;
     fflush(stdout);
+    free(tmps);
   }
   
 }
