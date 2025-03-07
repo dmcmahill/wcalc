@@ -243,7 +243,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
 
 #ifdef DEBUG_CALC
   printf("Ytot (1/(ohm-cm)) = %g + j%g\n",
-	  0.01*Ytot->re,0.01*Ytot->im);
+	  0.01*creal(Ytot),0.01*cimag(Ytot));
 #endif
 
   /*
@@ -434,8 +434,8 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   printf("Rmis = %g ohm/um\n",Rmis*1e-6);
   printf("Gmis = %g s/um\n",Gmis*1e-6);
 
-  printf("Zmis = %g + i%g ohm/cm\n",creal(*Ztot)*1e-2,cimag(*Ztot)*1e-2);
-  printf("Zmis = %g + i%g ohm/um\n",creal(*Ztot)*1e-6,cimag(*Ztot)*1e-6);
+  printf("Zmis = %g + i%g ohm/cm\n",creal(Ztot)*1e-2,cimag(Ztot)*1e-2);
+  printf("Zmis = %g + i%g ohm/um\n",creal(Ztot)*1e-6,cimag(Ztot)*1e-6);
 #endif
 
   /* characteristic impedance */
@@ -447,7 +447,7 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   gamma_mis = csqrt(gamma_mis);
   beta_mis  = cimag(gamma_mis);
 #ifdef DEBUG_CALC
-  alpha_mis = REAL_P(gamma_mis);
+  alpha_mis = creal(gamma_mis);
   printf("gamma_mis = %g + i%g\n",alpha_mis,beta_mis);
 #endif
 
