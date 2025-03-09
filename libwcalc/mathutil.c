@@ -72,7 +72,7 @@ complex double cbessel_J0(complex double x)
   complex double x2;
   complex double J0;
 
-  if (fabs(creal(x)) <= 3.0){
+  if (fabs(creal(x)) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -88,7 +88,7 @@ complex double cbessel_J0(complex double x)
     complex double f0, t0;
     bool neg = false;
     
-    if (creal(x) < 0){
+    if (creal(x) < 0) {
       x = -creal(x) + cimag(x);
       neg = true;
     }
@@ -135,7 +135,7 @@ complex double cbessel_Y0(complex double x)
   complex double x2;
   complex double Y0;
 
-  if (fabs(creal(x)) <= 3.0){
+  if (fabs(creal(x)) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -160,7 +160,7 @@ complex double cbessel_Y0(complex double x)
     complex double f0, t0;
     bool neg = false;
 
-    if (creal(x) < 0){
+    if (creal(x) < 0) {
       x = -creal(x) + cimag(x);
       neg = true;
 #ifdef BESSEL_WARNINGS
@@ -212,7 +212,7 @@ complex double cbessel_J1(complex double x)
   complex double x2;
   complex double J1;
 
-  if (fabs(creal(x)) <= 3.0){
+  if (fabs(creal(x)) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -230,7 +230,7 @@ complex double cbessel_J1(complex double x)
     complex double f1, t1;
     bool neg = false;
 
-    if (creal(x) < 0){
+    if (creal(x) < 0) {
       x = -creal(x) + cimag(x);
       neg = true;
     }
@@ -277,7 +277,7 @@ complex double cbessel_Y1(complex double x)
   complex double x2;
   complex double Y1;
 
-  if (fabs(creal(x)) <= 3.0){
+  if (fabs(creal(x)) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -304,7 +304,7 @@ complex double cbessel_Y1(complex double x)
     complex double f1, t1;
     bool neg = false;
 
-    if (creal(x) < 0){
+    if (creal(x) < 0) {
       x = -creal(x) + cimag(x);
       neg = true;
 #ifdef BESSEL_WARNINGS
@@ -361,7 +361,7 @@ double bessel_J0(double x)
   double J0;
   double f0, t0;
 
-  if (fabs(x) <= 3.0){
+  if (fabs(x) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x/3.0;
 
@@ -374,10 +374,9 @@ double bessel_J0(double x)
     J0 = J0*x2 +  1.2656208;
     J0 = J0*x2 + -2.2499997;
     J0 = J0*x2 +  1.0000000;
-  }
-  else{
+  } else {
     
-    if (x < 0){
+    if (x < 0) {
       x = -x;
     }
     x2 = 3.0/x;
@@ -421,7 +420,7 @@ double bessel_Y0(double x)
   double Y0;
   double f0, t0;
 
-  if (fabs(x) <= 3.0){
+  if (fabs(x) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -442,10 +441,9 @@ double bessel_Y0(double x)
 
     Y0 = x2 + Y0;
 
-  }
-  else{
+  } else {
 
-    if (x < 0){
+    if (x < 0) {
       x = -x;
     }
     x2 = 3.0/x;
@@ -490,7 +488,7 @@ double bessel_J1(double x)
   double f1, t1;
   int neg=0;
 
-  if (fabs(x) <= 3.0){
+  if (fabs(x) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -504,10 +502,9 @@ double bessel_J1(double x)
     J1 = J1*x2 +  0.50000000;
 
     J1 = x*J1;
-  }
-  else{
+  } else {
 
-    if (x < 0){
+    if (x < 0) {
       x = -x;
       neg = 1;
     }
@@ -555,7 +552,7 @@ double bessel_Y1(double x)
   double Y1;
   double f1, t1;
 
-  if (fabs(x) <= 3.0){
+  if (fabs(x) <= 3.0) {
     /* find (x/3)^2 */
     x2 = x / 3.0;
     x2 = x2 * x2;
@@ -580,10 +577,9 @@ double bessel_Y1(double x)
     if (x < 0)
       Y1 = -Y1;
 
-  }
-  else{
+  } else {
 
-    if (x < 0){
+    if (x < 0) {
       x = -x;
     }
     x2 = 3.0 / x;
@@ -620,18 +616,12 @@ double bessel_Y1(double x)
 
 double bessel_J1p(double x)
 {
-  double y;
-  y = bessel_J0(x) - bessel_J1(x)/x;
-
-  return y;
+  return bessel_J0(x) - bessel_J1(x)/x;
 }
 
 double bessel_Y1p(double x)
 {
-  double y;
-  y = bessel_Y0(x) - bessel_Y1(x)/x;
-
-  return y;
+  return bessel_Y0(x) - bessel_Y1(x)/x;
 }
 
 /*
@@ -641,53 +631,25 @@ double bessel_Y1p(double x)
 /* Type 1, order 0 Hankel function: J0(x) + j*Y0(x) */
 complex double chankel0_1(complex double x)
 {
-  complex double y;
-  complex double j;
-  
-  j = 0.0 + 1.0i;
-
-  y = cbessel_J0(x) + j * cbessel_Y0(x);
-
-  return y;
+  return cbessel_J0(x) + cbessel_Y0(x) * I;
 }
 
 /* Type 2, order 0 Hankel function: J0(x) - j*Y0(x) */
 complex double chankel0_2(complex double x)
 {
-  complex double y;
-  complex double j;
-  
-  j = 0.0 + 1.0i;
-
-  y = cbessel_J0(x) - j * cbessel_Y0(x);
-
-  return y;
+  return cbessel_J0(x) - cbessel_Y0(x) * I;
 }
 
 /* Type 1, order 1 Hankel function: J1(x) + j*Y1(x) */
 complex double chankel1_1(complex double x)
 {
-  complex double y;
-  complex double j;
-  
-  j = 0.0 + 1.0i;
-
-  y = cbessel_J1(x) + j * cbessel_Y1(x);
-
-  return y;
+  return cbessel_J1(x) + cbessel_Y1(x) * I;
 }
 
 /* Type 2, order 1 Hankel function: J1(x) - j*Y1(x) */
 complex double chankel1_2(complex double x)
 {
-  complex double y;
-  complex double j;
-  
-  j = 0.0 + 1.0i;
-
-  y = cbessel_J1(x) - j * cbessel_Y1(x);
-
-  return y;
+  return cbessel_J1(x) - cbessel_Y1(x) * I;
 }
 
  /*

@@ -93,22 +93,6 @@ static double Zustrip(double h, double w, double t, double er);
 
 int ic_microstrip_calc(ic_microstrip_line *line, double f)
 {
-  double omega;
-  
-  /* XXX please fixme!  I get segfaults without this.  happens on
-     NetBSD-1.4.3, NetBSD-1.5.1, solaris-2.6, solaris-2.8 with 
-     gcc version egcs-2.91.60 19981201 (egcs-1.1.1 release) 
-     gcc version 2.95.1 19990816 (release)
-     gcc version 2.95.2 19991024 (release)
-  */
-
-#if (defined(sparc) || defined(__sparc__)) && \
-     defined(__GNUC__) && (__GNUC__ < 3)
-  static double mu0, e0;
-#else
-  double mu0, e0;
-#endif
-
   double Cox, Lox, Z0ox;
   double Csemi, Gsemi, Lsemi, Z0semi;
   double Rmet;
@@ -146,11 +130,11 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   double slowwave;
 
   /* frequency in rad/sec */
-  omega = 2.0*M_PI*f;
+  const double omega = 2.0*M_PI*f;
 
   /* permeability and permitivitty of free space (H/m and F/m) */
-  mu0 = 4.0*M_PI*1.0e-7;
-  e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
+  const double mu0 = 4.0*M_PI*1.0e-7;
+  const double e0  = 1.0/(mu0*LIGHTSPEED*LIGHTSPEED);
 
 #ifdef DEBUG_CALC
   printf("ic_microstrip_calc(): -------------- IC Microstrip Analysis ----------\n");

@@ -57,11 +57,8 @@ double bessel_Y1p(double x);
 
 /* Hankel functions */
 complex double chankel0_1(complex double x);
-
 complex double chankel0_2(complex double x);
-
 complex double chankel1_1(complex double x);
-
 complex double chankel1_2(complex double x);
 
  /*
