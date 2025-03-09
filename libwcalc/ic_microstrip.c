@@ -306,12 +306,12 @@ int ic_microstrip_calc(ic_microstrip_line *line, double f)
   /* j betas a */
   jba = 0.0 + 1.0i;
   jba = a * jba;
-  jba = jba / betas;
+  jba = jba * betas;
 
   /* j betas b */
   jbb = 0.0 + 1.0i;
   jbb = b * jbb;
-  jbb = jbb / betas;
+  jbb = jbb * betas;
 
 #ifdef DEBUG_CALC
   printf("ic_microstrip_calc():  betas = %g + %gi\n",creal(betas),cimag(betas));
