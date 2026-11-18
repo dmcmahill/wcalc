@@ -219,11 +219,11 @@ int air_coil_load_string(air_coil_coil *coil, const char *str)
   /* XXX fixme*/
   val = strtok (mystr," ");
   val = strtok (NULL, " ");
-  free(mystr);
 
   /* read the model version  */
   if ( val == NULL ){
     alert("Could not determine the air_coil file_version\n");
+    free(mystr);
     return -1;
   }
 
@@ -241,8 +241,11 @@ int air_coil_load_string(air_coil_coil *coil, const char *str)
     alert("Unable to load a wcalc air_coil file with air_coil file version\n"
 	  "\"%s\".  I only understand versions \"0.1\" and \"%s\"\n", 
 	  val, FILE_VERSION);
+    free(mystr);
     return -1;
   }
+
+  free(mystr);
 
 #ifdef DEBUG
   printf("air_coil_loadsave.c:air_coil_load_string():  loading \"%s\"\n",str);
