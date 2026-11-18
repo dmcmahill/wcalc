@@ -18,7 +18,6 @@ jobs:
   build:
     strategy:
       matrix:
-        # "ubuntu-latest" == ubuntu-20.04 ('focal'):
         # windows-latest isn't really supported at this time by wcalc
         os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
