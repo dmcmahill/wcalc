@@ -660,16 +660,7 @@ void wcalc_setup (gpointer data,
 
   /* Setup pixmap for the icon */
   gtk_widget_realize(wcalc->window);
-  pixbuf = gdk_pixbuf_new_from_data(icon_bitmap_bits,
-                                        GDK_COLORSPACE_RGB,
-                                        FALSE,
-                                        8,
-                                        icon_bitmap_width,
-                                        icon_bitmap_height,
-                                        icon_bitmap_width * 3,
-                                        NULL,
-                                        NULL
-                                        );
+  pixbuf = gdk_pixbuf_new_from_xpm_data(icon_bitmap);
   gtk_window_set_icon(GTK_WINDOW(wcalc->window), pixbuf);
 
 
